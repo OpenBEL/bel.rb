@@ -106,25 +106,17 @@ module BEL
         @arguments << argument
       end
 
-      def increases(another)
+    end
+
+    RELATIONSHIPS.each do |rel|
+      Term.send(:define_method, rel) do |another|
         s = Statement.new
         s.subject = self
-        s.relationship = 'increases'
+        s.relationship = rel
         s.object = another
         s
       end
-
-      RELATIONSHIPS.each do |rel|
-        Term.send(:define_method, rel) do |another|
-          s = Statement.new
-          s.subject = self
-          s.relationship = rel
-          s.object = another
-          s
-        end
-      end
     end
-
     FUNCTIONS.each do |fx|
       Language.send(:define_method, fx) do |*args|
         Term.new(fx, *args)
