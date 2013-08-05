@@ -5,12 +5,12 @@ module BEL
       abundance: {
         short_form: :a,
         description: 'Denotes the abundance of an entity',
-        signatures: ['abundance(E:abundance)abundance']
+        signatures: ['abundance(E:A)abundance']
       },
       biologicalProcess: {
         short_form: :bp,
         description: 'Denotes a process or population of events',
-        signatures: ['biologicalProcess(E:biologicalProcess)biologicalProcess']
+        signatures: ['biologicalProcess(E:B)biologicalProcess']
       },
       catalyticActivity: {
         short_form: :cat,
@@ -42,7 +42,7 @@ module BEL
         short_form: :complex,
         description: 'Denotes the abundance of a molecular complex',
         signatures: [
-          'complexAbundance(E:abundance)complexAbundance',
+          'complexAbundance(E:A)complexAbundance',
           'complexAbundance(F:abundance...)complexAbundance'
         ]
       },
@@ -55,20 +55,20 @@ module BEL
         short_form: :fus,
         description: 'Specifies the abundance of a protein translated from the fusion of a gene',
         signatures: [
-          'fusion(E:geneAbundance)fusion',
-          'fusion(E:geneAbundance,E:*,E:*)fusion',
-          'fusion(E:proteinAbundance)fusion',
-          'fusion(E:proteinAbundance,E:*,E:*)fusion',
-          'fusion(E:rnaAbundance)fusion',
-          'fusion(E:rnaAbundance,E:*,E:*)fusion'
+          'fusion(E:G)fusion',
+          'fusion(E:G,E:*,E:*)fusion',
+          'fusion(E:P)fusion',
+          'fusion(E:P,E:*,E:*)fusion',
+          'fusion(E:R)fusion',
+          'fusion(E:R,E:*,E:*)fusion'
         ]
       },
       geneAbundance: {
         short_form: :g,
         description: 'Denotes the abundance of a gene',
         signatures: [
-          'geneAbundance(E:geneAbundance)geneAbundance',
-          'geneAbundance(E:geneAbundance,F:fusion)geneAbundance'
+          'geneAbundance(E:G)geneAbundance',
+          'geneAbundance(E:G,F:fusion)geneAbundance'
         ]
       },
       gtpBoundActivity: {
@@ -91,7 +91,7 @@ module BEL
         short_form: :list,
         description: 'Groups a list of terms together',
         signatures: [
-          'list(E:abundance...)list',
+          'list(E:A...)list',
           'list(F:abundance...)list'
         ]
       },
@@ -99,7 +99,7 @@ module BEL
         short_form: :m,
         description: 'Denotes the abundance of a processed, functional microRNA',
         signatures: [
-          'microRNAAbundance(E:microRNAAbundance)microRNAAbundance'
+          'microRNAAbundance(E:M)microRNAAbundance'
         ]
       },
       molecularActivity: {
@@ -113,7 +113,7 @@ module BEL
         short_form: :path,
         description: 'Denotes a disease or pathology process',
         signatures: [
-          'pathology(E:pathology)pathology'
+          'pathology(E:O)pathology'
         ]
       },
       peptidaseActivity: {
@@ -142,11 +142,11 @@ module BEL
         short_form: :p,
         description: 'Denotes the abundance of a protein',
         signatures: [
-          'proteinAbundance(E:proteinAbundance)proteinAbundance',
-          'proteinAbundance(E:proteinAbundance,F:proteinModification)proteinAbundance',
-          'proteinAbundance(E:proteinAbundance,F:substitution)proteinAbundance',
-          'proteinAbundance(E:proteinAbundance,F:fusion)proteinAbundance',
-          'proteinAbundance(E:proteinAbundance,F:truncation)proteinAbundance'
+          'proteinAbundance(E:P)proteinAbundance',
+          'proteinAbundance(E:P,F:proteinModification)proteinAbundance',
+          'proteinAbundance(E:P,F:substitution)proteinAbundance',
+          'proteinAbundance(E:P,F:fusion)proteinAbundance',
+          'proteinAbundance(E:P,F:truncation)proteinAbundance'
         ]
       },
       reactants: {
@@ -175,8 +175,8 @@ module BEL
         short_form: :r,
         description: 'Denotes the abundance of a gene',
         signatures: [
-          'rnaAbundance(E:rnaAbundance)geneAbundance',
-          'rnaAbundance(E:rnaAbundance,F:fusion)geneAbundance'
+          'rnaAbundance(E:R)geneAbundance',
+          'rnaAbundance(E:R,F:fusion)geneAbundance'
         ]
       },
       substitution: {
@@ -198,7 +198,7 @@ module BEL
         short_form: :tloc,
         description: 'Denotes the frequency or abundance of events in which members move between locations',
         signatures: [
-          'translocation(F:abundance,E:abundance,E:abundance)abundance'
+          'translocation(F:abundance,E:A,E:A)abundance'
         ]
       },
       transportActivity: {
@@ -290,6 +290,9 @@ module BEL
         @arguments << argument
       end
 
+      def valid?
+        true
+      end
     end
 
     RELATIONSHIPS.each do |rel|
