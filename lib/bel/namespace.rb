@@ -48,6 +48,7 @@ module BEL
     }
 
     class NamespaceDefinition
+      include Enumerable
 
       attr_reader :url
       attr_reader :values
@@ -59,14 +60,16 @@ module BEL
       end
 
       def [](value)
-        reload(@url) if not @values
         return nil unless value
+
+        reload(@url) if not @values
         sym = value.to_sym
         Language::Parameter.new(@prefix, sym,
                                 @values[sym]) if @values.key?(sym)
       end
 
       def each &block
+        reload(@url) if not @values
         ns = @prefix.to_sym
         @values.each do |val, enc|
           if block_given?
