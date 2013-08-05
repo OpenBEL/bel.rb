@@ -23,6 +23,20 @@ Load any standard namespace
    @ns_def="BEL::Namespace::HGNC",
    @value=:AKT1>
 
+Load your own namespace
+
+.. code-block:: ruby
+
+  require 'bel'
+  # include namespace module in current scope
+  include BEL::Namespace
+
+  # define a NamespaceDefinition with prefix symbol and url
+  PUBCHEM = NamespaceDefinition.new(:PUBCHEM, 'http://your-url.org/pubchem.belns')
+
+  # reference caffeine compound, sip, and enjoy
+  PUBCHEM['2519']
+
 Write BEL in Ruby with a DSL
 
 .. code-block:: ruby
