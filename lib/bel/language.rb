@@ -329,10 +329,7 @@ module BEL
 
     class Parameter
       include Comparable
-
-      attr_reader :ns_def
-      attr_reader :value
-      attr_reader :enc
+      attr_reader :ns_def, :value, :enc
 
       def initialize(ns_def, value, enc)
         @ns_def = ns_def
@@ -348,19 +345,30 @@ module BEL
           ns_compare
         end
       end
+
+      def arg_signature
+        "E:#{@enc}"
+      end
     end
 
     class Statement
-      attr_accessor :subject
-      attr_accessor :relationship
-      attr_accessor :object
+      attr_accessor :subject, :relationship, :object
+    end
+
+    class Function
+      attr_reader :short_form, :long_form, :return_type,
+                  :description, :signatures
+
+      def initialize args
+        args.each do |k,v|
+          instance_variable_set("@#{k}", v) unless v.nil?
+        end
+      end
     end
 
     class Term
       include Comparable
-
-      attr_reader :fx
-      attr_reader :arguments
+      attr_reader :fx, :arguments
 
       def initialize(fx, *arguments)
         @fx = fx
@@ -371,8 +379,12 @@ module BEL
         @arguments << argument
       end
 
-      def valid?
-        true
+      def to_signature
+        "#{@fx.short_form}(#{@arguments.map(&:arg_signature) * ','})#{@fx.return_type}"
+      end
+
+      def arg_signature
+        "F:#{@fx.short_form}"
       end
     end
 
@@ -386,11 +398,12 @@ module BEL
       end
     end
     FUNCTIONS.each do |fx, metadata|
+      func = Function.new(metadata)
       Language.send(:define_method, fx) do |*args|
-        Term.new(fx, *args)
+        Term.new(func, *args)
       end
       Language.send(:define_method, metadata[:short_form]) do |*args|
-        Term.new(fx, *args)
+        Term.new(func, *args)
       end
     end
   end
