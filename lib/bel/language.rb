@@ -287,6 +287,17 @@ module BEL
       }
     }
 
+    FUNCTION_TYPES = {
+      abundance: [:abundance],
+      biologicalProcess: [:biologicalProcess],
+      complexAbundance: [:complexAbundance, :abundance],
+      geneAbundance: [:geneAbundance, :abundance],
+      microRNAAbundance: [:microRNAAbundance, :rnaAbundance, :abundance],
+      pathology: [:pathology, :biologicalProcess],
+      proteinAbundance: [:proteinAbundance, :abundance],
+      rnaAbundance: [:rnaAbundance, :abundance]
+    }
+
     RELATIONSHIPS = [
       :actsIn,
       :analogous,
