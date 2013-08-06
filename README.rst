@@ -51,5 +51,29 @@ Write BEL in Ruby with a DSL
   p(HGNC['SKIL']).directlyDecreases tscript(p(HGNC['SMAD3']))
   bp(GO['response to hypoxia']).increases tscript(p(EGID['7157']))
 
+Validate BEL terms
+
+.. code-block:: ruby
+
+  require 'bel'
+
+  # include modules in current scope
+  include BEL::Language
+  include BEL::Namespace
+
+  # boolean validation of constructed term
+  tscript(g(HGNC['AKT1'])).validate_signature
+  => false
+  complex(NCH['AP-1 Complex']).validate_signature
+  => true
+
+  # yield invalid terms to block
+  tscript(g(HGNC['AKT1'])).validate_signature do |term, allowed_signatures|
+    puts "#{term}, #{allowed_signatures}"
+  end
+  tscript(g(HGNC:AKT1)), [tscript(F:complex)a, tscript(F:p)a]
+  => false
+
+
 .. _BEL: http://www.openbel.org/content/bel-lang-language
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/
