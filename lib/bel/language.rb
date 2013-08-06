@@ -1,114 +1,321 @@
 # vim: ts=2 sw=2:
 module BEL
   module Language
+    class Signature
+      attr_reader :fx, :arguments
+      def initialize(fx, *arguments)
+        @fx = fx
+        @arguments = arguments
+
+        dup_hash = {}
+        @arguments.each_with_index { |arg, i| (dup_hash[arg] ||= []) << i }
+        dup_hash.keep_if { |k, v| v.length > 1 }.values.each do |v|
+          first_arg = @arguments[v[0]]
+          if F === first_arg
+            replace_range = (v.first..v.last)
+            @arguments[replace_range] = F.new(first_arg.func_return, true)
+          end
+        end
+      end
+
+      def ==(other)
+        return false if @fx != other.fx
+        @arguments == other.arguments
+      end
+
+      def <=>(other)
+        return 1 if other.nil?
+        return -1 if @fx != other.fx
+        return -1 if @arguments.nil? and not other.nil?
+        return 1 if not @arguments.nil? and other.nil?
+        @arguments <=> other.arguments
+      end
+
+      def to_s
+        return_type = FUNCTIONS[@fx][:return_type]
+        "#{@fx}(#{@arguments.map(&:to_s) * ','})#{return_type}"
+      end
+    end
+
+    class F
+      attr_reader :func_return, :var
+      def initialize(func_return, var=false)
+        @func_return = func_return
+        @var = var
+      end
+
+      def ==(other)
+        return false if not other.respond_to? :func_return
+
+        @func_return == other.func_return and @var == other.var
+      end
+
+      alias_method :eql?, :==
+
+      def hash
+        [@func_return, @var].hash
+      end
+
+      def <=>(other)
+        return 1 if @var ^ other.var
+
+        tree = FUNCTION_TYPES[@func_return]
+        return -1 if not tree.include?(other.func_return)
+        -(tree.index(@func_return) <=> tree.index(other.func_return))
+      end
+
+      def to_s
+        "F:#{@func_return}#{'...' if @var}"
+      end
+    end
+
+    class E
+      attr_reader :encoding, :var
+      def initialize(encoding, var=false)
+        @encoding = encoding
+        @var = var
+      end
+
+      def <=>(other)
+        return 1 if @var ^ other.var
+
+        # compare for equals and wildcard case
+        cmp = @encoding <=> other.encoding
+        return cmp if cmp.zero? or (@encoding == :* or other.encoding == :*)
+
+        # compare encoding for assignability; based on array index
+        @encoding.to_s.each_char do |enc_char|
+          enc_sym = enc_char.to_sym
+          tree = PARAMETER_ENCODING[enc_sym]
+          next if not tree.include?(other.encoding)
+
+          match = -(tree.index(enc_sym) <=> tree.index(other.encoding))
+          return match if match >= 0
+        end
+        -1
+      end
+
+      def to_s
+        "E:#{@encoding}"
+      end
+    end
+
+    class NullE
+      def <=>(other)
+        return 0 if NullE === other
+        -1
+      end
+
+      def to_s
+        "E:nil"
+      end
+    end
+
+    class Parameter
+      include Comparable
+      attr_reader :ns_def, :value, :enc, :signature
+
+      def initialize(ns_def, value, enc)
+        @ns_def = ns_def
+        @value = value
+        @enc = enc || ''
+        @signature = E.new(@enc)
+      end
+
+      def <=>(other)
+        ns_compare = ns_def <=> other.ns_def
+        if ns_compare == 0
+          value <=> other.value
+        else
+          ns_compare
+        end
+      end
+
+      def to_s
+        value = @value
+        if value =~ %r{\W}
+          value = %Q{"#{value}"}
+        end
+        "#{@ns_def}:#{value}"
+      end
+    end
+
+    class Statement
+      attr_accessor :subject, :relationship, :object
+    end
+
+    class Function
+      attr_reader :short_form, :long_form, :return_type,
+                  :description, :signatures
+
+      def initialize args
+        args.each do |k,v|
+          instance_variable_set("@#{k}", v) unless v.nil?
+        end
+      end
+    end
+
+    class Term
+      include Comparable
+      attr_reader :fx, :arguments, :signature
+
+      def initialize(fx, *arguments)
+        @fx = fx
+        @arguments = arguments ||= []
+        @signature = Signature.new(
+          @fx.short_form,
+          *@arguments.map { |arg|
+            case arg
+            when Term
+              F.new(arg.fx.return_type)
+            when Parameter
+              E.new(arg.enc)
+            when nil
+              NullE.new
+            end
+          })
+      end
+
+      def validate_signature
+        invalids = []
+        @arguments.select { |arg| Term === arg }.each do |term|
+          invalids << term if not term.validate_signature
+        end
+
+        sigs = FUNCTIONS[@fx.short_form][:signatures]
+        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
+        invalids << self if not match
+        if block_given? and not invalids.empty?
+          invalids.each do |term|
+            yield term, FUNCTIONS[term.fx.short_form][:signatures]
+          end
+        end
+        invalids.empty?
+      end
+
+      def to_s
+        "#{@fx.short_form}(#{@arguments.map(&:to_s).join(',')})"
+      end
+    end
+
     FUNCTIONS = {
-      abundance: {
+      a: {
         short_form: :a,
         long_form: :abundance,
         description: 'Denotes the abundance of an entity',
         return_type: :a,
-        signatures: ['a(E:A)a']
+        signatures: [
+          Signature.new(:a, E.new(:A))
+        ]
       },
-      biologicalProcess: {
+      bp: {
         short_form: :bp,
         long_form: :biologicalProcess,
         description: 'Denotes a process or population of events',
         return_type: :bp,
-        signatures: ['bp(E:B)bp']
+        signatures: [
+          Signature.new(:bp, E.new(:B))
+        ]
       },
-      catalyticActivity: {
+      cat: {
         short_form: :cat,
         long_form: :catalyticActivity,
         description: 'Denotes the frequency or abundance of events where a member acts as an enzymatic catalyst of biochecmial reactions',
         return_type: :a,
         signatures: [
-          'cat(F:complex)a',
-          'cat(F:p)a'
+          Signature.new(:cat, F.new(:complex)),
+          Signature.new(:cat, F.new(:p))
         ]
       },
-      cellSecretion: {
+      sec: {
         short_form: :sec,
         long_form: :cellSecretion,
         description: 'Denotes the frequency or abundance of events in which members of an abundance move from cells to regions outside of the cells',
         return_type: :a,
-        signatures: ['sec(F:a)a']
+        signatures: [
+          Signature.new(:sec, F.new(:a))
+        ]
       },
-      cellSurfaceExpression: {
+      surf: {
         short_form: :surf,
         long_form: :cellSurfaceExpression,
         description: 'Denotes the frequency or abundance of events in which members of an abundance move to the surface of cells',
         return_type: :a,
-        signatures: ['surf(F:a)a']
+        signatures: [
+          Signature.new(:surf, F.new(:a))
+        ]
       },
-      chaperoneActivity: {
+      chap: {
         short_form: :chap,
         long_form: :chaperoneActivity,
         description: 'Denotes the frequency or abundance of events in which a member binds to some substrate and acts as a chaperone for the substrate',
         return_type: :a,
         signatures: [
-          'chap(F:complex)a',
-          'chap(F:p)a'
+          Signature.new(:chap, F.new(:complex)),
+          Signature.new(:chap, F.new(:p))
         ]
       },
-      complexAbundance: {
+      complex: {
         short_form: :complex,
         long_form: :complexAbundance,
         description: 'Denotes the abundance of a molecular complex',
         return_type: :complex,
         signatures: [
-          'complex(E:A)complex',
-          'complex(F:a...)complex'
+          Signature.new(:complex, E.new(:A)),
+          Signature.new(:complex, F.new(:a, true))
         ]
       },
-      degradation: {
+      deg: {
         short_form: :deg,
         long_form: :degradation,
         description: 'Denotes the frequency or abundance of events in which a member is degraded in some way such that it is no longer a member',
         return_type: :a,
-        signatures: ['deg(F:a)a']
+        signatures: [
+          Signature.new(:deg, F.new(:a))
+        ]
       },
-      fusion: {
+      fus: {
         short_form: :fus,
         long_form: :fusion,
         description: 'Specifies the abundance of a protein translated from the fusion of a gene',
         return_type: :fus,
         signatures: [
-          'fus(E:G)fus',
-          'fus(E:G,E:*,E:*)fus',
-          'fus(E:P)fus',
-          'fus(E:P,E:*,E:*)fus',
-          'fus(E:R)fus',
-          'fus(E:R,E:*,E:*)fus'
+          Signature.new(:fus, E.new(:G)),
+          Signature.new(:fus, E.new(:G), E.new(:*), E.new(:*)),
+          Signature.new(:fus, E.new(:P)),
+          Signature.new(:fus, E.new(:P), E.new(:*), E.new(:*)),
+          Signature.new(:fus, E.new(:R)),
+          Signature.new(:fus, E.new(:R), E.new(:*), E.new(:*))
         ]
       },
-      geneAbundance: {
+      g: {
         short_form: :g,
         long_form: :geneAbundance,
         description: 'Denotes the abundance of a gene',
         return_type: :g,
         signatures: [
-          'g(E:G)g',
-          'g(E:G,F:fus)g'
+          Signature.new(:g, E.new(:G)),
+          Signature.new(:g, E.new(:G), F.new(:fus))
         ]
       },
-      gtpBoundActivity: {
+      gtp: {
         short_form: :gtp,
         long_form: :gtpBoundActivity,
         description: 'Denotes the frequency or abundance of events in which a member of a G-protein abundance is GTP-bound',
         return_type: :a,
         signatures: [
-          'gtp(F:complex)a',
-          'gtp(F:p)a'
+          Signature.new(:gtp, F.new(:complex)),
+          Signature.new(:gtp, F.new(:p))
         ]
       },
-      kinaseActivity: {
+      kin: {
         short_form: :kin,
         long_form: :kinaseActivity,
         description: 'Denotes the frequency or abundance of events in which a member acts as a kinase, performing enzymatic phosphorylation of a substrate',
         return_type: :a,
         signatures: [
-          'kin(F:complex)a',
-          'kin(F:p)a'
+          Signature.new(:kin, F.new(:complex)),
+          Signature.new(:kin, F.new(:p))
         ]
       },
       list: {
@@ -117,55 +324,55 @@ module BEL
         description: 'Groups a list of terms together',
         return_type: :list,
         signatures: [
-          'list(E:A...)list',
-          'list(F:a...)list'
+          Signature.new(:list, E.new(:A, true)),
+          Signature.new(:list, F.new(:a, true))
         ]
       },
-      microRNAAbundance: {
+      m: {
         short_form: :m,
         long_form: :microRNAAbundance,
         description: 'Denotes the abundance of a processed, functional microRNA',
         return_type: :m,
         signatures: [
-          'm(E:M)m'
+          Signature.new(:m, E.new(:M))
         ]
       },
-      molecularActivity: {
+      act: {
         short_form: :act,
         long_form: :molecularActivity,
         description: 'Denotes the frequency or abundance of events in which a member acts as a causal agent at the molecular scale',
         return_type: :a,
         signatures: [
-          'act(F:a)a'
+          Signature.new(:act, F.new(:a))
         ]
       },
-      pathology: {
+      path: {
         short_form: :path,
         long_form: :pathology,
         description: 'Denotes a disease or pathology process',
         return_type: :path,
         signatures: [
-          'path(E:O)path'
+          Signature.new(:path, E.new(:O))
         ]
       },
-      peptidaseActivity: {
+      pep: {
         short_form: :pep,
         long_form: :peptidaseActivity,
         description: 'Denotes the frequency or abundance of events in which a member acts to cleave a protein',
         return_type: :a,
         signatures: [
-          'pep(F:complex)a',
-          'pep(F:p)a'
+          Signature.new(:pep, F.new(:complex)),
+          Signature.new(:pep, F.new(:p))
         ]
       },
-      phosphataseActivity: {
+      phos: {
         short_form: :phos,
         long_form: :phosphataseActivity,
         description: 'Denotes the frequency or abundance of events in which a member acts as a phosphatase',
         return_type: :a,
         signatures: [
-          'phos(F:complex)a',
-          'phos(F:p)a'
+          Signature.new(:phos, F.new(:complex)),
+          Signature.new(:phos, F.new(:p))
         ]
       },
       products: {
@@ -174,31 +381,31 @@ module BEL
         description: 'Denotes the products of a reaction',
         return_type: :products,
         signatures: [
-          'products(F:a...)products'
+          Signature.new(:products, F.new(:a))
         ]
       },
-      proteinAbundance: {
+      p: {
         short_form: :p,
         long_form: :proteinAbundance,
         description: 'Denotes the abundance of a protein',
         return_type: :p,
         signatures: [
-          'p(E:P)p',
-          'p(E:P,F:pmod)p',
-          'p(E:P,F:sub)p',
-          'p(E:P,F:fus)p',
-          'p(E:P,F:trunc)p'
+          Signature.new(:p, E.new(:P)),
+          Signature.new(:p, E.new(:P), F.new(:pmod)),
+          Signature.new(:p, E.new(:P), F.new(:sub)),
+          Signature.new(:p, E.new(:P), F.new(:fus)),
+          Signature.new(:p, E.new(:P), F.new(:trunc))
         ]
       },
-      proteinModification: {
+      pmod: {
         short_form: :pmod,
         long_form: :proteinModification,
         description: 'Denotes a covalently modified protein abundance',
         return_type: :pmod,
         signatures: [
-          'pmod(E:*)pmod',
-          'pmod(E:*,E:*)pmod',
-          'pmod(E:*,E:*,E:*)pmod'
+          Signature.new(:pmod, E.new(:*)),
+          Signature.new(:pmod, E.new(:*), E.new(:*)),
+          Signature.new(:pmod, E.new(:*), E.new(:*), E.new(:*))
         ]
       },
       reactants: {
@@ -207,95 +414,107 @@ module BEL
         description: 'Denotes the reactants of a reaction',
         return_type: :reactants,
         signatures: [
-          'reactants(F:a...)reactants'
+          Signature.new(:reactants, F.new(:a))
         ]
       },
-      reaction: {
+      rxn: {
         short_form: :rxn,
         long_form: :reaction,
         description: 'Denotes the frequency or abundance of events in a reaction',
         return_type: :a,
         signatures: [
-          'rxn(F:reactants,F:products)a'
+          Signature.new(:rxn, F.new(:reactants), F.new(:products))
         ]
       },
-      ribosylationActivity: {
+      ribo: {
         short_form: :ribo,
         long_form: :ribosylationActivity,
         description: 'Denotes the frequency or abundance of events in which a member acts to perform post-translational modification of proteins',
         return_type: :a,
         signatures: [
-          'ribo(F:complex)a',
-          'ribo(F:p)a'
+          Signature.new(:ribo, F.new(:complex)),
+          Signature.new(:ribo, F.new(:p))
         ]
       },
-      rnaAbundance: {
+      r: {
         short_form: :r,
         long_form: :rnaAbundance,
         description: 'Denotes the abundance of a gene',
         return_type: :g,
         signatures: [
-          'r(E:R)g',
-          'r(E:R,F:fus)g'
+          Signature.new(:r, E.new(:R)),
+          Signature.new(:r, E.new(:R), F.new(:fus))
         ]
       },
-      substitution: {
+      sub: {
         short_form: :sub,
         long_form: :substitution,
         description: 'Indicates the abundance of proteins with amino acid substitution sequence',
         return_type: :sub,
         signatures: [
-          'sub(E:*,E:*,E:*)sub'
+          Signature.new(:sub, E.new(:*), E.new(:*), E.new(:*))
         ]
       },
-      transcriptionalActivity: {
+      tscript: {
         short_form: :tscript,
         long_form: :transcriptionalActivity,
         description: 'Denotes the frequency or abundance of events in which a member directly acts to control transcription of genes',
         return_type: :a,
         signatures: [
-          'tscript(F:complex)a',
-          'tscript(F:p)a'
+          Signature.new(:tscript, F.new(:complex)),
+          Signature.new(:tscript, F.new(:p))
         ]
       },
-      translocation: {
+      tloc: {
         short_form: :tloc,
         long_form: :translocation,
         description: 'Denotes the frequency or abundance of events in which members move between locations',
         return_type: :a,
         signatures: [
-          'tloc(F:a,E:A,E:A)a'
+          Signature.new(:tloc, F.new(:a), E.new(:A), E.new(:A))
         ]
       },
-      transportActivity: {
+      tport: {
         short_form: :tport,
         long_form: :transportActivity,
         description: 'Denotes the frequency or abundance of events in which a member directs acts to enable the directed movement of substances into, out of, within, or between cells',
         return_type: :a,
         signatures: [
-          'tport(F:)a',
-          'tport(F:p)a']
+          Signature.new(:tport, F.new(:complex)),
+          Signature.new(:tport, F.new(:p))
+        ]
       },
-      truncation: {
+      trunc: {
         short_form: :trunc,
         long_form: :truncation,
         description: 'Indicates an abundance of proteins with truncation sequence variants',
         return_type: :trunc,
         signatures: [
-          'trunc(E:*)trunc'
+          Signature.new(:trunc, E.new(:*))
         ]
       }
     }
 
+    PARAMETER_ENCODING = {
+      B: [:B],
+      O: [:O, :B],
+      R: [:R, :A],
+      M: [:M, :R, :A],
+      P: [:P, :A],
+      G: [:G, :A],
+      A: [:A],
+      C: [:C, :A]
+    }
+
     FUNCTION_TYPES = {
-      abundance: [:abundance],
-      biologicalProcess: [:biologicalProcess],
-      complexAbundance: [:complexAbundance, :abundance],
-      geneAbundance: [:geneAbundance, :abundance],
-      microRNAAbundance: [:microRNAAbundance, :rnaAbundance, :abundance],
-      pathology: [:pathology, :biologicalProcess],
-      proteinAbundance: [:proteinAbundance, :abundance],
-      rnaAbundance: [:rnaAbundance, :abundance]
+      a: [:a],
+      bp: [:bp],
+      complex: [:complex, :a],
+      g: [:g, :a],
+      m: [:m, :r, :a],
+      path: [:path, :bp],
+      p: [:p, :a],
+      r: [:r, :a]
     }
 
     RELATIONSHIPS = [
@@ -327,67 +546,6 @@ module BEL
       :translocates
     ]
 
-    class Parameter
-      include Comparable
-      attr_reader :ns_def, :value, :enc
-
-      def initialize(ns_def, value, enc)
-        @ns_def = ns_def
-        @value = value
-        @enc = enc
-      end
-
-      def <=>(other)
-        ns_compare = ns_def <=> other.ns_def
-        if ns_compare == 0
-          value <=> other.value
-        else
-          ns_compare
-        end
-      end
-
-      def arg_signature
-        "E:#{@enc}"
-      end
-    end
-
-    class Statement
-      attr_accessor :subject, :relationship, :object
-    end
-
-    class Function
-      attr_reader :short_form, :long_form, :return_type,
-                  :description, :signatures
-
-      def initialize args
-        args.each do |k,v|
-          instance_variable_set("@#{k}", v) unless v.nil?
-        end
-      end
-    end
-
-    class Term
-      include Comparable
-      attr_reader :fx, :arguments
-
-      def initialize(fx, *arguments)
-        @fx = fx
-        @arguments = arguments
-      end
-
-      def <<(argument)
-        @arguments << argument
-      end
-
-      def to_signature
-        "#{@fx.short_form}(#{@arguments.map(&:arg_signature) * ','})#{@fx.return_type}"
-      end
-
-      def arg_signature
-        "F:#{@fx.short_form}"
-      end
-    end
-
     RELATIONSHIPS.each do |rel|
       Term.send(:define_method, rel) do |another|
         s = Statement.new
@@ -402,7 +560,7 @@ module BEL
       Language.send(:define_method, fx) do |*args|
         Term.new(func, *args)
       end
-      Language.send(:define_method, metadata[:short_form]) do |*args|
+      Language.send(:define_method, metadata[:long_form]) do |*args|
         Term.new(func, *args)
       end
     end
