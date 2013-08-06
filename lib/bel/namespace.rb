@@ -85,7 +85,7 @@ module BEL
       def reload(url)
         @values = {}
         open(url).
-          drop_while { |i| i != "[Values]\n" }.
+          drop_while { |i| not i.start_with? "[Values]" }.
           drop(1).
           each do |s|
             val_enc = s.strip!.split_by_last('|').map(&:to_sym)
