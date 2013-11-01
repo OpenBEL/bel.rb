@@ -74,6 +74,29 @@ Validate BEL terms
   tscript(g(HGNC:AKT1)), [tscript(F:complex)a, tscript(F:p)a]
   => false
 
+Parse BEL input
+
+.. code-block:: ruby
+
+  require 'bel'
+
+  # include BEL Script module
+  include BEL::Script
+
+  # parse from string
+  records = Parser.parse(%q{
+    SET Language = "BEL ftw!"
+    p(HGNC:AKT1) =| tscript(g(HGNC:AKT2))
+  })
+  => [
+    #<struct BEL::Script::SetAnnotation keyword="Language", value="\"BEL ftw!\"">,
+    #<struct BEL::Script::StatementDefinition subject=#<struct BEL::Script::TermDefinition function="p", arguments=[#<struct BEL::Script::ParameterDefinition namespace="HGNC", value="AKT1">]>, rel="=|", object=#<struct BEL::Script::TermDefinition function="tscript", arguments=[#<struct BEL::Script::TermDefinition function="g", arguments=[#<struct BEL::Script::ParameterDefinition namespace="HGNC", value="AKT2">]>]>, comment=nil>
+  ]
+
+  # parse each record, pass to block
+  Parser.parse_record(File.open('/path/to/file.bel')) do |record|
+    puts record
+  end
 
 .. _BEL: http://www.openbel.org/content/bel-lang-language
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/

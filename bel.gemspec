@@ -14,7 +14,6 @@ Gem::Specification.new do |spec|
   spec.require_paths      = ["lib"]
 
   # dependencies
-
-  # ebnf: [0.3 - 0.4)
-  spec.add_runtime_dependency 'ebnf', '~> 0.3'
+  # antlr3: [1.10.0 - 1.10.1)
+  spec.add_runtime_dependency 'antlr3', '~> 1.10.0'
 end
