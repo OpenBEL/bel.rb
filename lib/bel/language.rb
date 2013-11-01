@@ -1,4 +1,5 @@
 # vim: ts=2 sw=2:
+
 module BEL
   module Language
     class Signature
@@ -142,6 +143,13 @@ module BEL
 
     class Statement
       attr_accessor :subject, :relationship, :object
+
+      def initialize(subject, relationship=nil, object=nil)
+        raise ArgumentError, 'subject must not be nil' unless subject
+        @subject = subject
+        @relationship = relationship
+        @object = object
+      end
     end
 
     class Function
@@ -182,12 +190,12 @@ module BEL
           invalids << term if not term.validate_signature
         end
 
-        sigs = FUNCTIONS[@fx.short_form][:signatures]
+        sigs = fx.signatures
         match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
         invalids << self if not match
         if block_given? and not invalids.empty?
           invalids.each do |term|
-            yield term, FUNCTIONS[term.fx.short_form][:signatures]
+            yield term, term.fx.signatures
           end
         end
         invalids.empty?
@@ -494,6 +502,7 @@ module BEL
         ]
       }
     }
+    FUNCTIONS.merge!(Hash[*FUNCTIONS.map {|_,v| [v[:long_form], v]}.flatten])
 
     PARAMETER_ENCODING = {
       B: [:B],
@@ -548,8 +557,7 @@ module BEL
 
     RELATIONSHIPS.each do |rel|
       Term.send(:define_method, rel) do |another|
-        s = Statement.new
-        s.subject = self
+        s = Statement.new self
         s.relationship = rel
         s.object = another
         s
