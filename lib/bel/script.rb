@@ -164,14 +164,14 @@ module BEL
             sub = from_tree(tree.children[0])
             BEL::Script::StatementDefinition.new(sub, nil, nil, comment)
           else
-            sub = from_tree(tree.children[0])
-            rel = tree.children[1].text
-            obj = from_tree(tree.children[2])
-            BEL::Script::StatementDefinition.new(
-              sub,
-              rel,
-              obj,
-              comment)
+            obj = from_tree(tree.children.pop)
+            while tree.children.length > 0
+              rel = tree.children.pop
+              sub = from_tree(tree.children.pop)
+              obj = BEL::Script::StatementDefinition.new(sub, rel, obj)
+            end
+            obj.comment = comment
+            obj
           end
         when 'UNSET_SG'
           BEL::Script::UnsetStatementGroup.new('')
