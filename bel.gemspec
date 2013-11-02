@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   spec.name               = 'bel'
   spec.version            = '0.1.0'
   spec.summary            = %q{Process BEL with ruby.}
-  spec.description        = %q{The bel gem allows the reading, writing,
+  spec.description        = %q{The BEL gem allows the reading, writing,
                                and processing of BEL (Biological Expression
                                Language) with a natural DSL.}.
                             gsub(%r{^\s+}, ' ').gsub(%r{\n}, '')
