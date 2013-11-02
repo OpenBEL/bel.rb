@@ -1,6 +1,9 @@
 bel
 ===
 
+.. image:: https://badge.fury.io/rb/bel.png
+    :target: http://badge.fury.io/rb/bel
+
 The bel gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
 
 Learn more on BEL_.
