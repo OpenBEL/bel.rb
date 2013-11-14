@@ -1,0 +1,17 @@
+SET DOCUMENT Name = "BEL Framework Large Corpus Document"
+SET DOCUMENT Description = "Approximately 61,000 statements."
+SET DOCUMENT Version = "1.4"
+SET DOCUMENT Copyright = "Copyright (c) 2011-2012, Selventa. All rights reserved."
+SET DOCUMENT Authors = "Selventa"
+
+SET tissue = "lung fibroblasts"
+SET species = 9606
+SET evidence = "# Omim: Loss of Efp function in mouse embryonic fibroblasts resulted in an accumulation of 14-3-3-sigma, which was responsible for reduced cell growth. Urano et al. (2002) concluded that their data provide an insight into the cell cycle machinery and tumorigenesis of breast cancer by identifying 14-3-3-sigma as a target for proteolysis by EFP, leading to cell proliferation. # Pubmed:omim: Efp targets 14-3-3 sigma for proteolysis and promotes breast tumour growth."
+p(HGNC:AKT1) => proteinAbundance(HGNC:AKT2)
+bp(MESHPP:"apoptotic process") -> r(HGNC:AKT1)
+p(HGNC:IKBKE) directlyIncreases p(HGNC:IRF3)
+tscript(p(HGNC:IKBKE)) directlyIncreases p(HGNC:IRF3)
+
+SET species = 9606
+p(HGNC:IKBKE) directlyIncreases p(HGNC:IRF3)
+a(SCHEM:Calcium) -> (p(HGNC:MYL9) -> bp(GO:"muscle contraction"))
