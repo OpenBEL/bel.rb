@@ -1,7 +1,5 @@
 source 'http://rubygems.org'
 
-gem 'antlr3', '~> 1.10.0'
-
 # development requirements
 group :development do
   gem 'rake', '~> 10.1.0'

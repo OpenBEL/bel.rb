@@ -13,7 +13,6 @@ Gem::Specification.new do |spec|
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
 
-  spec.add_runtime_dependency 'antlr3', '~> 1.10.0'
   spec.add_development_dependency 'rake',    '~> 10.1.0'
   spec.add_development_dependency 'rspec',   '~> 2.14.0'
   spec.add_development_dependency 'yard',    '~> 0.8.7.0'

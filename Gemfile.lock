@@ -1,7 +1,6 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    antlr3 (1.10.0)
     diff-lcs (1.2.4)
     json (1.8.1)
     rake (10.1.0)
@@ -21,7 +20,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  antlr3 (~> 1.10.0)
   bundler (~> 1.0)
   rake (~> 10.1.0)
   rdoc (~> 3.12)
