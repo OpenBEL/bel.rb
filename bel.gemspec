@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name               = 'bel'
-  spec.version            = '0.1.0'
+  spec.version            = '0.2.0'
   spec.summary            = %q{Process BEL with ruby.}
   spec.description        = %q{The BEL gem allows the reading, writing,
                                and processing of BEL (Biological Expression
