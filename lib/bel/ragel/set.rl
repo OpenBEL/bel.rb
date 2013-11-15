@@ -25,7 +25,7 @@
     @annotations.delete(@name)
   }
   action out_unset_statement_group {
-    statement_group.annotations = annotations.clone()
+    statement_group.annotations = @annotations.clone()
     @annotations.clear()
   }
   action lists {

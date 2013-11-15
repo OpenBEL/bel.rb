@@ -5670,7 +5670,7 @@ when 11 then
 # line 27 "set.rl"
 		begin
 
-    statement_group.annotations = annotations.clone()
+    statement_group.annotations = @annotations.clone()
     @annotations.clear()
   		end
 when 12 then
@@ -5871,7 +5871,7 @@ when 42 then
 		begin
 
     rel = @relbuffer.map(&:chr).join()
-    @statement_stack.last.rel = rel
+    @statement_stack.last.rel = rel.to_sym
   		end
 when 43 then
 # line 62 "statement.rl"
@@ -11619,7 +11619,7 @@ when 11 then
 # line 27 "set.rl"
 		begin
 
-    statement_group.annotations = annotations.clone()
+    statement_group.annotations = @annotations.clone()
     @annotations.clear()
   		end
 when 12 then
@@ -11820,7 +11820,7 @@ when 42 then
 		begin
 
     rel = @relbuffer.map(&:chr).join()
-    @statement_stack.last.rel = rel
+    @statement_stack.last.rel = rel.to_sym
   		end
 when 43 then
 # line 62 "statement.rl"
@@ -17568,7 +17568,7 @@ when 11 then
 # line 27 "set.rl"
 		begin
 
-    statement_group.annotations = annotations.clone()
+    statement_group.annotations = @annotations.clone()
     @annotations.clear()
   		end
 when 12 then
@@ -17769,7 +17769,7 @@ when 42 then
 		begin
 
     rel = @relbuffer.map(&:chr).join()
-    @statement_stack.last.rel = rel
+    @statement_stack.last.rel = rel.to_sym
   		end
 when 43 then
 # line 62 "statement.rl"
@@ -23591,7 +23591,7 @@ when 11 then
 # line 27 "set.rl"
 		begin
 
-    statement_group.annotations = annotations.clone()
+    statement_group.annotations = @annotations.clone()
     @annotations.clear()
   		end
 when 12 then
@@ -23792,7 +23792,7 @@ when 42 then
 		begin
 
     rel = @relbuffer.map(&:chr).join()
-    @statement_stack.last.rel = rel
+    @statement_stack.last.rel = rel.to_sym
   		end
 when 43 then
 # line 62 "statement.rl"
