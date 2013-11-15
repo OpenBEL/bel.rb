@@ -4,6 +4,7 @@
 
   action call_statement {fcall statement;}
   action statement {
+    @statement = @statement_stack.pop
     @statement.annotations = @annotations.clone()
 
     if @statement_group
