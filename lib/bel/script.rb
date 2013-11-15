@@ -5809,6 +5809,7 @@ when 34 then
 # line 6 "statement.rl"
 		begin
 
+    @statement = @statement_stack.pop
     @statement.annotations = @annotations.clone()
 
     if @statement_group
@@ -5819,14 +5820,14 @@ when 34 then
     notify_observers(@statement)
   		end
 when 35 then
-# line 16 "statement.rl"
+# line 17 "statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 36 then
-# line 20 "statement.rl"
+# line 21 "statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -5835,7 +5836,7 @@ when 36 then
     notify_observers(@term)
   		end
 when 37 then
-# line 26 "statement.rl"
+# line 27 "statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -5844,7 +5845,7 @@ when 37 then
     notify_observers(@term)
   		end
 when 38 then
-# line 32 "statement.rl"
+# line 33 "statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -5852,60 +5853,60 @@ when 38 then
     @statement_stack.push nested
   		end
 when 39 then
-# line 37 "statement.rl"
+# line 38 "statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 40 then
-# line 40 "statement.rl"
+# line 41 "statement.rl"
 		begin
 @relbuffer = []		end
 when 41 then
-# line 41 "statement.rl"
+# line 42 "statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 42 then
-# line 42 "statement.rl"
+# line 43 "statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel
   		end
 when 43 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n = 0		end
 when 44 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n += 1		end
 when 45 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 p -= n		end
 when 46 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n = 0		end
 when 47 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n += 1		end
 when 48 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 p -= n		end
 when 49 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n = 0		end
 when 50 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n += 1		end
 when 51 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 p -= n		end
 when 52 then
@@ -5924,7 +5925,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 5928 "bel.rb"
+# line 5929 "bel.rb"
 			end # action switch
 		end
 	end
@@ -5951,7 +5952,7 @@ p -= n		end
 	end
 	end
 
-# line 5955 "bel.rb"
+# line 5956 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -11431,7 +11432,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 11435 "bel.rb"
+# line 11436 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -11439,7 +11440,7 @@ begin
 	top = 0
 end
 
-# line 11443 "bel.rb"
+# line 11444 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -11757,6 +11758,7 @@ when 34 then
 # line 6 "statement.rl"
 		begin
 
+    @statement = @statement_stack.pop
     @statement.annotations = @annotations.clone()
 
     if @statement_group
@@ -11767,14 +11769,14 @@ when 34 then
     notify_observers(@statement)
   		end
 when 35 then
-# line 16 "statement.rl"
+# line 17 "statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 36 then
-# line 20 "statement.rl"
+# line 21 "statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -11783,7 +11785,7 @@ when 36 then
     notify_observers(@term)
   		end
 when 37 then
-# line 26 "statement.rl"
+# line 27 "statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -11792,7 +11794,7 @@ when 37 then
     notify_observers(@term)
   		end
 when 38 then
-# line 32 "statement.rl"
+# line 33 "statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -11800,60 +11802,60 @@ when 38 then
     @statement_stack.push nested
   		end
 when 39 then
-# line 37 "statement.rl"
+# line 38 "statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 40 then
-# line 40 "statement.rl"
+# line 41 "statement.rl"
 		begin
 @relbuffer = []		end
 when 41 then
-# line 41 "statement.rl"
+# line 42 "statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 42 then
-# line 42 "statement.rl"
+# line 43 "statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel
   		end
 when 43 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n = 0		end
 when 44 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n += 1		end
 when 45 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 p -= n		end
 when 46 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n = 0		end
 when 47 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n += 1		end
 when 48 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 p -= n		end
 when 49 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n = 0		end
 when 50 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n += 1		end
 when 51 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 p -= n		end
 when 52 then
@@ -11872,7 +11874,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 11876 "bel.rb"
+# line 11878 "bel.rb"
 			end # action switch
 		end
 	end
@@ -11899,7 +11901,7 @@ p -= n		end
 	end
 	end
 
-# line 11903 "bel.rb"
+# line 11905 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -17379,7 +17381,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 17383 "bel.rb"
+# line 17385 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -17387,7 +17389,7 @@ begin
 	top = 0
 end
 
-# line 17391 "bel.rb"
+# line 17393 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -17705,6 +17707,7 @@ when 34 then
 # line 6 "statement.rl"
 		begin
 
+    @statement = @statement_stack.pop
     @statement.annotations = @annotations.clone()
 
     if @statement_group
@@ -17715,14 +17718,14 @@ when 34 then
     notify_observers(@statement)
   		end
 when 35 then
-# line 16 "statement.rl"
+# line 17 "statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 36 then
-# line 20 "statement.rl"
+# line 21 "statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -17731,7 +17734,7 @@ when 36 then
     notify_observers(@term)
   		end
 when 37 then
-# line 26 "statement.rl"
+# line 27 "statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -17740,7 +17743,7 @@ when 37 then
     notify_observers(@term)
   		end
 when 38 then
-# line 32 "statement.rl"
+# line 33 "statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -17748,60 +17751,60 @@ when 38 then
     @statement_stack.push nested
   		end
 when 39 then
-# line 37 "statement.rl"
+# line 38 "statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 40 then
-# line 40 "statement.rl"
+# line 41 "statement.rl"
 		begin
 @relbuffer = []		end
 when 41 then
-# line 41 "statement.rl"
+# line 42 "statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 42 then
-# line 42 "statement.rl"
+# line 43 "statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel
   		end
 when 43 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n = 0		end
 when 44 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n += 1		end
 when 45 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 p -= n		end
 when 46 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n = 0		end
 when 47 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n += 1		end
 when 48 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 p -= n		end
 when 49 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n = 0		end
 when 50 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n += 1		end
 when 51 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 p -= n		end
 when 52 then
@@ -17820,7 +17823,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 17824 "bel.rb"
+# line 17827 "bel.rb"
 			end # action switch
 		end
 	end
@@ -17868,10 +17871,10 @@ module BEL
           !rel 
         end  
         def simple?
-          object.is_a? TermDefinition
+          object.is_a? Term
         end  
         def nested?
-          object.is_a? StatementDefinition
+          object.is_a? Statement
         end
     end
     StatementGroup = Struct.new(:name, :statements, :annotations)
@@ -17883,7 +17886,7 @@ module BEL
         @annotations = {}
         @statement_group = nil
         
-# line 17887 "bel.rb"
+# line 17890 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -23371,8 +23374,13 @@ self.bel_en_document_main = 1;
         stack = []
         data = content.unpack('c*')
 
+        if block_given?
+          observer = Observer.new(&Proc.new)
+          self.add_observer(observer)
+        end
+
         
-# line 23376 "bel.rb"
+# line 23384 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -23380,9 +23388,9 @@ begin
 	top = 0
 end
 
-# line 63 "bel.rl"
+# line 68 "bel.rl"
         
-# line 23386 "bel.rb"
+# line 23394 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -23700,6 +23708,7 @@ when 34 then
 # line 6 "statement.rl"
 		begin
 
+    @statement = @statement_stack.pop
     @statement.annotations = @annotations.clone()
 
     if @statement_group
@@ -23710,14 +23719,14 @@ when 34 then
     notify_observers(@statement)
   		end
 when 35 then
-# line 16 "statement.rl"
+# line 17 "statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 36 then
-# line 20 "statement.rl"
+# line 21 "statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -23726,7 +23735,7 @@ when 36 then
     notify_observers(@term)
   		end
 when 37 then
-# line 26 "statement.rl"
+# line 27 "statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -23735,7 +23744,7 @@ when 37 then
     notify_observers(@term)
   		end
 when 38 then
-# line 32 "statement.rl"
+# line 33 "statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -23743,60 +23752,60 @@ when 38 then
     @statement_stack.push nested
   		end
 when 39 then
-# line 37 "statement.rl"
+# line 38 "statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 40 then
-# line 40 "statement.rl"
+# line 41 "statement.rl"
 		begin
 @relbuffer = []		end
 when 41 then
-# line 41 "statement.rl"
+# line 42 "statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 42 then
-# line 42 "statement.rl"
+# line 43 "statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel
   		end
 when 43 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n = 0		end
 when 44 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 n += 1		end
 when 45 then
-# line 61 "statement.rl"
+# line 62 "statement.rl"
 		begin
 p -= n		end
 when 46 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n = 0		end
 when 47 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 n += 1		end
 when 48 then
-# line 64 "statement.rl"
+# line 65 "statement.rl"
 		begin
 p -= n		end
 when 49 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n = 0		end
 when 50 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 n += 1		end
 when 51 then
-# line 72 "statement.rl"
+# line 73 "statement.rl"
 		begin
 p -= n		end
 when 52 then
@@ -23815,7 +23824,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 23819 "bel.rb"
+# line 23828 "bel.rb"
 			end # action switch
 		end
 	end
@@ -23842,7 +23851,25 @@ p -= n		end
 	end
 	end
 
-# line 64 "bel.rl"
+# line 69 "bel.rl"
+
+        if block_given?
+          self.delete_observer(observer)
+        end
+      end
+    end
+
+    private
+
+    class Observer
+      include Observable
+
+      def initialize(&block)
+        @block = block
+      end
+
+      def update(obj)
+        @block.call(obj)
       end
     end
   end

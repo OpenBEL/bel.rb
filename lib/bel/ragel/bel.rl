@@ -37,10 +37,10 @@ module BEL
           !rel 
         end  
         def simple?
-          object.is_a? TermDefinition
+          object.is_a? Term
         end  
         def nested?
-          object.is_a? StatementDefinition
+          object.is_a? Statement
         end
     end
     StatementGroup = Struct.new(:name, :statements, :annotations)
@@ -59,8 +59,31 @@ module BEL
         stack = []
         data = content.unpack('c*')
 
+        if block_given?
+          observer = Observer.new(&Proc.new)
+          self.add_observer(observer)
+        end
+
         %% write init;
         %% write exec;
+
+        if block_given?
+          self.delete_observer(observer)
+        end
+      end
+    end
+
+    private
+
+    class Observer
+      include Observable
+
+      def initialize(&block)
+        @block = block
+      end
+
+      def update(obj)
+        @block.call(obj)
       end
     end
   end
