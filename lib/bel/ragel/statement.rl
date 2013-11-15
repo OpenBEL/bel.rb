@@ -42,7 +42,7 @@
   action reln {@relbuffer << fc}
   action rele {
     rel = @relbuffer.map(&:chr).join()
-    @statement_stack.last.rel = rel
+    @statement_stack.last.rel = rel.to_sym
   }
 
   include 'common.rl';

@@ -26,10 +26,22 @@ module BEL
   module Script
     DocumentProperty = Struct.new(:name, :value)
     Annotation = Struct.new(:name, :value)
-    Parameter = Struct.new(:ns, :value)
+    Parameter = Struct.new(:ns, :value) do
+      NonWordMatcher = Regexp.compile(/\W/)
+      def to_s
+        prepped_value = value
+        if NonWordMatcher.match value
+          prepped_value = %Q{"#{value}"}
+        end
+        "#{self.ns ? self.ns + ':' : ''}#{prepped_value}"
+      end
+    end
     Term = Struct.new(:fx, :args) do
       def <<(item)
         self.args << item
+      end
+      def to_s
+        "#{self.fx}(#{[args].flatten.join(',')})"
       end
     end
     Statement = Struct.new(:subject, :rel, :object, :annotations, :comment) do
@@ -41,6 +53,16 @@ module BEL
         end  
         def nested?
           object.is_a? Statement
+        end
+        def to_s
+          case
+          when subject_only?
+            subject.to_s
+          when simple?
+            "#{subject.to_s} #{rel} #{object.to_s}"
+          when nested?
+            "#{subject.to_s} #{rel} (#{object.to_s})"
+          end
         end
     end
     StatementGroup = Struct.new(:name, :statements, :annotations)

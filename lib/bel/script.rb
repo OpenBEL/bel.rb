@@ -17860,10 +17860,22 @@ module BEL
   module Script
     DocumentProperty = Struct.new(:name, :value)
     Annotation = Struct.new(:name, :value)
-    Parameter = Struct.new(:ns, :value)
+    Parameter = Struct.new(:ns, :value) do
+      NonWordMatcher = Regexp.compile(/\W/)
+      def to_s
+        prepped_value = value
+        if NonWordMatcher.match value
+          prepped_value = %Q{"#{value}"}
+        end
+        "#{self.ns ? self.ns + ':' : ''}#{prepped_value}"
+      end
+    end
     Term = Struct.new(:fx, :args) do
       def <<(item)
         self.args << item
+      end
+      def to_s
+        "#{self.fx}(#{[args].flatten.join(',')})"
       end
     end
     Statement = Struct.new(:subject, :rel, :object, :annotations, :comment) do
@@ -17876,6 +17888,16 @@ module BEL
         def nested?
           object.is_a? Statement
         end
+        def to_s
+          case
+          when subject_only?
+            subject.to_s
+          when simple?
+            "#{subject.to_s} #{rel} #{object.to_s}"
+          when nested?
+            "#{subject.to_s} #{rel} (#{object.to_s})"
+          end
+        end
     end
     StatementGroup = Struct.new(:name, :statements, :annotations)
 
@@ -17886,7 +17908,7 @@ module BEL
         @annotations = {}
         @statement_group = nil
         
-# line 17890 "bel.rb"
+# line 17912 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -23366,7 +23388,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 55 "bel.rl"
+# line 77 "bel.rl"
       end
 
       def parse(content)
@@ -23380,7 +23402,7 @@ self.bel_en_document_main = 1;
         end
 
         
-# line 23384 "bel.rb"
+# line 23406 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -23388,9 +23410,9 @@ begin
 	top = 0
 end
 
-# line 68 "bel.rl"
+# line 90 "bel.rl"
         
-# line 23394 "bel.rb"
+# line 23416 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -23824,7 +23846,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 23828 "bel.rb"
+# line 23850 "bel.rb"
 			end # action switch
 		end
 	end
@@ -23851,7 +23873,7 @@ p -= n		end
 	end
 	end
 
-# line 69 "bel.rl"
+# line 91 "bel.rl"
 
         if block_given?
           self.delete_observer(observer)
