@@ -73,7 +73,7 @@
   unset :=
     SP+
     (
-      IDENT >s $n %out_unset_annotation '\n' @return |
+      IDENT >s $n %name %out_unset_annotation '\n' @return |
       STATEMENT_GROUP %out_unset_statement_group '\n' @return
     );
   set_main :=
