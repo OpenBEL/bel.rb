@@ -16,6 +16,9 @@ machine bel;
   action term_arg {
     val = pbuf.map(&:chr).join()
     if not val.empty?
+      if val.start_with? '"' and val.end_with? '"'
+        val = val.strip()[1...-1]
+      end
       @term_stack.last << BEL::Script::Parameter.new(pfx, val)
     end
     pbuf = []

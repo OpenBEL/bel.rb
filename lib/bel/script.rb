@@ -5732,13 +5732,16 @@ when 20 then
 
     val = pbuf.map(&:chr).join()
     if not val.empty?
+      if val.start_with? '"' and val.end_with? '"'
+        val = val.strip()[1...-1]
+      end
       @term_stack.last << BEL::Script::Parameter.new(pfx, val)
     end
     pbuf = []
     pfx = nil
   		end
 when 21 then
-# line 24 "term.rl"
+# line 27 "term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -5747,50 +5750,50 @@ when 21 then
     end
   		end
 when 22 then
-# line 30 "term.rl"
+# line 33 "term.rl"
 		begin
 pbuf << data[p]		end
 when 23 then
-# line 31 "term.rl"
+# line 34 "term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 24 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n = 0		end
 when 25 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n += 1		end
 when 26 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 p -= n		end
 when 27 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n = 0		end
 when 28 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n += 1		end
 when 29 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 p -= n		end
 when 30 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n = 0		end
 when 31 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n += 1		end
 when 32 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 p -= n		end
 when 33 then
@@ -5925,7 +5928,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 5929 "bel.rb"
+# line 5932 "bel.rb"
 			end # action switch
 		end
 	end
@@ -5952,7 +5955,7 @@ p -= n		end
 	end
 	end
 
-# line 5956 "bel.rb"
+# line 5959 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -11432,7 +11435,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 11436 "bel.rb"
+# line 11439 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -11440,7 +11443,7 @@ begin
 	top = 0
 end
 
-# line 11444 "bel.rb"
+# line 11447 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -11681,13 +11684,16 @@ when 20 then
 
     val = pbuf.map(&:chr).join()
     if not val.empty?
+      if val.start_with? '"' and val.end_with? '"'
+        val = val.strip()[1...-1]
+      end
       @term_stack.last << BEL::Script::Parameter.new(pfx, val)
     end
     pbuf = []
     pfx = nil
   		end
 when 21 then
-# line 24 "term.rl"
+# line 27 "term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -11696,50 +11702,50 @@ when 21 then
     end
   		end
 when 22 then
-# line 30 "term.rl"
+# line 33 "term.rl"
 		begin
 pbuf << data[p]		end
 when 23 then
-# line 31 "term.rl"
+# line 34 "term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 24 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n = 0		end
 when 25 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n += 1		end
 when 26 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 p -= n		end
 when 27 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n = 0		end
 when 28 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n += 1		end
 when 29 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 p -= n		end
 when 30 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n = 0		end
 when 31 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n += 1		end
 when 32 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 p -= n		end
 when 33 then
@@ -11874,7 +11880,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 11878 "bel.rb"
+# line 11884 "bel.rb"
 			end # action switch
 		end
 	end
@@ -11901,7 +11907,7 @@ p -= n		end
 	end
 	end
 
-# line 11905 "bel.rb"
+# line 11911 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -17381,7 +17387,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 17385 "bel.rb"
+# line 17391 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -17389,7 +17395,7 @@ begin
 	top = 0
 end
 
-# line 17393 "bel.rb"
+# line 17399 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -17630,13 +17636,16 @@ when 20 then
 
     val = pbuf.map(&:chr).join()
     if not val.empty?
+      if val.start_with? '"' and val.end_with? '"'
+        val = val.strip()[1...-1]
+      end
       @term_stack.last << BEL::Script::Parameter.new(pfx, val)
     end
     pbuf = []
     pfx = nil
   		end
 when 21 then
-# line 24 "term.rl"
+# line 27 "term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -17645,50 +17654,50 @@ when 21 then
     end
   		end
 when 22 then
-# line 30 "term.rl"
+# line 33 "term.rl"
 		begin
 pbuf << data[p]		end
 when 23 then
-# line 31 "term.rl"
+# line 34 "term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 24 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n = 0		end
 when 25 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n += 1		end
 when 26 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 p -= n		end
 when 27 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n = 0		end
 when 28 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n += 1		end
 when 29 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 p -= n		end
 when 30 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n = 0		end
 when 31 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n += 1		end
 when 32 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 p -= n		end
 when 33 then
@@ -17823,7 +17832,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 17827 "bel.rb"
+# line 17836 "bel.rb"
 			end # action switch
 		end
 	end
@@ -17908,7 +17917,7 @@ module BEL
         @annotations = {}
         @statement_group = nil
         
-# line 17912 "bel.rb"
+# line 17921 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -23402,7 +23411,7 @@ self.bel_en_document_main = 1;
         end
 
         
-# line 23406 "bel.rb"
+# line 23415 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -23412,7 +23421,7 @@ end
 
 # line 90 "bel.rl"
         
-# line 23416 "bel.rb"
+# line 23425 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -23653,13 +23662,16 @@ when 20 then
 
     val = pbuf.map(&:chr).join()
     if not val.empty?
+      if val.start_with? '"' and val.end_with? '"'
+        val = val.strip()[1...-1]
+      end
       @term_stack.last << BEL::Script::Parameter.new(pfx, val)
     end
     pbuf = []
     pfx = nil
   		end
 when 21 then
-# line 24 "term.rl"
+# line 27 "term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -23668,50 +23680,50 @@ when 21 then
     end
   		end
 when 22 then
-# line 30 "term.rl"
+# line 33 "term.rl"
 		begin
 pbuf << data[p]		end
 when 23 then
-# line 31 "term.rl"
+# line 34 "term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 24 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n = 0		end
 when 25 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 n += 1		end
 when 26 then
-# line 58 "term.rl"
+# line 61 "term.rl"
 		begin
 p -= n		end
 when 27 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n = 0		end
 when 28 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 n += 1		end
 when 29 then
-# line 64 "term.rl"
+# line 67 "term.rl"
 		begin
 p -= n		end
 when 30 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n = 0		end
 when 31 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 n += 1		end
 when 32 then
-# line 71 "term.rl"
+# line 74 "term.rl"
 		begin
 p -= n		end
 when 33 then
@@ -23846,7 +23858,7 @@ when 55 then
 # line 17 "bel.rl"
 		begin
 p -= n		end
-# line 23850 "bel.rb"
+# line 23862 "bel.rb"
 			end # action switch
 		end
 	end
