@@ -44,7 +44,12 @@ module BEL
     end
     Annotation = Struct.new(:name, :value) do
       def to_s
-        %Q{SET #{self.name} = "#{self.value}"}
+        if self.value.respond_to? :each
+          value = "{#{self.value.join(',')}}"
+        else
+          value = %Q{"#{self.value}"}
+        end
+        "SET #{self.name} = #{value}"
       end
     end
     Parameter = Struct.new(:ns, :value) do
