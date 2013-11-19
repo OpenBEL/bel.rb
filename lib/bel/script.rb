@@ -5833,11 +5833,14 @@ when 11 then
 # line 7 "set.rl"
 		begin
 
-    statement_group = BEL::Script::StatementGroup.new(@name, [])
+    statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
+
+    changed
+    notify_observers(statement_group)
   		end
 when 12 then
-# line 11 "set.rl"
+# line 14 "set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -5846,7 +5849,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 17 "set.rl"
+# line 20 "set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -5856,38 +5859,41 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 24 "set.rl"
+# line 27 "set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 27 "set.rl"
+# line 30 "set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
     @annotations.clear()
+
+    changed
+    notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 31 "set.rl"
+# line 37 "set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 35 "set.rl"
+# line 41 "set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 36 "set.rl"
+# line 42 "set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 40 "set.rl"
+# line 46 "set.rl"
 		begin
 @value = listvals		end
 when 20 then
@@ -6123,7 +6129,7 @@ when 59 then
 # line 20 "bel.rl"
 		begin
 p -= n		end
-# line 6127 "bel.rb"
+# line 6133 "bel.rb"
 			end # action switch
 		end
 	end
@@ -6150,7 +6156,7 @@ p -= n		end
 	end
 	end
 
-# line 6154 "bel.rb"
+# line 6160 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -11785,7 +11791,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 11789 "bel.rb"
+# line 11795 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -11793,7 +11799,7 @@ begin
 	top = 0
 end
 
-# line 11797 "bel.rb"
+# line 11803 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -11980,11 +11986,14 @@ when 11 then
 # line 7 "set.rl"
 		begin
 
-    statement_group = BEL::Script::StatementGroup.new(@name, [])
+    statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
+
+    changed
+    notify_observers(statement_group)
   		end
 when 12 then
-# line 11 "set.rl"
+# line 14 "set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -11993,7 +12002,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 17 "set.rl"
+# line 20 "set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -12003,38 +12012,41 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 24 "set.rl"
+# line 27 "set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 27 "set.rl"
+# line 30 "set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
     @annotations.clear()
+
+    changed
+    notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 31 "set.rl"
+# line 37 "set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 35 "set.rl"
+# line 41 "set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 36 "set.rl"
+# line 42 "set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 40 "set.rl"
+# line 46 "set.rl"
 		begin
 @value = listvals		end
 when 20 then
@@ -12270,7 +12282,7 @@ when 59 then
 # line 20 "bel.rl"
 		begin
 p -= n		end
-# line 12274 "bel.rb"
+# line 12286 "bel.rb"
 			end # action switch
 		end
 	end
@@ -12297,7 +12309,7 @@ p -= n		end
 	end
 	end
 
-# line 12301 "bel.rb"
+# line 12313 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -17932,7 +17944,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 17936 "bel.rb"
+# line 17948 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -17940,7 +17952,7 @@ begin
 	top = 0
 end
 
-# line 17944 "bel.rb"
+# line 17956 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -18127,11 +18139,14 @@ when 11 then
 # line 7 "set.rl"
 		begin
 
-    statement_group = BEL::Script::StatementGroup.new(@name, [])
+    statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
+
+    changed
+    notify_observers(statement_group)
   		end
 when 12 then
-# line 11 "set.rl"
+# line 14 "set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -18140,7 +18155,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 17 "set.rl"
+# line 20 "set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -18150,38 +18165,41 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 24 "set.rl"
+# line 27 "set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 27 "set.rl"
+# line 30 "set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
     @annotations.clear()
+
+    changed
+    notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 31 "set.rl"
+# line 37 "set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 35 "set.rl"
+# line 41 "set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 36 "set.rl"
+# line 42 "set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 40 "set.rl"
+# line 46 "set.rl"
 		begin
 @value = listvals		end
 when 20 then
@@ -18417,7 +18435,7 @@ when 59 then
 # line 20 "bel.rl"
 		begin
 p -= n		end
-# line 18421 "bel.rb"
+# line 18439 "bel.rb"
 			end # action switch
 		end
 	end
@@ -18444,7 +18462,7 @@ p -= n		end
 	end
 	end
 
-# line 18448 "bel.rb"
+# line 18466 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -24079,7 +24097,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 24083 "bel.rb"
+# line 24101 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -24087,7 +24105,7 @@ begin
 	top = 0
 end
 
-# line 24091 "bel.rb"
+# line 24109 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -24274,11 +24292,14 @@ when 11 then
 # line 7 "set.rl"
 		begin
 
-    statement_group = BEL::Script::StatementGroup.new(@name, [])
+    statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
+
+    changed
+    notify_observers(statement_group)
   		end
 when 12 then
-# line 11 "set.rl"
+# line 14 "set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -24287,7 +24308,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 17 "set.rl"
+# line 20 "set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -24297,38 +24318,41 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 24 "set.rl"
+# line 27 "set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 27 "set.rl"
+# line 30 "set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
     @annotations.clear()
+
+    changed
+    notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 31 "set.rl"
+# line 37 "set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 35 "set.rl"
+# line 41 "set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 36 "set.rl"
+# line 42 "set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 40 "set.rl"
+# line 46 "set.rl"
 		begin
 @value = listvals		end
 when 20 then
@@ -24564,7 +24588,7 @@ when 59 then
 # line 20 "bel.rl"
 		begin
 p -= n		end
-# line 24568 "bel.rb"
+# line 24592 "bel.rb"
 			end # action switch
 		end
 	end
@@ -24599,10 +24623,26 @@ require 'observer'
 
 module BEL
   module Script
-    DocumentProperty = Struct.new(:name, :value)
-    AnnotationDefinition = Struct.new(:prefix, :value)
-    NamespaceDefinition = Struct.new(:prefix, :value)
-    Annotation = Struct.new(:name, :value)
+    DocumentProperty = Struct.new(:name, :value) do
+      def to_s
+        %Q{SET DOCUMENT #{self.name} = "#{self.value}"}
+      end
+    end
+    AnnotationDefinition = Struct.new(:prefix, :value) do
+      def to_s
+        %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+      end
+    end
+    NamespaceDefinition = Struct.new(:prefix, :value) do
+      def to_s
+        %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+      end
+    end
+    Annotation = Struct.new(:name, :value) do
+      def to_s
+        %Q{SET #{self.name} = "#{self.value}"}
+      end
+    end
     Parameter = Struct.new(:ns, :value) do
       NonWordMatcher = Regexp.compile(/\W/)
       def to_s
@@ -24623,11 +24663,11 @@ module BEL
     end
     Statement = Struct.new(:subject, :rel, :object, :annotations, :comment) do
         def subject_only?
-          !rel 
-        end  
+          !rel
+        end
         def simple?
           object.is_a? Term
-        end  
+        end
         def nested?
           object.is_a? Statement
         end
@@ -24642,7 +24682,16 @@ module BEL
           end
         end
     end
-    StatementGroup = Struct.new(:name, :statements, :annotations)
+    StatementGroup = Struct.new(:name, :statements, :annotations) do
+      def to_s
+        %Q{SET STATEMENT_GROUP = "#{self.name}"}
+      end
+    end
+    UnsetStatementGroup = Struct.new(:name) do
+      def to_s
+        %Q{UNSET STATEMENT_GROUP}
+      end
+    end
 
     class Parser
       include Observable
@@ -24651,7 +24700,7 @@ module BEL
         @annotations = {}
         @statement_group = nil
         
-# line 24655 "bel.rb"
+# line 24704 "bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -30286,7 +30335,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 82 "bel.rl"
+# line 107 "bel.rl"
       end
 
       def parse(content)
@@ -30300,7 +30349,7 @@ self.bel_en_document_main = 1;
         end
 
         
-# line 30304 "bel.rb"
+# line 30353 "bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -30308,9 +30357,9 @@ begin
 	top = 0
 end
 
-# line 95 "bel.rl"
+# line 120 "bel.rl"
         
-# line 30314 "bel.rb"
+# line 30363 "bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -30497,11 +30546,14 @@ when 11 then
 # line 7 "set.rl"
 		begin
 
-    statement_group = BEL::Script::StatementGroup.new(@name, [])
+    statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
+
+    changed
+    notify_observers(statement_group)
   		end
 when 12 then
-# line 11 "set.rl"
+# line 14 "set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -30510,7 +30562,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 17 "set.rl"
+# line 20 "set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -30520,38 +30572,41 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 24 "set.rl"
+# line 27 "set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 27 "set.rl"
+# line 30 "set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
     @annotations.clear()
+
+    changed
+    notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 31 "set.rl"
+# line 37 "set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 35 "set.rl"
+# line 41 "set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 36 "set.rl"
+# line 42 "set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 40 "set.rl"
+# line 46 "set.rl"
 		begin
 @value = listvals		end
 when 20 then
@@ -30787,7 +30842,7 @@ when 59 then
 # line 20 "bel.rl"
 		begin
 p -= n		end
-# line 30791 "bel.rb"
+# line 30846 "bel.rb"
 			end # action switch
 		end
 	end
@@ -30814,7 +30869,7 @@ p -= n		end
 	end
 	end
 
-# line 96 "bel.rl"
+# line 121 "bel.rl"
 
         if block_given?
           self.delete_observer(observer)

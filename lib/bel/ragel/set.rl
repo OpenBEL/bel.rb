@@ -5,8 +5,11 @@
   action call_set {fcall set;}
   action call_unset {fcall unset;}
   action sg_start {
-    statement_group = BEL::Script::StatementGroup.new(@name, [])
+    statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
+
+    changed
+    notify_observers(statement_group)
   }
   action docprop {
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -21,12 +24,15 @@
     changed
     notify_observers(annotation)
   }
-  action out_unset_annotation {
+  action unset_annotation {
     @annotations.delete(@name)
   }
-  action out_unset_statement_group {
+  action unset_statement_group {
     statement_group.annotations = @annotations.clone()
     @annotations.clear()
+
+    changed
+    notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   }
   action lists {
     listvals = []
@@ -73,8 +79,8 @@
   unset :=
     SP+
     (
-      IDENT >s $n %name %out_unset_annotation '\n' @return |
-      STATEMENT_GROUP %out_unset_statement_group '\n' @return
+      IDENT >s $n %name %unset_annotation '\n' @return |
+      STATEMENT_GROUP %unset_statement_group '\n' @return
     );
   set_main :=
     (

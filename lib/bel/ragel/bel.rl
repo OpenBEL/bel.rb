@@ -27,10 +27,26 @@ require 'observer'
 
 module BEL
   module Script
-    DocumentProperty = Struct.new(:name, :value)
-    AnnotationDefinition = Struct.new(:prefix, :value)
-    NamespaceDefinition = Struct.new(:prefix, :value)
-    Annotation = Struct.new(:name, :value)
+    DocumentProperty = Struct.new(:name, :value) do
+      def to_s
+        %Q{SET DOCUMENT #{self.name} = "#{self.value}"}
+      end
+    end
+    AnnotationDefinition = Struct.new(:prefix, :value) do
+      def to_s
+        %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+      end
+    end
+    NamespaceDefinition = Struct.new(:prefix, :value) do
+      def to_s
+        %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+      end
+    end
+    Annotation = Struct.new(:name, :value) do
+      def to_s
+        %Q{SET #{self.name} = "#{self.value}"}
+      end
+    end
     Parameter = Struct.new(:ns, :value) do
       NonWordMatcher = Regexp.compile(/\W/)
       def to_s
@@ -51,11 +67,11 @@ module BEL
     end
     Statement = Struct.new(:subject, :rel, :object, :annotations, :comment) do
         def subject_only?
-          !rel 
-        end  
+          !rel
+        end
         def simple?
           object.is_a? Term
-        end  
+        end
         def nested?
           object.is_a? Statement
         end
@@ -70,7 +86,16 @@ module BEL
           end
         end
     end
-    StatementGroup = Struct.new(:name, :statements, :annotations)
+    StatementGroup = Struct.new(:name, :statements, :annotations) do
+      def to_s
+        %Q{SET STATEMENT_GROUP = "#{self.name}"}
+      end
+    end
+    UnsetStatementGroup = Struct.new(:name) do
+      def to_s
+        %Q{UNSET STATEMENT_GROUP}
+      end
+    end
 
     class Parser
       include Observable
