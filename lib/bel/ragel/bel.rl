@@ -53,7 +53,7 @@ module BEL
       end
     end
     Parameter = Struct.new(:ns, :value) do
-      NonWordMatcher = Regexp.compile(/\W/)
+      NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z]/)
       def to_s
         prepped_value = value
         if NonWordMatcher.match value

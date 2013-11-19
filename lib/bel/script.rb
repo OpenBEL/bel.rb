@@ -1,9 +1,9 @@
 
-# line 1 "bel.rl"
+# line 1 "lib/bel/ragel/bel.rl"
 # vim: ts=2 sw=2:
 =begin
 
-# line 7 "bel.rb"
+# line 7 "lib/bel/ragel/bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -6059,7 +6059,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 6063 "bel.rb"
+# line 6063 "lib/bel/ragel/bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -6067,7 +6067,7 @@ begin
 	top = 0
 end
 
-# line 6071 "bel.rb"
+# line 6071 "lib/bel/ragel/bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -6149,7 +6149,7 @@ begin
 			_acts += 1
 			case _bel_actions[_acts - 1]
 when 0 then
-# line 5 "common.rl"
+# line 5 "lib/bel/ragel/common.rl"
 		begin
 	begin
 		top -= 1
@@ -6160,25 +6160,25 @@ when 0 then
 	end
 		end
 when 1 then
-# line 8 "common.rl"
+# line 8 "lib/bel/ragel/common.rl"
 		begin
 
     buffer = []
   		end
 when 2 then
-# line 12 "common.rl"
+# line 12 "lib/bel/ragel/common.rl"
 		begin
 
     buffer << data[p]
   		end
 when 3 then
-# line 16 "common.rl"
+# line 16 "lib/bel/ragel/common.rl"
 		begin
 
     @name = buffer.map(&:chr).join()
   		end
 when 4 then
-# line 20 "common.rl"
+# line 20 "lib/bel/ragel/common.rl"
 		begin
 
     if buffer[0] == 34 && buffer[-1] == 34
@@ -6187,7 +6187,7 @@ when 4 then
     @value = buffer.map(&:chr).join().gsub '\"', '"'
   		end
 when 5 then
-# line 6 "define.rl"
+# line 6 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -6199,7 +6199,7 @@ when 5 then
 	end
 		end
 when 6 then
-# line 7 "define.rl"
+# line 7 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -6211,7 +6211,7 @@ when 6 then
 	end
 		end
 when 7 then
-# line 8 "define.rl"
+# line 8 "lib/bel/ragel/define.rl"
 		begin
 
     anno = BEL::Script::AnnotationDefinition.new(@name, @value)
@@ -6219,7 +6219,7 @@ when 7 then
     notify_observers(anno)
   		end
 when 8 then
-# line 13 "define.rl"
+# line 13 "lib/bel/ragel/define.rl"
 		begin
 
     ns = BEL::Script::NamespaceDefinition.new(@name, @value)
@@ -6227,7 +6227,7 @@ when 8 then
     notify_observers(ns)
   		end
 when 9 then
-# line 5 "set.rl"
+# line 5 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -6239,7 +6239,7 @@ when 9 then
 	end
 		end
 when 10 then
-# line 6 "set.rl"
+# line 6 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -6251,7 +6251,7 @@ when 10 then
 	end
 		end
 when 11 then
-# line 7 "set.rl"
+# line 7 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group = BEL::Script::StatementGroup.new(@value, [])
@@ -6261,7 +6261,7 @@ when 11 then
     notify_observers(statement_group)
   		end
 when 12 then
-# line 14 "set.rl"
+# line 14 "lib/bel/ragel/set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -6270,7 +6270,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 20 "set.rl"
+# line 20 "lib/bel/ragel/set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -6280,13 +6280,13 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 27 "set.rl"
+# line 27 "lib/bel/ragel/set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 30 "set.rl"
+# line 30 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
@@ -6296,29 +6296,29 @@ when 15 then
     notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 37 "set.rl"
+# line 37 "lib/bel/ragel/set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 41 "set.rl"
+# line 41 "lib/bel/ragel/set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 42 "set.rl"
+# line 42 "lib/bel/ragel/set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 46 "set.rl"
+# line 46 "lib/bel/ragel/set.rl"
 		begin
 @value = listvals		end
 when 20 then
-# line 5 "term.rl"
+# line 5 "lib/bel/ragel/term.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -6330,17 +6330,17 @@ when 20 then
 	end
 		end
 when 21 then
-# line 6 "term.rl"
+# line 6 "lib/bel/ragel/term.rl"
 		begin
 puts "#{@term}";		end
 when 22 then
-# line 7 "term.rl"
+# line 7 "lib/bel/ragel/term.rl"
 		begin
 
     @term_stack = []
   		end
 when 23 then
-# line 10 "term.rl"
+# line 10 "lib/bel/ragel/term.rl"
 		begin
 
     fx = buffer.map(&:chr).join().to_sym
@@ -6349,7 +6349,7 @@ when 23 then
     pbuf = []
   		end
 when 24 then
-# line 16 "term.rl"
+# line 16 "lib/bel/ragel/term.rl"
 		begin
 
     val = pbuf.map(&:chr).join()
@@ -6363,7 +6363,7 @@ when 24 then
     pfx = nil
   		end
 when 25 then
-# line 27 "term.rl"
+# line 27 "lib/bel/ragel/term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -6372,66 +6372,66 @@ when 25 then
     end
   		end
 when 26 then
-# line 33 "term.rl"
+# line 33 "lib/bel/ragel/term.rl"
 		begin
 pbuf << data[p]		end
 when 27 then
-# line 34 "term.rl"
+# line 34 "lib/bel/ragel/term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 28 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 29 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 30 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 31 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 32 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 33 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 34 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 35 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 36 then
-# line 69 "term.rl"
+# line 69 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 37 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 38 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 39 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 40 then
-# line 5 "statement.rl"
+# line 5 "lib/bel/ragel/statement.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -6443,7 +6443,7 @@ when 40 then
 	end
 		end
 when 41 then
-# line 6 "statement.rl"
+# line 6 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
@@ -6457,14 +6457,14 @@ when 41 then
     notify_observers(@statement)
   		end
 when 42 then
-# line 17 "statement.rl"
+# line 17 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 43 then
-# line 21 "statement.rl"
+# line 21 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -6473,7 +6473,7 @@ when 43 then
     notify_observers(@term)
   		end
 when 44 then
-# line 27 "statement.rl"
+# line 27 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -6482,7 +6482,7 @@ when 44 then
     notify_observers(@term)
   		end
 when 45 then
-# line 33 "statement.rl"
+# line 33 "lib/bel/ragel/statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -6490,91 +6490,91 @@ when 45 then
     @statement_stack.push nested
   		end
 when 46 then
-# line 38 "statement.rl"
+# line 38 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 47 then
-# line 41 "statement.rl"
+# line 41 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer = []		end
 when 48 then
-# line 42 "statement.rl"
+# line 42 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 49 then
-# line 43 "statement.rl"
+# line 43 "lib/bel/ragel/statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel.to_sym
   		end
 when 50 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 51 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 52 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 53 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 54 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 55 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 56 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 57 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 58 then
-# line 68 "statement.rl"
+# line 68 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 59 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 60 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 61 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 62 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n = 0		end
 when 63 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n += 1		end
 when 64 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 6578 "bel.rb"
+# line 6578 "lib/bel/ragel/bel.rb"
 			end # action switch
 		end
 	end
@@ -6603,10 +6603,10 @@ p -= n;		end
 		__acts += 1
 		case _bel_actions[__acts - 1]
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 6610 "bel.rb"
+# line 6610 "lib/bel/ragel/bel.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -6620,7 +6620,7 @@ end
 	end
 	end
 
-# line 6624 "bel.rb"
+# line 6624 "lib/bel/ragel/bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -12676,7 +12676,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 12680 "bel.rb"
+# line 12680 "lib/bel/ragel/bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -12684,7 +12684,7 @@ begin
 	top = 0
 end
 
-# line 12688 "bel.rb"
+# line 12688 "lib/bel/ragel/bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -12766,7 +12766,7 @@ begin
 			_acts += 1
 			case _bel_actions[_acts - 1]
 when 0 then
-# line 5 "common.rl"
+# line 5 "lib/bel/ragel/common.rl"
 		begin
 	begin
 		top -= 1
@@ -12777,25 +12777,25 @@ when 0 then
 	end
 		end
 when 1 then
-# line 8 "common.rl"
+# line 8 "lib/bel/ragel/common.rl"
 		begin
 
     buffer = []
   		end
 when 2 then
-# line 12 "common.rl"
+# line 12 "lib/bel/ragel/common.rl"
 		begin
 
     buffer << data[p]
   		end
 when 3 then
-# line 16 "common.rl"
+# line 16 "lib/bel/ragel/common.rl"
 		begin
 
     @name = buffer.map(&:chr).join()
   		end
 when 4 then
-# line 20 "common.rl"
+# line 20 "lib/bel/ragel/common.rl"
 		begin
 
     if buffer[0] == 34 && buffer[-1] == 34
@@ -12804,7 +12804,7 @@ when 4 then
     @value = buffer.map(&:chr).join().gsub '\"', '"'
   		end
 when 5 then
-# line 6 "define.rl"
+# line 6 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -12816,7 +12816,7 @@ when 5 then
 	end
 		end
 when 6 then
-# line 7 "define.rl"
+# line 7 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -12828,7 +12828,7 @@ when 6 then
 	end
 		end
 when 7 then
-# line 8 "define.rl"
+# line 8 "lib/bel/ragel/define.rl"
 		begin
 
     anno = BEL::Script::AnnotationDefinition.new(@name, @value)
@@ -12836,7 +12836,7 @@ when 7 then
     notify_observers(anno)
   		end
 when 8 then
-# line 13 "define.rl"
+# line 13 "lib/bel/ragel/define.rl"
 		begin
 
     ns = BEL::Script::NamespaceDefinition.new(@name, @value)
@@ -12844,7 +12844,7 @@ when 8 then
     notify_observers(ns)
   		end
 when 9 then
-# line 5 "set.rl"
+# line 5 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -12856,7 +12856,7 @@ when 9 then
 	end
 		end
 when 10 then
-# line 6 "set.rl"
+# line 6 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -12868,7 +12868,7 @@ when 10 then
 	end
 		end
 when 11 then
-# line 7 "set.rl"
+# line 7 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group = BEL::Script::StatementGroup.new(@value, [])
@@ -12878,7 +12878,7 @@ when 11 then
     notify_observers(statement_group)
   		end
 when 12 then
-# line 14 "set.rl"
+# line 14 "lib/bel/ragel/set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -12887,7 +12887,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 20 "set.rl"
+# line 20 "lib/bel/ragel/set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -12897,13 +12897,13 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 27 "set.rl"
+# line 27 "lib/bel/ragel/set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 30 "set.rl"
+# line 30 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
@@ -12913,29 +12913,29 @@ when 15 then
     notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 37 "set.rl"
+# line 37 "lib/bel/ragel/set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 41 "set.rl"
+# line 41 "lib/bel/ragel/set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 42 "set.rl"
+# line 42 "lib/bel/ragel/set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 46 "set.rl"
+# line 46 "lib/bel/ragel/set.rl"
 		begin
 @value = listvals		end
 when 20 then
-# line 5 "term.rl"
+# line 5 "lib/bel/ragel/term.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -12947,17 +12947,17 @@ when 20 then
 	end
 		end
 when 21 then
-# line 6 "term.rl"
+# line 6 "lib/bel/ragel/term.rl"
 		begin
 puts "#{@term}";		end
 when 22 then
-# line 7 "term.rl"
+# line 7 "lib/bel/ragel/term.rl"
 		begin
 
     @term_stack = []
   		end
 when 23 then
-# line 10 "term.rl"
+# line 10 "lib/bel/ragel/term.rl"
 		begin
 
     fx = buffer.map(&:chr).join().to_sym
@@ -12966,7 +12966,7 @@ when 23 then
     pbuf = []
   		end
 when 24 then
-# line 16 "term.rl"
+# line 16 "lib/bel/ragel/term.rl"
 		begin
 
     val = pbuf.map(&:chr).join()
@@ -12980,7 +12980,7 @@ when 24 then
     pfx = nil
   		end
 when 25 then
-# line 27 "term.rl"
+# line 27 "lib/bel/ragel/term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -12989,66 +12989,66 @@ when 25 then
     end
   		end
 when 26 then
-# line 33 "term.rl"
+# line 33 "lib/bel/ragel/term.rl"
 		begin
 pbuf << data[p]		end
 when 27 then
-# line 34 "term.rl"
+# line 34 "lib/bel/ragel/term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 28 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 29 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 30 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 31 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 32 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 33 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 34 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 35 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 36 then
-# line 69 "term.rl"
+# line 69 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 37 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 38 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 39 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 40 then
-# line 5 "statement.rl"
+# line 5 "lib/bel/ragel/statement.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -13060,7 +13060,7 @@ when 40 then
 	end
 		end
 when 41 then
-# line 6 "statement.rl"
+# line 6 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
@@ -13074,14 +13074,14 @@ when 41 then
     notify_observers(@statement)
   		end
 when 42 then
-# line 17 "statement.rl"
+# line 17 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 43 then
-# line 21 "statement.rl"
+# line 21 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -13090,7 +13090,7 @@ when 43 then
     notify_observers(@term)
   		end
 when 44 then
-# line 27 "statement.rl"
+# line 27 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -13099,7 +13099,7 @@ when 44 then
     notify_observers(@term)
   		end
 when 45 then
-# line 33 "statement.rl"
+# line 33 "lib/bel/ragel/statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -13107,91 +13107,91 @@ when 45 then
     @statement_stack.push nested
   		end
 when 46 then
-# line 38 "statement.rl"
+# line 38 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 47 then
-# line 41 "statement.rl"
+# line 41 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer = []		end
 when 48 then
-# line 42 "statement.rl"
+# line 42 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 49 then
-# line 43 "statement.rl"
+# line 43 "lib/bel/ragel/statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel.to_sym
   		end
 when 50 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 51 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 52 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 53 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 54 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 55 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 56 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 57 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 58 then
-# line 68 "statement.rl"
+# line 68 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 59 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 60 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 61 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 62 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n = 0		end
 when 63 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n += 1		end
 when 64 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 13195 "bel.rb"
+# line 13195 "lib/bel/ragel/bel.rb"
 			end # action switch
 		end
 	end
@@ -13220,10 +13220,10 @@ p -= n;		end
 		__acts += 1
 		case _bel_actions[__acts - 1]
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 13227 "bel.rb"
+# line 13227 "lib/bel/ragel/bel.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -13237,7 +13237,7 @@ end
 	end
 	end
 
-# line 13241 "bel.rb"
+# line 13241 "lib/bel/ragel/bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -19293,7 +19293,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 19297 "bel.rb"
+# line 19297 "lib/bel/ragel/bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -19301,7 +19301,7 @@ begin
 	top = 0
 end
 
-# line 19305 "bel.rb"
+# line 19305 "lib/bel/ragel/bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -19383,7 +19383,7 @@ begin
 			_acts += 1
 			case _bel_actions[_acts - 1]
 when 0 then
-# line 5 "common.rl"
+# line 5 "lib/bel/ragel/common.rl"
 		begin
 	begin
 		top -= 1
@@ -19394,25 +19394,25 @@ when 0 then
 	end
 		end
 when 1 then
-# line 8 "common.rl"
+# line 8 "lib/bel/ragel/common.rl"
 		begin
 
     buffer = []
   		end
 when 2 then
-# line 12 "common.rl"
+# line 12 "lib/bel/ragel/common.rl"
 		begin
 
     buffer << data[p]
   		end
 when 3 then
-# line 16 "common.rl"
+# line 16 "lib/bel/ragel/common.rl"
 		begin
 
     @name = buffer.map(&:chr).join()
   		end
 when 4 then
-# line 20 "common.rl"
+# line 20 "lib/bel/ragel/common.rl"
 		begin
 
     if buffer[0] == 34 && buffer[-1] == 34
@@ -19421,7 +19421,7 @@ when 4 then
     @value = buffer.map(&:chr).join().gsub '\"', '"'
   		end
 when 5 then
-# line 6 "define.rl"
+# line 6 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -19433,7 +19433,7 @@ when 5 then
 	end
 		end
 when 6 then
-# line 7 "define.rl"
+# line 7 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -19445,7 +19445,7 @@ when 6 then
 	end
 		end
 when 7 then
-# line 8 "define.rl"
+# line 8 "lib/bel/ragel/define.rl"
 		begin
 
     anno = BEL::Script::AnnotationDefinition.new(@name, @value)
@@ -19453,7 +19453,7 @@ when 7 then
     notify_observers(anno)
   		end
 when 8 then
-# line 13 "define.rl"
+# line 13 "lib/bel/ragel/define.rl"
 		begin
 
     ns = BEL::Script::NamespaceDefinition.new(@name, @value)
@@ -19461,7 +19461,7 @@ when 8 then
     notify_observers(ns)
   		end
 when 9 then
-# line 5 "set.rl"
+# line 5 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -19473,7 +19473,7 @@ when 9 then
 	end
 		end
 when 10 then
-# line 6 "set.rl"
+# line 6 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -19485,7 +19485,7 @@ when 10 then
 	end
 		end
 when 11 then
-# line 7 "set.rl"
+# line 7 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group = BEL::Script::StatementGroup.new(@value, [])
@@ -19495,7 +19495,7 @@ when 11 then
     notify_observers(statement_group)
   		end
 when 12 then
-# line 14 "set.rl"
+# line 14 "lib/bel/ragel/set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -19504,7 +19504,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 20 "set.rl"
+# line 20 "lib/bel/ragel/set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -19514,13 +19514,13 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 27 "set.rl"
+# line 27 "lib/bel/ragel/set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 30 "set.rl"
+# line 30 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
@@ -19530,29 +19530,29 @@ when 15 then
     notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 37 "set.rl"
+# line 37 "lib/bel/ragel/set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 41 "set.rl"
+# line 41 "lib/bel/ragel/set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 42 "set.rl"
+# line 42 "lib/bel/ragel/set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 46 "set.rl"
+# line 46 "lib/bel/ragel/set.rl"
 		begin
 @value = listvals		end
 when 20 then
-# line 5 "term.rl"
+# line 5 "lib/bel/ragel/term.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -19564,17 +19564,17 @@ when 20 then
 	end
 		end
 when 21 then
-# line 6 "term.rl"
+# line 6 "lib/bel/ragel/term.rl"
 		begin
 puts "#{@term}";		end
 when 22 then
-# line 7 "term.rl"
+# line 7 "lib/bel/ragel/term.rl"
 		begin
 
     @term_stack = []
   		end
 when 23 then
-# line 10 "term.rl"
+# line 10 "lib/bel/ragel/term.rl"
 		begin
 
     fx = buffer.map(&:chr).join().to_sym
@@ -19583,7 +19583,7 @@ when 23 then
     pbuf = []
   		end
 when 24 then
-# line 16 "term.rl"
+# line 16 "lib/bel/ragel/term.rl"
 		begin
 
     val = pbuf.map(&:chr).join()
@@ -19597,7 +19597,7 @@ when 24 then
     pfx = nil
   		end
 when 25 then
-# line 27 "term.rl"
+# line 27 "lib/bel/ragel/term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -19606,66 +19606,66 @@ when 25 then
     end
   		end
 when 26 then
-# line 33 "term.rl"
+# line 33 "lib/bel/ragel/term.rl"
 		begin
 pbuf << data[p]		end
 when 27 then
-# line 34 "term.rl"
+# line 34 "lib/bel/ragel/term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 28 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 29 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 30 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 31 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 32 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 33 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 34 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 35 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 36 then
-# line 69 "term.rl"
+# line 69 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 37 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 38 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 39 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 40 then
-# line 5 "statement.rl"
+# line 5 "lib/bel/ragel/statement.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -19677,7 +19677,7 @@ when 40 then
 	end
 		end
 when 41 then
-# line 6 "statement.rl"
+# line 6 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
@@ -19691,14 +19691,14 @@ when 41 then
     notify_observers(@statement)
   		end
 when 42 then
-# line 17 "statement.rl"
+# line 17 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 43 then
-# line 21 "statement.rl"
+# line 21 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -19707,7 +19707,7 @@ when 43 then
     notify_observers(@term)
   		end
 when 44 then
-# line 27 "statement.rl"
+# line 27 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -19716,7 +19716,7 @@ when 44 then
     notify_observers(@term)
   		end
 when 45 then
-# line 33 "statement.rl"
+# line 33 "lib/bel/ragel/statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -19724,91 +19724,91 @@ when 45 then
     @statement_stack.push nested
   		end
 when 46 then
-# line 38 "statement.rl"
+# line 38 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 47 then
-# line 41 "statement.rl"
+# line 41 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer = []		end
 when 48 then
-# line 42 "statement.rl"
+# line 42 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 49 then
-# line 43 "statement.rl"
+# line 43 "lib/bel/ragel/statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel.to_sym
   		end
 when 50 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 51 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 52 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 53 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 54 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 55 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 56 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 57 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 58 then
-# line 68 "statement.rl"
+# line 68 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 59 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 60 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 61 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 62 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n = 0		end
 when 63 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n += 1		end
 when 64 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 19812 "bel.rb"
+# line 19812 "lib/bel/ragel/bel.rb"
 			end # action switch
 		end
 	end
@@ -19837,10 +19837,10 @@ p -= n;		end
 		__acts += 1
 		case _bel_actions[__acts - 1]
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 19844 "bel.rb"
+# line 19844 "lib/bel/ragel/bel.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -19854,7 +19854,7 @@ end
 	end
 	end
 
-# line 19858 "bel.rb"
+# line 19858 "lib/bel/ragel/bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -25910,7 +25910,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 25914 "bel.rb"
+# line 25914 "lib/bel/ragel/bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -25918,7 +25918,7 @@ begin
 	top = 0
 end
 
-# line 25922 "bel.rb"
+# line 25922 "lib/bel/ragel/bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -26000,7 +26000,7 @@ begin
 			_acts += 1
 			case _bel_actions[_acts - 1]
 when 0 then
-# line 5 "common.rl"
+# line 5 "lib/bel/ragel/common.rl"
 		begin
 	begin
 		top -= 1
@@ -26011,25 +26011,25 @@ when 0 then
 	end
 		end
 when 1 then
-# line 8 "common.rl"
+# line 8 "lib/bel/ragel/common.rl"
 		begin
 
     buffer = []
   		end
 when 2 then
-# line 12 "common.rl"
+# line 12 "lib/bel/ragel/common.rl"
 		begin
 
     buffer << data[p]
   		end
 when 3 then
-# line 16 "common.rl"
+# line 16 "lib/bel/ragel/common.rl"
 		begin
 
     @name = buffer.map(&:chr).join()
   		end
 when 4 then
-# line 20 "common.rl"
+# line 20 "lib/bel/ragel/common.rl"
 		begin
 
     if buffer[0] == 34 && buffer[-1] == 34
@@ -26038,7 +26038,7 @@ when 4 then
     @value = buffer.map(&:chr).join().gsub '\"', '"'
   		end
 when 5 then
-# line 6 "define.rl"
+# line 6 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -26050,7 +26050,7 @@ when 5 then
 	end
 		end
 when 6 then
-# line 7 "define.rl"
+# line 7 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -26062,7 +26062,7 @@ when 6 then
 	end
 		end
 when 7 then
-# line 8 "define.rl"
+# line 8 "lib/bel/ragel/define.rl"
 		begin
 
     anno = BEL::Script::AnnotationDefinition.new(@name, @value)
@@ -26070,7 +26070,7 @@ when 7 then
     notify_observers(anno)
   		end
 when 8 then
-# line 13 "define.rl"
+# line 13 "lib/bel/ragel/define.rl"
 		begin
 
     ns = BEL::Script::NamespaceDefinition.new(@name, @value)
@@ -26078,7 +26078,7 @@ when 8 then
     notify_observers(ns)
   		end
 when 9 then
-# line 5 "set.rl"
+# line 5 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -26090,7 +26090,7 @@ when 9 then
 	end
 		end
 when 10 then
-# line 6 "set.rl"
+# line 6 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -26102,7 +26102,7 @@ when 10 then
 	end
 		end
 when 11 then
-# line 7 "set.rl"
+# line 7 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group = BEL::Script::StatementGroup.new(@value, [])
@@ -26112,7 +26112,7 @@ when 11 then
     notify_observers(statement_group)
   		end
 when 12 then
-# line 14 "set.rl"
+# line 14 "lib/bel/ragel/set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -26121,7 +26121,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 20 "set.rl"
+# line 20 "lib/bel/ragel/set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -26131,13 +26131,13 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 27 "set.rl"
+# line 27 "lib/bel/ragel/set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 30 "set.rl"
+# line 30 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
@@ -26147,29 +26147,29 @@ when 15 then
     notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 37 "set.rl"
+# line 37 "lib/bel/ragel/set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 41 "set.rl"
+# line 41 "lib/bel/ragel/set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 42 "set.rl"
+# line 42 "lib/bel/ragel/set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 46 "set.rl"
+# line 46 "lib/bel/ragel/set.rl"
 		begin
 @value = listvals		end
 when 20 then
-# line 5 "term.rl"
+# line 5 "lib/bel/ragel/term.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -26181,17 +26181,17 @@ when 20 then
 	end
 		end
 when 21 then
-# line 6 "term.rl"
+# line 6 "lib/bel/ragel/term.rl"
 		begin
 puts "#{@term}";		end
 when 22 then
-# line 7 "term.rl"
+# line 7 "lib/bel/ragel/term.rl"
 		begin
 
     @term_stack = []
   		end
 when 23 then
-# line 10 "term.rl"
+# line 10 "lib/bel/ragel/term.rl"
 		begin
 
     fx = buffer.map(&:chr).join().to_sym
@@ -26200,7 +26200,7 @@ when 23 then
     pbuf = []
   		end
 when 24 then
-# line 16 "term.rl"
+# line 16 "lib/bel/ragel/term.rl"
 		begin
 
     val = pbuf.map(&:chr).join()
@@ -26214,7 +26214,7 @@ when 24 then
     pfx = nil
   		end
 when 25 then
-# line 27 "term.rl"
+# line 27 "lib/bel/ragel/term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -26223,66 +26223,66 @@ when 25 then
     end
   		end
 when 26 then
-# line 33 "term.rl"
+# line 33 "lib/bel/ragel/term.rl"
 		begin
 pbuf << data[p]		end
 when 27 then
-# line 34 "term.rl"
+# line 34 "lib/bel/ragel/term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 28 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 29 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 30 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 31 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 32 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 33 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 34 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 35 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 36 then
-# line 69 "term.rl"
+# line 69 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 37 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 38 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 39 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 40 then
-# line 5 "statement.rl"
+# line 5 "lib/bel/ragel/statement.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -26294,7 +26294,7 @@ when 40 then
 	end
 		end
 when 41 then
-# line 6 "statement.rl"
+# line 6 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
@@ -26308,14 +26308,14 @@ when 41 then
     notify_observers(@statement)
   		end
 when 42 then
-# line 17 "statement.rl"
+# line 17 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 43 then
-# line 21 "statement.rl"
+# line 21 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -26324,7 +26324,7 @@ when 43 then
     notify_observers(@term)
   		end
 when 44 then
-# line 27 "statement.rl"
+# line 27 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -26333,7 +26333,7 @@ when 44 then
     notify_observers(@term)
   		end
 when 45 then
-# line 33 "statement.rl"
+# line 33 "lib/bel/ragel/statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -26341,91 +26341,91 @@ when 45 then
     @statement_stack.push nested
   		end
 when 46 then
-# line 38 "statement.rl"
+# line 38 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 47 then
-# line 41 "statement.rl"
+# line 41 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer = []		end
 when 48 then
-# line 42 "statement.rl"
+# line 42 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 49 then
-# line 43 "statement.rl"
+# line 43 "lib/bel/ragel/statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel.to_sym
   		end
 when 50 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 51 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 52 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 53 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 54 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 55 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 56 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 57 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 58 then
-# line 68 "statement.rl"
+# line 68 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 59 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 60 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 61 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 62 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n = 0		end
 when 63 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n += 1		end
 when 64 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 26429 "bel.rb"
+# line 26429 "lib/bel/ragel/bel.rb"
 			end # action switch
 		end
 	end
@@ -26454,10 +26454,10 @@ p -= n;		end
 		__acts += 1
 		case _bel_actions[__acts - 1]
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 26461 "bel.rb"
+# line 26461 "lib/bel/ragel/bel.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -26471,7 +26471,7 @@ end
 	end
 	end
 
-# line 23 "bel.rl"
+# line 23 "lib/bel/ragel/bel.rl"
 
 =end
 
@@ -26505,7 +26505,7 @@ module BEL
       end
     end
     Parameter = Struct.new(:ns, :value) do
-      NonWordMatcher = Regexp.compile(/\W/)
+      NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z]/)
       def to_s
         prepped_value = value
         if NonWordMatcher.match value
@@ -26561,7 +26561,7 @@ module BEL
         @annotations = {}
         @statement_group = nil
         
-# line 26565 "bel.rb"
+# line 26565 "lib/bel/ragel/bel.rb"
 class << self
 	attr_accessor :_bel_actions
 	private :_bel_actions, :_bel_actions=
@@ -32617,7 +32617,7 @@ end
 self.bel_en_document_main = 1;
 
 
-# line 112 "bel.rl"
+# line 112 "lib/bel/ragel/bel.rl"
       end
 
       def parse(content)
@@ -32632,7 +32632,7 @@ self.bel_en_document_main = 1;
         end
 
         
-# line 32636 "bel.rb"
+# line 32636 "lib/bel/ragel/bel.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -32640,9 +32640,9 @@ begin
 	top = 0
 end
 
-# line 126 "bel.rl"
+# line 126 "lib/bel/ragel/bel.rl"
         
-# line 32646 "bel.rb"
+# line 32646 "lib/bel/ragel/bel.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -32724,7 +32724,7 @@ begin
 			_acts += 1
 			case _bel_actions[_acts - 1]
 when 0 then
-# line 5 "common.rl"
+# line 5 "lib/bel/ragel/common.rl"
 		begin
 	begin
 		top -= 1
@@ -32735,25 +32735,25 @@ when 0 then
 	end
 		end
 when 1 then
-# line 8 "common.rl"
+# line 8 "lib/bel/ragel/common.rl"
 		begin
 
     buffer = []
   		end
 when 2 then
-# line 12 "common.rl"
+# line 12 "lib/bel/ragel/common.rl"
 		begin
 
     buffer << data[p]
   		end
 when 3 then
-# line 16 "common.rl"
+# line 16 "lib/bel/ragel/common.rl"
 		begin
 
     @name = buffer.map(&:chr).join()
   		end
 when 4 then
-# line 20 "common.rl"
+# line 20 "lib/bel/ragel/common.rl"
 		begin
 
     if buffer[0] == 34 && buffer[-1] == 34
@@ -32762,7 +32762,7 @@ when 4 then
     @value = buffer.map(&:chr).join().gsub '\"', '"'
   		end
 when 5 then
-# line 6 "define.rl"
+# line 6 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -32774,7 +32774,7 @@ when 5 then
 	end
 		end
 when 6 then
-# line 7 "define.rl"
+# line 7 "lib/bel/ragel/define.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -32786,7 +32786,7 @@ when 6 then
 	end
 		end
 when 7 then
-# line 8 "define.rl"
+# line 8 "lib/bel/ragel/define.rl"
 		begin
 
     anno = BEL::Script::AnnotationDefinition.new(@name, @value)
@@ -32794,7 +32794,7 @@ when 7 then
     notify_observers(anno)
   		end
 when 8 then
-# line 13 "define.rl"
+# line 13 "lib/bel/ragel/define.rl"
 		begin
 
     ns = BEL::Script::NamespaceDefinition.new(@name, @value)
@@ -32802,7 +32802,7 @@ when 8 then
     notify_observers(ns)
   		end
 when 9 then
-# line 5 "set.rl"
+# line 5 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -32814,7 +32814,7 @@ when 9 then
 	end
 		end
 when 10 then
-# line 6 "set.rl"
+# line 6 "lib/bel/ragel/set.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -32826,7 +32826,7 @@ when 10 then
 	end
 		end
 when 11 then
-# line 7 "set.rl"
+# line 7 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group = BEL::Script::StatementGroup.new(@value, [])
@@ -32836,7 +32836,7 @@ when 11 then
     notify_observers(statement_group)
   		end
 when 12 then
-# line 14 "set.rl"
+# line 14 "lib/bel/ragel/set.rl"
 		begin
 
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
@@ -32845,7 +32845,7 @@ when 12 then
     notify_observers(docprop)
   		end
 when 13 then
-# line 20 "set.rl"
+# line 20 "lib/bel/ragel/set.rl"
 		begin
 
     annotation = BEL::Script::Annotation.new(@name, @value)
@@ -32855,13 +32855,13 @@ when 13 then
     notify_observers(annotation)
   		end
 when 14 then
-# line 27 "set.rl"
+# line 27 "lib/bel/ragel/set.rl"
 		begin
 
     @annotations.delete(@name)
   		end
 when 15 then
-# line 30 "set.rl"
+# line 30 "lib/bel/ragel/set.rl"
 		begin
 
     statement_group.annotations = @annotations.clone()
@@ -32871,29 +32871,29 @@ when 15 then
     notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   		end
 when 16 then
-# line 37 "set.rl"
+# line 37 "lib/bel/ragel/set.rl"
 		begin
 
     listvals = []
     listbuffer = []
   		end
 when 17 then
-# line 41 "set.rl"
+# line 41 "lib/bel/ragel/set.rl"
 		begin
 listbuffer << data[p]		end
 when 18 then
-# line 42 "set.rl"
+# line 42 "lib/bel/ragel/set.rl"
 		begin
 
     listvals << listbuffer.map(&:chr).join()
     listbuffer = []
   		end
 when 19 then
-# line 46 "set.rl"
+# line 46 "lib/bel/ragel/set.rl"
 		begin
 @value = listvals		end
 when 20 then
-# line 5 "term.rl"
+# line 5 "lib/bel/ragel/term.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -32905,17 +32905,17 @@ when 20 then
 	end
 		end
 when 21 then
-# line 6 "term.rl"
+# line 6 "lib/bel/ragel/term.rl"
 		begin
 puts "#{@term}";		end
 when 22 then
-# line 7 "term.rl"
+# line 7 "lib/bel/ragel/term.rl"
 		begin
 
     @term_stack = []
   		end
 when 23 then
-# line 10 "term.rl"
+# line 10 "lib/bel/ragel/term.rl"
 		begin
 
     fx = buffer.map(&:chr).join().to_sym
@@ -32924,7 +32924,7 @@ when 23 then
     pbuf = []
   		end
 when 24 then
-# line 16 "term.rl"
+# line 16 "lib/bel/ragel/term.rl"
 		begin
 
     val = pbuf.map(&:chr).join()
@@ -32938,7 +32938,7 @@ when 24 then
     pfx = nil
   		end
 when 25 then
-# line 27 "term.rl"
+# line 27 "lib/bel/ragel/term.rl"
 		begin
 
     @term = @term_stack.pop
@@ -32947,66 +32947,66 @@ when 25 then
     end
   		end
 when 26 then
-# line 33 "term.rl"
+# line 33 "lib/bel/ragel/term.rl"
 		begin
 pbuf << data[p]		end
 when 27 then
-# line 34 "term.rl"
+# line 34 "lib/bel/ragel/term.rl"
 		begin
 
     pfx = pbuf.map(&:chr).join()
     pbuf = []
   		end
 when 28 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 29 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 30 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 31 then
-# line 61 "term.rl"
+# line 61 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 32 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 33 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 34 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 35 then
-# line 67 "term.rl"
+# line 67 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 36 then
-# line 69 "term.rl"
+# line 69 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 37 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n = 0		end
 when 38 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 n += 1		end
 when 39 then
-# line 74 "term.rl"
+# line 74 "lib/bel/ragel/term.rl"
 		begin
 p -= n		end
 when 40 then
-# line 5 "statement.rl"
+# line 5 "lib/bel/ragel/statement.rl"
 		begin
 	begin
 		stack[top] = cs
@@ -33018,7 +33018,7 @@ when 40 then
 	end
 		end
 when 41 then
-# line 6 "statement.rl"
+# line 6 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
@@ -33032,14 +33032,14 @@ when 41 then
     notify_observers(@statement)
   		end
 when 42 then
-# line 17 "statement.rl"
+# line 17 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = BEL::Script::Statement.new()
     @statement_stack = [@statement]
   		end
 when 43 then
-# line 21 "statement.rl"
+# line 21 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.subject = @term
@@ -33048,7 +33048,7 @@ when 43 then
     notify_observers(@term)
   		end
 when 44 then
-# line 27 "statement.rl"
+# line 27 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement_stack.last.object = @term
@@ -33057,7 +33057,7 @@ when 44 then
     notify_observers(@term)
   		end
 when 45 then
-# line 33 "statement.rl"
+# line 33 "lib/bel/ragel/statement.rl"
 		begin
 
     nested = BEL::Script::Statement.new()
@@ -33065,91 +33065,91 @@ when 45 then
     @statement_stack.push nested
   		end
 when 46 then
-# line 38 "statement.rl"
+# line 38 "lib/bel/ragel/statement.rl"
 		begin
 
     @statement = @statement_stack.pop
   		end
 when 47 then
-# line 41 "statement.rl"
+# line 41 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer = []		end
 when 48 then
-# line 42 "statement.rl"
+# line 42 "lib/bel/ragel/statement.rl"
 		begin
 @relbuffer << data[p]		end
 when 49 then
-# line 43 "statement.rl"
+# line 43 "lib/bel/ragel/statement.rl"
 		begin
 
     rel = @relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel.to_sym
   		end
 when 50 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 51 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 52 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 53 then
-# line 62 "statement.rl"
+# line 62 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 54 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 55 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 56 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 57 then
-# line 65 "statement.rl"
+# line 65 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 58 then
-# line 68 "statement.rl"
+# line 68 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 59 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n = 0		end
 when 60 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 n += 1		end
 when 61 then
-# line 73 "statement.rl"
+# line 73 "lib/bel/ragel/statement.rl"
 		begin
 p -= n		end
 when 62 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n = 0		end
 when 63 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 n += 1		end
 when 64 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 33153 "bel.rb"
+# line 33153 "lib/bel/ragel/bel.rb"
 			end # action switch
 		end
 	end
@@ -33178,10 +33178,10 @@ p -= n;		end
 		__acts += 1
 		case _bel_actions[__acts - 1]
 when 65 then
-# line 20 "bel.rl"
+# line 20 "lib/bel/ragel/bel.rl"
 		begin
 p -= n;		end
-# line 33185 "bel.rb"
+# line 33185 "lib/bel/ragel/bel.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -33195,7 +33195,7 @@ end
 	end
 	end
 
-# line 127 "bel.rl"
+# line 127 "lib/bel/ragel/bel.rl"
 
         if block_given?
           self.delete_observer(observer)
