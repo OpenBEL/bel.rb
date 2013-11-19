@@ -4,6 +4,7 @@
 machine bel;
 
   include 'common.rl';
+  include 'define.rl';
   include 'set.rl';
   include 'term.rl';
   include 'statement.rl';
@@ -12,6 +13,8 @@ machine bel;
     (
       '\n' |
       '#' [^\n]+ '\n' @{puts 'doc comment'} |
+      DEFINE SP+ ANNOTATION @call_define_annotation |
+      DEFINE SP+ NAMESPACE @call_define_namespace |
       SET @call_set |
       UNSET @call_unset |
       FUNCTION >{n = 0} ${n += 1} @{fpc -= n}
@@ -25,6 +28,8 @@ require 'observer'
 module BEL
   module Script
     DocumentProperty = Struct.new(:name, :value)
+    AnnotationDefinition = Struct.new(:prefix, :value)
+    NamespaceDefinition = Struct.new(:prefix, :value)
     Annotation = Struct.new(:name, :value)
     Parameter = Struct.new(:ns, :value) do
       NonWordMatcher = Regexp.compile(/\W/)
