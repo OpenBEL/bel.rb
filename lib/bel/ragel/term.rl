@@ -3,7 +3,7 @@
 machine bel;
 
   action call_term {fcall term;}
-  action out_term {puts 'out_term'; puts "#{@term}";}
+  action out_term {puts "#{@term}";}
   action term_init {
     @term_stack = []
   }
@@ -58,15 +58,15 @@ machine bel;
     FUNCTION >s $n %term_fx '(' SP* 
     (
       (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
-      FUNCTION >{n = 0} ${n += 1} @{fpc -= n} @call_term
+      FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @call_term
     )
     (
       SP* ',' SP* 
       (
         (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
-        FUNCTION >{n = 0} ${n += 1} @{fpc -= n} @call_term
+        FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @call_term
       )
-    )* ')' @term_pop @return;
+    )* ')' @{n = 0} @term_pop @return;
 
   term_main :=
     (

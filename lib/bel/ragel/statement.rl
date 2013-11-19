@@ -59,13 +59,13 @@
                   'hasMember'|'hasComponent');
 
   statement :=
-    FUNCTION >{n = 0} ${n += 1} @{fpc -= n} @term_init @call_term SP* %statement_subject '\n'? @statement @return
+    FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @term_init @call_term SP* %statement_subject '\n'? @statement @return
     RELATIONSHIP >rels $reln %rele SP+
     (
-      FUNCTION >{n = 0} ${n += 1} @{fpc -= n} @term_init @call_term %statement_oterm SP* ')'? @return
+      FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @term_init @call_term %statement_oterm SP* ')'? @return
       |
       '(' @statement_ostmt @call_statement %statement_pop
-    ) '\n' @statement @return;
+    ) %statement '\n' @{n = 0} @return;
   
   statement_main :=
     (

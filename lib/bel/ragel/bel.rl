@@ -12,12 +12,12 @@ machine bel;
   document_main :=
     (
       '\n' |
-      '#' [^\n]+ '\n' @{puts 'doc comment'} |
+      '#' [^\n]+ '\n' |
       DEFINE SP+ ANNOTATION @call_define_annotation |
       DEFINE SP+ NAMESPACE @call_define_namespace |
       SET @call_set |
       UNSET @call_unset |
-      FUNCTION >{n = 0} ${n += 1} @{fpc -= n}
+      FUNCTION >{n = 0} ${n += 1} @{fpc -= n;} %{fpc -= n;}
       @statement_init @call_statement
     )+;
 }%%
@@ -107,6 +107,7 @@ module BEL
       end
 
       def parse(content)
+        eof = :ignored
         buffer = []
         stack = []
         data = content.unpack('c*')
@@ -151,7 +152,9 @@ if __FILE__ == $0
 
   class DefaultObserver
     def update(obj)
-      puts obj
+      if not obj.respond_to? :fx
+        puts obj
+      end
     end
   end
 

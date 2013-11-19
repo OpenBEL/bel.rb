@@ -1,8 +1,14 @@
+##################################################################################
+# Document Properties Section
+
 SET DOCUMENT Name = "BEL Framework Large Corpus Document"
 SET DOCUMENT Description = "Approximately 61,000 statements."
 SET DOCUMENT Version = "1.4"
 SET DOCUMENT Copyright = "Copyright (c) 2011-2012, Selventa. All rights reserved."
 SET DOCUMENT Authors = "Selventa"
+
+##################################################################################
+# Definitions Section
 
 DEFINE ANNOTATION Tissue AS URL "http://resources/tissue.belanno"
 DEFINE NAMESPACE HGNC AS URL "http://resources/hgnc.belns"
@@ -19,8 +25,6 @@ tscript(p(HGNC:IKBKE)) directlyIncreases p(HGNC:IRF3)
 
 SET species = 9606
 p(HGNC:IKBKE) directlyIncreases p(HGNC:IRF3)
-
 a(SCHEM:Calcium) -> (p(HGNC:MYL9) -> bp(GO:"muscle contraction"))
 
 UNSET STATEMENT_GROUP
-
