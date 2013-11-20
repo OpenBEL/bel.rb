@@ -39,7 +39,7 @@ module BEL
     end
     NamespaceDefinition = Struct.new(:prefix, :value) do
       def to_s
-        %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+        %Q{DEFINE NAMESPACE #{self.prefix} AS URL "#{self.value}"}
       end
     end
     Annotation = Struct.new(:name, :value) do
