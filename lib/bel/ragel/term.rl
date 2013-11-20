@@ -19,7 +19,11 @@ machine bel;
       if val.start_with? '"' and val.end_with? '"'
         val = val.strip()[1...-1]
       end
-      @term_stack.last << BEL::Script::Parameter.new(pfx, val)
+      param = BEL::Script::Parameter.new(pfx, val)
+      @term_stack.last << param
+
+      changed
+      notify_observers(param)
     end
     pbuf = []
     pfx = nil
