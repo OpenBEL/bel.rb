@@ -83,23 +83,62 @@ Parse BEL input
 
   require 'bel'
 
+  # example BEL document
+  BEL_SCRIPT = <<-EOF
+  SET DOCUMENT Name = "Spec"
+  SET DOCUMENT Authors = User
+  SET Disease = "Atherosclerosis"
+  path(MESHD:Atherosclerosis)
+  path(Atherosclerosis)
+  bp(GO:"lipid oxidation")
+  p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473))
+  path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
+  path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
+  EOF
+
   # include BEL Script module
   include BEL::Script
 
-  # parse from string
-  records = Parser.parse(%q{
-    SET Language = "BEL ftw!"
-    p(HGNC:AKT1) =| tscript(g(HGNC:AKT2))
-  })
-  => [
-    #<struct BEL::Script::SetAnnotation keyword="Language", value="\"BEL ftw!\"">,
-    #<struct BEL::Script::StatementDefinition subject=#<struct BEL::Script::TermDefinition function="p", arguments=[#<struct BEL::Script::ParameterDefinition namespace="HGNC", value="AKT1">]>, rel="=|", object=#<struct BEL::Script::TermDefinition function="tscript", arguments=[#<struct BEL::Script::TermDefinition function="g", arguments=[#<struct BEL::Script::ParameterDefinition namespace="HGNC", value="AKT2">]>]>, comment=nil>
-  ]
+  # create parser
+  parser = BEL::Script::Parser.new
 
-  # parse each record, pass to block
-  Parser.parse_record(File.open('/path/to/file.bel')) do |record|
-    puts record
+  # parse; yield each parsed object to the block
+  parser.parse(BEL_SCRIPT) do |obj|
+    puts "#{obj.class} #{obj}"
   end
+  => BEL::Script::DocumentProperty: SET DOCUMENT Name = "Spec"
+  => BEL::Script::DocumentProperty: SET DOCUMENT Authors = "User"
+  => BEL::Script::Annotation: SET Disease = "Atherosclerosis"
+  => BEL::Script::Parameter: MESHD:Atherosclerosis
+  => BEL::Script::Term: path(MESHD:Atherosclerosis)
+  => BEL::Script::Statement: path(MESHD:Atherosclerosis)
+  => BEL::Script::Parameter: Atherosclerosis
+  => BEL::Script::Term: path(Atherosclerosis)
+  => BEL::Script::Statement: path(Atherosclerosis)
+  => BEL::Script::Parameter: GO:"lipid oxidation"
+  => BEL::Script::Term: bp(GO:"lipid oxidation")
+  => BEL::Script::Statement: bp(GO:"lipid oxidation")
+  => BEL::Script::Parameter: MGI:Mapkap1
+  => BEL::Script::Term: p(MGI:Mapkap1)
+  => BEL::Script::Parameter: MGI:Akt1
+  => BEL::Script::Parameter: P
+  => BEL::Script::Parameter: S
+  => BEL::Script::Parameter: 473
+  => BEL::Script::Term: p(MGI:Akt1,pmod(P,S,473))
+  => BEL::Script::Statement: p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473))
+  => BEL::Script::Parameter: MESHD:Atherosclerosis
+  => BEL::Script::Term: path(MESHD:Atherosclerosis)
+  => BEL::Script::Parameter: GO:"lipid oxidation"
+  => BEL::Script::Term: bp(GO:"lipid oxidation")
+  => BEL::Script::Statement: path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
+  => BEL::Script::Parameter: MESHD:Atherosclerosis
+  => BEL::Script::Term: path(MESHD:Atherosclerosis)
+  => BEL::Script::Parameter: HGNC:MYC
+  => BEL::Script::Term: p(HGNC:MYC)
+  => BEL::Script::Parameter: GO:"apoptotic process"
+  => BEL::Script::Term: bp(GO:"apoptotic process")
+  => BEL::Script::Statement: path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
+  => :update
 
 .. _BEL: http://www.openbel.org/content/bel-lang-language
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/
