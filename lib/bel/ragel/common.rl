@@ -24,8 +24,30 @@ machine bel;
     @value = buffer.map(&:chr).join().gsub '\"', '"'
   }
 
+  action lists {
+    listvals = []
+    listbuffer = []
+  }
+
+  action listn {
+    listbuffer << fc
+  }
+
+  action liste {
+    listvals << listbuffer.map(&:chr).join()
+    listbuffer = []
+  }
+
+  action listv {
+    @value = listvals
+  }
+
   SP = ' ';
   IDENT = [a-zA-Z0-9]+;
   STRING = '"' ([^"] | '\\\"')* '"';
+  LIST = '{' @lists SP*
+         (STRING | IDENT) $listn SP*
+         (',' @liste SP* (STRING | IDENT) $listn SP*)*
+         '}' @liste @listv;
 }%%
 =end

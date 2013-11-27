@@ -21,7 +21,7 @@ describe BEL::Script::Parser, "#parse" do
       objects << obj
     end
     expect(objects).to be
-    expect(objects.length).to eql(19)
+    expect(objects.length).to eql(32)
   end
 
   it "returns all types of statements" do
@@ -54,6 +54,6 @@ describe BEL::Script::Parser, "#parse" do
     parser.add_observer(observer)
     parser.parse(BEL_SCRIPT)
 
-    expect(observer.objects.length).to be 19
+    expect(observer.objects.length).to be 32
   end
 end

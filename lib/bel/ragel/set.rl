@@ -34,16 +34,6 @@
     changed
     notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
   }
-  action lists {
-    listvals = []
-    listbuffer = []
-  }
-  action listn {listbuffer << fc}
-  action liste {
-    listvals << listbuffer.map(&:chr).join()
-    listbuffer = []
-  }
-  action listv {@value = listvals}
 
   include 'common.rl';
 
@@ -66,12 +56,7 @@
     (
       STRING >s $n %val |
       IDENT >s $n %val  |
-      (
-        '{' @lists SP*
-          (STRING | IDENT) $listn SP*
-          (',' @liste SP* (STRING | IDENT) $listn SP*)*
-        '}' @liste @listv
-      )
+      LIST
     ) %annotation SP* '\n' @return;
 
   set :=
