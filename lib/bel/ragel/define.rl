@@ -3,13 +3,20 @@
 %%{
   machine bel;
 
-  action call_define_annotation {fcall define_annotation;}
-  action call_define_namespace {fcall define_namespace;}
+  action call_define_annotation {
+    fcall define_annotation;
+  }
+
+  action call_define_namespace {
+    fcall define_namespace;
+  }
+
   action define_annotation {
     anno = BEL::Script::AnnotationDefinition.new(@name, @value)
     changed
     notify_observers(anno)
   }
+
   action define_namespace {
     ns = BEL::Script::NamespaceDefinition.new(@name, @value)
     changed
@@ -18,24 +25,21 @@
 
   include 'common.rl';
 
-  DEFINE = /DEFINE/i;
-  ANNOTATION = /ANNOTATION/i;
-  NAMESPACE = /NAMESPACE/i;
-  AS = /AS/i;
-  URL = /URL/i;
-
   define_annotation :=
-    SP+ IDENT >s $n %name
-    SP+ AS SP+ URL SP+ STRING >s $n %val
-    SP* '\n' @define_annotation @return;
+    SP+ IDENT SP+ AS_KW SP+
+    (
+      (LIST_KW SP+ LIST) |
+      (PATTERN_KW SP+ STRING) |
+      (URL_KW SP+ STRING)
+    ) SP* NL
+    @define_annotation @return;
   define_namespace :=
-    SP+ IDENT >s $n %name
-    SP+ AS SP+ URL SP+ STRING >s $n %val
-    SP* '\n' @define_namespace @return;
+    SP+ IDENT SP+ AS_KW SP+ URL_KW SP+ STRING SP* NL
+    @define_namespace @return;
   define_main :=
     (
-      DEFINE SP+ ANNOTATION @call_define_annotation |
-      DEFINE SP+ NAMESPACE @call_define_namespace
+      DEFINE_KW SP+ ANNOTATION_KW @call_define_annotation |
+      DEFINE_KW SP+ NAMESPACE_KW @call_define_namespace
     )+;
 }%%
 =end

@@ -11,12 +11,12 @@ machine bel;
 
   document_main :=
     (
-      '\n' |
-      '#' [^\n]+ '\n' |
-      DEFINE SP+ ANNOTATION @call_define_annotation |
-      DEFINE SP+ NAMESPACE @call_define_namespace |
-      SET @call_set |
-      UNSET @call_unset |
+      NL |
+      '#' ^NL+ NL |
+      DEFINE_KW SP+ ANNOTATION_KW @call_define_annotation |
+      DEFINE_KW SP+ NAMESPACE_KW @call_define_namespace |
+      SET_KW @call_set |
+      UNSET_KW @call_unset |
       FUNCTION >{n = 0} ${n += 1} @{fpc -= n;} %{fpc -= n;}
       @statement_init @call_statement
     )+;

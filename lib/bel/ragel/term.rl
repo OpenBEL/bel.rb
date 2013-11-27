@@ -41,22 +41,6 @@ machine bel;
   }
 
   include 'common.rl';
-  
-  FUNCTION = ('proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|
-              'microRNAAbundance'|'m'|'geneAbundance'|'g'|
-              'biologicalProcess'|'bp'|'pathology'|'path'|
-              'complexAbundance'|'complex'|'translocation'|'tloc'|
-              'cellSecretion'|'sec'|'cellSurfaceExpression'|'surf'|
-              'reaction'|'rxn'|'compositeAbundance'|'composite'|
-              'fusion'|'fus'|'degradation'|'deg'|
-              'molecularActivity'|'act'|'catalyticActivity'|'cat'|
-              'kinaseActivity'|'kin'|'phosphataseActivity'|'phos'|
-              'peptidaseActivity'|'pep'|'ribosylationActivity'|'ribo'|
-              'transcriptionalActivity'|'tscript'|
-              'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|
-              'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|
-              'substitution'|'sub'|'truncation'|'trunc'|'reactants'|
-              'products'|'list');
 
   term :=
     FUNCTION >s $n %term_fx '(' SP* 
@@ -74,8 +58,8 @@ machine bel;
 
   term_main :=
     (
-      '\n' |
-      FUNCTION >{n = 0} ${n += 1} @{fpc -= n} @term_init @call_term '\n' @out_term
+      NL |
+      FUNCTION >{n = 0} ${n += 1} @{fpc -= n} @term_init @call_term NL @out_term
     )+;
 }%%
 =end

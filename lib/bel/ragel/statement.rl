@@ -49,14 +49,6 @@
   include 'set.rl';
   include 'term.rl';
 
-  RELATIONSHIP = ('increases'|'->'|'decreases'|'-|'|'directlyIncreases'|'=>'|                                                       
-                  'directlyDecreases'|'=|'|'causesNoChange'|
-                  'positiveCorrelation'|'negativeCorrelation'|
-                  'translatedTo'|'>>'|'transcribedTo'|':>'|'isA'|
-                  'subProcessOf'|'rateLimitingStepOf'|'biomarkerFor'|
-                  'prognosticBiomarkerFor'|'orthologous'|'analogous'|
-                  'association'|'--'|'hasMembers'|'hasComponents'|
-                  'hasMember'|'hasComponent');
 
   statement :=
     FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @term_init @call_term SP* %statement_subject '\n'? @statement @return
@@ -65,7 +57,7 @@
       FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @term_init @call_term %statement_oterm SP* ')'? @return
       |
       '(' @statement_ostmt @call_statement %statement_pop
-    ) %statement '\n' @{n = 0} @return;
+    ) %statement NL @{n = 0} @return;
   
   statement_main :=
     (

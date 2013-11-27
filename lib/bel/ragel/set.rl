@@ -2,8 +2,14 @@
 %%{
   machine bel;
 
-  action call_set {fcall set;}
-  action call_unset {fcall unset;}
+  action call_set {
+    fcall set;
+  }
+
+  action call_unset {
+    fcall unset;
+  }
+
   action sg_start {
     statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
@@ -11,12 +17,14 @@
     changed
     notify_observers(statement_group)
   }
+
   action docprop {
     docprop = BEL::Script::DocumentProperty.new(@name, @value)
 
     changed
     notify_observers(docprop)
   }
+
   action annotation {
     annotation = BEL::Script::Annotation.new(@name, @value)
     @annotations.store(@name, annotation)
@@ -24,9 +32,11 @@
     changed
     notify_observers(annotation)
   }
+
   action unset_annotation {
     @annotations.delete(@name)
   }
+
   action unset_statement_group {
     statement_group.annotations = @annotations.clone()
     @annotations.clear()
@@ -37,41 +47,29 @@
 
   include 'common.rl';
 
-  SET = /SET/i;
-  UNSET = /UNSET/i;
-  DOC = /DOCUMENT/i;
-  DOC_PROPS = (/Name/i | /Description/i | /Version/i |
-               /Copyright/i | /Authors/i | /Licenses/i |
-               /ContactInfo/i);
-  STATEMENT_GROUP = /STATEMENT_GROUP/i;
-
   statement_group =
-    SP+ STATEMENT_GROUP SP+ '='
-    SP+ (STRING | IDENT) >s $n %val %sg_start SP* '\n' @return;
+    SP+ STATEMENT_GROUP_KW SP+ EQL SP+ (STRING | IDENT)
+    %sg_start SP* NL @return;
   docprop = 
-    SP+ DOC SP+ DOC_PROPS >s $n %name SP+ '='
-    SP+ (STRING | IDENT) >s $n %val %docprop SP* '\n' @return;
+    SP+ DOC_KW SP+ DOC_PROPS SP+ EQL SP+ (STRING | IDENT)
+    %docprop SP* NL @return;
   annotation =
-    SP+ IDENT >s $n %name SP+ '=' SP+
-    (
-      STRING >s $n %val |
-      IDENT >s $n %val  |
-      LIST
-    ) %annotation SP* '\n' @return;
+    SP+ IDENT SP+ EQL SP+ ( STRING | IDENT | LIST)
+    %annotation SP* NL @return;
 
   set :=
     (statement_group | docprop | annotation);
   unset :=
     SP+
     (
-      IDENT >s $n %name %unset_annotation '\n' @return |
-      STATEMENT_GROUP %unset_statement_group '\n' @return
+      IDENT %unset_annotation NL @return |
+      STATEMENT_GROUP_KW %unset_statement_group NL @return
     );
   set_main :=
     (
-      '\n' |
-      SET @call_set |
-      UNSET @call_unset
+      NL |
+      SET_KW @call_set |
+      UNSET_KW @call_unset
     )+;
 }%%
 =end
