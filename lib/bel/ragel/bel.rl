@@ -32,9 +32,16 @@ module BEL
         %Q{SET DOCUMENT #{self.name} = "#{self.value}"}
       end
     end
-    AnnotationDefinition = Struct.new(:prefix, :value) do
+    AnnotationDefinition = Struct.new(:type, :prefix, :value) do
       def to_s
-        %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+        case self.type
+        when :list
+          %Q{DEFINE ANNOTATION #{self.prefix} AS LIST {#{self.value.join(',')}}}
+        when :pattern
+          %Q{DEFINE ANNOTATION #{self.prefix} AS PATTERN "#{self.value}"}
+        when :url
+          %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+        end
       end
     end
     NamespaceDefinition = Struct.new(:prefix, :value) do

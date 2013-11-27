@@ -4,6 +4,13 @@ require 'bel/script.rb'
 BEL_SCRIPT = <<-EOF
 SET DOCUMENT Name = "Spec"
 SET DOCUMENT Authors = User
+DEFINE NAMESPACE GO AS URL "http://resource.belframework.org/belframework/1.0/namespace/go-biological-processes-names.belns"
+DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/1.0/namespace/hgnc-approved-symbols.belns"
+DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/1.0/namespace/mesh-diseases.belns"
+DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/1.0/namespace/mgi-approved-symbols.belns"
+DEFINE ANNOTATION Disease AS  URL "http://resource.belframework.org/belframework/1.0/annotation/mesh-disease.belanno"
+DEFINE ANNOTATION Dosage AS PATTERN "[0-9]\.[0-9]+"
+DEFINE ANNOTATION TextLocation AS  LIST {"Abstract","Results","Legend","Review"}
 SET Disease = "Atherosclerosis"
 path(MESHD:Atherosclerosis)
 path(Atherosclerosis)
@@ -21,7 +28,7 @@ describe BEL::Script::Parser, "#parse" do
       objects << obj
     end
     expect(objects).to be
-    expect(objects.length).to eql(32)
+    expect(objects.length).to eql(39)
   end
 
   it "returns all types of statements" do
@@ -54,6 +61,6 @@ describe BEL::Script::Parser, "#parse" do
     parser.add_observer(observer)
     parser.parse(BEL_SCRIPT)
 
-    expect(observer.objects.length).to be 32
+    expect(observer.objects.length).to be 39
   end
 end

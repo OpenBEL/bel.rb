@@ -11,8 +11,20 @@
     fcall define_namespace;
   }
 
-  action define_annotation {
-    anno = BEL::Script::AnnotationDefinition.new(@name, @value)
+  action define_annotation_list {
+    anno = BEL::Script::AnnotationDefinition.new(:list, @name, @value)
+    changed
+    notify_observers(anno)
+  }
+
+  action define_annotation_pattern {
+    anno = BEL::Script::AnnotationDefinition.new(:pattern, @name, @value)
+    changed
+    notify_observers(anno)
+  }
+
+  action define_annotation_url {
+    anno = BEL::Script::AnnotationDefinition.new(:url, @name, @value)
     changed
     notify_observers(anno)
   }
@@ -28,11 +40,10 @@
   define_annotation :=
     SP+ IDENT SP+ AS_KW SP+
     (
-      (LIST_KW SP+ LIST) |
-      (PATTERN_KW SP+ STRING) |
-      (URL_KW SP+ STRING)
-    ) SP* NL
-    @define_annotation @return;
+      (LIST_KW SP+ LIST SP* NL @define_annotation_list @return) |
+      (PATTERN_KW SP+ STRING SP* NL @define_annotation_pattern @return) |
+      (URL_KW SP+ STRING SP * NL @define_annotation_url @return)
+    );
   define_namespace :=
     SP+ IDENT SP+ AS_KW SP+ URL_KW SP+ STRING SP* NL
     @define_namespace @return;
