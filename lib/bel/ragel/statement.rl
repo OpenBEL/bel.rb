@@ -38,26 +38,32 @@
   action statement_pop {
     @statement = @statement_stack.pop
   }
-  action rels {@relbuffer = []}
-  action reln {@relbuffer << fc}
+  action rels {relbuffer = []}
+  action reln {relbuffer << fc}
   action rele {
-    rel = @relbuffer.map(&:chr).join()
+    rel = relbuffer.map(&:chr).join()
     @statement_stack.last.rel = rel.to_sym
+  }
+  action cmts {cmtbuffer = []}
+  action cmtn {cmtbuffer << fc}
+  action cmte {
+    comment = cmtbuffer.map(&:chr).join()
+    @statement_stack.first.comment = comment
   }
 
   include 'common.rl';
   include 'set.rl';
   include 'term.rl';
 
-
+  comment = '//' ^NL+ >cmts $cmtn %cmte;
   statement :=
-    FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @term_init @call_term SP* %statement_subject '\n'? @statement @return
+    FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @term_init @call_term SP* %statement_subject comment? NL? @statement @return
     RELATIONSHIP >rels $reln %rele SP+
     (
       FUNCTION >{n = 0} ${n += 1} @{fpc -= n} %{fpc -= n} @term_init @call_term %statement_oterm SP* ')'? @return
       |
       '(' @statement_ostmt @call_statement %statement_pop
-    ) %statement NL @{n = 0} @return;
+    ) SP* comment? %statement NL @{n = 0} @return;
   
   statement_main :=
     (

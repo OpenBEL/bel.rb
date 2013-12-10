@@ -88,7 +88,7 @@ module BEL
           object.is_a? Statement
         end
         def to_s
-          case
+          lbl = case
           when subject_only?
             subject.to_s
           when simple?
@@ -96,6 +96,7 @@ module BEL
           when nested?
             "#{subject.to_s} #{rel} (#{object.to_s})"
           end
+          comment ? lbl + ' //' + comment : lbl
         end
     end
     StatementGroup = Struct.new(:name, :statements, :annotations) do
