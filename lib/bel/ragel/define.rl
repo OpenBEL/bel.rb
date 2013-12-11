@@ -74,7 +74,7 @@ module BEL
       def parse(content)
         buffer = []
         stack = []
-        data = content.unpack('c*')
+        data = content.unpack('C*')
 
         if block_given?
           observer = Observer.new(&Proc.new)
@@ -109,7 +109,7 @@ end
 # intended for direct testing
 if __FILE__ == $0
   if ARGV[0]
-    content = (File.exists? ARGV[0]) ? File.open(ARGV[0]).read : ARGV[0]
+    content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
   else
     content = $stdin.read
   end

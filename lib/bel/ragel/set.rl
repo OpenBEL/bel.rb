@@ -90,11 +90,11 @@ class Parser
   def exec(input)
     buffer = []
     stack = []
-    data = input.read.unpack('c*')
+    data = input.read.unpack('C*')
 
     %% write init;
     %% write exec;
   end
 end
-Parser.new.exec(ARGV[0] ? File.open(ARGV[0]) : $stdin)
+Parser.new.exec(ARGV[0] ? File.open(ARGV[0], 'r:UTF-8') : $stdin)
 
