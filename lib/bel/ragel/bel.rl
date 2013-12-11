@@ -17,8 +17,7 @@ machine bel;
       DEFINE_KW SP+ NAMESPACE_KW @call_define_namespace |
       SET_KW @call_set |
       UNSET_KW @call_unset |
-      FUNCTION >{n = 0} ${n += 1} @{fpc -= n;} %{fpc -= n;}
-      @statement_init @call_statement
+      ^(NL | '#' | 'D' | 'S' | 'U') >{fpc -= 1;} >statement_init >call_statement
     )+;
 }%%
 =end
@@ -165,9 +164,7 @@ if __FILE__ == $0
 
   class DefaultObserver
     def update(obj)
-      if not obj.respond_to? :fx
-        puts obj
-      end
+      puts obj
     end
   end
 

@@ -69,7 +69,7 @@ machine bel;
               'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|
               'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|
               'substitution'|'sub'|'truncation'|'trunc'|'reactants'|
-              'products'|'list');
+              'products'|'list') >s $n %name;
   LIST_KW = /LIST/i;
   NAMESPACE_KW = /NAMESPACE/i;
   PATTERN_KW = /PATTERN/i;
@@ -93,5 +93,26 @@ machine bel;
          (STRING | IDENT) $listn SP*
          (',' @liste SP* (STRING | IDENT) $listn SP*)*
          '}' @liste @listv;
+
+  common_main :=
+    (FUNCTION NL)+;
 }%%
 =end
+
+class Parser
+
+  def initialize
+    @items = []
+    %% write data;
+  end
+
+  def exec(input)
+    buffer = []
+    stack = []
+    data = input.read.unpack('c*')
+
+    %% write init;
+    %% write exec;
+  end
+end
+Parser.new.exec(ARGV[0] ? File.open(ARGV[0]) : $stdin)
