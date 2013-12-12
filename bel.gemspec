@@ -6,10 +6,11 @@ Gem::Specification.new do |spec|
                                and processing of BEL (Biological Expression
                                Language) with a natural DSL.}.
                             gsub(%r{^\s+}, ' ').gsub(%r{\n}, '')
+  spec.license            = 'Apache-2.0'
   spec.authors            = ['Anthony Bargnesi']
   spec.date               = %q{2013-07-18}
   spec.email              = %q{abargnesi@selventa.com}
-  spec.files              = Dir.glob('lib/**/*.rb')
+  spec.files              = Dir.glob('lib/**/*.rb') << 'LICENSE'
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
 
