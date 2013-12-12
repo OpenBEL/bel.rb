@@ -57,7 +57,7 @@ machine bel;
         (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
         FUNCTION '(' @term_fx @call_term
       )
-    )* ')' @{n = 0} @term_pop @return;
+    )* ')' >term_pop >term @{n = 0} @return;
 
   term_main :=
     (
@@ -97,7 +97,10 @@ module BEL
         if self.value.respond_to? :each
           value = "{#{self.value.join(',')}}"
         else
-          value = %Q{"#{self.value}"}
+          value = self.value
+          if NonWordMatcher.match value
+            value = %Q{"#{value}"}
+          end
         end
         "SET #{self.name} = #{value}"
       end
@@ -144,7 +147,11 @@ module BEL
     end
     StatementGroup = Struct.new(:name, :statements, :annotations) do
       def to_s
-        %Q{SET STATEMENT_GROUP = "#{self.name}"}
+        name = self.name
+        if NonWordMatcher.match name
+          name = %Q{"#{name}"}
+        end
+        %Q{SET STATEMENT_GROUP = #{name}}
       end
     end
     UnsetStatementGroup = Struct.new(:name) do
