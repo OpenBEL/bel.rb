@@ -3,6 +3,7 @@ GEM
   specs:
     diff-lcs (1.2.4)
     json (1.8.1)
+    json (1.8.1-java)
     rake (10.1.0)
     rdoc (3.12.2)
       json (~> 1.4)
@@ -17,6 +18,7 @@ GEM
     yard (0.8.7.2)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
