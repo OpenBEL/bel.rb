@@ -48,7 +48,7 @@ machine bel;
 
   # basic tokens
   EQL = '=';
-  NL = '\n';
+  NL = '\n' | '\r' '\n'?;
   SP = ' ';
 
   # keywords

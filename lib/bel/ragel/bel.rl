@@ -11,7 +11,6 @@ machine bel;
 
   # TODO
   # - allow EOF for end of record
-  # - parse all line terminators
   document_main :=
     (
       NL |
