@@ -42,7 +42,7 @@
     (
       (LIST_KW SP+ LIST SP* NL @define_annotation_list @return) |
       (PATTERN_KW SP+ STRING SP* NL @define_annotation_pattern @return) |
-      (URL_KW SP+ STRING SP * NL @define_annotation_url @return)
+      (URL_KW SP+ STRING SP* NL @define_annotation_url @return)
     );
   define_namespace :=
     SP+ IDENT SP+ AS_KW SP+ URL_KW SP+ STRING SP* NL
