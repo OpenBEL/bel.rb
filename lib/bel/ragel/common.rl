@@ -24,10 +24,6 @@ machine bel;
     @value = buffer.map(&:chr).join().gsub '\"', '"'
   }
 
-  action doc_property {
-    @doc_property = buffer.map(&:chr).join()
-  }
-
   action lists {
     listvals = []
     listbuffer = []
@@ -58,7 +54,7 @@ machine bel;
   DOC_KW = /DOCUMENT/i;
   DOC_PROPS = (/Name/i | /Description/i | /Version/i |
                /Copyright/i | /Authors/i | /Licenses/i |
-               /ContactInfo/i) >s $n %doc_property;
+               /ContactInfo/i);
   FUNCTION = ('proteinAbundance'|'p'|'rnaAbundance'|'r'|'abundance'|'a'|
               'microRNAAbundance'|'m'|'geneAbundance'|'g'|
               'biologicalProcess'|'bp'|'pathology'|'path'|
@@ -91,15 +87,15 @@ machine bel;
   URL_KW = /URL/i;
 
   # expressions
-  IDENT = [a-zA-Z0-9_]+ >s $n %name;
-  STRING = ('"' ([^"] | '\\\"')* '"') >s $n %val;
+  IDENT = [a-zA-Z0-9_]+;
+  STRING = ('"' ('\\\"' | [^"])* '"') >s $n %val;
   LIST = '{' @lists SP*
          (STRING | IDENT) $listn SP*
          (',' @liste SP* (STRING | IDENT) $listn SP*)*
          '}' @liste @listv;
 
   common_main :=
-    (FUNCTION NL)+;
+    (FUNCTION | STRING NL)+;
 }%%
 =end
 

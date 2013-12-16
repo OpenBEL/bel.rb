@@ -1,3 +1,4 @@
+# vim: ts=2 sw=2:
 =begin
 %%{
   machine bel;
@@ -11,8 +12,7 @@
   }
 
   action sg_start {
-    sg_name = @name || @value
-    statement_group = BEL::Script::StatementGroup.new(sg_name, [])
+    statement_group = BEL::Script::StatementGroup.new(@value, [])
     @annotations = {}
 
     changed
@@ -20,8 +20,7 @@
   }
 
   action docprop {
-    value = @name || @value
-    docprop = BEL::Script::DocumentProperty.new(@doc_property, value)
+    docprop = BEL::Script::DocumentProperty.new(@name, @value)
 
     changed
     notify_observers(docprop)
@@ -50,21 +49,21 @@
   include 'common.rl';
 
   statement_group =
-    SP+ STATEMENT_GROUP_KW SP* EQL @{@name = nil} SP* (STRING | IDENT)
+    SP+ STATEMENT_GROUP_KW SP* EQL SP* (STRING | IDENT >s $n %val)
     %sg_start SP* NL @return;
   docprop = 
-    SP+ DOC_KW SP+ %{@name = nil} DOC_PROPS SP* EQL SP* (STRING | IDENT)
-    %docprop SP* NL @return;
+    SP+ DOC_KW SP+ DOC_PROPS >s $n %name SP* EQL SP* (STRING | IDENT >s $n %val)
+     SP* NL @docprop @return;
   annotation =
-    SP+ IDENT SP* EQL SP* ( STRING | IDENT | LIST)
-    %annotation SP* NL @return;
+    SP+ IDENT >s $n %name SP* EQL SP* (STRING | IDENT >s $n %val | LIST)
+    SP* NL @annotation @return;
 
   set :=
     (statement_group | docprop | annotation);
   unset :=
     SP+
     (
-      IDENT %unset_annotation NL @return |
+      IDENT >s $n %name %unset_annotation NL @return |
       STATEMENT_GROUP_KW @unset_statement_group NL @return
     );
   set_main :=
@@ -77,99 +76,10 @@
 =end
 
 require 'observer'
+require_relative 'parse_objects'
 
 module BEL
   module Script
-    DocumentProperty = Struct.new(:name, :value) do
-      def to_s
-        %Q{SET DOCUMENT #{self.name} = "#{self.value}"}
-      end
-    end
-    AnnotationDefinition = Struct.new(:type, :prefix, :value) do
-      def to_s
-        case self.type
-        when :list
-          %Q{DEFINE ANNOTATION #{self.prefix} AS LIST {#{self.value.join(',')}}}
-        when :pattern
-          %Q{DEFINE ANNOTATION #{self.prefix} AS PATTERN "#{self.value}"}
-        when :url
-          %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
-        end
-      end
-    end
-    NamespaceDefinition = Struct.new(:prefix, :value) do
-      def to_s
-        %Q{DEFINE NAMESPACE #{self.prefix} AS URL "#{self.value}"}
-      end
-    end
-    Annotation = Struct.new(:name, :value) do
-      def to_s
-        if self.value.respond_to? :each
-          value = "{#{self.value.join(',')}}"
-        else
-          value = self.value
-          if NonWordMatcher.match value
-            value = %Q{"#{value}"}
-          end
-        end
-        "SET #{self.name} = #{value}"
-      end
-    end
-    Parameter = Struct.new(:ns, :value) do
-      NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z]/)
-      def to_s
-        prepped_value = value
-        if NonWordMatcher.match value
-          prepped_value = %Q{"#{value}"}
-        end
-        "#{self.ns ? self.ns + ':' : ''}#{prepped_value}"
-      end
-    end
-    Term = Struct.new(:fx, :args) do
-      def <<(item)
-        self.args << item
-      end
-      def to_s
-        "#{self.fx}(#{[args].flatten.join(',')})"
-      end
-    end
-    Statement = Struct.new(:subject, :rel, :object, :annotations, :comment) do
-        def subject_only?
-          !rel
-        end
-        def simple?
-          object.is_a? Term
-        end
-        def nested?
-          object.is_a? Statement
-        end
-        def to_s
-          lbl = case
-          when subject_only?
-            subject.to_s
-          when simple?
-            "#{subject.to_s} #{rel} #{object.to_s}"
-          when nested?
-            "#{subject.to_s} #{rel} (#{object.to_s})"
-          end
-          comment ? lbl + ' //' + comment : lbl
-        end
-    end
-    StatementGroup = Struct.new(:name, :statements, :annotations) do
-      def to_s
-        name = self.name
-        if NonWordMatcher.match name
-          name = %Q{"#{name}"}
-        end
-        %Q{SET STATEMENT_GROUP = #{name}}
-      end
-    end
-    UnsetStatementGroup = Struct.new(:name) do
-      def to_s
-        %Q{UNSET STATEMENT_GROUP}
-      end
-    end
-
     class Parser
       include Observable
 
