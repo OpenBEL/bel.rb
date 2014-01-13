@@ -42,9 +42,23 @@ machine bel;
     @value = listvals
   }
 
+  action newline {
+    changed
+    notify_observers(BEL::Script::Newline.instance)
+  }
+
+  action comment {
+    comment_text = buffer.map(&:chr).join()
+    comment = BEL::Script::Comment.new(comment_text)
+
+    changed
+    notify_observers(comment)
+  }
+
   # basic tokens
   EQL = '=';
   NL = '\n' | '\r' '\n'?;
+  COMMENT = '#';
   SP = ' ';
 
   # keywords

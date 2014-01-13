@@ -2,15 +2,18 @@
 require 'bel/script.rb'
 
 describe BEL::Script::Parser, "#parse" do
-  it "skips document comments" do
+  it "understands empty lines and document comments" do
     parser = BEL::Script::Parser.new
     objects = []
 
-    parser.parse("####\nSET Reviewed = True\n") do |obj|
+    parser.parse("####\n\nSET Reviewed = True\n") do |obj|
       objects << obj
     end
     expect(objects).to be
-    expect(objects.length).to eql(1)
+    expect(objects.length).to eql(3)
+    expect(objects[0].class).to eql(BEL::Script::Comment)
+    expect(objects[1].class).to eql(BEL::Script::Newline)
+    expect(objects[2].class).to eql(BEL::Script::Annotation)
   end
 
   ['Name', 'Description', 'Version', 'Copyright',
@@ -142,8 +145,7 @@ biologicalProcess(GO:aging)
 gtpBoundActivity(proteinAbundance(PFH:"RHO Family"))
 catalyticActivity(proteinAbundance(HGNC:NOS3))
 translocation(proteinAbundance(PFH:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
-proteinAbundance(HGNC:RAF1,proteinModification(P,S))
-\n}
+proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     parser.parse(terms) do |obj|
       objects << obj
@@ -160,8 +162,7 @@ biologicalProcess(GO:aging)
 gtpBoundActivity(proteinAbundance(PFH:"RHO Family"))
 catalyticActivity(proteinAbundance(HGNC:NOS3))
 translocation(proteinAbundance(PFH:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
-proteinAbundance(HGNC:RAF1,proteinModification(P,S))
-\n}
+proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     parser.parse(terms) do |obj|
       if obj.is_a? BEL::Script::Term

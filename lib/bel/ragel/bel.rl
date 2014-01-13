@@ -13,8 +13,8 @@ machine bel;
   # - allow EOF for end of record
   document_main :=
     (
-      NL |
-      '#' ^NL+ NL |
+      NL @newline |
+      COMMENT ^NL+ >s $n NL %comment |
       DEFINE_KW SP+ ANNOTATION_KW @call_define_annotation |
       DEFINE_KW SP+ NAMESPACE_KW @call_define_namespace |
       SET_KW @call_set |

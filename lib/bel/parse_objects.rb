@@ -1,6 +1,19 @@
 # vim: ts=2 sw=2:
+require 'singleton'
+
 module BEL
   module Script
+    class Newline
+      include Singleton
+      def to_s
+        ""
+      end
+    end
+    Comment = Struct.new(:text) do
+      def to_s
+        %Q{##{self.text}}
+      end
+    end
     DocumentProperty = Struct.new(:name, :value) do
       def to_s
         value = self.value
@@ -95,5 +108,7 @@ module BEL
         %Q{UNSET STATEMENT_GROUP}
       end
     end
+
+    private
   end
 end
