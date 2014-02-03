@@ -3,4 +3,5 @@ module BEL
   autoload :Language,  "#{File.dirname(__FILE__)}/bel/language"
   autoload :Namespace, "#{File.dirname(__FILE__)}/bel/namespace"
   autoload :Script,    "#{File.dirname(__FILE__)}/bel/script"
+  autoload :RDF,       "#{File.dirname(__FILE__)}/bel/rdf"
 end
