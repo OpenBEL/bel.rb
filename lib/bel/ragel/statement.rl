@@ -9,7 +9,7 @@
     @statement.annotations = @annotations.clone()
 
     if @statement_group
-      statement_group.statements << @statement
+      @statement_group.statements << @statement
     end
 
     changed

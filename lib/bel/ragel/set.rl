@@ -12,11 +12,11 @@
   }
 
   action sg_start {
-    statement_group = BEL::Language::StatementGroup.new(@value, [])
+    @statement_group = BEL::Language::StatementGroup.new(@value, [])
     @annotations = {}
 
     changed
-    notify_observers(statement_group)
+    notify_observers(@statement_group)
   }
 
   action docprop {
@@ -39,11 +39,11 @@
   }
 
   action unset_statement_group {
-    statement_group.annotations = @annotations.clone()
+    @statement_group.annotations = @annotations.clone()
     @annotations.clear()
 
     changed
-    notify_observers(BEL::Language::UnsetStatementGroup.new(statement_group.name))
+    notify_observers(BEL::Language::UnsetStatementGroup.new(@statement_group.name))
   }
 
   include 'common.rl';
