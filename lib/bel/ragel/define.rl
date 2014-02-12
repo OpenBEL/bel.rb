@@ -12,25 +12,25 @@
   }
 
   action define_annotation_list {
-    anno = BEL::Script::AnnotationDefinition.new(:list, @name, @value)
+    anno = BEL::Language::AnnotationDefinition.new(:list, @name, @value)
     changed
     notify_observers(anno)
   }
 
   action define_annotation_pattern {
-    anno = BEL::Script::AnnotationDefinition.new(:pattern, @name, @value)
+    anno = BEL::Language::AnnotationDefinition.new(:pattern, @name, @value)
     changed
     notify_observers(anno)
   }
 
   action define_annotation_url {
-    anno = BEL::Script::AnnotationDefinition.new(:url, @name, @value)
+    anno = BEL::Language::AnnotationDefinition.new(:url, @name, @value)
     changed
     notify_observers(anno)
   }
 
   action define_namespace {
-    ns = BEL::Script::NamespaceDefinition.new(@name, @value)
+    ns = BEL::Language::NamespaceDefinition.new(@name, @value)
     changed
     notify_observers(ns)
   }
@@ -56,7 +56,7 @@
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script

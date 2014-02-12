@@ -13,7 +13,7 @@ machine bel;
   }
   action term_fx {
     fx = @name.to_sym
-    @term_stack.push(BEL::Script::Term.new(fx, []))
+    @term_stack.push(BEL::Language::Term.new(fx, []))
     pfx = nil
     pbuf = []
   }
@@ -23,7 +23,7 @@ machine bel;
       if val.start_with? '"' and val.end_with? '"'
         val = val.strip()[1...-1]
       end
-      param = BEL::Script::Parameter.new(pfx, val)
+      param = BEL::Language::Parameter.new(pfx, val)
       @term_stack.last << param
 
       changed
@@ -67,7 +67,7 @@ machine bel;
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script

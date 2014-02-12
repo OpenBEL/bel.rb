@@ -11,9 +11,9 @@ describe BEL::Script::Parser, "#parse" do
     end
     expect(objects).to be
     expect(objects.length).to eql(3)
-    expect(objects[0].class).to eql(BEL::Script::Comment)
-    expect(objects[1].class).to eql(BEL::Script::Newline)
-    expect(objects[2].class).to eql(BEL::Script::Annotation)
+    expect(objects[0].class).to eql(BEL::Language::Comment)
+    expect(objects[1].class).to eql(BEL::Language::Newline)
+    expect(objects[2].class).to eql(BEL::Language::Annotation)
   end
 
   ['Name', 'Description', 'Version', 'Copyright',
@@ -154,7 +154,7 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
     expect(objects.length).to eql(26)
   end
 
-  it "provides fx/args for terms" do
+  it "provides fx/arguments for terms" do
     parser = BEL::Script::Parser.new
 
     terms = %Q{biologicalProcess(GO:"response to oxidative stress")
@@ -165,9 +165,9 @@ translocation(proteinAbundance(PFH:"RAS Family"),MESHCL:"Intracellular Space",ME
 proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     parser.parse(terms) do |obj|
-      if obj.is_a? BEL::Script::Term
+      if obj.is_a? BEL::Language::Term
         expect(obj).to respond_to(:fx)
-        expect(obj).to respond_to(:args)
+        expect(obj).to respond_to(:arguments)
       end
     end
   end
@@ -201,9 +201,9 @@ path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
 path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process")) //Comment3\n}
 
     parser.parse(statements) do |obj|
-      if obj.is_a? BEL::Script::Statement
+      if obj.is_a? BEL::Language::Statement
         expect(obj).to respond_to(:subject)
-        expect(obj).to respond_to(:rel)
+        expect(obj).to respond_to(:relationship)
         expect(obj).to respond_to(:object)
         expect(obj).to respond_to(:annotations)
         expect(obj).to respond_to(:comment)
@@ -239,7 +239,7 @@ path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
 UNSET STATEMENT_GROUP\n}
 
     parser.parse(statements) do |obj|
-      if obj.is_a? BEL::Script::StatementGroup
+      if obj.is_a? BEL::Language::StatementGroup
         expect(obj).to respond_to(:name)
         expect(obj).to respond_to(:statements)
         expect(obj).to respond_to(:annotations)
@@ -257,7 +257,7 @@ path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
 UNSET STATEMENT_GROUP\n}
 
     parser.parse(statements) do |obj|
-      if obj.is_a? BEL::Script::UnsetStatementGroup
+      if obj.is_a? BEL::Language::UnsetStatementGroup
         expect(obj).to respond_to(:name)
       end
     end

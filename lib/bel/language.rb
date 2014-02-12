@@ -1,7 +1,217 @@
 # vim: ts=2 sw=2:
+require_relative '../features'
 
 module BEL
   module Language
+    NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z_]/)
+
+    class Newline
+      def to_s
+        ""
+      end
+    end
+    NEW_LINE = Newline.new
+
+    Comment = Struct.new(:text) do
+      def to_s
+        %Q{##{self.text}}
+      end
+    end
+
+    DocumentProperty = Struct.new(:name, :value) do
+      def to_s
+        value = self.value
+        if NonWordMatcher.match value
+          value = %Q{"#{value}"}
+        end
+        %Q{SET DOCUMENT #{self.name} = #{value}}
+      end
+    end
+
+    NamespaceDefinition = Struct.new(:prefix, :value) do
+      def to_s
+        %Q{DEFINE NAMESPACE #{self.prefix} AS URL "#{self.value}"}
+      end
+    end
+
+    AnnotationDefinition = Struct.new(:type, :prefix, :value) do
+      def to_s
+        case self.type
+        when :list
+          %Q{DEFINE ANNOTATION #{self.prefix} AS LIST {#{self.value.join(',')}}}
+        when :pattern
+          %Q{DEFINE ANNOTATION #{self.prefix} AS PATTERN "#{self.value}"}
+        when :url
+          %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+        end
+      end
+    end
+
+    class Parameter
+      include Comparable
+      attr_reader :ns, :value, :enc, :signature
+
+      def initialize(ns, value, enc=nil)
+        @ns = ns
+        @value = value
+        @enc = enc || ''
+        @signature = E.new(@enc)
+      end
+
+      def <=>(other)
+        ns_compare = ns <=> other.ns
+        if ns_compare == 0
+          value <=> other.value
+        else
+          ns_compare
+        end
+      end
+
+      def to_s
+        prepped_value = value
+        if NonWordMatcher.match value
+          prepped_value = %Q{"#{value}"}
+        end
+        "#{self.ns ? self.ns.to_s + ':' : ''}#{prepped_value}"
+      end
+    end
+
+    class Function
+      attr_reader :short_form, :long_form, :return_type,
+                  :description, :signatures
+
+      def initialize args
+        args.each do |k,v|
+          instance_variable_set("@#{k}", v) unless v.nil?
+        end
+      end
+
+      def [](key)
+        instance_variable_get("@#{key}")
+      end
+    end
+
+    class Term
+      include Comparable
+      attr_reader :fx, :arguments, :signature
+
+      def initialize(fx, *arguments)
+        @fx = case fx
+        when String
+        when Symbol
+          FUNCTIONS[fx.to_sym]
+        when Function
+          fx
+        when nil
+          raise ArgumentError, 'fx must not be nil'
+        end
+        @arguments = arguments ||= []
+        @signature = Signature.new(
+          @fx[:short_form],
+          *@arguments.map { |arg|
+            case arg
+            when Term
+              F.new(arg.fx.return_type)
+            when Parameter
+              E.new(arg.enc)
+            when nil
+              NullE.new
+            end
+          })
+      end
+
+      def <<(item)
+        @arguments << item
+      end
+
+      def validate_signature
+        invalids = []
+        @arguments.select { |arg| Term === arg }.each do |term|
+          invalids << term if not term.validate_signature
+        end
+
+        sigs = @fx.signatures
+        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
+        invalids << self if not match
+        if block_given? and not invalids.empty?
+          invalids.each do |term|
+            yield term, term.fx.signatures
+          end
+        end
+        invalids.empty?
+      end
+
+      def to_s
+        "#{@fx[:short_form]}(#{[@arguments].flatten.join(',')})"
+      end
+    end
+
+    Annotation = Struct.new(:name, :value) do
+      def to_s
+        if self.value.respond_to? :each
+          value = "{#{self.value.join(',')}}"
+        else
+          value = self.value
+          if NonWordMatcher.match value
+            value.gsub! '"', '\"'
+            value = %Q{"#{value}"}
+          end
+        end
+        "SET #{self.name} = #{value}"
+      end
+    end
+
+    class Statement
+      attr_accessor :subject, :relationship, :object, :annotations, :comment
+
+      def initialize(subject=nil, relationship=nil, object=nil, annotations=[], comment=nil)
+        @subject = subject
+        @relationship = relationship
+        @object = object
+        @annotations = annotations
+        @comment = comment
+      end
+
+      def subject_only?
+        !@relationship
+      end
+      def simple?
+        @object and @object.is_a? Term
+      end
+      def nested?
+        @object and @object.is_a? Statement
+      end
+      def to_s
+        lbl = case
+        when subject_only?
+          @subject.to_s
+        when simple?
+          "#{@subject.to_s} #{@relationship} #{@object.to_s}"
+        when nested?
+          "#{@subject.to_s} #{@relationship} (#{@object.to_s})"
+        else
+          ''
+        end
+        comment ? lbl + ' //' + comment : lbl
+      end
+    end
+
+    StatementGroup = Struct.new(:name, :statements, :annotations) do
+      def to_s
+        name = self.name
+        if NonWordMatcher.match name
+          name = %Q{"#{name}"}
+        end
+        %Q{SET STATEMENT_GROUP = #{name}}
+      end
+    end
+
+    UnsetStatementGroup = Struct.new(:name) do
+      def to_s
+        %Q{UNSET STATEMENT_GROUP}
+      end
+    end
+
     class Signature
       attr_reader :fx, :arguments
       def initialize(fx, *arguments)
@@ -112,100 +322,6 @@ module BEL
       end
     end
 
-    class Parameter
-      include Comparable
-      attr_reader :ns_def, :value, :enc, :signature
-
-      def initialize(ns_def, value, enc)
-        @ns_def = ns_def
-        @value = value
-        @enc = enc || ''
-        @signature = E.new(@enc)
-      end
-
-      def <=>(other)
-        ns_compare = ns_def <=> other.ns_def
-        if ns_compare == 0
-          value <=> other.value
-        else
-          ns_compare
-        end
-      end
-
-      def to_s
-        value = @value
-        if value =~ %r{\W}
-          value = %Q{"#{value}"}
-        end
-        "#{@ns_def}:#{value}"
-      end
-    end
-
-    class Statement
-      attr_accessor :subject, :relationship, :object
-
-      def initialize(subject, relationship=nil, object=nil)
-        raise ArgumentError, 'subject must not be nil' unless subject
-        @subject = subject
-        @relationship = relationship
-        @object = object
-      end
-    end
-
-    class Function
-      attr_reader :short_form, :long_form, :return_type,
-                  :description, :signatures
-
-      def initialize args
-        args.each do |k,v|
-          instance_variable_set("@#{k}", v) unless v.nil?
-        end
-      end
-    end
-
-    class Term
-      include Comparable
-      attr_reader :fx, :arguments, :signature
-
-      def initialize(fx, *arguments)
-        @fx = fx
-        @arguments = arguments ||= []
-        @signature = Signature.new(
-          @fx.short_form,
-          *@arguments.map { |arg|
-            case arg
-            when Term
-              F.new(arg.fx.return_type)
-            when Parameter
-              E.new(arg.enc)
-            when nil
-              NullE.new
-            end
-          })
-      end
-
-      def validate_signature
-        invalids = []
-        @arguments.select { |arg| Term === arg }.each do |term|
-          invalids << term if not term.validate_signature
-        end
-
-        sigs = fx.signatures
-        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
-        invalids << self if not match
-        if block_given? and not invalids.empty?
-          invalids.each do |term|
-            yield term, term.fx.signatures
-          end
-        end
-        invalids.empty?
-      end
-
-      def to_s
-        "#{@fx.short_form}(#{@arguments.map(&:to_s).join(',')})"
-      end
-    end
-
     FUNCTIONS = {
       a: {
         short_form: :a,
@@ -271,6 +387,15 @@ module BEL
         signatures: [
           Signature.new(:complex, E.new(:A)),
           Signature.new(:complex, F.new(:a, true))
+        ]
+      },
+      composite: {
+        short_form: :composite,
+        long_form: :compositeAbundance,
+        description: 'Denotes the frequency or abundance of events in which members are present',
+        return_type: :a,
+        signatures: [
+          Signature.new(:composite, F.new(:a, true))
         ]
       },
       deg: {
@@ -570,6 +695,77 @@ module BEL
       end
       Language.send(:define_method, metadata[:long_form]) do |*args|
         Term.new(func, *args)
+      end
+    end
+
+    if BEL::Features.rdf_support?
+      require_relative 'rdf'
+
+      class Parameter
+        def to_uri
+          @ns.to_rdf_vocabulary[@value]
+        end
+
+        def to_rdf
+          uri = to_uri
+          @enc.to_s.each_char.collect do |enc_char|
+            case enc_char
+            when 'G'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.GeneConcept)
+            when 'R'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.RNAConcept)
+            when 'P'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.ProteinConcept)
+            when 'M'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.MicroRNAConcept)
+            when 'C'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.ComplexConcept)
+            when 'B'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.BiologicalProcessConcept)
+            when 'A'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.AbundanceConcept)
+            when 'O'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.PathologyConcept)
+            end
+          end
+        end
+      end
+
+      class Term
+        def to_uri
+          tid = to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+          BEL::RDF::BELR[tid]
+        end
+
+        def to_rdf
+          uri = to_uri
+          RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.Term)
+        end
+      end
+
+      class Statement
+        def to_uri
+          case
+          when subject_only?
+            tid = @subject.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            BEL::RDF::BELR[tid]
+          when simple?
+            sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            obj_id = @object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            BELR["#{sub_id}_#{rel}_#{obj_id}"]
+          when nested?
+            sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            nsub_id = @object.subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            nobj_id = @object.object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.relationship.to_s]
+            BELR["#{sub_id}_#{rel}_#{nsub_id}_#{nrel}_#{nobj_id}"]
+          end
+        end
+
+        def to_rdf
+        end
       end
     end
   end

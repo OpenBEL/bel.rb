@@ -1,62 +1,38 @@
 # vim: ts=2 sw=2:
 # Defines the RDF vocabulary for BEL structures.
 
-begin
-  require 'rdf'
-  require 'addressable/uri'
-rescue LoadError => e
-  # exceptional condition; missing non-optional or downstream deps
-  raise unless e.message =~ /rdf/ or e.message =~ /addressable/
-
+unless BEL::Features.rdf_support?
   # rdf and addressable are required
-  load_excp = e.exception(%Q{The rdf and addressable gems are required for BEL::RDF.
-  gem install rdf
-  gem install addressable})
-  load_excp.set_backtrace(e.backtrace)
-  raise load_excp
+  raise RuntimeError, %Q{BEL::RDF is not supported.
+The rdf and addressable gems are required.
+
+Install the gems:
+      gem install rdf
+      gem install addressable}
 end
+
+require 'rdf'
+require 'addressable/uri'
 
 # rename rdf module to avoid conflict within BEL::RDF
 RUBYRDF = RDF
 
 module BEL
   module RDF
-    # namespaces
-    BELR    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/")
-    BELV    = RUBYRDF::Vocabulary.new("http://www.selventa.com/vocabulary/")
-    EGID    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/entrez-gene-ids/")
-    HGNC    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/hgnc-approved-symbols/")
-    MGI     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/mgi-approved-symbols/")
-    RGD     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/rgd-approved-symbols/")
-    AFFY    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/affy-probeset-ids/")
-    SCOM    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-named-complexes/")
-    MESHCL  = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/mesh-cellular-locations/")
-    SFAM    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-protein-families/")
-    CHEBI   = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/chebi-names/")
-    NCH     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-named-complexes-human/")
-    NCM     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-named-complexes-mouse/")
-    NCR     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-named-complexes-rat/")
-    PFH     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-protein-families-human/")
-    PFM     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-protein-families-mouse/")
-    PFR     = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-protein-families-rat/")
-    GO      = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/go/")
-    MESHPP  = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/mesh-processes/")
-    MESHD   = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/mesh-diseases/")
-    SCHEM   = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-legacy-chemical-names/")
-    SDIS    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/selventa-legacy-diseases/")
-    GOBP    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/go-biological-processes-names/")
-    GOCCID  = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/go-cellular-component-ids/")
-    GOCC    = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/namespace/go-cellular-component-names/")
+    # uri prefixes
+    BELR    = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/')
+    BELV    = RUBYRDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
+    PUBMED  = RUBYRDF::Vocabulary.new('http://bio2rdf.org/pubmed:')
 
     # annotations
-    Anatomy       = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/anatomy/")
-    Cell          = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/cell/")
-    CellLine      = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/cell-line/")
-    CellStructure = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/cell-structure/")
-    Disease       = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/disease/")
-    MeSHAnatomy   = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/mesh-anatomy/")
-    MeSHDisease   = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/mesh-diseases/")
-    Species       = RUBYRDF::Vocabulary.new("http://www.selventa.com/bel/annotation/species-taxonomy-id/")
+    Anatomy       = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/anatomy/')
+    Cell          = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/cell/')
+    CellLine      = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/cell-line/')
+    CellStructure = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/cell-structure/')
+    Disease       = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/disease/')
+    MeSHAnatomy   = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/mesh-anatomy/')
+    MeSHDisease   = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/mesh-diseases/')
+    Species       = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/species-taxonomy-id/')
 
     # maps outer function to bel/vocabulary class
     FUNCTION_TYPE = {
@@ -157,23 +133,21 @@ module BEL
     }
     # maps modification types to bel/vocabulary class
     MODIFICATION_TYPE = {
-      "P,S" => BELV.PhosphorylationSerine,
-      "P,T" => BELV.PhosphorylationThreonine,
-      "P,Y" => BELV.PhosphorylationTyrosine,
-      "A" =>BELV.Acetylation,
-      "F" =>BELV.Farnesylation,
-      "G" =>BELV.Glycosylation,
-      "H" =>BELV.Hydroxylation,
-      "M" =>BELV.Methylation,
-      "P" =>BELV.Phosphorylation,
-      "R" =>BELV.Ribosylation,
-      "S" =>BELV.Sumoylation,
-      "U" =>BELV.Ubiquitination
+      'P,S' => BELV.PhosphorylationSerine,
+      'P,T' => BELV.PhosphorylationThreonine,
+      'P,Y' => BELV.PhosphorylationTyrosine,
+      'A'   => BELV.Acetylation,
+      'F'   => BELV.Farnesylation,
+      'G'   => BELV.Glycosylation,
+      'H'   => BELV.Hydroxylation,
+      'M'   => BELV.Methylation,
+      'P'   => BELV.Phosphorylation,
+      'R'   => BELV.Ribosylation,
+      'S'   => BELV.Sumoylation,
+      'U'   => BELV.Ubiquitination
     }
     # protein variant
     PROTEIN_VARIANT = [:fus, :fusion, :sub, :substitution, :trunc, :truncation]
-    # pubmed URI
-    PUBMED = 'http://bio2rdf.org/pubmed:'
 
     def self.for_statement(statement, writer)
       # TODO canonicalization
@@ -347,13 +321,14 @@ module BEL
     end
 
     def self.strip_prefix(uri)
-      if uri.to_s.start_with? 'http://www.selventa.com/bel/'
+      if uri.to_s.start_with? 'http://www.openbel.org/bel/'
         uri.to_s[28..-1]
       else
         uri
       end
     end
 
+    ### TODO Vocabulary could be an RDF::Graph
     def self.vocabulary_rdf
       [
         # Class

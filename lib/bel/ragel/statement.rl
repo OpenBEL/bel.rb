@@ -16,7 +16,7 @@
     notify_observers(@statement)
   }
   action statement_init {
-    @statement = BEL::Script::Statement.new()
+    @statement = BEL::Language::Statement.new()
     @statement_stack = [@statement]
   }
   action statement_subject {
@@ -26,7 +26,7 @@
     @statement_stack.last.object = @term
   }
   action statement_ostmt {
-    nested = BEL::Script::Statement.new()
+    nested = BEL::Language::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   }
@@ -37,7 +37,7 @@
   action reln {relbuffer << fc}
   action rele {
     rel = relbuffer.map(&:chr).join()
-    @statement_stack.last.rel = rel.to_sym
+    @statement_stack.last.relationship = rel.to_sym
   }
   action cmts {cmtbuffer = []}
   action cmtn {cmtbuffer << fc}
@@ -69,7 +69,7 @@
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script

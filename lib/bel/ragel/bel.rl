@@ -25,7 +25,7 @@ machine bel;
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script

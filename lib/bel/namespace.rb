@@ -1,5 +1,7 @@
 # vim: ts=2 sw=2:
 require 'open-uri'
+
+require_relative '../features'
 require_relative './language' 
 
 class String
@@ -12,7 +14,93 @@ end
 module BEL
   module Namespace
 
-    NAMESPACE_HASH = {
+    LATEST_PREFIX = 'http://resource.belframework.org/belframework/testing/'
+
+    NAMESPACE_LATEST = {
+      AFFY:   [
+        LATEST_PREFIX + 'namespace/affy-probeset-ids.belns',
+        'http://www.openbel.org/bel/namespace/affy-probeset'
+      ],
+      CHEBI:  [
+        LATEST_PREFIX + 'namespace/chebi-names.belns',
+        'http://www.openbel.org/bel/namespace/chebi'
+      ],
+      CHEBIID:  [
+        LATEST_PREFIX + 'namespace/chebi-ids.belns',
+        'http://www.openbel.org/bel/namespace/chebi'
+      ],
+      DO: [
+        LATEST_PREFIX + 'namespace/disease-ontology-names.belns',
+        'http://www.openbel.org/bel/namespace/disease-ontology'
+      ],
+      DOID: [
+        LATEST_PREFIX + 'namespace/disease-ontology-ids.belns',
+        'http://www.openbel.org/bel/namespace/disease-ontology'
+      ],
+      EGID:   [
+        LATEST_PREFIX + 'namespace/entrez-gene-ids.belns',
+        'http://www.openbel.org/bel/namespace/entrez-gene'
+      ],
+      GOBP:   [
+        LATEST_PREFIX + 'namespace/go-biological-processes-names.belns',
+        'http://www.openbel.org/bel/namespace/go-biological-processes'
+      ],
+      GOBPID: [
+        LATEST_PREFIX + 'namespace/go-biological-processes-ids.belns',
+        'http://www.openbel.org/bel/namespace/go'
+      ],
+      GOCC:   [
+        LATEST_PREFIX + 'namespace/go-cellular-component-names.belns',
+        'http://www.openbel.org/bel/namespace/go-cellular-component'
+      ],
+      GOCCID: [
+        LATEST_PREFIX + 'namespace/go-cellular-component-ids.belns',
+        'http://www.openbel.org/bel/namespace/go-cellular-component'
+      ],
+      HGNC:   [
+        LATEST_PREFIX + 'namespace/hgnc-approved-symbols.belns',
+        'http://www.openbel.org/bel/namespace/hgnc-approved-symbols'
+      ],
+      MESHCL: [
+        LATEST_PREFIX + 'namespace/mesh-cellular-locations.belns',
+        'http://www.openbel.org/bel/namespace/mesh-cellular-locations'
+      ],
+      MESHD:  [
+        LATEST_PREFIX + 'namespace/mesh-diseases.belns',
+        'http://www.openbel.org/bel/namespace/mesh-diseases',
+      ],
+      MESHPP: [
+        LATEST_PREFIX + 'namespace/mesh-biological-processes.belns',
+        'http://www.openbel.org/bel/namespace/mesh-biological-processes'
+      ],
+      MGI:    [
+        LATEST_PREFIX + 'namespace/mgi-approved-symbols.belns',
+        'http://www.openbel.org/bel/namespace/mgi-approved-symbols'
+      ],
+      RGD:    [
+        LATEST_PREFIX + 'namespace/rgd-approved-symbols.belns',
+        'http://www.openbel.org/bel/namespace/rgd-approved-symbols'
+      ],
+      SCOM:   [
+        LATEST_PREFIX + 'namespace/selventa-named-complexes.belns',
+        'http://www.openbel.org/bel/namespace/selventa-named-complexes'
+      ],
+      SCHEM:  [
+        LATEST_PREFIX + 'namespace/selventa-legacy-chemical-names.belns',
+        'http://www.openbel.org/bel/namespace/selventa-legacy-chemical-names'
+      ],
+      SDIS:   [
+        LATEST_PREFIX + 'namespace/selventa-legacy-diseases.belns',
+        'http://www.openbel.org/bel/namespace/selventa-legacy-diseases'
+      ],
+      SFAM:   [
+        LATEST_PREFIX + 'namespace/selventa-protein-families.belns',
+        nil
+      ]
+    }
+
+    # XXX 1.0 namespaces without rdf support
+    NAMESPACE_BELNS = {
       HGU95AV2:  'http://resource.belframework.org/belframework/1.0/namespace/affy-hg-u95av2.belns',
       HGU133P2:  'http://resource.belframework.org/belframework/1.0/namespace/affy-hg-u133-plus2.belns',
       HGU133AB:  'http://resource.belframework.org/belframework/1.0/namespace/affy-hg-u133ab.belns',
@@ -50,6 +138,7 @@ module BEL
     class NamespaceDefinition
       include Enumerable
 
+      attr_reader :prefix
       attr_reader :url
       attr_reader :values
 
@@ -64,20 +153,23 @@ module BEL
 
         reload(@url) if not @values
         sym = value.to_sym
-        Language::Parameter.new(@prefix, sym,
+        Language::Parameter.new(self, sym,
                                 @values[sym]) if @values.key?(sym)
       end
 
       def each &block
         reload(@url) if not @values
-        ns = @prefix.to_sym
         @values.each do |val, enc|
           if block_given?
-            block.call(Language::Parameter.new(ns, val, enc))
+            block.call(Language::Parameter.new(self, val, enc))
           else
-            yield Language::Parameter.new(ns, val, enc)
+            yield Language::Parameter.new(self, val, enc)
           end
         end
+      end
+
+      def to_s
+        @prefix.to_s
       end
 
       private
@@ -94,10 +186,24 @@ module BEL
       end
     end
 
+    if BEL::Features.rdf_support?
+      require_relative 'rdf'
+
+      class NamespaceDefinition
+        def to_uri
+          NAMESPACE_LATEST[@prefix.to_sym][-1]
+        end
+
+        def to_rdf_vocabulary
+          RUBYRDF::Vocabulary.new(to_uri + '/')
+        end
+      end
+    end
+
     # create classes for each standard prefix
     DEFAULT_NAMESPACES = [
-      NAMESPACE_HASH.collect do |prefix, default_url|
-        ns_definition = NamespaceDefinition.new(prefix, default_url)
+      NAMESPACE_LATEST.collect do |prefix, values|
+        ns_definition = NamespaceDefinition.new(prefix, values[0])
         Namespace.const_set(prefix, ns_definition)
         ns_definition
       end

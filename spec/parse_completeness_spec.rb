@@ -37,7 +37,7 @@ describe BEL::Script::Parser, "#parse" do
     parser.parse(BEL_SCRIPT) do |obj|
       objects << obj
     end
-    stmts = objects.find_all {|x| x.is_a? BEL::Script::Statement}
+    stmts = objects.find_all {|x| x.is_a? BEL::Language::Statement}
     expect(stmts.length).to be 6
     expect(stmts.count{|x| x.subject_only?}).to be 3
     expect(stmts.count{|x| x.simple?}).to be 2

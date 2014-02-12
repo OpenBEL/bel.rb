@@ -4,4 +4,6 @@ module BEL
   autoload :Namespace, "#{File.dirname(__FILE__)}/bel/namespace"
   autoload :Script,    "#{File.dirname(__FILE__)}/bel/script"
   autoload :RDF,       "#{File.dirname(__FILE__)}/bel/rdf"
+
+  require_relative './features.rb'
 end

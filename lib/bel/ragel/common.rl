@@ -44,12 +44,12 @@ machine bel;
 
   action newline {
     changed
-    notify_observers(BEL::Script::Newline.instance)
+    notify_observers(BEL::Language::NEW_LINE)
   }
 
   action comment {
     comment_text = buffer.map(&:chr).join()
-    comment = BEL::Script::Comment.new(comment_text)
+    comment = BEL::Language::Comment.new(comment_text)
 
     changed
     notify_observers(comment)
@@ -112,6 +112,8 @@ machine bel;
     (FUNCTION | STRING NL)+;
 }%%
 =end
+
+require_relative 'language'
 
 class Parser
 

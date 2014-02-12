@@ -12,7 +12,7 @@
   }
 
   action sg_start {
-    statement_group = BEL::Script::StatementGroup.new(@value, [])
+    statement_group = BEL::Language::StatementGroup.new(@value, [])
     @annotations = {}
 
     changed
@@ -20,14 +20,14 @@
   }
 
   action docprop {
-    docprop = BEL::Script::DocumentProperty.new(@name, @value)
+    docprop = BEL::Language::DocumentProperty.new(@name, @value)
 
     changed
     notify_observers(docprop)
   }
 
   action annotation {
-    annotation = BEL::Script::Annotation.new(@name, @value)
+    annotation = BEL::Language::Annotation.new(@name, @value)
     @annotations.store(@name, annotation)
 
     changed
@@ -43,7 +43,7 @@
     @annotations.clear()
 
     changed
-    notify_observers(BEL::Script::UnsetStatementGroup.new(statement_group.name))
+    notify_observers(BEL::Language::UnsetStatementGroup.new(statement_group.name))
   }
 
   include 'common.rl';
@@ -76,7 +76,7 @@
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script
