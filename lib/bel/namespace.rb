@@ -168,6 +168,16 @@ module BEL
         end
       end
 
+      def hash
+        [@prefix, @url].hash
+      end
+
+      def ==(other)
+        @prefix == other.prefix && @url == other.url
+      end
+
+      alias_method :eql?, :'=='
+
       def to_s
         @prefix.to_s
       end

@@ -67,6 +67,16 @@ module BEL
         end
       end
 
+      def hash
+        [@ns, @value].hash
+      end
+
+      def ==(other)
+        @ns == other.ns && @value == other.value
+      end
+
+      alias_method :eql?, :'=='
+
       def to_s
         prepped_value = value
         if NonWordMatcher.match value
@@ -89,6 +99,20 @@ module BEL
       def [](key)
         instance_variable_get("@#{key}")
       end
+
+      def hash
+        [@short_form, @long_form, @return_type, @description, @signatures].hash
+      end
+
+      def ==(other)
+        @short_form == other.short_form &&
+        @long_form == other.long_form &&
+        @return_type == other.return_type &&
+        @description == other.description &&
+        @signatures == other.signatures
+      end
+
+      alias_method :eql?, :'=='
     end
 
     class Term
@@ -141,6 +165,16 @@ module BEL
         invalids.empty?
       end
 
+      def hash
+        [@fx, @arguments].hash
+      end
+
+      def ==(other)
+        @fx == other.fx && @arguments == other.arguments
+      end
+
+      alias_method :eql?, :'=='
+
       def to_s
         "#{@fx[:short_form]}(#{[@arguments].flatten.join(',')})"
       end
@@ -175,12 +209,29 @@ module BEL
       def subject_only?
         !@relationship
       end
+
       def simple?
         @object and @object.is_a? Term
       end
+
       def nested?
         @object and @object.is_a? Statement
       end
+
+      def hash
+        [@subject, @relationship, @object, @annotations, @comment].hash
+      end
+
+      def ==(other)
+        @subject == other.subject &&
+        @relationship == other.relationship &&
+        @object == other.object &&
+        @annotations == other.annotations &&
+        @comment == comment
+      end
+
+      alias_method :eql?, :'=='
+
       def to_s
         lbl = case
         when subject_only?
@@ -197,6 +248,15 @@ module BEL
     end
 
     StatementGroup = Struct.new(:name, :statements, :annotations) do
+
+      def <=>(other_group)
+        if not other_group || other_group.is_a?
+          1
+        else
+          (statements || []) <=> (other_group.statements || [])
+        end
+      end
+
       def to_s
         name = self.name
         if NonWordMatcher.match name
@@ -230,8 +290,7 @@ module BEL
       end
 
       def ==(other)
-        return false if @fx != other.fx
-        @arguments == other.arguments
+        @fx == other.fx && @arguments == other.arguments
       end
 
       def <=>(other)
@@ -257,7 +316,6 @@ module BEL
 
       def ==(other)
         return false if not other.respond_to? :func_return
-
         @func_return == other.func_return and @var == other.var
       end
 
