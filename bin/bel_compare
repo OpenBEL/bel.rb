@@ -58,12 +58,19 @@ threads.each { |t| t.join }
 
 group_diff = second_groups.length - first_groups.length
 if group_diff == 0
-  puts("Equal number of statement groups.")
+  puts "Equal number of statement groups."
 elsif group_diff > 0
-  puts("Second file has #{group_diff} more statement groups.")
+  puts "Second file has #{group_diff} more statement groups."
 else 
-  puts("Second file has #{group_diff.abs} less statement groups.")
+  puts "Second file has #{group_diff.abs} less statement groups."
 end
+
+first_statements = first_groups.values.
+  map {|group| group.statements}.flatten
+puts "First file has #{first_statements.length} statements."
+second_statements = second_groups.values.
+  map {|group| group.statements}.flatten
+puts "Second file has #{second_statements.length} statements."
 
 # statement groups in 1st, but not 2nd
 first_groups.each do |name,first|
@@ -143,16 +150,30 @@ second_terms = second_groups.values.
   }.flatten.uniq.
   sort {|term1,term2| term1.to_s <=> term2.to_s}
 
+# statements
+puts "Statements:"
+ab = first_statements - second_statements
+puts "  only in 1st, #{ab.length} (1st - 2nd)"
+if ab.length > 0
+  puts ab.map {|t| t.to_s}.join("\n    ").prepend("    ")
+end
+
+ba = second_statements - first_statements
+puts "  only in 2nd, #{ba.length} (2nd - 1st)"
+if ba.length > 0
+  puts ba.map {|t| t.to_s}.join("\n    ").prepend("    ")
+end
+
 # terms
 puts "Terms:"
 ab = first_terms - second_terms
-puts "  terms only in 1st, #{ab.length} (1st - 2nd)"
+puts "  only in 1st, #{ab.length} (1st - 2nd)"
 if ab.length > 0
   puts ab.map {|t| t.to_s}.join("\n    ").prepend("    ")
 end
 
 ba = second_terms - first_terms
-puts "  terms only in 2nd, #{ba.length} (2nd - 1st)"
+puts "  only in 2nd, #{ba.length} (2nd - 1st)"
 if ba.length > 0
   puts ba.map {|t| t.to_s}.join("\n    ").prepend("    ")
 end
