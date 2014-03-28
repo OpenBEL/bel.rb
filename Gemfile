@@ -8,3 +8,7 @@ group :development do
   gem 'rdoc', '~> 4.0'
   gem 'bundler', '~> 1.3'
 end
+
+group :test do
+  gem 'rake', '~> 10.1'
+end
