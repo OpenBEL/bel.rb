@@ -130,3 +130,5 @@ class Parser
   end
 end
 Parser.new.exec(ARGV[0] ? File.open(ARGV[0], 'r:UTF-8') : $stdin)
+# vim: ts=2 sw=2:
+# encoding: utf-8

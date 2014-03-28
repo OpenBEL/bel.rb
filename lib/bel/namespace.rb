@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'open-uri'
 require_relative './language' 
 
@@ -104,3 +103,5 @@ module BEL
     ]
   end
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8

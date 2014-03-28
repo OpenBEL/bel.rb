@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# vim: ts=2 sw=2:
-
 # bel_upgrade: Upgrade BEL content to a new set of resources.
 #
 # From BEL file
@@ -8,6 +6,7 @@
 #
 # From standard in
 # usage: echo "<BEL DOCUMENT STRING>" | ruby bel_upgrade -c file.json
+
 require 'bel'
 require 'json'
 require 'optparse'
@@ -150,3 +149,5 @@ class Main
 end
 
 Main.new(content, changelog)
+# vim: ts=2 sw=2:
+# encoding: utf-8

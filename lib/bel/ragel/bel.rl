@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 =begin
 %%{
 machine bel;
@@ -92,3 +91,5 @@ if __FILE__ == $0
   parser.add_observer(DefaultObserver.new)
   parser.parse(content) 
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8

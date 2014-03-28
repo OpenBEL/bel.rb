@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'singleton'
 
 module BEL
@@ -112,3 +111,5 @@ module BEL
     private
   end
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8

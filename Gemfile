@@ -1,6 +1,5 @@
 source 'http://rubygems.org'
 
-# development requirements
 group :development do
   gem 'rake', '~> 10.1'
   gem 'rspec', '~> 2.14'
@@ -12,3 +11,5 @@ end
 group :test do
   gem 'rake', '~> 10.1'
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8

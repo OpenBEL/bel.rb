@@ -1,5 +1,3 @@
-# vim: ts=2 sw=2:
-
 module BEL
   module Language
     class Signature
@@ -574,3 +572,5 @@ module BEL
     end
   end
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8
