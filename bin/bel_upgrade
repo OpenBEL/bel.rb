@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-
 # vim: ts=2 sw=2:
+
 # bel_upgrade: Upgrade BEL content to a new set of resources.
 #
 # From BEL file
