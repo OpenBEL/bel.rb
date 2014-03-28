@@ -2,9 +2,9 @@ source 'http://rubygems.org'
 
 # development requirements
 group :development do
-  gem 'rake', '~> 10.1.0'
-  gem 'rspec', '~> 2.14.0'
-  gem 'yard', '~> 0.7'
-  gem 'rdoc', '~> 3.12'
-  gem 'bundler', '~> 1.0'
+  gem 'rake', '~> 10.1'
+  gem 'rspec', '~> 2.14'
+  gem 'yard', '~> 0.8'
+  gem 'rdoc', '~> 4.0'
+  gem 'bundler', '~> 1.3'
 end
