@@ -3,6 +3,8 @@ bel
 
 .. image:: https://badge.fury.io/rb/bel.png
     :target: http://badge.fury.io/rb/bel
+.. image:: https://travis-ci.org/OpenBEL/bel.rb.svg?branch=master
+    :target: https://travis-ci.org/OpenBEL/bel.rb
 
 The bel gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
 
