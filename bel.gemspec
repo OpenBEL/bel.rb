@@ -11,13 +11,15 @@ Gem::Specification.new do |spec|
   spec.date               = %q{2014-01-13}
   spec.email              = %q{abargnesi@selventa.com}
   spec.files              = Dir.glob('lib/**/*.rb') << 'LICENSE'
-  spec.executables        = ['bel_compare', 'bel_summarize']
+  spec.executables        = ['bel_upgrade', 'bel_compare', 'bel_summarize']
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
 
-  spec.add_development_dependency 'rake',    '~> 10.1.0'
-  spec.add_development_dependency 'rspec',   '~> 2.14.0'
-  spec.add_development_dependency 'yard',    '~> 0.8.7.0'
-  spec.add_development_dependency 'rdoc',    '~> 4.0.0'
-  spec.add_development_dependency 'bundler', '~> 1.3.0'
+  spec.add_development_dependency 'rake',    '~> 10.1'
+  spec.add_development_dependency 'rspec',   '~> 2.14'
+  spec.add_development_dependency 'yard',    '~> 0.8'
+  spec.add_development_dependency 'rdoc',    '~> 4.0'
+  spec.add_development_dependency 'bundler', '~> 1.3'
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8

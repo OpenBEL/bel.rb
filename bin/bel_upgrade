@@ -1,0 +1,153 @@
+#!/usr/bin/env ruby
+# bel_upgrade: Upgrade BEL content to a new set of resources.
+#
+# From BEL file
+# usage: ruby bel_upgrade -b file.bel -c file.json
+#
+# From standard in
+# usage: echo "<BEL DOCUMENT STRING>" | ruby bel_upgrade -c file.json
+
+require 'bel'
+require 'json'
+require 'optparse'
+require 'set'
+require 'open-uri'
+
+# setup and parse options
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: upgrade-namespaces.rb [options] [.bel file]"
+  opts.on('-b', '--bel FILE', 'BEL file to upgrade.  STDIN (standard in) can also be used for BEL content.') do |bel|
+    options['bel'] = bel
+  end
+  opts.on("-c", "--changelog [FILE | URI]", "Change log JSON") do |change_log|
+    options['change_log'] = change_log
+  end
+end.parse!
+
+# option guards
+unless options['bel'] or not STDIN.tty?
+  $stderr.puts "No bel content provided.  Either use --bel option or STDIN (standard in).  Use -h / --help for details." 
+  exit 1
+end
+unless options['change_log']
+  $stderr.puts "Missing --changelog option. Use -h / --help for details."
+  exit 1
+end
+if not File.exists? options['change_log']
+  begin
+    open(options['change_log']) do |f|
+      unless f.content_type == 'application/json'
+        $stderr.puts "Expected application/json content type, actual: #{f.content_type}"
+        exit 1
+      end
+    end
+  rescue OpenURI::HTTPError => e
+    $stderr.puts "Cannot read URI for change_log, #{options['change_log']}, status: #{e}"
+    exit 1
+  end
+end
+if options['bel'] and not File.exists? options['bel']
+  $stderr.puts "No file for bel, #{options['bel']}"
+  exit 1
+end
+
+# read bel content
+content = (STDIN.tty?) ? File.open(options['bel']).read : $stdin.read
+
+# read change log
+changelog = nil
+if File.exists? options['change_log']
+  File.open(options['change_log']) do |f|
+    changelog = JSON.parse(f.read)
+  end
+else
+  open(options['change_log']) do |file|
+    changelog = JSON.parse(file.read)
+  end
+end
+
+unless changelog
+  $stderr.puts "Cannot retrieve change_log #{options['change_log']}"
+end
+
+class Main
+
+  EvidenceMatcher = Regexp.compile(/SET Evidence = ([0-9a-zA-Z]+)/)
+  attr_reader :ttl
+
+  def initialize(content, change_log)
+    @change_log = change_log
+    @keywords_seen = Set.new
+    parser = BEL::Script::Parser.new
+    parser.add_observer self
+    parser.parse(content)
+  end
+  def update(obj)
+    # redefine namespace based on change log's `redefine` block
+    if obj.is_a? BEL::Script::NamespaceDefinition
+      if @change_log.has_key? 'redefine'
+        redefine = @change_log['redefine']
+        if redefine.has_key? obj.prefix
+          entry = redefine[obj.prefix]
+          obj.prefix = entry['new_keyword']
+          obj.value = entry['new_url']
+        end
+      end
+
+      # deduplicate namespaces for output purposes
+      if @keywords_seen.include? obj.prefix
+        return
+      end
+      @keywords_seen.add(obj.prefix)
+    end
+
+    if obj.is_a? BEL::Script::Annotation
+      if obj.name == 'Evidence'
+        ev = obj.to_s
+        ev.gsub!(EvidenceMatcher, 'SET Evidence = "\1"')
+        puts ev
+        return
+      end
+    end
+
+    if obj.is_a? BEL::Script::Parameter
+      if @change_log.has_key? obj.ns
+        clog_ns = @change_log[obj.ns]
+        if clog_ns.has_key? obj.value
+          replacement = clog_ns[obj.value]
+          if replacement == 'unresolved' or replacement == 'withdrawn'
+            $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement}'"
+            return
+          end
+          obj.value = replacement
+        end
+      end
+      # redefine param namespace based on change log's `redefine` block
+      if @change_log.has_key? 'redefine'
+        redefine = @change_log['redefine']
+        if redefine.has_key? obj.ns
+          obj.ns = redefine[obj.ns]['new_keyword']
+        end
+      end
+      return
+    end
+
+    if obj.is_a? BEL::Script::Term
+      return # do not print (part of statement)
+    end
+
+    puts obj.to_s
+  end
+
+  private
+
+  def error_file(file_name)
+    $stderr.puts "#{file_name} is not readable"
+    exit 1
+  end
+end
+
+Main.new(content, changelog)
+# vim: ts=2 sw=2:
+# encoding: utf-8

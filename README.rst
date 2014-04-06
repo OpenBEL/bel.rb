@@ -3,13 +3,31 @@ bel
 
 .. image:: https://badge.fury.io/rb/bel.png
     :target: http://badge.fury.io/rb/bel
+.. image:: https://travis-ci.org/OpenBEL/bel.rb.svg?branch=master
+    :target: https://travis-ci.org/OpenBEL/bel.rb
 
 The bel gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
 
 Learn more on BEL_.
 
-examples
---------
+executable commands
+-------------------
+
+bel_upgrade_: Upgrade namespaces in BEL content to another version (e.g. `1.0` to `20131211`)
+
+.. code-block:: bash
+
+  # using BEL file and change log JSON file
+  bel_upgrade --bel small_corpus.bel --changelog change_log.json
+
+  # using BEL file and change log from a URL
+  bel_upgrade --bel small_corpus.bel --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+
+  # using BEL from STDIN and change log from a URL
+  cat small_corpus.bel | bel_upgrade --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+
+api examples
+------------
 
 Load any standard namespace
 
@@ -142,3 +160,4 @@ Parse BEL input
 
 .. _BEL: http://www.openbel.org/content/bel-lang-language
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/
+.. _bel_upgrade: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade

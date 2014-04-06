@@ -1,6 +1,4 @@
-# vim: ts=2 sw=2:
 require_relative '../features'
-
 module BEL
   module Language
     NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z_]/)
@@ -828,3 +826,5 @@ module BEL
     end
   end
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8

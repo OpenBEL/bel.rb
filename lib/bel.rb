@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 module BEL
   autoload :Language,  "#{File.dirname(__FILE__)}/bel/language"
   autoload :Namespace, "#{File.dirname(__FILE__)}/bel/namespace"
@@ -7,3 +6,5 @@ module BEL
 
   require_relative './features.rb'
 end
+# vim: ts=2 sw=2:
+# encoding: utf-8

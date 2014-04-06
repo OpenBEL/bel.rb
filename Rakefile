@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'rubygems'
 require 'bundler'
 begin
@@ -23,3 +21,5 @@ task :default => :spec
 
 require 'yard'
 YARD::Rake::YardocTask.new
+# vim: ts=2 sw=2:
+# encoding: utf-8
