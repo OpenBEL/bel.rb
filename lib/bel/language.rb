@@ -764,8 +764,19 @@ module BEL
 
         def to_rdf
           uri = to_uri
-          @enc.to_s.each_char.collect do |enc_char|
-            case enc_char
+          char_enum = @enc.to_s.each_char
+          if block_given?
+            char_enum.map {|c| concept_statement(c, uri) }.each do |stmt|
+              yield stmt
+            end
+          else
+            char_enum.map { |c| concept_statement(c, uri)}
+          end
+        end
+
+        private
+        def concept_statement(encoding_character, uri)
+            case encoding_character
             when 'G'
               RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.GeneConcept)
             when 'R'
@@ -783,7 +794,6 @@ module BEL
             when 'O'
               RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.PathologyConcept)
             end
-          end
         end
       end
 
@@ -793,9 +803,75 @@ module BEL
           BEL::RDF::BELR[tid]
         end
 
+        def rdf_type
+          if respond_to? 'fx'
+            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and x.fx == :pmod}
+              return BEL::RDF::BELV.ModifiedProteinAbundance
+            end
+            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and PROTEIN_VARIANT.include? x.fx}
+              return BEL::RDF::BELV.ProteinVariantAbundance
+            end
+
+            BEL::RDF::FUNCTION_TYPE[@fx.short_form] || BEL::RDF::BELV.Abundance
+          end
+        end
+
         def to_rdf
           uri = to_uri
-          RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.Term)
+          statements = []
+
+          # rdf:type
+          type = rdf_type
+          statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Term]
+          statements << [uri, BEL::RDF::RDF.type, type]
+          if BEL::RDF::ACTIVITY_TYPE.include? @fx
+            statements << [uri, BEL::RDF::BELV.hasActivityType, ACTIVITY_TYPE[@fx]]
+          end
+
+          # rdfs:label
+          statements << [uri, BEL::RDF::RDFS.label, to_s]
+
+          # special proteins (does not recurse into pmod)
+          if @fx.short_form == :p
+            if @arguments.find{|x| x.is_a? Term and x.fx == :pmod}
+              pmod = @arguments.find{|x| x.is_a? Term and x.fx == :pmod}
+              mod_string = pmod.arguments.map(&:to_s).join(',')
+              mod_type = MODIFICATION_TYPE.find {|k,v| mod_string.start_with? k}
+              mod_type = (mod_type ? mod_type[1] : BEL::RDF::BELV.Modification)
+              statements << [uri, BEL::RDF::BELV.hasModificationType, mod_type]
+              last = pmod.arguments.last.to_s
+              if last.match(/^\d+$/)
+                statements << [uri, BEL::RDF::BELV.hasModificationPosition, last.to_i]
+              end
+              # link root protein abundance as hasChild
+              root_param = term.args.find{|x| x.is_a? Parameter}
+              root_id = self.for_term(Term.new(:p, [root_param]), writer)
+              statements << [uri, BEL::RDF::BELV.hasChild, root_id]
+              return id
+            elsif @arguments.find{|x| x.is_a? Term and PROTEIN_VARIANT.include? x.fx}
+              # link root protein abundance as hasChild
+              root_param = @arguments.find{|x| x.is_a? Parameter}
+              (root_id, root_statements) = Term.new(:p, [root_param]).to_rdf
+              statements << [uri, BEL::RDF::BELV.hasChild, root_id]
+              statements += root_statements
+              return id
+            end
+          end
+
+          # BEL::RDF::BELV.hasConcept]
+          @arguments.find_all{|x| x.is_a? Parameter}.each do |param|
+            concept_uri = param.ns.to_uri + '/' + param.value.to_s
+            statements << [uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(Addressable::URI.encode(concept_uri))]
+          end
+
+          # BEL::RDF::BELV.hasChild]
+          @arguments.find_all{|x| x.is_a? Term}.each do |child|
+            (child_id, child_statements) = child.to_rdf
+            statements << [uri, BEL::RDF::BELV.hasChild, child_id]
+            statements += child_statements
+          end
+
+          return [uri, statements]
         end
       end
 

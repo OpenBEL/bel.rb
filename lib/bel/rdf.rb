@@ -23,6 +23,8 @@ module BEL
     BELR    = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/')
     BELV    = RUBYRDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
     PUBMED  = RUBYRDF::Vocabulary.new('http://bio2rdf.org/pubmed:')
+    RDF     = RUBYRDF
+    RDFS    = RUBYRDF::RDFS
 
     # annotations
     Anatomy       = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/annotation/anatomy/')
