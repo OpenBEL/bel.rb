@@ -17,7 +17,7 @@ describe 'RDF functionality of BEL language objects' do
 
     it "provides a URI based on namespace name" do
       stable_prefix = 'http://www.openbel.org/bel/namespace/'
-      expect(HGNC.to_uri).to eq(stable_prefix + HGNC.name.to_s)
+      expect(HGNC.to_uri).to eq(stable_prefix + 'hgnc-human-genes')
     end
   end
 

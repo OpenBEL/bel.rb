@@ -22,7 +22,8 @@ machine bel;
       if val.start_with? '"' and val.end_with? '"'
         val = val.strip()[1...-1]
       end
-      param = BEL::Language::Parameter.new(pfx, val)
+      ns = (pfx == nil) ? nil : (BEL::Namespace::const_get(pfx) || pfx)
+      param = BEL::Language::Parameter.new(ns, val)
       @term_stack.last << param
 
       changed

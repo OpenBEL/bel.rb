@@ -74,10 +74,10 @@ DEFINE ANNOTATION TextLocation AS  LIST {"Abstract","Results","Legend","Review"}
     parser = BEL::Script::Parser.new
     objects = []
 
-    define = %Q{DEFINE NAMESPACE GO AS URL "http://resource.belframework.org/belframework/1.0/namespace/go-biological-processes-names.belns"
-DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/1.0/namespace/hgnc-approved-symbols.belns"
-DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/1.0/namespace/mesh-diseases.belns"
-DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/1.0/namespace/mgi-approved-symbols.belns"\n}
+    define = %Q{DEFINE NAMESPACE GOBP AS URL "http://resource.belframework.org/belframework/20131211/namespace/go-biological-process.belns"
+DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/20131211/namespace/hgnc-human-genes.belns"
+DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/20131211/namespace/mesh-diseases.belns"
+DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/20131211/namespace/mgi-mouse-genes.belns"\n}
 
     parser.parse(define) do |obj|
       objects << obj
@@ -89,10 +89,10 @@ DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/1.0/n
   it "provides prefix/value for namespace definitions" do
     parser = BEL::Script::Parser.new
 
-    define = %Q{DEFINE NAMESPACE GO AS URL "http://resource.belframework.org/belframework/1.0/namespace/go-biological-processes-names.belns"
-DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/1.0/namespace/hgnc-approved-symbols.belns"
-DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/1.0/namespace/mesh-diseases.belns"
-DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/1.0/namespace/mgi-approved-symbols.belns"\n}
+    define = %Q{DEFINE NAMESPACE GOBP AS URL "http://resource.belframework.org/belframework/20131211/namespace/go-biological-process.belns"
+DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/20131211/namespace/hgnc-human-genes.belns"
+DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/20131211/namespace/mesh-diseases.belns"
+DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/20131211/namespace/mgi-mouse-genes.belns"\n}
 
     parser.parse(define) do |obj|
       expect(obj).to respond_to(:prefix)
@@ -140,11 +140,11 @@ and apoptosis (programmed cell death) [1,2]"\n}
     parser = BEL::Script::Parser.new
     objects = []
 
-    terms = %Q{biologicalProcess(GO:"response to oxidative stress")
-biologicalProcess(GO:aging)
-gtpBoundActivity(proteinAbundance(PFH:"RHO Family"))
+    terms = %Q{biologicalProcess(GOBP:"response to oxidative stress")
+biologicalProcess(GOBP:aging)
+gtpBoundActivity(proteinAbundance(SFAM:"RHO Family"))
 catalyticActivity(proteinAbundance(HGNC:NOS3))
-translocation(proteinAbundance(PFH:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
+translocation(proteinAbundance(SFAM:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
 proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     parser.parse(terms) do |obj|
@@ -157,11 +157,11 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
   it "provides fx/arguments for terms" do
     parser = BEL::Script::Parser.new
 
-    terms = %Q{biologicalProcess(GO:"response to oxidative stress")
-biologicalProcess(GO:aging)
-gtpBoundActivity(proteinAbundance(PFH:"RHO Family"))
+    terms = %Q{biologicalProcess(GOBP:"response to oxidative stress")
+biologicalProcess(GOBP:aging)
+gtpBoundActivity(proteinAbundance(SFAM:"RHO Family"))
 catalyticActivity(proteinAbundance(HGNC:NOS3))
-translocation(proteinAbundance(PFH:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
+translocation(proteinAbundance(SFAM:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
 proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     parser.parse(terms) do |obj|
@@ -178,10 +178,10 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     statements = %Q{path(MESHD:Atherosclerosis) //Comment1
 path(Atherosclerosis)
-bp(GO:"lipid oxidation")
+bp(GOBP:"lipid oxidation")
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473)) //Comment2
-path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
-path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process")) //Comment3\n}
+path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
+path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process")) //Comment3\n}
 
     parser.parse(statements) do |obj|
       objects << obj
@@ -195,10 +195,10 @@ path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process")) //Com
 
     statements = %Q{path(MESHD:Atherosclerosis) //Comment1
 path(Atherosclerosis)
-bp(GO:"lipid oxidation")
+bp(GOBP:"lipid oxidation")
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473)) //Comment2
-path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
-path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process")) //Comment3\n}
+path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
+path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process")) //Comment3\n}
 
     parser.parse(statements) do |obj|
       if obj.is_a? BEL::Language::Statement
@@ -217,8 +217,8 @@ path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process")) //Com
 
     statements = %Q{SET STATEMENT_GROUP = 123
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473))
-path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
-path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
+path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
+path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process"))
 UNSET STATEMENT_GROUP\n}
 
     parser.parse(statements) do |obj|
@@ -234,8 +234,8 @@ UNSET STATEMENT_GROUP\n}
 
     statements = %Q{SET STATEMENT_GROUP = 123
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473))
-path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
-path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
+path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
+path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process"))
 UNSET STATEMENT_GROUP\n}
 
     parser.parse(statements) do |obj|
@@ -252,8 +252,8 @@ UNSET STATEMENT_GROUP\n}
 
     statements = %Q{SET STATEMENT_GROUP = 123
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473))
-path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
-path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
+path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
+path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process"))
 UNSET STATEMENT_GROUP\n}
 
     parser.parse(statements) do |obj|
