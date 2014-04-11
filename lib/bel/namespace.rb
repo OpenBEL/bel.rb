@@ -13,7 +13,7 @@ end
 module BEL
   module Namespace
 
-    LATEST_PREFIX = 'http://resource.belframework.org/belframework/testing/'
+    LATEST_PREFIX = 'http://resource.belframework.org/belframework/20131211/'
 
     NAMESPACE_LATEST = {
       AFFY:   [
@@ -57,8 +57,8 @@ module BEL
         'http://www.openbel.org/bel/namespace/go-cellular-component'
       ],
       HGNC:   [
-        LATEST_PREFIX + 'namespace/hgnc-approved-symbols.belns',
-        'http://www.openbel.org/bel/namespace/hgnc-approved-symbols'
+        LATEST_PREFIX + 'namespace/hgnc-human-genes.belns',
+        'http://www.openbel.org/bel/namespace/hgnc-human-genes'
       ],
       MESHCL: [
         LATEST_PREFIX + 'namespace/mesh-cellular-locations.belns',
@@ -73,12 +73,12 @@ module BEL
         'http://www.openbel.org/bel/namespace/mesh-biological-processes'
       ],
       MGI:    [
-        LATEST_PREFIX + 'namespace/mgi-approved-symbols.belns',
-        'http://www.openbel.org/bel/namespace/mgi-approved-symbols'
+        LATEST_PREFIX + 'namespace/mgi-mouse-genes.belns',
+        'http://www.openbel.org/bel/namespace/mgi-mouse-genes'
       ],
       RGD:    [
-        LATEST_PREFIX + 'namespace/rgd-approved-symbols.belns',
-        'http://www.openbel.org/bel/namespace/rgd-approved-symbols'
+        LATEST_PREFIX + 'namespace/rgd-rat-genes.belns',
+        'http://www.openbel.org/bel/namespace/rgd-rat-genes'
       ],
       SCOM:   [
         LATEST_PREFIX + 'namespace/selventa-named-complexes.belns',
