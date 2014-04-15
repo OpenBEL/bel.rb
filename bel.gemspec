@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.date               = %q{2014-01-13}
   spec.email              = %q{abargnesi@selventa.com}
   spec.files              = Dir.glob('lib/**/*.rb') << 'LICENSE'
-  spec.executables        = ['bel_upgrade', 'bel_compare', 'bel_summarize']
+  spec.executables        = Dir.glob('bin/*').map(&File.method(:basename))
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
 
