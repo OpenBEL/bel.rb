@@ -21,7 +21,7 @@ module BEL
         'http://www.openbel.org/bel/namespace/affy-probeset'
       ],
       CHEBI:  [
-        LATEST_PREFIX + 'namespace/chebi-names.belns',
+        LATEST_PREFIX + 'namespace/chebi.belns',
         'http://www.openbel.org/bel/namespace/chebi'
       ],
       CHEBIID:  [
@@ -29,7 +29,7 @@ module BEL
         'http://www.openbel.org/bel/namespace/chebi'
       ],
       DO: [
-        LATEST_PREFIX + 'namespace/disease-ontology-names.belns',
+        LATEST_PREFIX + 'namespace/disease-ontology.belns',
         'http://www.openbel.org/bel/namespace/disease-ontology'
       ],
       DOID: [
@@ -41,15 +41,15 @@ module BEL
         'http://www.openbel.org/bel/namespace/entrez-gene'
       ],
       GOBP:   [
-        LATEST_PREFIX + 'namespace/go-biological-processes-names.belns',
+        LATEST_PREFIX + 'namespace/go-biological-process.belns',
         'http://www.openbel.org/bel/namespace/go-biological-processes'
       ],
       GOBPID: [
-        LATEST_PREFIX + 'namespace/go-biological-processes-ids.belns',
+        LATEST_PREFIX + 'namespace/go-biological-process-ids.belns',
         'http://www.openbel.org/bel/namespace/go'
       ],
       GOCC:   [
-        LATEST_PREFIX + 'namespace/go-cellular-component-names.belns',
+        LATEST_PREFIX + 'namespace/go-cellular-component.belns',
         'http://www.openbel.org/bel/namespace/go-cellular-component'
       ],
       GOCCID: [
@@ -61,16 +61,16 @@ module BEL
         'http://www.openbel.org/bel/namespace/hgnc-human-genes'
       ],
       MESHCL: [
-        LATEST_PREFIX + 'namespace/mesh-cellular-locations.belns',
-        'http://www.openbel.org/bel/namespace/mesh-cellular-locations'
+        LATEST_PREFIX + 'namespace/mesh-cellular-structures.belns',
+        'http://www.openbel.org/bel/namespace/mesh-cellular-structures'
       ],
       MESHD:  [
         LATEST_PREFIX + 'namespace/mesh-diseases.belns',
         'http://www.openbel.org/bel/namespace/mesh-diseases',
       ],
       MESHPP: [
-        LATEST_PREFIX + 'namespace/mesh-biological-processes.belns',
-        'http://www.openbel.org/bel/namespace/mesh-biological-processes'
+        LATEST_PREFIX + 'namespace/mesh-processes.belns',
+        'http://www.openbel.org/bel/namespace/mesh-processes'
       ],
       MGI:    [
         LATEST_PREFIX + 'namespace/mgi-mouse-genes.belns',
@@ -85,8 +85,8 @@ module BEL
         'http://www.openbel.org/bel/namespace/selventa-named-complexes'
       ],
       SCHEM:  [
-        LATEST_PREFIX + 'namespace/selventa-legacy-chemical-names.belns',
-        'http://www.openbel.org/bel/namespace/selventa-legacy-chemical-names'
+        LATEST_PREFIX + 'namespace/selventa-legacy-chemicals.belns',
+        'http://www.openbel.org/bel/namespace/selventa-legacy-chemicals'
       ],
       SDIS:   [
         LATEST_PREFIX + 'namespace/selventa-legacy-diseases.belns',

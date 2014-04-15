@@ -845,16 +845,17 @@ module BEL
               end
               # link root protein abundance as hasChild
               root_param = term.args.find{|x| x.is_a? Parameter}
-              root_id = self.for_term(Term.new(:p, [root_param]), writer)
+              (root_id, root_statements) = Term.new(:p, [root_param]).to_rdf
               statements << [uri, BEL::RDF::BELV.hasChild, root_id]
-              return id
+              statements += root_statements
+              return [uri, statements]
             elsif @arguments.find{|x| x.is_a? Term and PROTEIN_VARIANT.include? x.fx}
               # link root protein abundance as hasChild
               root_param = @arguments.find{|x| x.is_a? Parameter}
               (root_id, root_statements) = Term.new(:p, [root_param]).to_rdf
               statements << [uri, BEL::RDF::BELV.hasChild, root_id]
               statements += root_statements
-              return id
+              return [uri, statements]
             end
           end
 
@@ -885,18 +886,102 @@ module BEL
             sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
             obj_id = @object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
             rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
-            BELR["#{sub_id}_#{rel}_#{obj_id}"]
+            BEL::RDF::BELR["#{sub_id}_#{rel}_#{obj_id}"]
           when nested?
             sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
             nsub_id = @object.subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
             nobj_id = @object.object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
             rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
             nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.relationship.to_s]
-            BELR["#{sub_id}_#{rel}_#{nsub_id}_#{nrel}_#{nobj_id}"]
+            BEL::RDF::BELR["#{sub_id}_#{rel}_#{nsub_id}_#{nrel}_#{nobj_id}"]
           end
         end
 
         def to_rdf
+          uri = to_uri
+          statements = []
+
+          case
+          when subject_only?
+            (sub_uri, sub_statements) = @subject.to_rdf
+            statements << [uri, BELV.hasSubject, sub_uri]
+            statements += sub_statements
+          when simple?
+            (sub_uri, sub_statements) = @subject.to_rdf
+            statements += sub_statements
+
+            (obj_uri, obj_statements) = @object.to_rdf
+            statements += obj_statements
+
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@rel.to_s]
+            statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
+            statements << [uri, BEL::RDF::BELV.hasObject, obj_uri]
+            statements << [uri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[rel]]
+          when nested?
+            (sub_uri, sub_statements) = @subject.to_rdf
+            (nsub_uri, nsub_statements) = @object.subject.to_rdf
+            (nobj_uri, nobj_statements) = @object.object.to_rdf
+            statements += sub_statements
+            statements += nsub_statements
+            statements += nobj_statements
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@rel.to_s]
+            nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.rel.to_s]
+            nuri = BEL::RDF::BELR["#{strip_prefix(nsub_uri)}_#{nrel}_#{strip_prefix(nobj_uri)}"]
+
+            # inner
+            statements << [nuri, BEL::RDF::BELV.hasSubject, nsub_uri]
+            statements << [nuri, BEL::RDF::BELV.hasObject, nobj_uri]
+            statements << [nuri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[nrel]]
+
+            # outer
+            statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
+            statements << [uri, BEL::RDF::BELV.hasObject, nuri]
+            statements << [uri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[rel]]
+          end
+
+          # common statement triples
+          statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Statement]
+          statements << [uri, RDF::RDFS.label, to_s]
+
+          # evidence
+          evidence_bnode = BEL::RDF::RDF::Node.new
+          statements << [evidence_bnode, BEL::RDF::RDF.type, BEL::RDF::BELV.Evidence]
+          statements << [uri, BEL::RDF::BELV.hasEvidence, evidence_bnode]
+          statements << [evidence_bnode, BEL::RDF::BELV.hasStatement, uri]
+
+          # citation
+          citation = @annotations.delete('Citation')
+          if citation
+            value = citation.value.map{|x| x.gsub('"', '')}
+            if citation and value[0] == 'PubMed'
+              pid = value[2]
+              statements << [evidence_bnode, BEL::RDF::BELV.hasCitation, RDF::URI(PUBMED + pid)]
+            end
+          end
+
+          # evidence
+          evidence_text = @annotations.delete('Evidence')
+          if evidence_text
+            value = evidence_text.value.gsub('"', '')
+            statements << [evidence_bnode, BEL::RDF::BELV.hasEvidenceText, value]
+          end
+
+          # annotations
+          @annotations.each do |name, anno|
+            name = anno.name.gsub('"', '')
+
+            if const_get name
+              annotation_scheme = const_get name
+              [anno.value].flatten.map{|x| x.gsub('"', '')}.each do |val|
+                value_uri = RDF::URI(Addressable::URI.encode(annotation_scheme[val.to_s]))
+                statements << [evidence_bnode, BEL::RDF::BELV.hasAnnotation, value_uri]
+              end
+            elsif
+              $stderr.puts "missing annotation #{name}"
+            end
+          end
+
+          return [uri, statements]
         end
       end
     end
