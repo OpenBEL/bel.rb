@@ -144,7 +144,7 @@ and apoptosis (programmed cell death) [1,2]"\n}
 biologicalProcess(GOBP:aging)
 gtpBoundActivity(proteinAbundance(SFAM:"RHO Family"))
 catalyticActivity(proteinAbundance(HGNC:NOS3))
-translocation(proteinAbundance(SFAM:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
+translocation(proteinAbundance(SFAM:"RAS Family"),MESHCS:"Intracellular Space",MESHCS:"Cell Membrane")
 proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     parser.parse(terms) do |obj|
@@ -161,7 +161,7 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 biologicalProcess(GOBP:aging)
 gtpBoundActivity(proteinAbundance(SFAM:"RHO Family"))
 catalyticActivity(proteinAbundance(HGNC:NOS3))
-translocation(proteinAbundance(SFAM:"RAS Family"),MESHCL:"Intracellular Space",MESHCL:"Cell Membrane")
+translocation(proteinAbundance(SFAM:"RAS Family"),MESHCS:"Intracellular Space",MESHCS:"Cell Membrane")
 proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     parser.parse(terms) do |obj|
