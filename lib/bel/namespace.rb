@@ -16,15 +16,15 @@ module BEL
     LATEST_PREFIX = 'http://resource.belframework.org/belframework/20131211/'
 
     NAMESPACE_LATEST = {
-      AFFY:   [
+      AFFY: [
         LATEST_PREFIX + 'namespace/affy-probeset-ids.belns',
         'http://www.openbel.org/bel/namespace/affy-probeset'
       ],
-      CHEBI:  [
+      CHEBI: [
         LATEST_PREFIX + 'namespace/chebi.belns',
         'http://www.openbel.org/bel/namespace/chebi'
       ],
-      CHEBIID:  [
+      CHEBIID: [
         LATEST_PREFIX + 'namespace/chebi-ids.belns',
         'http://www.openbel.org/bel/namespace/chebi'
       ],
@@ -36,11 +36,11 @@ module BEL
         LATEST_PREFIX + 'namespace/disease-ontology-ids.belns',
         'http://www.openbel.org/bel/namespace/disease-ontology'
       ],
-      EGID:   [
+      EGID: [
         LATEST_PREFIX + 'namespace/entrez-gene-ids.belns',
         'http://www.openbel.org/bel/namespace/entrez-gene'
       ],
-      GOBP:   [
+      GOBP: [
         LATEST_PREFIX + 'namespace/go-biological-process.belns',
         'http://www.openbel.org/bel/namespace/go-biological-processes'
       ],
@@ -48,7 +48,7 @@ module BEL
         LATEST_PREFIX + 'namespace/go-biological-process-ids.belns',
         'http://www.openbel.org/bel/namespace/go'
       ],
-      GOCC:   [
+      GOCC: [
         LATEST_PREFIX + 'namespace/go-cellular-component.belns',
         'http://www.openbel.org/bel/namespace/go-cellular-component'
       ],
@@ -56,15 +56,15 @@ module BEL
         LATEST_PREFIX + 'namespace/go-cellular-component-ids.belns',
         'http://www.openbel.org/bel/namespace/go-cellular-component'
       ],
-      HGNC:   [
+      HGNC: [
         LATEST_PREFIX + 'namespace/hgnc-human-genes.belns',
         'http://www.openbel.org/bel/namespace/hgnc-human-genes'
       ],
-      MESHCL: [
+      MESHCS: [
         LATEST_PREFIX + 'namespace/mesh-cellular-structures.belns',
         'http://www.openbel.org/bel/namespace/mesh-cellular-structures'
       ],
-      MESHD:  [
+      MESHD: [
         LATEST_PREFIX + 'namespace/mesh-diseases.belns',
         'http://www.openbel.org/bel/namespace/mesh-diseases',
       ],
@@ -72,29 +72,37 @@ module BEL
         LATEST_PREFIX + 'namespace/mesh-processes.belns',
         'http://www.openbel.org/bel/namespace/mesh-processes'
       ],
-      MGI:    [
+      MGI: [
         LATEST_PREFIX + 'namespace/mgi-mouse-genes.belns',
         'http://www.openbel.org/bel/namespace/mgi-mouse-genes'
       ],
-      RGD:    [
+      RGD: [
         LATEST_PREFIX + 'namespace/rgd-rat-genes.belns',
         'http://www.openbel.org/bel/namespace/rgd-rat-genes'
       ],
-      SCOM:   [
+      SCOM: [
         LATEST_PREFIX + 'namespace/selventa-named-complexes.belns',
         'http://www.openbel.org/bel/namespace/selventa-named-complexes'
       ],
-      SCHEM:  [
+      SCHEM: [
         LATEST_PREFIX + 'namespace/selventa-legacy-chemicals.belns',
         'http://www.openbel.org/bel/namespace/selventa-legacy-chemicals'
       ],
-      SDIS:   [
+      SDIS: [
         LATEST_PREFIX + 'namespace/selventa-legacy-diseases.belns',
         'http://www.openbel.org/bel/namespace/selventa-legacy-diseases'
       ],
-      SFAM:   [
+      SFAM: [
         LATEST_PREFIX + 'namespace/selventa-protein-families.belns',
-        nil
+        'http://www.openbel.org/bel/namespace/selventa-protein-families'
+      ],
+      SP: [
+        LATEST_PREFIX + 'namespace/swissprot.belns',
+        'http://www.openbel.org/bel/namespace/swissprot'
+      ],
+      SPAC: [
+        LATEST_PREFIX + 'namespace/swissprot-ids.belns',
+        'http://www.openbel.org/bel/namespace/swissprot-ids'
       ]
     }
 
@@ -172,6 +180,7 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         @prefix == other.prefix && @url == other.url
       end
 

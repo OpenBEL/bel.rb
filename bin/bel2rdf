@@ -1,0 +1,89 @@
+#!/usr/bin/env ruby
+# bel2rdf: Convert BEL to RDF triples.
+#
+# From BEL file
+# usage: ruby bel2rdf -b file.bel
+#
+# From standard in
+# usage: echo "<BEL DOCUMENT STRING>" | ruby bel2rdf
+
+require 'bel'
+require 'json'
+require 'optparse'
+require 'set'
+require 'open-uri'
+
+# setup and parse options
+options = {}
+OptionParser.new do |opts|
+  opts.banner = '''Converts BEL statements to RDF triples.
+Usage: bel2rdf.rb [options] [.bel file]'''
+
+  opts.on('-b', '--bel FILE', 'BEL file to convert.  STDIN (standard in) can also be used for BEL content.') do |bel|
+    options['bel'] = bel
+  end
+end.parse!
+
+# option guards
+unless options['bel'] or not STDIN.tty?
+  $stderr.puts "No bel content provided.  Either use --bel option or STDIN (standard in).  Use -h / --help for details." 
+  exit 1
+end
+if options['bel'] and not File.exists? options['bel']
+  $stderr.puts "No file for bel, #{options['bel']}"
+  exit 1
+end
+
+# read bel content
+content = (STDIN.tty?) ? File.open(options['bel']).read : $stdin.read
+
+class Main
+  include BEL::Language
+  include BEL::Script
+
+  EvidenceMatcher = Regexp.compile(/SET Evidence = ([0-9a-zA-Z]+)/)
+  attr_reader :ttl
+
+  def initialize(content)
+    @rdf_writer = ::Serializer.new(true)
+    BEL::RDF::vocabulary_rdf.each do |trpl|
+      @rdf_writer << trpl
+    end
+
+    parser = Parser.new
+    parser.add_observer self
+    parser.parse(content)
+  end
+  def update(obj)
+    if obj.is_a? Statement
+      triples = obj.to_rdf[1]
+      triples.each do |triple|
+        @rdf_writer << triple
+      end
+    end
+  end
+end
+
+class Serializer
+  attr_reader :writer
+
+  def initialize(stream)
+    @writer = BEL::RDF::RDF::NTriples::Writer.new($stdout, {
+        :stream => stream,
+        :base_uri => "http://www.openbel.org/bel/"
+      }
+    )
+  end
+
+  def <<(trpl)
+    @writer.write_statement(RDF::Statement(*trpl))
+  end
+
+  def done
+    @writer.write_epilogue
+  end
+end
+
+Main.new(content)
+# vim: ts=2 sw=2:
+# encoding: utf-8

@@ -70,6 +70,7 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         @ns == other.ns && @value == other.value
       end
 
@@ -103,6 +104,7 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         @short_form == other.short_form &&
         @long_form == other.long_form &&
         @return_type == other.return_type &&
@@ -121,7 +123,7 @@ module BEL
         @fx = case fx
         when String
         when Symbol
-          FUNCTIONS[fx.to_sym]
+          Function.new(FUNCTIONS[fx.to_sym])
         when Function
           fx
         when nil
@@ -168,6 +170,7 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         @fx == other.fx && @arguments == other.arguments
       end
 
@@ -221,6 +224,7 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         @subject == other.subject &&
         @relationship == other.relationship &&
         @object == other.object &&
@@ -288,6 +292,7 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         @fx == other.fx && @arguments == other.arguments
       end
 
@@ -313,6 +318,7 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         return false if not other.respond_to? :func_return
         @func_return == other.func_return and @var == other.var
       end
@@ -805,10 +811,10 @@ module BEL
 
         def rdf_type
           if respond_to? 'fx'
-            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and x.fx == :pmod}
+            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and x.fx.short_form == :pmod}
               return BEL::RDF::BELV.ModifiedProteinAbundance
             end
-            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and PROTEIN_VARIANT.include? x.fx}
+            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and BEL::RDF::PROTEIN_VARIANT.include? x.fx}
               return BEL::RDF::BELV.ProteinVariantAbundance
             end
 
@@ -825,7 +831,7 @@ module BEL
           statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Term]
           statements << [uri, BEL::RDF::RDF.type, type]
           if BEL::RDF::ACTIVITY_TYPE.include? @fx
-            statements << [uri, BEL::RDF::BELV.hasActivityType, ACTIVITY_TYPE[@fx]]
+            statements << [uri, BEL::RDF::BELV.hasActivityType, BEL::RDF::ACTIVITY_TYPE[@fx]]
           end
 
           # rdfs:label
@@ -833,10 +839,10 @@ module BEL
 
           # special proteins (does not recurse into pmod)
           if @fx.short_form == :p
-            if @arguments.find{|x| x.is_a? Term and x.fx == :pmod}
-              pmod = @arguments.find{|x| x.is_a? Term and x.fx == :pmod}
+            if @arguments.find{|x| x.is_a? Term and x.fx.short_form == :pmod}
+              pmod = @arguments.find{|x| x.is_a? Term and x.fx.short_form == :pmod}
               mod_string = pmod.arguments.map(&:to_s).join(',')
-              mod_type = MODIFICATION_TYPE.find {|k,v| mod_string.start_with? k}
+              mod_type = BEL::RDF::MODIFICATION_TYPE.find {|k,v| mod_string.start_with? k}
               mod_type = (mod_type ? mod_type[1] : BEL::RDF::BELV.Modification)
               statements << [uri, BEL::RDF::BELV.hasModificationType, mod_type]
               last = pmod.arguments.last.to_s
@@ -844,12 +850,12 @@ module BEL
                 statements << [uri, BEL::RDF::BELV.hasModificationPosition, last.to_i]
               end
               # link root protein abundance as hasChild
-              root_param = term.args.find{|x| x.is_a? Parameter}
+              root_param = @arguments.find{|x| x.is_a? Parameter}
               (root_id, root_statements) = Term.new(:p, [root_param]).to_rdf
               statements << [uri, BEL::RDF::BELV.hasChild, root_id]
               statements += root_statements
               return [uri, statements]
-            elsif @arguments.find{|x| x.is_a? Term and PROTEIN_VARIANT.include? x.fx}
+            elsif @arguments.find{|x| x.is_a? Term and BEL::RDF::PROTEIN_VARIANT.include? x.fx}
               # link root protein abundance as hasChild
               root_param = @arguments.find{|x| x.is_a? Parameter}
               (root_id, root_statements) = Term.new(:p, [root_param]).to_rdf
@@ -860,7 +866,9 @@ module BEL
           end
 
           # BEL::RDF::BELV.hasConcept]
-          @arguments.find_all{|x| x.is_a? Parameter}.each do |param|
+          @arguments.find_all{ |x|
+            x.is_a? Parameter and x.ns != nil
+          }.each do |param|
             concept_uri = param.ns.to_uri + '/' + param.value.to_s
             statements << [uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(Addressable::URI.encode(concept_uri))]
           end
@@ -880,7 +888,7 @@ module BEL
         def to_uri
           case
           when subject_only?
-            tid = @subject.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            tid = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
             BEL::RDF::BELR[tid]
           when simple?
             sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
@@ -904,7 +912,7 @@ module BEL
           case
           when subject_only?
             (sub_uri, sub_statements) = @subject.to_rdf
-            statements << [uri, BELV.hasSubject, sub_uri]
+            statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
             statements += sub_statements
           when simple?
             (sub_uri, sub_statements) = @subject.to_rdf
@@ -913,7 +921,7 @@ module BEL
             (obj_uri, obj_statements) = @object.to_rdf
             statements += obj_statements
 
-            rel = BEL::RDF::RELATIONSHIP_TYPE[@rel.to_s]
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
             statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
             statements << [uri, BEL::RDF::BELV.hasObject, obj_uri]
             statements << [uri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[rel]]
@@ -924,8 +932,8 @@ module BEL
             statements += sub_statements
             statements += nsub_statements
             statements += nobj_statements
-            rel = BEL::RDF::RELATIONSHIP_TYPE[@rel.to_s]
-            nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.rel.to_s]
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.relationship.to_s]
             nuri = BEL::RDF::BELR["#{strip_prefix(nsub_uri)}_#{nrel}_#{strip_prefix(nobj_uri)}"]
 
             # inner
@@ -955,7 +963,11 @@ module BEL
             value = citation.value.map{|x| x.gsub('"', '')}
             if citation and value[0] == 'PubMed'
               pid = value[2]
-              statements << [evidence_bnode, BEL::RDF::BELV.hasCitation, RDF::URI(PUBMED + pid)]
+              statements << [
+                evidence_bnode,
+                BEL::RDF::BELV.hasCitation,
+                BEL::RDF::RDF::URI(BEL::RDF::PUBMED[pid])
+              ]
             end
           end
 
@@ -970,10 +982,10 @@ module BEL
           @annotations.each do |name, anno|
             name = anno.name.gsub('"', '')
 
-            if const_get name
-              annotation_scheme = const_get name
+            if BEL::RDF::const_defined? name
+              annotation_scheme = BEL::RDF::const_get name
               [anno.value].flatten.map{|x| x.gsub('"', '')}.each do |val|
-                value_uri = RDF::URI(Addressable::URI.encode(annotation_scheme[val.to_s]))
+                value_uri = BEL::RDF::RDF::URI(Addressable::URI.encode(annotation_scheme[val.to_s]))
                 statements << [evidence_bnode, BEL::RDF::BELV.hasAnnotation, value_uri]
               end
             elsif
@@ -982,6 +994,16 @@ module BEL
           end
 
           return [uri, statements]
+        end
+
+        private
+
+        def strip_prefix(uri)
+          if uri.to_s.start_with? 'http://www.openbel.org/bel/'
+            uri.to_s[28..-1]
+          else
+            uri
+          end
         end
       end
     end
