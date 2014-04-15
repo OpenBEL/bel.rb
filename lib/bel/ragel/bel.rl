@@ -75,6 +75,8 @@ end
 
 # intended for direct testing
 if __FILE__ == $0
+  require 'bel'
+
   if ARGV[0]
     content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
   else

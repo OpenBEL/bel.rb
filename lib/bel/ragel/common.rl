@@ -113,24 +113,26 @@ machine bel;
 }%%
 =end
 
-require_relative 'language'
+if __FILE__ == $0
+  require_relative 'language'
 
-class Parser
+  class Parser
 
-  def initialize
-    @items = []
-    %% write data;
+    def initialize
+      @items = []
+      %% write data;
+    end
+
+    def exec(input)
+      buffer = []
+      stack = []
+      data = input.read.unpack('C*')
+
+      %% write init;
+      %% write exec;
+    end
   end
-
-  def exec(input)
-    buffer = []
-    stack = []
-    data = input.read.unpack('C*')
-
-    %% write init;
-    %% write exec;
-  end
+  Parser.new.exec(ARGV[0] ? File.open(ARGV[0], 'r:UTF-8') : $stdin)
 end
-Parser.new.exec(ARGV[0] ? File.open(ARGV[0], 'r:UTF-8') : $stdin)
 # vim: ts=2 sw=2:
 # encoding: utf-8
