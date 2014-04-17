@@ -14,14 +14,14 @@ machine bel;
   }
 
   action name {
-    @name = buffer.map(&:chr).join()
+    @name = buffer.pack('C*').force_encoding('utf-8')
   }
 
   action val {
     if buffer[0] == 34 && buffer[-1] == 34
       buffer = buffer[1...-1]
     end
-    @value = buffer.map(&:chr).join().gsub '\"', '"'
+    @value = buffer.pack('C*').force_encoding('utf-8').gsub '\"', '"'
   }
 
   action lists {
@@ -34,7 +34,7 @@ machine bel;
   }
 
   action liste {
-    listvals << listbuffer.map(&:chr).join()
+    listvals << listbuffer.pack('C*').force_encoding('utf-8')
     listbuffer = []
   }
 
@@ -48,7 +48,7 @@ machine bel;
   }
 
   action comment {
-    comment_text = buffer.map(&:chr).join()
+    comment_text = buffer.pack('C*').force_encoding('utf-8')
     comment = BEL::Language::Comment.new(comment_text)
 
     changed

@@ -35,13 +35,13 @@
   action rels {relbuffer = []}
   action reln {relbuffer << fc}
   action rele {
-    rel = relbuffer.map(&:chr).join()
+    rel = relbuffer.pack('C*').force_encoding('utf-8')
     @statement_stack.last.relationship = rel.to_sym
   }
   action cmts {cmtbuffer = []}
   action cmtn {cmtbuffer << fc}
   action cmte {
-    comment = cmtbuffer.map(&:chr).join()
+    comment = cmtbuffer.pack('C*').force_encoding('utf-8')
     @statement_stack.first.comment = comment
   }
 
