@@ -830,8 +830,8 @@ module BEL
           type = rdf_type
           statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Term]
           statements << [uri, BEL::RDF::RDF.type, type]
-          if BEL::RDF::ACTIVITY_TYPE.include? @fx
-            statements << [uri, BEL::RDF::BELV.hasActivityType, BEL::RDF::ACTIVITY_TYPE[@fx]]
+          if BEL::RDF::ACTIVITY_TYPE.include? @fx.short_form
+            statements << [uri, BEL::RDF::BELV.hasActivityType, BEL::RDF::ACTIVITY_TYPE[@fx.short_form]]
           end
 
           # rdfs:label

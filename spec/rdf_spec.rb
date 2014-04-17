@@ -80,11 +80,11 @@ describe 'RDF functionality of BEL language objects' do
   describe Statement do
 
     it "provides RDF statements for Statement instances" do
-      statement = tscript(p(HGNC['AKT1'])).increases bp(GOBP['Apoptotic process'])
+      statement = tscript(p(HGNC['AKT1'])).increases bp(GOBP['apoptotic process'])
 
       (uri, rdf_statements) = statement.to_rdf
       expect(uri).to eq(statement.to_uri)
-      expect(rdf_statements.size).to eq(19)
+      expect(rdf_statements.size).to eq(21)
     end
   end
 end
