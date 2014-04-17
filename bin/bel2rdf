@@ -20,7 +20,8 @@ require 'open-uri'
 
 # setup and parse options
 options = {
-  format: 'ntriples'
+  format: 'ntriples',
+  schema: false
 }
 OptionParser.new do |opts|
   opts.banner = '''Converts BEL statements to RDF triples.
@@ -32,6 +33,10 @@ Usage: bel2rdf --bel [FILE]'''
 
   opts.on('-f', '--format FORMAT', 'RDF file format.') do |format|
     options[:format] = format.downcase
+  end
+
+  opts.on('-s', '--[no-]schema', 'Write BEL RDF schema?') do |schema|
+    options[:schema] = schema
   end
 end.parse!
 
@@ -49,21 +54,13 @@ unless ['ntriples', 'nquads', 'turtle'].include? options[:format]
   exit 1
 end
 
-# read bel content
-content = (STDIN.tty?) ? File.open(options['bel']).read : $stdin.read
 
 class Main
   include BEL::Language
   include BEL::Script
 
-  attr_reader :ttl
-
-  def initialize(content, format)
-    @rdf_writer = ::Serializer.new(true, format)
-    BEL::RDF::vocabulary_rdf.each do |trpl|
-      @rdf_writer << trpl
-    end
-
+  def initialize(content, writer)
+    @writer = writer
     parser = Parser.new
     parser.add_observer self
     parser.parse(content)
@@ -72,7 +69,7 @@ class Main
     if obj.is_a? Statement
       triples = obj.to_rdf[1]
       triples.each do |triple|
-        @rdf_writer << triple
+        @writer << triple
       end
     end
   end
@@ -117,6 +114,20 @@ Install the 'rdf-turtle' gem."""
   end
 end
 
-Main.new(content, options[:format])
+# create writer for format
+rdf_writer = ::Serializer.new(true, options[:format])
+
+# first write schema if desired
+if options[:schema]
+  BEL::RDF::vocabulary_rdf.each do |trpl|
+    rdf_writer << trpl
+  end
+end
+
+# read bel content
+content = (STDIN.tty?) ? File.open(options['bel']).read : $stdin.read
+
+# parse and write rdf
+Main.new(content, rdf_writer)
 # vim: ts=2 sw=2:
 # encoding: utf-8
