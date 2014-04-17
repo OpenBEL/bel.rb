@@ -2,13 +2,12 @@
 # bel2rdf: Convert BEL to RDF triples.
 #
 # From BEL file
-# usage: ruby bel2rdf -b file.bel
+# usage: bel2rdf -b file.bel
 #
 # From standard in
-# usage: echo "<BEL DOCUMENT STRING>" | ruby bel2rdf
+# usage: echo "<BEL DOCUMENT STRING>" | bel2rdf
 
 require 'bel'
-require 'json'
 require 'optparse'
 require 'set'
 require 'open-uri'
@@ -17,7 +16,7 @@ require 'open-uri'
 options = {}
 OptionParser.new do |opts|
   opts.banner = '''Converts BEL statements to RDF triples.
-Usage: bel2rdf.rb [options] [.bel file]'''
+Usage: bel2rdf [options] [.bel file]'''
 
   opts.on('-b', '--bel FILE', 'BEL file to convert.  STDIN (standard in) can also be used for BEL content.') do |bel|
     options['bel'] = bel
@@ -41,7 +40,6 @@ class Main
   include BEL::Language
   include BEL::Script
 
-  EvidenceMatcher = Regexp.compile(/SET Evidence = ([0-9a-zA-Z]+)/)
   attr_reader :ttl
 
   def initialize(content)
@@ -69,8 +67,7 @@ class Serializer
 
   def initialize(stream)
     @writer = BEL::RDF::RDF::NTriples::Writer.new($stdout, {
-        :stream => stream,
-        :base_uri => "http://www.openbel.org/bel/"
+        :stream => stream
       }
     )
   end

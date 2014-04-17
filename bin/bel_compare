@@ -7,7 +7,7 @@ include BEL::Language
 include BEL::Namespace
 include BEL::Script
 
-USAGE = "Usage: #{File.basename(__FILE__)}.rb [options] [file] [file]"
+USAGE = "Usage: #{File.basename(__FILE__)} [options] [file] [file]"
 
 options = {}
 OptionParser.new do |opts|
