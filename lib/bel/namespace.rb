@@ -80,7 +80,7 @@ module BEL
         LATEST_PREFIX + 'namespace/rgd-rat-genes.belns',
         'http://www.openbel.org/bel/namespace/rgd-rat-genes'
       ],
-      SCOM: [
+      SCOMP: [
         LATEST_PREFIX + 'namespace/selventa-named-complexes.belns',
         'http://www.openbel.org/bel/namespace/selventa-named-complexes'
       ],
