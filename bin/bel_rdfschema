@@ -14,7 +14,7 @@ options = {
 }
 OptionParser.new do |opts|
   opts.banner = '''Dumps RDF schema for BEL.
-Usage: bel_rdfschema --format [ntriples | nquads | turtle]'''
+Usage: bel_rdfschema'''
 
   opts.on('-f', '--format FORMAT', 'RDF file format.') do |format|
     options[:format] = format.downcase
