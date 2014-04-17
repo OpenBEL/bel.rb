@@ -988,8 +988,6 @@ module BEL
                 value_uri = BEL::RDF::RDF::URI(Addressable::URI.encode(annotation_scheme[val.to_s]))
                 statements << [evidence_bnode, BEL::RDF::BELV.hasAnnotation, value_uri]
               end
-            elsif
-              $stderr.puts "missing annotation #{name}"
             end
           end
 
