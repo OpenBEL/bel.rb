@@ -172,6 +172,26 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
     end
   end
 
+  it "parses term arguments correctly" do
+    parser = BEL::Script::Parser.new
+
+    term = 'p(HGNC:FOXO3, pmod(P, S))'
+
+    terms = []
+    parser.parse(term) do |obj|
+      if obj.is_a? BEL::Language::Term
+        terms << obj
+      end
+    end
+
+    expect(terms.size).to eql(2)
+
+    # pmod(P, S)
+    expect(terms[0].arguments.size).to eql(2)
+    # p(HGNC:FOXO3, pmod(P, S))
+    expect(terms[1].arguments.size).to eql(2)
+  end
+
   it "understands statements (parses but does not yield nested stmts)" do
     parser = BEL::Script::Parser.new
     objects = []

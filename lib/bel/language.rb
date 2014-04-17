@@ -129,7 +129,7 @@ module BEL
         when nil
           raise ArgumentError, 'fx must not be nil'
         end
-        @arguments = arguments ||= []
+        @arguments = (arguments ||= []).flatten
         @signature = Signature.new(
           @fx[:short_form],
           *@arguments.map { |arg|
