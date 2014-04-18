@@ -193,6 +193,10 @@ module BEL
         @prefix.to_s
       end
 
+      def to_bel
+        %Q{DEFINE NAMESPACE #{@prefix} AS URL "#{@url}"}
+      end
+
       private
       # the backdoor
       def reload(url)
@@ -222,14 +226,13 @@ module BEL
     end
 
     # create classes for each standard prefix
-    DEFAULT_NAMESPACES = [
+    DEFAULT_NAMESPACES = 
       NAMESPACE_LATEST.collect do |prefix, values|
-        rdf_uri = NAMESPACE_LATEST[prefix][-1] || DEFAULT_URI
+        rdf_uri = NAMESPACE_LATEST[prefix][1] || DEFAULT_URI
         ns_definition = NamespaceDefinition.new(prefix, values[0], rdf_uri)
         Namespace.const_set(prefix, ns_definition)
         ns_definition
       end
-    ]
   end
 end
 # vim: ts=2 sw=2:

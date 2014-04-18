@@ -29,7 +29,9 @@
   }
 
   action define_namespace {
-    ns = BEL::Language::NamespaceDefinition.new(@name, @value)
+    prefix = @name.to_sym
+    ns = BEL::Namespace::NamespaceDefinition.new(prefix, @value)
+    @namespaces[prefix] = ns
     changed
     notify_observers(ns)
   }

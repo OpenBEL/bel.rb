@@ -25,13 +25,15 @@ machine bel;
 
 require 'observer'
 require_relative 'language'
+require_relative 'namespace'
 
 module BEL
   module Script
     class Parser
       include Observable
 
-      def initialize
+      def initialize(namespaces = {})
+        @namespaces = namespaces
         @annotations = {}
         @statement_group = nil
         %% write data;

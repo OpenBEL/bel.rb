@@ -96,7 +96,7 @@ DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/20131
 
     parser.parse(define) do |obj|
       expect(obj).to respond_to(:prefix)
-      expect(obj).to respond_to(:value)
+      expect(obj).to respond_to(:url)
     end
   end
 
@@ -137,7 +137,13 @@ and apoptosis (programmed cell death) [1,2]"\n}
   end
 
   it "understands terms (yields params, terms, and statements)" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      GOBP: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :GOBP},
+      SFAM: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :SFAM},
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC},
+      MESHCS: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MESHCS}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
     objects = []
 
     terms = %Q{biologicalProcess(GOBP:"response to oxidative stress")
@@ -155,7 +161,13 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
   end
 
   it "provides fx/arguments for terms" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      GOBP: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :GOBP},
+      SFAM: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :SFAM},
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC},
+      MESHCS: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MESHCS}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
 
     terms = %Q{biologicalProcess(GOBP:"response to oxidative stress")
 biologicalProcess(GOBP:aging)
@@ -173,7 +185,10 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
   end
 
   it "parses term arguments correctly" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
 
     term = 'p(HGNC:FOXO3, pmod(P, S))'
 
@@ -193,7 +208,13 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
   end
 
   it "understands statements (parses but does not yield nested stmts)" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      GOBP: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :GOBP},
+      MESHD: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MESHD},
+      MGI: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MGI},
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
     objects = []
 
     statements = %Q{path(MESHD:Atherosclerosis) //Comment1
@@ -211,7 +232,13 @@ path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process")) //C
   end
 
   it "provides subject/rel/object/annotations/comment for statements" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      GOBP: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :GOBP},
+      MESHD: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MESHD},
+      MGI: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MGI},
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
 
     statements = %Q{path(MESHD:Atherosclerosis) //Comment1
 path(Atherosclerosis)
@@ -232,7 +259,13 @@ path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process")) //C
   end
 
   it "understands statement groups (SET STATEMENT_GROUP and UNSET STATEMENT_GROUP)" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      GOBP: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :GOBP},
+      MESHD: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MESHD},
+      MGI: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MGI},
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
     objects = []
 
     statements = %Q{SET STATEMENT_GROUP = 123
@@ -250,7 +283,13 @@ UNSET STATEMENT_GROUP\n}
   end
 
   it "provides name/statements/annotations for statement groups" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      GOBP: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :GOBP},
+      MESHD: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MESHD},
+      MGI: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MGI},
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
 
     statements = %Q{SET STATEMENT_GROUP = 123
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473))
@@ -268,7 +307,13 @@ UNSET STATEMENT_GROUP\n}
   end
 
   it "provides name for unset of statement group" do
-    parser = BEL::Script::Parser.new
+    namespace_definitions = {
+      GOBP: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :GOBP},
+      MESHD: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MESHD},
+      MGI: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :MGI},
+      HGNC: BEL::Namespace::DEFAULT_NAMESPACES.find {|ns| ns.prefix == :HGNC}
+    }
+    parser = BEL::Script::Parser.new(namespace_definitions)
 
     statements = %Q{SET STATEMENT_GROUP = 123
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473))

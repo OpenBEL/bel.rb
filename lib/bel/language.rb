@@ -4,36 +4,33 @@ module BEL
     NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z_]/)
 
     class Newline
-      def to_s
+      def to_bel
         ""
       end
+      alias_method :to_s, :to_bel
     end
     NEW_LINE = Newline.new
 
     Comment = Struct.new(:text) do
-      def to_s
+      def to_bel
         %Q{##{self.text}}
       end
+      alias_method :to_s, :to_bel
     end
 
     DocumentProperty = Struct.new(:name, :value) do
-      def to_s
+      def to_bel
         value = self.value
         if NonWordMatcher.match value
           value = %Q{"#{value}"}
         end
         %Q{SET DOCUMENT #{self.name} = #{value}}
       end
-    end
-
-    NamespaceDefinition = Struct.new(:prefix, :value) do
-      def to_s
-        %Q{DEFINE NAMESPACE #{self.prefix} AS URL "#{self.value}"}
-      end
+      alias_method :to_s, :to_bel
     end
 
     AnnotationDefinition = Struct.new(:type, :prefix, :value) do
-      def to_s
+      def to_bel
         case self.type
         when :list
           %Q{DEFINE ANNOTATION #{self.prefix} AS LIST {#{self.value.join(',')}}}
@@ -43,11 +40,12 @@ module BEL
           %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
         end
       end
+      alias_method :to_s, :to_bel
     end
 
     class Parameter
       include Comparable
-      attr_reader :ns, :value, :enc, :signature
+      attr_accessor :ns, :value, :enc, :signature
 
       def initialize(ns, value, enc=nil)
         @ns = ns
@@ -76,13 +74,15 @@ module BEL
 
       alias_method :eql?, :'=='
 
-      def to_s
+      def to_bel
         prepped_value = value
         if NonWordMatcher.match value
           prepped_value = %Q{"#{value}"}
         end
-        "#{self.ns ? self.ns.to_s + ':' : ''}#{prepped_value}"
+        "#{self.ns ? self.ns.prefix.to_s + ':' : ''}#{prepped_value}"
       end
+
+      alias_method :to_s, :to_bel
     end
 
     class Function
@@ -176,13 +176,15 @@ module BEL
 
       alias_method :eql?, :'=='
 
-      def to_s
-        "#{@fx[:short_form]}(#{[@arguments].flatten.join(',')})"
+      def to_bel
+        "#{@fx[:short_form]}(#{[@arguments].flatten.map(&:to_bel).join(',')})"
       end
+
+      alias_method :to_s, :to_bel
     end
 
     Annotation = Struct.new(:name, :value) do
-      def to_s
+      def to_bel
         if self.value.respond_to? :each
           value = "{#{self.value.join(',')}}"
         else
@@ -194,6 +196,8 @@ module BEL
         end
         "SET #{self.name} = #{value}"
       end
+
+      alias_method :to_s, :to_bel
     end
 
     class Statement
@@ -234,7 +238,7 @@ module BEL
 
       alias_method :eql?, :'=='
 
-      def to_s
+      def to_bel
         lbl = case
         when subject_only?
           @subject.to_s
@@ -247,6 +251,8 @@ module BEL
         end
         comment ? lbl + ' //' + comment : lbl
       end
+
+      alias_method :to_s, :to_bel
     end
 
     StatementGroup = Struct.new(:name, :statements, :annotations) do
@@ -259,19 +265,23 @@ module BEL
         end
       end
 
-      def to_s
+      def to_bel
         name = self.name
         if NonWordMatcher.match name
           name = %Q{"#{name}"}
         end
         %Q{SET STATEMENT_GROUP = #{name}}
       end
+
+      alias_method :to_s, :to_bel
     end
 
     UnsetStatementGroup = Struct.new(:name) do
-      def to_s
+      def to_bel
         %Q{UNSET STATEMENT_GROUP}
       end
+
+      alias_method :to_s, :to_bel
     end
 
     class Signature
