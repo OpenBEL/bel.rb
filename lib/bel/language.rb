@@ -869,7 +869,7 @@ module BEL
           @arguments.find_all{ |x|
             x.is_a? Parameter and x.ns != nil
           }.each do |param|
-            concept_uri = param.ns.to_uri + '/' + param.value.to_s
+            concept_uri = param.ns.to_rdf_vocabulary[param.value.to_s]
             statements << [uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(Addressable::URI.encode(concept_uri))]
           end
 
