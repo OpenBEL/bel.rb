@@ -6,7 +6,9 @@ bel
 .. image:: https://travis-ci.org/OpenBEL/bel.rb.svg?branch=master
     :target: https://travis-ci.org/OpenBEL/bel.rb
 
-The bel gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
+The bel ruby gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
+
+Check out INSTALL_RUBY_...for how to install Ruby!
 
 Learn more on BEL_.
 
@@ -214,5 +216,6 @@ Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
 .. _BEL: http://www.openbel.org/content/bel-lang-language
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/
 .. _bel_upgrade: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
-.. _bel_rdfschema: https://github.com/OpenBEL/bel.rb/blob/next/bin/bel_upgrade
-.. _bel2rdf: https://github.com/OpenBEL/bel.rb/blob/next/bin/bel2rdf
+.. _bel_rdfschema: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
+.. _bel2rdf: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel2rdf
+.. _INSTALL_RUBY: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md
