@@ -8,14 +8,14 @@
     @statement.annotations = @annotations.clone()
 
     if @statement_group
-      statement_group.statements << @statement
+      @statement_group.statements << @statement
     end
 
     changed
     notify_observers(@statement)
   }
   action statement_init {
-    @statement = BEL::Script::Statement.new()
+    @statement = BEL::Language::Statement.new()
     @statement_stack = [@statement]
   }
   action statement_subject {
@@ -25,7 +25,7 @@
     @statement_stack.last.object = @term
   }
   action statement_ostmt {
-    nested = BEL::Script::Statement.new()
+    nested = BEL::Language::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   }
@@ -35,13 +35,13 @@
   action rels {relbuffer = []}
   action reln {relbuffer << fc}
   action rele {
-    rel = relbuffer.map(&:chr).join()
-    @statement_stack.last.rel = rel.to_sym
+    rel = relbuffer.pack('C*').force_encoding('utf-8')
+    @statement_stack.last.relationship = rel.to_sym
   }
   action cmts {cmtbuffer = []}
   action cmtn {cmtbuffer << fc}
   action cmte {
-    comment = cmtbuffer.map(&:chr).join()
+    comment = cmtbuffer.pack('C*').force_encoding('utf-8')
     @statement_stack.first.comment = comment
   }
 
@@ -68,7 +68,7 @@
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script
@@ -119,6 +119,8 @@ end
 
 # intended for direct testing
 if __FILE__ == $0
+  require 'bel'
+
   if ARGV[0]
     content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
   else

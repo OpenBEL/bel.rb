@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name               = 'bel'
-  spec.version            = '0.2.1'
+  spec.version            = '0.3.0'
   spec.summary            = %q{Process BEL with ruby.}
   spec.description        = %q{The BEL gem allows the reading, writing,
                                and processing of BEL (Biological Expression
@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.date               = %q{2014-01-13}
   spec.email              = %q{abargnesi@selventa.com}
   spec.files              = Dir.glob('lib/**/*.rb') << 'LICENSE'
-  spec.executables        = ['bel_upgrade']
+  spec.executables        = Dir.glob('bin/*').map(&File.method(:basename))
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
 

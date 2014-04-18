@@ -12,7 +12,7 @@ machine bel;
   }
   action term_fx {
     fx = @name.to_sym
-    @term_stack.push(BEL::Script::Term.new(fx, []))
+    @term_stack.push(BEL::Language::Term.new(fx, []))
     pfx = nil
     pbuf = []
   }
@@ -22,7 +22,14 @@ machine bel;
       if val.start_with? '"' and val.end_with? '"'
         val = val.strip()[1...-1]
       end
-      param = BEL::Script::Parameter.new(pfx, val)
+
+      ns = nil
+      if pfx
+        fail SyntaxError, "The namespace prefix #{pfx} was not defined" if not @namespaces[pfx.to_sym]
+        ns = @namespaces[pfx.to_sym]
+      end
+
+      param = BEL::Language::Parameter.new(ns, val)
       @term_stack.last << param
 
       changed
@@ -66,7 +73,7 @@ machine bel;
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script
@@ -117,6 +124,8 @@ end
 
 # intended for direct testing
 if __FILE__ == $0
+  require 'bel'
+
   if ARGV[0]
     content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
   else

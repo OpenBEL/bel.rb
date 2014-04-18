@@ -1,5 +1,289 @@
+require_relative '../features'
 module BEL
   module Language
+    NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z_]/)
+
+    class Newline
+      def to_bel
+        ""
+      end
+      alias_method :to_s, :to_bel
+    end
+    NEW_LINE = Newline.new
+
+    Comment = Struct.new(:text) do
+      def to_bel
+        %Q{##{self.text}}
+      end
+      alias_method :to_s, :to_bel
+    end
+
+    DocumentProperty = Struct.new(:name, :value) do
+      def to_bel
+        value = self.value
+        if NonWordMatcher.match value
+          value = %Q{"#{value}"}
+        end
+        %Q{SET DOCUMENT #{self.name} = #{value}}
+      end
+      alias_method :to_s, :to_bel
+    end
+
+    AnnotationDefinition = Struct.new(:type, :prefix, :value) do
+      def to_bel
+        case self.type
+        when :list
+          %Q{DEFINE ANNOTATION #{self.prefix} AS LIST {#{self.value.join(',')}}}
+        when :pattern
+          %Q{DEFINE ANNOTATION #{self.prefix} AS PATTERN "#{self.value}"}
+        when :url
+          %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
+        end
+      end
+      alias_method :to_s, :to_bel
+    end
+
+    class Parameter
+      include Comparable
+      attr_accessor :ns, :value, :enc, :signature
+
+      def initialize(ns, value, enc=nil)
+        @ns = ns
+        @value = value
+        @enc = enc || ''
+        @signature = E.new(@enc)
+      end
+
+      def <=>(other)
+        ns_compare = ns <=> other.ns
+        if ns_compare == 0
+          value <=> other.value
+        else
+          ns_compare
+        end
+      end
+
+      def hash
+        [@ns, @value].hash
+      end
+
+      def ==(other)
+        return false if other == nil
+        @ns == other.ns && @value == other.value
+      end
+
+      alias_method :eql?, :'=='
+
+      def to_bel
+        prepped_value = value
+        if NonWordMatcher.match value
+          prepped_value = %Q{"#{value}"}
+        end
+        "#{self.ns ? self.ns.prefix.to_s + ':' : ''}#{prepped_value}"
+      end
+
+      alias_method :to_s, :to_bel
+    end
+
+    class Function
+      attr_reader :short_form, :long_form, :return_type,
+                  :description, :signatures
+
+      def initialize args
+        args.each do |k,v|
+          instance_variable_set("@#{k}", v) unless v.nil?
+        end
+      end
+
+      def [](key)
+        instance_variable_get("@#{key}")
+      end
+
+      def hash
+        [@short_form, @long_form, @return_type, @description, @signatures].hash
+      end
+
+      def ==(other)
+        return false if other == nil
+        @short_form == other.short_form &&
+        @long_form == other.long_form &&
+        @return_type == other.return_type &&
+        @description == other.description &&
+        @signatures == other.signatures
+      end
+
+      alias_method :eql?, :'=='
+    end
+
+    class Term
+      include Comparable
+      attr_reader :fx, :arguments, :signature
+
+      def initialize(fx, *arguments)
+        @fx = case fx
+        when String
+        when Symbol
+          Function.new(FUNCTIONS[fx.to_sym])
+        when Function
+          fx
+        when nil
+          raise ArgumentError, 'fx must not be nil'
+        end
+        @arguments = (arguments ||= []).flatten
+        @signature = Signature.new(
+          @fx[:short_form],
+          *@arguments.map { |arg|
+            case arg
+            when Term
+              F.new(arg.fx.return_type)
+            when Parameter
+              E.new(arg.enc)
+            when nil
+              NullE.new
+            end
+          })
+      end
+
+      def <<(item)
+        @arguments << item
+      end
+
+      def validate_signature
+        invalids = []
+        @arguments.select { |arg| Term === arg }.each do |term|
+          invalids << term if not term.validate_signature
+        end
+
+        sigs = @fx.signatures
+        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
+        invalids << self if not match
+        if block_given? and not invalids.empty?
+          invalids.each do |term|
+            yield term, term.fx.signatures
+          end
+        end
+        invalids.empty?
+      end
+
+      def hash
+        [@fx, @arguments].hash
+      end
+
+      def ==(other)
+        return false if other == nil
+        @fx == other.fx && @arguments == other.arguments
+      end
+
+      alias_method :eql?, :'=='
+
+      def to_bel
+        "#{@fx[:short_form]}(#{[@arguments].flatten.map(&:to_bel).join(',')})"
+      end
+
+      alias_method :to_s, :to_bel
+    end
+
+    Annotation = Struct.new(:name, :value) do
+      def to_bel
+        if self.value.respond_to? :each
+          value = "{#{self.value.join(',')}}"
+        else
+          value = self.value
+          if NonWordMatcher.match value
+            value.gsub! '"', '\"'
+            value = %Q{"#{value}"}
+          end
+        end
+        "SET #{self.name} = #{value}"
+      end
+
+      alias_method :to_s, :to_bel
+    end
+
+    class Statement
+      attr_accessor :subject, :relationship, :object, :annotations, :comment
+
+      def initialize(subject=nil, relationship=nil, object=nil, annotations=[], comment=nil)
+        @subject = subject
+        @relationship = relationship
+        @object = object
+        @annotations = annotations
+        @comment = comment
+      end
+
+      def subject_only?
+        !@relationship
+      end
+
+      def simple?
+        @object and @object.is_a? Term
+      end
+
+      def nested?
+        @object and @object.is_a? Statement
+      end
+
+      def hash
+        [@subject, @relationship, @object, @annotations, @comment].hash
+      end
+
+      def ==(other)
+        return false if other == nil
+        @subject == other.subject &&
+        @relationship == other.relationship &&
+        @object == other.object &&
+        @annotations == other.annotations &&
+        @comment == comment
+      end
+
+      alias_method :eql?, :'=='
+
+      def to_bel
+        lbl = case
+        when subject_only?
+          @subject.to_s
+        when simple?
+          "#{@subject.to_s} #{@relationship} #{@object.to_s}"
+        when nested?
+          "#{@subject.to_s} #{@relationship} (#{@object.to_s})"
+        else
+          ''
+        end
+        comment ? lbl + ' //' + comment : lbl
+      end
+
+      alias_method :to_s, :to_bel
+    end
+
+    StatementGroup = Struct.new(:name, :statements, :annotations) do
+
+      def <=>(other_group)
+        if not other_group || other_group.is_a?
+          1
+        else
+          (statements || []) <=> (other_group.statements || [])
+        end
+      end
+
+      def to_bel
+        name = self.name
+        if NonWordMatcher.match name
+          name = %Q{"#{name}"}
+        end
+        %Q{SET STATEMENT_GROUP = #{name}}
+      end
+
+      alias_method :to_s, :to_bel
+    end
+
+    UnsetStatementGroup = Struct.new(:name) do
+      def to_bel
+        %Q{UNSET STATEMENT_GROUP}
+      end
+
+      alias_method :to_s, :to_bel
+    end
+
     class Signature
       attr_reader :fx, :arguments
       def initialize(fx, *arguments)
@@ -18,8 +302,8 @@ module BEL
       end
 
       def ==(other)
-        return false if @fx != other.fx
-        @arguments == other.arguments
+        return false if other == nil
+        @fx == other.fx && @arguments == other.arguments
       end
 
       def <=>(other)
@@ -44,8 +328,8 @@ module BEL
       end
 
       def ==(other)
+        return false if other == nil
         return false if not other.respond_to? :func_return
-
         @func_return == other.func_return and @var == other.var
       end
 
@@ -107,100 +391,6 @@ module BEL
 
       def to_s
         "E:nil"
-      end
-    end
-
-    class Parameter
-      include Comparable
-      attr_reader :ns_def, :value, :enc, :signature
-
-      def initialize(ns_def, value, enc)
-        @ns_def = ns_def
-        @value = value
-        @enc = enc || ''
-        @signature = E.new(@enc)
-      end
-
-      def <=>(other)
-        ns_compare = ns_def <=> other.ns_def
-        if ns_compare == 0
-          value <=> other.value
-        else
-          ns_compare
-        end
-      end
-
-      def to_s
-        value = @value
-        if value =~ %r{\W}
-          value = %Q{"#{value}"}
-        end
-        "#{@ns_def}:#{value}"
-      end
-    end
-
-    class Statement
-      attr_accessor :subject, :relationship, :object
-
-      def initialize(subject, relationship=nil, object=nil)
-        raise ArgumentError, 'subject must not be nil' unless subject
-        @subject = subject
-        @relationship = relationship
-        @object = object
-      end
-    end
-
-    class Function
-      attr_reader :short_form, :long_form, :return_type,
-                  :description, :signatures
-
-      def initialize args
-        args.each do |k,v|
-          instance_variable_set("@#{k}", v) unless v.nil?
-        end
-      end
-    end
-
-    class Term
-      include Comparable
-      attr_reader :fx, :arguments, :signature
-
-      def initialize(fx, *arguments)
-        @fx = fx
-        @arguments = arguments ||= []
-        @signature = Signature.new(
-          @fx.short_form,
-          *@arguments.map { |arg|
-            case arg
-            when Term
-              F.new(arg.fx.return_type)
-            when Parameter
-              E.new(arg.enc)
-            when nil
-              NullE.new
-            end
-          })
-      end
-
-      def validate_signature
-        invalids = []
-        @arguments.select { |arg| Term === arg }.each do |term|
-          invalids << term if not term.validate_signature
-        end
-
-        sigs = fx.signatures
-        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
-        invalids << self if not match
-        if block_given? and not invalids.empty?
-          invalids.each do |term|
-            yield term, term.fx.signatures
-          end
-        end
-        invalids.empty?
-      end
-
-      def to_s
-        "#{@fx.short_form}(#{@arguments.map(&:to_s).join(',')})"
       end
     end
 
@@ -269,6 +459,15 @@ module BEL
         signatures: [
           Signature.new(:complex, E.new(:A)),
           Signature.new(:complex, F.new(:a, true))
+        ]
+      },
+      composite: {
+        short_form: :composite,
+        long_form: :compositeAbundance,
+        description: 'Denotes the frequency or abundance of events in which members are present',
+        return_type: :a,
+        signatures: [
+          Signature.new(:composite, F.new(:a, true))
         ]
       },
       deg: {
@@ -568,6 +767,252 @@ module BEL
       end
       Language.send(:define_method, metadata[:long_form]) do |*args|
         Term.new(func, *args)
+      end
+    end
+
+    if BEL::Features.rdf_support?
+      require_relative 'rdf'
+
+      class Parameter
+        def to_uri
+          @ns.to_rdf_vocabulary[@value]
+        end
+
+        def to_rdf
+          uri = to_uri
+          char_enum = @enc.to_s.each_char
+          if block_given?
+            char_enum.map {|c| concept_statement(c, uri) }.each do |stmt|
+              yield stmt
+            end
+          else
+            char_enum.map { |c| concept_statement(c, uri)}
+          end
+        end
+
+        private
+        def concept_statement(encoding_character, uri)
+            case encoding_character
+            when 'G'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.GeneConcept)
+            when 'R'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.RNAConcept)
+            when 'P'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.ProteinConcept)
+            when 'M'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.MicroRNAConcept)
+            when 'C'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.ComplexConcept)
+            when 'B'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.BiologicalProcessConcept)
+            when 'A'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.AbundanceConcept)
+            when 'O'
+              RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.PathologyConcept)
+            end
+        end
+      end
+
+      class Term
+        def to_uri
+          tid = to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+          BEL::RDF::BELR[tid]
+        end
+
+        def rdf_type
+          if respond_to? 'fx'
+            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and x.fx.short_form == :pmod}
+              return BEL::RDF::BELV.ModifiedProteinAbundance
+            end
+            if @fx.short_form == :p and @arguments.find{|x| x.is_a? Term and BEL::RDF::PROTEIN_VARIANT.include? x.fx}
+              return BEL::RDF::BELV.ProteinVariantAbundance
+            end
+
+            BEL::RDF::FUNCTION_TYPE[@fx.short_form] || BEL::RDF::BELV.Abundance
+          end
+        end
+
+        def to_rdf
+          uri = to_uri
+          statements = []
+
+          # rdf:type
+          type = rdf_type
+          statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Term]
+          statements << [uri, BEL::RDF::RDF.type, type]
+          if BEL::RDF::ACTIVITY_TYPE.include? @fx.short_form
+            statements << [uri, BEL::RDF::BELV.hasActivityType, BEL::RDF::ACTIVITY_TYPE[@fx.short_form]]
+          end
+
+          # rdfs:label
+          statements << [uri, BEL::RDF::RDFS.label, to_s]
+
+          # special proteins (does not recurse into pmod)
+          if @fx.short_form == :p
+            if @arguments.find{|x| x.is_a? Term and x.fx.short_form == :pmod}
+              pmod = @arguments.find{|x| x.is_a? Term and x.fx.short_form == :pmod}
+              mod_string = pmod.arguments.map(&:to_s).join(',')
+              mod_type = BEL::RDF::MODIFICATION_TYPE.find {|k,v| mod_string.start_with? k}
+              mod_type = (mod_type ? mod_type[1] : BEL::RDF::BELV.Modification)
+              statements << [uri, BEL::RDF::BELV.hasModificationType, mod_type]
+              last = pmod.arguments.last.to_s
+              if last.match(/^\d+$/)
+                statements << [uri, BEL::RDF::BELV.hasModificationPosition, last.to_i]
+              end
+              # link root protein abundance as hasChild
+              root_param = @arguments.find{|x| x.is_a? Parameter}
+              (root_id, root_statements) = Term.new(:p, [root_param]).to_rdf
+              statements << [uri, BEL::RDF::BELV.hasChild, root_id]
+              statements += root_statements
+              return [uri, statements]
+            elsif @arguments.find{|x| x.is_a? Term and BEL::RDF::PROTEIN_VARIANT.include? x.fx}
+              # link root protein abundance as hasChild
+              root_param = @arguments.find{|x| x.is_a? Parameter}
+              (root_id, root_statements) = Term.new(:p, [root_param]).to_rdf
+              statements << [uri, BEL::RDF::BELV.hasChild, root_id]
+              statements += root_statements
+              return [uri, statements]
+            end
+          end
+
+          # BEL::RDF::BELV.hasConcept]
+          @arguments.find_all{ |x|
+            x.is_a? Parameter and x.ns != nil
+          }.each do |param|
+            concept_uri = param.ns.to_rdf_vocabulary[param.value.to_s]
+            statements << [uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(Addressable::URI.encode(concept_uri))]
+          end
+
+          # BEL::RDF::BELV.hasChild]
+          @arguments.find_all{|x| x.is_a? Term}.each do |child|
+            (child_id, child_statements) = child.to_rdf
+            statements << [uri, BEL::RDF::BELV.hasChild, child_id]
+            statements += child_statements
+          end
+
+          return [uri, statements]
+        end
+      end
+
+      class Statement
+        def to_uri
+          case
+          when subject_only?
+            tid = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            BEL::RDF::BELR[tid]
+          when simple?
+            sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            obj_id = @object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            BEL::RDF::BELR["#{sub_id}_#{rel}_#{obj_id}"]
+          when nested?
+            sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            nsub_id = @object.subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            nobj_id = @object.object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.relationship.to_s]
+            BEL::RDF::BELR["#{sub_id}_#{rel}_#{nsub_id}_#{nrel}_#{nobj_id}"]
+          end
+        end
+
+        def to_rdf
+          uri = to_uri
+          statements = []
+
+          case
+          when subject_only?
+            (sub_uri, sub_statements) = @subject.to_rdf
+            statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
+            statements += sub_statements
+          when simple?
+            (sub_uri, sub_statements) = @subject.to_rdf
+            statements += sub_statements
+
+            (obj_uri, obj_statements) = @object.to_rdf
+            statements += obj_statements
+
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
+            statements << [uri, BEL::RDF::BELV.hasObject, obj_uri]
+            statements << [uri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[rel]]
+          when nested?
+            (sub_uri, sub_statements) = @subject.to_rdf
+            (nsub_uri, nsub_statements) = @object.subject.to_rdf
+            (nobj_uri, nobj_statements) = @object.object.to_rdf
+            statements += sub_statements
+            statements += nsub_statements
+            statements += nobj_statements
+            rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.relationship.to_s]
+            nuri = BEL::RDF::BELR["#{strip_prefix(nsub_uri)}_#{nrel}_#{strip_prefix(nobj_uri)}"]
+
+            # inner
+            statements << [nuri, BEL::RDF::BELV.hasSubject, nsub_uri]
+            statements << [nuri, BEL::RDF::BELV.hasObject, nobj_uri]
+            statements << [nuri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[nrel]]
+
+            # outer
+            statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
+            statements << [uri, BEL::RDF::BELV.hasObject, nuri]
+            statements << [uri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[rel]]
+          end
+
+          # common statement triples
+          statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Statement]
+          statements << [uri, RDF::RDFS.label, to_s]
+
+          # evidence
+          evidence_bnode = BEL::RDF::RDF::Node.new
+          statements << [evidence_bnode, BEL::RDF::RDF.type, BEL::RDF::BELV.Evidence]
+          statements << [uri, BEL::RDF::BELV.hasEvidence, evidence_bnode]
+          statements << [evidence_bnode, BEL::RDF::BELV.hasStatement, uri]
+
+          # citation
+          citation = @annotations.delete('Citation')
+          if citation
+            value = citation.value.map{|x| x.gsub('"', '')}
+            if citation and value[0] == 'PubMed'
+              pid = value[2]
+              statements << [
+                evidence_bnode,
+                BEL::RDF::BELV.hasCitation,
+                BEL::RDF::RDF::URI(BEL::RDF::PUBMED[pid])
+              ]
+            end
+          end
+
+          # evidence
+          evidence_text = @annotations.delete('Evidence')
+          if evidence_text
+            value = evidence_text.value.gsub('"', '')
+            statements << [evidence_bnode, BEL::RDF::BELV.hasEvidenceText, value]
+          end
+
+          # annotations
+          @annotations.each do |name, anno|
+            name = anno.name.gsub('"', '')
+
+            if BEL::RDF::const_defined? name
+              annotation_scheme = BEL::RDF::const_get name
+              [anno.value].flatten.map{|x| x.gsub('"', '')}.each do |val|
+                value_uri = BEL::RDF::RDF::URI(Addressable::URI.encode(annotation_scheme[val.to_s]))
+                statements << [evidence_bnode, BEL::RDF::BELV.hasAnnotation, value_uri]
+              end
+            end
+          end
+
+          return [uri, statements]
+        end
+
+        private
+
+        def strip_prefix(uri)
+          if uri.to_s.start_with? 'http://www.openbel.org/bel/'
+            uri.to_s[28..-1]
+          else
+            uri
+          end
+        end
       end
     end
   end

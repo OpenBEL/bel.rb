@@ -11,25 +11,27 @@
   }
 
   action define_annotation_list {
-    anno = BEL::Script::AnnotationDefinition.new(:list, @name, @value)
+    anno = BEL::Language::AnnotationDefinition.new(:list, @name, @value)
     changed
     notify_observers(anno)
   }
 
   action define_annotation_pattern {
-    anno = BEL::Script::AnnotationDefinition.new(:pattern, @name, @value)
+    anno = BEL::Language::AnnotationDefinition.new(:pattern, @name, @value)
     changed
     notify_observers(anno)
   }
 
   action define_annotation_url {
-    anno = BEL::Script::AnnotationDefinition.new(:url, @name, @value)
+    anno = BEL::Language::AnnotationDefinition.new(:url, @name, @value)
     changed
     notify_observers(anno)
   }
 
   action define_namespace {
-    ns = BEL::Script::NamespaceDefinition.new(@name, @value)
+    prefix = @name.to_sym
+    ns = BEL::Namespace::NamespaceDefinition.new(prefix, @value)
+    @namespaces[prefix] = ns
     changed
     notify_observers(ns)
   }
@@ -55,7 +57,7 @@
 =end
 
 require 'observer'
-require_relative 'parse_objects'
+require_relative 'language'
 
 module BEL
   module Script
@@ -106,6 +108,8 @@ end
 
 # intended for direct testing
 if __FILE__ == $0
+  require 'bel'
+
   if ARGV[0]
     content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
   else

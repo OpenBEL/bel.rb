@@ -4,20 +4,20 @@ require 'bel/script.rb'
 BEL_SCRIPT = <<-EOF
 SET DOCUMENT Name = "Spec"
 SET DOCUMENT Authors = User
-DEFINE NAMESPACE GO AS URL "http://resource.belframework.org/belframework/1.0/namespace/go-biological-processes-names.belns"
-DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/1.0/namespace/hgnc-approved-symbols.belns"
-DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/1.0/namespace/mesh-diseases.belns"
-DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/1.0/namespace/mgi-approved-symbols.belns"
+DEFINE NAMESPACE GOBP AS URL "http://resource.belframework.org/belframework/20131211/namespace/go-biological-process.belns"
+DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/20131211/namespace/hgnc-human-genes.belns"
+DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/20131211/namespace/mesh-diseases.belns"
+DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/20131211/namespace/mgi-mouse-genes.belns"
 DEFINE ANNOTATION Disease AS  URL "http://resource.belframework.org/belframework/1.0/annotation/mesh-disease.belanno"
 DEFINE ANNOTATION Dosage AS PATTERN "[0-9]\.[0-9]+"
 DEFINE ANNOTATION TextLocation AS  LIST {"Abstract","Results","Legend","Review"}
 SET Disease = "Atherosclerosis"
 path(MESHD:Atherosclerosis) //Comment1
 path(Atherosclerosis)
-bp(GO:"lipid oxidation")
+bp(GOBP:"lipid oxidation")
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473)) //Comment2
-path(MESHD:Atherosclerosis) => bp(GO:"lipid oxidation")
-path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process")) //Comment3
+path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
+path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process")) //Comment3
 EOF
 
 describe BEL::Script::Parser, "#parse" do
@@ -37,7 +37,7 @@ describe BEL::Script::Parser, "#parse" do
     parser.parse(BEL_SCRIPT) do |obj|
       objects << obj
     end
-    stmts = objects.find_all {|x| x.is_a? BEL::Script::Statement}
+    stmts = objects.find_all {|x| x.is_a? BEL::Language::Statement}
     expect(stmts.length).to be 6
     expect(stmts.count{|x| x.subject_only?}).to be 3
     expect(stmts.count{|x| x.simple?}).to be 2

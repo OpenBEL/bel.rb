@@ -14,14 +14,14 @@ machine bel;
   }
 
   action name {
-    @name = buffer.map(&:chr).join()
+    @name = buffer.pack('C*').force_encoding('utf-8')
   }
 
   action val {
     if buffer[0] == 34 && buffer[-1] == 34
       buffer = buffer[1...-1]
     end
-    @value = buffer.map(&:chr).join().gsub '\"', '"'
+    @value = buffer.pack('C*').force_encoding('utf-8').gsub '\"', '"'
   }
 
   action lists {
@@ -34,7 +34,7 @@ machine bel;
   }
 
   action liste {
-    listvals << listbuffer.map(&:chr).join()
+    listvals << listbuffer.pack('C*').force_encoding('utf-8')
     listbuffer = []
   }
 
@@ -44,12 +44,12 @@ machine bel;
 
   action newline {
     changed
-    notify_observers(BEL::Script::Newline.instance)
+    notify_observers(BEL::Language::NEW_LINE)
   }
 
   action comment {
-    comment_text = buffer.map(&:chr).join()
-    comment = BEL::Script::Comment.new(comment_text)
+    comment_text = buffer.pack('C*').force_encoding('utf-8')
+    comment = BEL::Language::Comment.new(comment_text)
 
     changed
     notify_observers(comment)
@@ -113,22 +113,26 @@ machine bel;
 }%%
 =end
 
-class Parser
+if __FILE__ == $0
+  require_relative 'language'
 
-  def initialize
-    @items = []
-    %% write data;
+  class Parser
+
+    def initialize
+      @items = []
+      %% write data;
+    end
+
+    def exec(input)
+      buffer = []
+      stack = []
+      data = input.read.unpack('C*')
+
+      %% write init;
+      %% write exec;
+    end
   end
-
-  def exec(input)
-    buffer = []
-    stack = []
-    data = input.read.unpack('C*')
-
-    %% write init;
-    %% write exec;
-  end
+  Parser.new.exec(ARGV[0] ? File.open(ARGV[0], 'r:UTF-8') : $stdin)
 end
-Parser.new.exec(ARGV[0] ? File.open(ARGV[0], 'r:UTF-8') : $stdin)
 # vim: ts=2 sw=2:
 # encoding: utf-8

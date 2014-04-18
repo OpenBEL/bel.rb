@@ -26,6 +26,36 @@ bel_upgrade_: Upgrade namespaces in BEL content to another version (e.g. `1.0` t
   # using BEL from STDIN and change log from a URL
   cat small_corpus.bel | bel_upgrade --changelog http://resource.belframework.org/belframework/20131211/change_log.json
 
+bel_rdfschema_: Dumps the RDF Schema triples for BEL.
+
+.. code-block:: bash
+
+  # dumps schema in ntriples format (default)
+  bel_rdfschema
+
+  # dumps schema in turtle format
+  # note: requires the 'rdf-turtle' gem
+  bel_rdfschema --format turtle
+
+bel2rdf_: Converts BEL to RDF.
+
+.. code-block:: bash
+
+  # dumps RDF to standard out in ntriples format (default)
+  #   (from file)
+  bel2rdf --bel small_corpus.bel
+
+  #   (from standard in)
+  cat small_corpus.bel | bel2rdf
+
+  # dumps RDF to standard out in turtle format
+  #   (from file)
+  bel2rdf --bel small_corpus.bel --format turtle
+
+  #   (from standard in)
+  cat small_corpus.bel | bel2rdf --format turtle
+
+
 api examples
 ------------
 
@@ -158,6 +188,31 @@ Parse BEL input
   => BEL::Script::Statement: path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
   => :update
 
+Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
+
+.. code-block:: ruby
+
+  require 'bel'
+  parser = BEL::Script::Parser.new
+
+  rdf_statements = []
+
+  # parse term
+  parser.parse('p(HGNC:AKT1)') do |obj|
+    if obj.is_a? BEL::Language::Term  
+      rdf_statements += obj.to_rdf
+    end  
+  end
+
+  # parse statement
+  parser.parse("p(HGNC:AKT1) => tscript(g(HGNC:TNF))\n") do |obj|
+    if obj.is_a? BEL::Language::Statement
+      rdf_statements += obj.to_rdf
+    end  
+  end
+
 .. _BEL: http://www.openbel.org/content/bel-lang-language
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/
 .. _bel_upgrade: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
+.. _bel_rdfschema: https://github.com/OpenBEL/bel.rb/blob/next/bin/bel_upgrade
+.. _bel2rdf: https://github.com/OpenBEL/bel.rb/blob/next/bin/bel2rdf
