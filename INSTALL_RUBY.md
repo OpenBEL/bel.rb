@@ -1,6 +1,5 @@
-# Upgrading
+# Install Ruby
 
-_Note: Presently only namespace values are upgraded in BEL files._
 <br><br>
 ## Install Ruby (Windows)
 
