@@ -143,6 +143,28 @@ module BEL
       SP:        'http://resource.belframework.org/belframework/1.0/namespace/swissprot-entry-names.belns'
     }
 
+    class ResourceIndex
+      include Enumerable
+
+      attr_accessor :namespaces
+
+      def initialize(index_url, namespaces = [], annotations = [])
+        @index_url = index_url
+        read_url
+      end
+
+      def read_url
+        data = open(@index_url).read
+        @namespaces = data.
+          scan(%r{<idx:namespace idx:resourceLocation="(.*)"}).
+          map { |url|
+            prefix = open(url.first).read(200).
+              match(%r{Keyword=(.*)})[1].to_sym
+            NamespaceDefinition.new(prefix, url)
+          }
+      end
+    end
+
     class NamespaceDefinition
       include Enumerable
 
