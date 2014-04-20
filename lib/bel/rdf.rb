@@ -19,6 +19,7 @@ RUBYRDF = RDF
 
 module BEL
   module RDF
+
     # uri prefixes
     BELR    = RUBYRDF::Vocabulary.new('http://www.openbel.org/bel/')
     BELV    = RUBYRDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
@@ -62,6 +63,7 @@ module BEL
       tscript: BELV.AbundanceActivity,
       tport: BELV.AbundanceActivity
     }
+
     RELATIONSHIP_TYPE = {
       # 'actsIn' =>                 'actsIn',  XXX captured by BELV.hasChild]
         'analogous'              => 'analogous',
@@ -99,6 +101,7 @@ module BEL
         'translatedTo'           => 'translatedTo',
         'translocates'           => 'translocates'
     }
+
     RELATIONSHIP_CLASSIFICATION = {
         :'association'            => BELV.correlativeRelationship,
         :'--'                     => BELV.correlativeRelationship,
@@ -121,6 +124,7 @@ module BEL
         :'rateLimitingStepOf'     => BELV.rateLimitingStepOf,
         :'subProcessOf'           => BELV.subProcessOf
     }
+
     ACTIVITY_TYPE = {
       cat: BELV.Catalytic,
       chap: BELV.Chaperone,
@@ -133,6 +137,7 @@ module BEL
       tscript: BELV.Transcription,
       tport: BELV.Transport
     }
+
     # maps modification types to bel/vocabulary class
     MODIFICATION_TYPE = {
       'P,S' => BELV.PhosphorylationSerine,
@@ -148,189 +153,10 @@ module BEL
       'S'   => BELV.Sumoylation,
       'U'   => BELV.Ubiquitination
     }
+
     # protein variant
     PROTEIN_VARIANT = [:fus, :fusion, :sub, :substitution, :trunc, :truncation]
 
-    def self.for_statement(statement, writer)
-      # TODO canonicalization
-
-      case
-      when statement.subject_only?
-        id = for_term(statement.subject, writer)
-        writer << [id, BELV.hasSubject, id]
-      when statement.simple?
-        sub_id = for_term(statement.subject, writer)
-        obj_id = for_term(statement.object, writer)
-        rel = RELATIONSHIP_TYPE[statement.rel.to_s]
-        id = BELR["#{strip_prefix(sub_id)}_#{rel}_#{strip_prefix(obj_id)}"]
-        writer << [id, BELV.hasSubject, sub_id]
-        writer << [id, BELV.hasObject, obj_id]
-
-        if RELATIONSHIP_CLASSIFICATION.include? statement.rel
-          relclass = RELATIONSHIP_CLASSIFICATION[statement.rel]
-          writer << [id, BELV.hasRelationship, relclass]
-        else
-          writer << [id, BELV.hasRelationship, RELATIONSHIP_TYPE[rel]]
-        end
-      when statement.nested?
-        sub_id  = for_term(statement.subject, writer)
-        nsub_id = for_term(statement.object.subject, writer)
-        nobj_id = for_term(statement.object.object, writer)
-        rel = RELATIONSHIP_TYPE[statement.rel.to_s]
-        nrel = RELATIONSHIP_TYPE[statement.object.rel.to_s]
-        id = BELR["#{strip_prefix(sub_id)}_#{rel}_#{strip_prefix(nsub_id)}_#{nrel}_#{strip_prefix(nobj_id)}"]
-        nid = BELR["#{strip_prefix(nsub_id)}_#{nrel}_#{strip_prefix(nobj_id)}"]
-
-        # inner
-        writer << [nid, RDF.type, BELV.Statement]
-        writer << [nid, RDF::RDFS.label, statement.object.to_s]
-        writer << [nid, BELV.hasSubject, nsub_id]
-        writer << [nid, BELV.hasObject, nobj_id]
-        if RELATIONSHIP_CLASSIFICATION.include? statement.object.rel
-          nrelclass = RELATIONSHIP_CLASSIFICATION[statement.object.rel]
-          writer << [nid, BELV.hasRelationship, nrelclass]
-        else
-          writer << [nid, BELV.hasRelationship, RELATIONSHIP_TYPE[nrel]]
-        end
-
-        # outer
-        writer << [id, BELV.hasSubject, sub_id]
-        writer << [id, BELV.hasObject, nid]
-        if RELATIONSHIP_CLASSIFICATION.include? statement.rel
-          relclass = RELATIONSHIP_CLASSIFICATION[statement.rel]
-          writer << [id, BELV.hasRelationship, relclass]
-        else
-          writer << [id, BELV.hasRelationship, RELATIONSHIP_TYPE[rel]]
-        end
-      end
-
-      # common statement triples
-      writer << [id, RDF.type, BELV.Statement]
-      writer << [id, RDF::RDFS.label, statement.to_s]
-
-      # evidence
-      evidence_bnode = RDF::Node.new
-      writer << [evidence_bnode, RDF.type, BELV.Evidence]
-      writer << [id, BELV.hasEvidence, evidence_bnode]
-      writer << [evidence_bnode, BELV.hasStatement, id]
-
-      # citation
-      citation = statement.annotations.delete('Citation')
-      if citation
-        value = citation.value.map{|x| x.gsub('"', '')}
-        if citation and value[0] == 'PubMed'
-          pid = value[2]
-          writer << [evidence_bnode, BELV.hasCitation, RDF::URI(PUBMED + pid)]
-        end
-      end
-
-      # evidence
-      evidence_text = statement.annotations.delete('Evidence')
-      if evidence_text
-        value = evidence_text.value.gsub('"', '')
-        writer << [evidence_bnode, BELV.hasEvidenceText, value]
-      end
-
-      # annotations
-      statement.annotations.each do |name, anno|
-        name = anno.name.gsub('"', '')
-
-        if const_get name
-          annotation_scheme = const_get name
-          [anno.value].flatten.map{|x| x.gsub('"', '')}.each do |val|
-            value_uri = RDF::URI(Addressable::URI.encode(annotation_scheme[val.to_s]))
-            writer << [evidence_bnode, BELV.hasAnnotation, value_uri]
-          end
-        elsif
-          $stderr.puts "missing annotation #{name}"
-        end
-      end
-
-    end
-
-    def self.for_term(term, writer)
-      id = BELR[BEL::RDF::term_id(term)]
-
-      # rdf:type
-      type = BEL::RDF::type(term)
-      writer << [id, RDF.type, BELV.Term]
-      writer << [id, RDF.type, type]
-      if ACTIVITY_TYPE.include? term.fx
-        writer << [id, BELV.hasActivityType, ACTIVITY_TYPE[term.fx]]
-      end
-
-      # rdfs:label
-      writer << [id, RDF::RDFS.label, term.to_s]
-
-      # special proteins (does not recurse into pmod)
-      if term.fx == :p
-        if term.args.find{|x| x.is_a? BEL::Script::Term and x.fx == :pmod}
-          pmod = term.args.find{|x| x.is_a? BEL::Script::Term and x.fx == :pmod}
-          mod_string = pmod.args.map(&:to_s).join(',')
-          mod_type = MODIFICATION_TYPE.find {|k,v| mod_string.start_with? k}
-          mod_type = (mod_type ? mod_type[1] : BELV.Modification)
-          writer << [id, BELV.hasModificationType, mod_type]
-          last = pmod.args.last.to_s
-          if last.match(/^\d+$/)
-            writer << [id, BELV.hasModificationPosition, last.to_i]
-          end
-          # link root protein abundance as hasChild
-          root_param = term.args.find{|x| x.is_a? BEL::Script::Parameter}
-          root_id = self.for_term(BEL::Script::Term.new(:p, [root_param]), writer)
-          writer << [id, BELV.hasChild, root_id]
-          return id
-        elsif term.args.find{|x| x.is_a? BEL::Script::Term and PROTEIN_VARIANT.include? x.fx}
-          # link root protein abundance as hasChild
-          root_param = term.args.find{|x| x.is_a? BEL::Script::Parameter}
-          root_id = self.for_term(BEL::Script::Term.new(:p, [root_param]), writer)
-          writer << [id, BELV.hasChild, root_id]
-          return id
-        end
-      end
-
-      # BELV.hasConcept]
-      term.args.find_all{|x| x.is_a? BEL::Script::Parameter}.each do |param|
-        if param.ns and const_get param.ns
-          ev = const_get param.ns
-          writer << [id, BELV.hasConcept, RDF::URI(Addressable::URI.encode(ev[param.value].to_s))]
-        end
-      end
-
-      # BELV.hasChild]
-      term.args.find_all{|x| x.is_a? BEL::Script::Term}.each do |child|
-        child_id = self.for_term(child, writer)
-        writer << [id, BELV.hasChild, child_id]
-      end
-
-      return id
-    end
-
-    def self.type(obj)
-      if obj.respond_to? 'fx'
-        if obj.fx == :p and obj.args.find{|x| x.is_a? BEL::Script::Term and x.fx == :pmod}
-          return BELV.ModifiedProteinAbundance
-        end
-        if obj.fx == :p and obj.args.find{|x| x.is_a? BEL::Script::Term and PROTEIN_VARIANT.include? x.fx}
-          return BELV.ProteinVariantAbundance
-        end
-
-        FUNCTION_TYPE[obj.fx.to_sym] || BELV.Abundance
-      end
-    end
-
-    def self.term_id(term)
-      term.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
-    end
-
-    def self.strip_prefix(uri)
-      if uri.to_s.start_with? 'http://www.openbel.org/bel/'
-        uri.to_s[28..-1]
-      else
-        uri
-      end
-    end
-
-    ### TODO Vocabulary could be an RDF::Graph
     def self.vocabulary_rdf
       [
         # Class
