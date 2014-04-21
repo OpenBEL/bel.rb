@@ -148,20 +148,64 @@ module BEL
 
       attr_accessor :namespaces
 
-      def initialize(index_url, namespaces = [], annotations = [])
-        @index_url = index_url
-        read_url
+      def initialize(index, namespaces = [], annotations = [])
+        @index = index
+        @namespaces = namespaces
+        @annotations = annotations
+        @loaded = false
       end
 
-      def read_url
-        data = open(@index_url).read
-        @namespaces = data.
-          scan(%r{<idx:namespace idx:resourceLocation="(.*)"}).
-          map { |url|
-            prefix = open(url.first).read(200).
+      def each
+        read_index if not @loaded
+        @namespaces.each { |x| yield x }
+        @annotations.each { |x| yield x }
+      end
+
+      def each_namespace
+        read_index if not @loaded
+        @namespaces.each { |x| yield x }
+      end
+        
+      def each_annotation
+        read_index if not @loaded
+        @annotations.each { |x| yield x }
+      end
+
+      def to_bel
+        map { |x| x.to_bel }
+      end
+
+      private
+
+      def read_index
+        return if not @index or @index.empty?
+
+        data = nil
+        if File.exists? @index
+          File.open(@index) do |f|
+            data = f.read
+          end
+        else
+          data = open(@index).read
+        end
+        @namespaces += data.
+          scan(%r{<(idx:)?namespace (idx:)?resourceLocation="(.*)"}).
+          map { |matches|
+            url = matches[2]
+            prefix = open(url).read(100).
               match(%r{Keyword=(.*)})[1].to_sym
             NamespaceDefinition.new(prefix, url)
           }
+        @annotations += data.
+          scan(%r{<(idx:)?annotationdefinition (idx:)?resourceLocation="(.*)"}).
+          map { |matches|
+            url = matches[2]
+            prefix = open(url).read(100).
+              match(%r{Keyword=(.*)})[1].to_sym
+            BEL::Language::AnnotationDefinition.new(:url, prefix, url)
+          }
+
+        @loaded = true
       end
     end
 
