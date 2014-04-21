@@ -209,6 +209,9 @@ module BEL
       end
     end
 
+    RESOURCE_INDEX_20131211 = ResourceIndex.new('http://resource.belframework.org/belframework/20131211/index.xml')
+    RESOURCE_INDEX_1_0 = ResourceIndex.new('http://resource.belframework.org/belframework/1.0/index.xml')
+
     class NamespaceDefinition
       include Enumerable
 
