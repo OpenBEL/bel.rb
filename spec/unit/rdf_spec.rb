@@ -57,7 +57,7 @@ describe 'RDF functionality of BEL language objects' do
   describe Term do
 
     it "provides RDF statements for Term instances" do
-      term = p(HGNC['AKT1'])
+      term = p(Parameter.new(HGNC, 'AKT1', 'GRP'))
 
       (term_uri, rdf_statements) = term.to_rdf
       expect(term_uri).to eq(term.to_uri)
@@ -80,7 +80,7 @@ describe 'RDF functionality of BEL language objects' do
   describe Statement do
 
     it "provides RDF statements for Statement instances" do
-      statement = tscript(p(HGNC['AKT1'])).increases bp(GOBP['apoptotic process'])
+      statement = tscript(p(Parameter.new(HGNC, 'AKT1', 'GRP'))).increases bp(Parameter.new(GOBP, 'apoptotic process', 'B'))
 
       (uri, rdf_statements) = statement.to_rdf
       expect(uri).to eq(statement.to_uri)
