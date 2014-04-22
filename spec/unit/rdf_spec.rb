@@ -1,6 +1,5 @@
 # vim: ts=2 sw=2:
 require 'bel'
-require 'pry'
 
 include BEL::Language
 include BEL::Namespace
