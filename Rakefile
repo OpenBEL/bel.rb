@@ -14,7 +14,7 @@ require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.ruby_opts = '-Ilib/'
   spec.rspec_opts = "--format documentation"
-  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.pattern = FileList['spec/unit/**/*_spec.rb']
 end
 
 task :default => :spec
