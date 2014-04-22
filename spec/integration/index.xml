@@ -1,0 +1,30 @@
+<idx:index
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.belscript.org/schema/index index.xsd"
+    xmlns:idx="http://www.belscript.org/schema/index"
+    idx:belframework_version="2.0">
+
+    <idx:annotationdefinitions>
+        <idx:annotationdefinition idx:resourceLocation="http://resource.belframework.org/belframework/20131211/annotation/anatomy.belanno" />
+    </idx:annotationdefinitions>
+
+    <idx:namespaces>
+        <idx:namespace idx:resourceLocation="http://resource.belframework.org/belframework/20131211/namespace/chebi.belns" />
+    </idx:namespaces>
+
+    <idx:equivalences>
+        <idx:equivalence idx:resourceLocation="http://resource.belframework.org/belframework/20131211/equivalence/chebi.beleq">
+            <idx:namespace-ref idx:resourceLocation="http://resource.belframework.org/belframework/20131211/namespace/chebi.belns" />
+        </idx:equivalence>
+    </idx:equivalences>
+
+    <idx:knowledge>
+        <idx:protein-families idx:resourceLocation="http://resource.belframework.org/belframework/20131211/resource/protein-families.bel" />
+        <idx:named-complexes idx:resourceLocation="http://resource.belframework.org/belframework/20131211/resource/named-complexes.bel" />
+        <idx:gene-scaffolding idx:resourceLocation="http://resource.belframework.org/belframework/20131211/resource/gene_scaffolding_document_9606_10090_10116.bel" />
+        <idx:orthologies>
+            <idx:orthology idx:resourceLocation="http://resource.belframework.org/belframework/20131211/resource/gene-orthology.bel" />
+        </idx:orthologies>
+    </idx:knowledge>
+</idx:index>
+

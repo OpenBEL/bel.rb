@@ -5,6 +5,7 @@ module BEL
   autoload :RDF,       "#{File.dirname(__FILE__)}/bel/rdf"
 
   require_relative './features.rb'
+  require_relative './util.rb'
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8

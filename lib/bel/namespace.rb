@@ -146,13 +146,24 @@ module BEL
     class ResourceIndex
       include Enumerable
 
-      attr_accessor :namespaces
+      attr_writer :namespaces
+      attr_writer :annotations
 
       def initialize(index, namespaces = [], annotations = [])
         @index = index
         @namespaces = namespaces
         @annotations = annotations
         @loaded = false
+      end
+
+      def namespaces
+        read_index if not @loaded
+        @namespaces
+      end
+
+      def annotations
+        read_index if not @loaded
+        @annotations
       end
 
       def each
@@ -180,28 +191,21 @@ module BEL
       def read_index
         return if not @index or @index.empty?
 
-        data = nil
-        if File.exists? @index
-          File.open(@index) do |f|
-            data = f.read
-          end
-        else
-          data = open(@index).read
-        end
+        data = BEL::read_all(@index)
         @namespaces += data.
           scan(%r{<(idx:)?namespace (idx:)?resourceLocation="(.*)"}).
           map { |matches|
             url = matches[2]
-            prefix = open(url).read(100).
-              match(%r{Keyword=(.*)})[1].to_sym
+            header = BEL::multi_open(url) do |f| f.read(100) end
+            prefix = header.match(%r{Keyword=(.*)})[1].to_sym
             NamespaceDefinition.new(prefix, url)
           }
         @annotations += data.
           scan(%r{<(idx:)?annotationdefinition (idx:)?resourceLocation="(.*)"}).
           map { |matches|
             url = matches[2]
-            prefix = open(url).read(100).
-              match(%r{Keyword=(.*)})[1].to_sym
+            header = BEL::multi_open(url) do |f| f.read(100) end
+            prefix = header.match(%r{Keyword=(.*)})[1].to_sym
             BEL::Language::AnnotationDefinition.new(:url, prefix, url)
           }
 
