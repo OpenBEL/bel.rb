@@ -159,6 +159,22 @@ module BEL
 
     def self.vocabulary_rdf
       [
+        # Concept - Annotations
+        [BELV.AnnotationConceptScheme, RDF::RDFS.subClassOf, RDF::SKOS.ConceptScheme],
+        [BELV.AnnotationConcept, RDF::RDFS.subClassOf, RDF::SKOS.Concept],
+
+        # Concept - Namespaces
+        [BELV.NamespaceConceptScheme, RDF::RDFS.subClassOf, RDF::SKOS.ConceptScheme],
+        [BELV.NamespaceConcept, RDF::RDFS.subClassOf, RDF::SKOS.Concept],
+        [BELV.AbundanceConcept, RDF::RDFS.subClassOf, BELV.NamespaceConcept],
+        [BELV.ComplexConcept, RDF::RDFS.subClassOf, BELV.AbundanceConcept],
+        [BELV.ProteinConcept, RDF::RDFS.subClassOf, BELV.AbundanceConcept],
+        [BELV.RNAConcept, RDF::RDFS.subClassOf, BELV.AbundanceConcept],
+        [BELV.MicroRNAConcept, RDF::RDFS.subClassOf, BELV.RNAConcept],
+        [BELV.GeneConcept, RDF::RDFS.subClassOf, BELV.AbundanceConcept],
+        [BELV.BiologicalProcessConcept, RDF::RDFS.subClassOf, BELV.NamespaceConcept],
+        [BELV.PathologyConcept, RDF::RDFS.subClassOf, BELV.BiologicalProcessConcept],
+
         # Class
         [BELV.Term, RDF.type, RDF::RDFS.Class],
         [BELV.Statement, RDF.type, RDF::RDFS.Class],
