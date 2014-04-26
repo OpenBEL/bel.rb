@@ -222,7 +222,6 @@ module BEL
       attr_reader :prefix
       attr_reader :url
       attr_reader :rdf_uri
-      attr_reader :values
 
       def initialize(prefix, url, rdf_uri = DEFAULT_URI)
         @prefix = prefix
@@ -231,9 +230,15 @@ module BEL
         @values = nil
       end
 
+      def values
+        unless @values
+          reload(@url)
+        end
+        @values
+      end
+
       def [](value)
         return nil unless value
-
         reload(@url) if not @values
         sym = value.to_sym
         Language::Parameter.new(self, sym,
