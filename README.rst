@@ -66,8 +66,6 @@ Load any standard namespace
 .. code-block:: ruby
 
   require 'bel'
-  # include namespace module in current scope
-  include BEL::Namespace 
   
   # reference namespace value using standard prefixes (HGNC, MGI, RGD, etc.)
   HGNC['AKT1']
@@ -81,8 +79,6 @@ Load your own namespace
 .. code-block:: ruby
 
   require 'bel'
-  # include namespace module in current scope
-  include BEL::Namespace
 
   # define a NamespaceDefinition with prefix symbol and url
   PUBCHEM = NamespaceDefinition.new(:PUBCHEM, 'http://your-url.org/pubchem.belns')
@@ -96,10 +92,6 @@ Write BEL in Ruby with a DSL
 
   require 'bel'
   
-  # include modules in current scope
-  include BEL::Language
-  include BEL::Namespace
-  
   # create BEL statements
   p(HGNC['SKIL']).directlyDecreases tscript(p(HGNC['SMAD3']))
   bp(GO['response to hypoxia']).increases tscript(p(EGID['7157']))
@@ -109,10 +101,6 @@ Validate BEL terms
 .. code-block:: ruby
 
   require 'bel'
-
-  # include modules in current scope
-  include BEL::Language
-  include BEL::Namespace
 
   # boolean validation of constructed term
   tscript(g(HGNC['AKT1'])).validate_signature
