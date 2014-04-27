@@ -11,7 +11,21 @@
       @statement_group.statements << @statement
     end
 
-    yield @statement
+    if @statement.relationship == :hasComponents
+      @statement.object.arguments.each do |arg|
+        yield BEL::Language::Statement.new(
+          @statement.subject, :hasComponent, arg, @statement.annotations, @statement.comment
+        )
+      end
+    elsif @statement.relationship == :hasMembers
+      @statement.object.arguments.each do |arg|
+        yield BEL::Language::Statement.new(
+          @statement.subject, :hasMember, arg, @statement.annotations, @statement.comment
+        )
+      end
+    else
+      yield @statement
+    end
   }
   action statement_init {
     @statement = BEL::Language::Statement.new()
