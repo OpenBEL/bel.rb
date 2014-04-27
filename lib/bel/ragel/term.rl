@@ -4,8 +4,7 @@ machine bel;
 
   action call_term {fcall term;}
   action term {
-    changed
-    notify_observers(@term)
+    yield @term
   }
   action term_init {
     @term_stack = []
@@ -32,8 +31,7 @@ machine bel;
       param = BEL::Language::Parameter.new(ns, val)
       @term_stack.last << param
 
-      changed
-      notify_observers(param)
+      yield param
     end
     pbuf = []
     pfx = nil

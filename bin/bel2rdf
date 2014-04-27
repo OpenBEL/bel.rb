@@ -57,19 +57,14 @@ end
 
 class Main
   include BEL::Language
-  include BEL::Script
 
   def initialize(content, writer)
-    @writer = writer
-    parser = Parser.new
-    parser.add_observer self
-    parser.parse(content)
-  end
-  def update(obj)
-    if obj.is_a? Statement
-      triples = obj.to_rdf[1]
+    BEL::Script.parse(content).find_all { |obj|
+      obj.is_a? Statement
+    }.each do |stmt|
+      triples = stmt.to_rdf[1]
       triples.each do |triple|
-        @writer << triple
+        writer << triple
       end
     end
   end

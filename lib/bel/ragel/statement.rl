@@ -11,8 +11,7 @@
       @statement_group.statements << @statement
     end
 
-    changed
-    notify_observers(@statement)
+    yield @statement
   }
   action statement_init {
     @statement = BEL::Language::Statement.new()

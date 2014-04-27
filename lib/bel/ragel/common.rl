@@ -43,16 +43,14 @@ machine bel;
   }
 
   action newline {
-    changed
-    notify_observers(BEL::Language::NEW_LINE)
+    yield BEL::Language::NEW_LINE
   }
 
   action comment {
     comment_text = buffer.pack('C*').force_encoding('utf-8')
     comment = BEL::Language::Comment.new(comment_text)
 
-    changed
-    notify_observers(comment)
+    yield comment
   }
 
   # basic tokens

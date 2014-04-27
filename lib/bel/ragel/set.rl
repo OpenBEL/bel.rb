@@ -14,23 +14,20 @@
     @statement_group = BEL::Language::StatementGroup.new(@value, [])
     @annotations = {}
 
-    changed
-    notify_observers(@statement_group)
+    yield @statement_group
   }
 
   action docprop {
     docprop = BEL::Language::DocumentProperty.new(@name, @value)
 
-    changed
-    notify_observers(docprop)
+    yield docprop
   }
 
   action annotation {
     annotation = BEL::Language::Annotation.new(@name, @value)
     @annotations.store(@name, annotation)
 
-    changed
-    notify_observers(annotation)
+    yield annotation
   }
 
   action unset_annotation {
@@ -41,8 +38,7 @@
     @statement_group.annotations = @annotations.clone()
     @annotations.clear()
 
-    changed
-    notify_observers(BEL::Language::UnsetStatementGroup.new(@statement_group.name))
+    yield BEL::Language::UnsetStatementGroup.new(@statement_group.name)
   }
 
   include 'common.rl';

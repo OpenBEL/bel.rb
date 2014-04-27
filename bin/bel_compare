@@ -5,7 +5,6 @@ require 'optparse'
 require 'bel'
 include BEL::Language
 include BEL::Namespace
-include BEL::Script
 
 USAGE = "Usage: #{File.basename(__FILE__)} [options] [file] [file]"
 
@@ -29,10 +28,9 @@ if ARGV.length != 2
 end
 
 def fetch_groups(bel)
-  p = BEL::Script::Parser.new()
   groups = {}
   active_group = nil
-  p.parse(bel) do |obj|
+  BEL::Script.parse(bel) do |obj|
     if obj.is_a? BEL::Language::StatementGroup
       active_group = obj
     end

@@ -143,15 +143,26 @@ Parse BEL input
   path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
   EOF
 
-  # include BEL Script module
-  include BEL::Script
+  # BEL::Script.parse returns BEL::Script::Parser
+  BEL::Script.parse('tscript(p(HGNC:AKT1))')
+  => #<BEL::Script::Parser:0x007f179261d270>
 
-  # create parser
-  parser = BEL::Script::Parser.new
+  # BEL::Script::Parser is Enumerable so we can analyze as we parse
+  #   for example: count all function types into a hash
+  BEL::Script.parse('tscript(p(HGNC:AKT1))', {HGNC: HGNC}).find_all { |obj|
+    obj.is_a? Term
+  }.map { |term|
+    term.fx  
+  }.reduce(Hash.new {|h,k| h[k] = 0}) { |result, function|  
+    result[function.short_form] += 1  
+    result
+  }
+  => {:p=>1, :tscript=>1} 
 
   # parse; yield each parsed object to the block
-  parser.parse(BEL_SCRIPT) do |obj|
-    puts "#{obj.class} #{obj}"
+  namespace_mapping = {GO: GOBP, HGNC: HGNC, MGI: MGI, MESHD: MESHD}
+  BEL::Script.parse(BEL_SCRIPT, namespace_mapping) do |obj|
+    puts "#{obj.class} #{obj}"  
   end
   => BEL::Script::DocumentProperty: SET DOCUMENT Name = "Spec"
   => BEL::Script::DocumentProperty: SET DOCUMENT Authors = "User"
@@ -185,7 +196,6 @@ Parse BEL input
   => BEL::Script::Parameter: GO:"apoptotic process"
   => BEL::Script::Term: bp(GO:"apoptotic process")
   => BEL::Script::Statement: path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
-  => :update
 
 Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
 

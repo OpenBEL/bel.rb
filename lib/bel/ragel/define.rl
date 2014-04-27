@@ -12,28 +12,24 @@
 
   action define_annotation_list {
     anno = BEL::Language::AnnotationDefinition.new(:list, @name, @value)
-    changed
-    notify_observers(anno)
+    yield anno
   }
 
   action define_annotation_pattern {
     anno = BEL::Language::AnnotationDefinition.new(:pattern, @name, @value)
-    changed
-    notify_observers(anno)
+    yield anno
   }
 
   action define_annotation_url {
     anno = BEL::Language::AnnotationDefinition.new(:url, @name, @value)
-    changed
-    notify_observers(anno)
+    yield anno
   }
 
   action define_namespace {
     prefix = @name.to_sym
     ns = BEL::Namespace::NamespaceDefinition.new(prefix, @value)
     @namespaces[prefix] = ns
-    changed
-    notify_observers(ns)
+    yield ns
   }
 
   include 'common.rl';

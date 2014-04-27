@@ -79,69 +79,64 @@ class Main
   def initialize(content, change_log)
     @change_log = change_log
     @keywords_seen = Set.new
-    parser = BEL::Script::Parser.new
-    parser.add_observer self
-    parser.parse(content)
-  end
-  def update(obj)
-    # redefine namespace based on change log's `redefine` block
-    if obj.is_a? BEL::Namespace::NamespaceDefinition
-      if @change_log.has_key? 'redefine'
-        redefine = @change_log['redefine']
-        if redefine.has_key? obj.prefix.to_s
-          entry = redefine[obj.prefix.to_s]
-          new_keyword = entry['new_keyword'].to_sym
-          new_url = entry['new_url']
-          obj = BEL::Namespace::NamespaceDefinition.new(new_keyword, new_url)
-        end
-      end
-
-      # deduplicate namespaces for output purposes
-      if @keywords_seen.include? obj.prefix
-        return
-      end
-      @keywords_seen.add(obj.prefix)
-    end
-
-    # evidence always needs quoting; backwards-compatibility
-    if obj.is_a? BEL::Language::Annotation
-      if obj.name == 'Evidence'
-        ev = obj.to_s
-        ev.gsub!(EvidenceMatcher, 'SET Evidence = "\1"')
-        puts ev.to_s
-        return
-      end
-    end
-
-    if obj.is_a? BEL::Language::Parameter
-      if obj.ns and @change_log.has_key? obj.ns.prefix.to_s
-        clog_ns = @change_log[obj.ns.prefix.to_s]
-        if clog_ns.has_key? obj.value
-          replacement = clog_ns[obj.value]
-          if replacement == 'unresolved' or replacement == 'withdrawn'
-            $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement}'"
-            return
+    BEL::Script.parse(content) do |obj|
+      # redefine namespace based on change log's `redefine` block
+      if obj.is_a? NamespaceDefinition
+        if @change_log.has_key? 'redefine'
+          redefine = @change_log['redefine']
+          if redefine.has_key? obj.prefix.to_s
+            entry = redefine[obj.prefix.to_s]
+            new_keyword = entry['new_keyword'].to_sym
+            new_url = entry['new_url']
+            obj = NamespaceDefinition.new(new_keyword, new_url)
           end
-          obj.value = replacement
+        end
+
+        # deduplicate namespaces for output purposes
+        if @keywords_seen.include? obj.prefix
+          next
+        end
+        @keywords_seen.add(obj.prefix)
+      end
+
+      # evidence always needs quoting; backwards-compatibility
+      if obj.is_a? Annotation
+        if obj.name == 'Evidence'
+          ev = obj.to_s
+          ev.gsub!(EvidenceMatcher, 'SET Evidence = "\1"')
+          puts ev.to_s
+          next
         end
       end
-      # redefine param namespace based on change log's `redefine` block
-      if @change_log.has_key? 'redefine'
-        redefine = @change_log['redefine']
-        if obj.ns and redefine.has_key? obj.ns.prefix.to_s
-          new_keyword = redefine[obj.ns.prefix.to_s]['new_keyword']
-          new_url = redefine[obj.ns.prefix.to_s]['new_url']
-          obj.ns = BEL::Namespace::NamespaceDefinition.new(new_keyword, new_url)
+
+      if obj.is_a? Parameter
+        if obj.ns and @change_log.has_key? obj.ns.prefix.to_s
+          clog_ns = @change_log[obj.ns.prefix.to_s]
+          if clog_ns.has_key? obj.value
+            replacement = clog_ns[obj.value]
+            if replacement == 'unresolved' or replacement == 'withdrawn'
+              $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement}'"
+              next
+            end
+            obj.value = replacement
+          end
         end
+        # redefine param namespace based on change log's `redefine` block
+        if @change_log.has_key? 'redefine'
+          redefine = @change_log['redefine']
+          if obj.ns and redefine.has_key? obj.ns.prefix.to_s
+            new_keyword = redefine[obj.ns.prefix.to_s]['new_keyword']
+            new_url = redefine[obj.ns.prefix.to_s]['new_url']
+            obj.ns = NamespaceDefinition.new(new_keyword, new_url)
+          end
+        end
+        next
       end
-      return
-    end
 
-    if obj.is_a? BEL::Language::Term
-      return # do not print (part of statement)
-    end
+      next if obj.is_a? Term # do not print (part of statement)
 
-    puts obj.to_bel
+      puts obj.to_bel
+    end
   end
 
   private

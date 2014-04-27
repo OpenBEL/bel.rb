@@ -20,47 +20,28 @@ path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
 path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process")) //Comment3
 EOF
 
-describe BEL::Script::Parser, "#parse" do
-  it "returns bel objects" do
-    objects = []
-    parser = BEL::Script::Parser.new
-    parser.parse(BEL_SCRIPT) do |obj|
-      objects << obj
-    end
+describe BEL::Script, "#parse" do
+  it "can return all parsed objects" do
+    objects = BEL::Script.parse(BEL_SCRIPT).to_a
     expect(objects).to be
     expect(objects.length).to eql(40)
   end
 
-  it "returns all types of statements" do
-    objects = []
-    parser = BEL::Script::Parser.new
-    parser.parse(BEL_SCRIPT) do |obj|
-      objects << obj
-    end
-    stmts = objects.find_all {|x| x.is_a? BEL::Language::Statement}
-    expect(stmts.length).to be 6
-    expect(stmts.count{|x| x.subject_only?}).to be 3
-    expect(stmts.count{|x| x.simple?}).to be 2
-    expect(stmts.count{|x| x.nested?}).to be 1
+  it "is enumerable" do
+    statements = BEL::Script.parse(BEL_SCRIPT).find_all { |x|
+      x.is_a? BEL::Language::Statement
+    }
+    expect(statements.length).to be 6
+    expect(statements.count{|x| x.subject_only?}).to be 3
+    expect(statements.count{|x| x.simple?}).to be 2
+    expect(statements.count{|x| x.nested?}).to be 1
   end
 
-  it "is observable" do
+  it "can be called with a block" do
     objects = []
-    class Observe
-      attr_reader :objects
-      def initialize(objects)
-        @objects = objects
-      end
-      def update(obj)
-        @objects << obj
-      end
+    BEL::Script.parse(BEL_SCRIPT) do |obj|
+      objects << obj
     end
-
-    observer = Observe.new(objects)
-    parser = BEL::Script::Parser.new
-    parser.add_observer(observer)
-    parser.parse(BEL_SCRIPT)
-
-    expect(observer.objects.length).to be 40
+    expect(objects.length).to be 40
   end
 end

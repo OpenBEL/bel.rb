@@ -29,47 +29,40 @@ require_relative 'namespace'
 
 module BEL
   module Script
-    class Parser
-      include Observable
 
-      def initialize(namespaces = {})
-        @namespaces = namespaces
-        @annotations = {}
-        @statement_group = nil
-        %% write data;
-      end
-
-      def parse(content)
-        eof = :ignored
-        buffer = []
-        stack = []
-        data = content.unpack('C*')
-
+    class << self
+      def parse(content, namespaces = {})
         if block_given?
-          observer = Observer.new(&Proc.new)
-          self.add_observer(observer)
-        end
-
-        %% write init;
-        %% write exec;
-
-        if block_given?
-          self.delete_observer(observer)
+          Parser.new(content, namespaces).each do |obj|
+            yield obj
+          end
+        else
+          Parser.new(content, namespaces)
         end
       end
     end
 
     private
 
-    class Observer
-      include Observable
+    class Parser
+      include Enumerable
 
-      def initialize(&block)
-        @block = block
+      def initialize(content, namespaces = {})
+        @content = content
+        @namespaces = namespaces
+        @annotations = {}
+        @statement_group = nil
+        %% write data;
       end
 
-      def update(obj)
-        @block.call(obj)
+      def each
+        eof = :ignored
+        buffer = []
+        stack = []
+        data = @content.unpack('C*')
+
+        %% write init;
+        %% write exec;
       end
     end
   end
