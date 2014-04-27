@@ -241,8 +241,8 @@ module BEL
         return nil unless value
         reload(@url) if not @values
         sym = value.to_sym
-        Language::Parameter.new(self, sym,
-                                @values[sym]) if @values.key?(sym)
+        encoding = @values[sym] || :""
+        Language::Parameter.new(self, sym, encoding)
       end
 
       def each &block
