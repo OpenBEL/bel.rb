@@ -86,6 +86,15 @@ Load your own namespace
   # reference caffeine compound, sip, and enjoy
   PUBCHEM['2519']
 
+Load namespaces from a resource index
+
+.. code-block:: ruby
+
+  require 'bel'
+
+  index = ResourceIndex.new('http://resource.belframework.org/belframework/20131211/index.xml')
+  index.namespaces.find { |x| x.prefix == :AFFX }
+
 Write BEL in Ruby with a DSL
 
 .. code-block:: ruby
