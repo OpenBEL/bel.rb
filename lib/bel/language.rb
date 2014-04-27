@@ -934,7 +934,7 @@ module BEL
             rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
             statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
             statements << [uri, BEL::RDF::BELV.hasObject, obj_uri]
-            statements << [uri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[rel]]
+            statements << [uri, BEL::RDF::BELV.hasRelationship, rel]
           when nested?
             (sub_uri, sub_statements) = @subject.to_rdf
             (nsub_uri, nsub_statements) = @object.subject.to_rdf
@@ -949,12 +949,12 @@ module BEL
             # inner
             statements << [nuri, BEL::RDF::BELV.hasSubject, nsub_uri]
             statements << [nuri, BEL::RDF::BELV.hasObject, nobj_uri]
-            statements << [nuri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[nrel]]
+            statements << [nuri, BEL::RDF::BELV.hasRelationship, nrel]
 
             # outer
             statements << [uri, BEL::RDF::BELV.hasSubject, sub_uri]
             statements << [uri, BEL::RDF::BELV.hasObject, nuri]
-            statements << [uri, BEL::RDF::BELV.hasRelationship, BEL::RDF::RELATIONSHIP_TYPE[rel]]
+            statements << [uri, BEL::RDF::BELV.hasRelationship, rel]
           end
 
           # common statement triples
