@@ -148,20 +148,58 @@ module BEL
         @arguments << item
       end
 
-      def validate_signature
-        invalids = []
-        @arguments.select { |arg| Term === arg }.each do |term|
-          invalids << term if not term.validate_signature
-        end
+      def valid?
+        invalids = @arguments.find_all { |arg|
+          arg.is_a? Term
+        }.find_all { |term|
+          not term.validate_signature
+        }
 
         sigs = @fx.signatures
         match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
         invalids << self if not match
-        if block_given? and not invalids.empty?
+        invalids.empty?
+      end
+
+      # TODO Complete these functions
+
+      def valid_signatures
+        invalids = @arguments.find_all { |arg|
+          arg.is_a? Term
+        }.find_all { |term|
+          not term.validate_signature
+        }
+
+        sigs = @fx.signatures
+        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
+        invalids << self if not match
+        
+        if block_given?
           invalids.each do |term|
             yield term, term.fx.signatures
           end
         end
+        
+        invalids.empty?
+      end
+
+      def invalid_signatures
+        invalids = @arguments.find_all { |arg|
+          arg.is_a? Term
+        }.find_all { |term|
+          not term.validate_signature
+        }
+
+        sigs = @fx.signatures
+        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
+        invalids << self if not match
+        
+        if block_given?
+          invalids.each do |term|
+            yield term, term.fx.signatures
+          end
+        end
+        
         invalids.empty?
       end
 
