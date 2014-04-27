@@ -111,18 +111,19 @@ Validate BEL terms
 
   require 'bel'
 
-  # boolean validation of constructed term
-  tscript(g(HGNC['AKT1'])).validate_signature
+  tscript(g(HGNC['AKT1'])).valid?
   => false
-  complex(NCH['AP-1 Complex']).validate_signature
-  => true
+  tscript(g(HGNC['AKT1'])).valid_signatures
+  => []
+  tscript(g(HGNC['AKT1'])).invalid_signatures.map(&:to_s)
+  => ["tscript(F:complex)a", "tscript(F:p)a"]
 
-  # yield invalid terms to block
-  tscript(g(HGNC['AKT1'])).validate_signature do |term, allowed_signatures|
-    puts "#{term}, #{allowed_signatures}"
-  end
-  tscript(g(HGNC:AKT1)), [tscript(F:complex)a, tscript(F:p)a]
-  => false
+  tscript(p(HGNC['AKT1'])).valid?
+  => true
+  tscript(p(HGNC['AKT1'])).valid_signatures.map(&:to_s)
+  => ["tscript(F:p)a"]
+  tscript(p(HGNC['AKT1'])).invalid_signatures.map(&:to_s)
+  => ["tscript(F:complex)a"]
 
 Parse BEL input
 

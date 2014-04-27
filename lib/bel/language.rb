@@ -149,58 +149,23 @@ module BEL
       end
 
       def valid?
-        invalids = @arguments.find_all { |arg|
+        invalid_signatures = @arguments.find_all { |arg|
           arg.is_a? Term
         }.find_all { |term|
-          not term.validate_signature
+          not term.valid?
         }
+        return false if not invalid_signatures.empty?
 
         sigs = @fx.signatures
-        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
-        invalids << self if not match
-        invalids.empty?
+        sigs.any? do |sig| (@signature <=> sig) >= 0 end
       end
 
-      # TODO Complete these functions
-
       def valid_signatures
-        invalids = @arguments.find_all { |arg|
-          arg.is_a? Term
-        }.find_all { |term|
-          not term.validate_signature
-        }
-
-        sigs = @fx.signatures
-        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
-        invalids << self if not match
-        
-        if block_given?
-          invalids.each do |term|
-            yield term, term.fx.signatures
-          end
-        end
-        
-        invalids.empty?
+        @fx.signatures.find_all { |sig| (@signature <=> sig) >= 0 }
       end
 
       def invalid_signatures
-        invalids = @arguments.find_all { |arg|
-          arg.is_a? Term
-        }.find_all { |term|
-          not term.validate_signature
-        }
-
-        sigs = @fx.signatures
-        match = sigs.any? do |sig| (@signature <=> sig) >= 0 end
-        invalids << self if not match
-        
-        if block_given?
-          invalids.each do |term|
-            yield term, term.fx.signatures
-          end
-        end
-        
-        invalids.empty?
+        @fx.signatures.find_all { |sig| (@signature <=> sig) < 0 }
       end
 
       def hash
