@@ -1,18 +1,14 @@
 require 'open-uri'
 require 'pathname'
+require 'pry'
 
 module BEL
 
   def self.read_all(reference)
     if self.cached? reference
       self.read_cached reference do |cf|
-        if block_given?
-          yield cf
-        else
-          return cf
-        end
+        return cf.read
       end
-      return
     end
 
     self.multi_open(reference) do |f|
@@ -36,6 +32,8 @@ module BEL
       return f.readlines
     end
   end
+
+  private
 
   def self.multi_open(reference)
     if self.cached? reference
@@ -76,13 +74,19 @@ module BEL
     end
   end
 
-  def self.cached?(identifier, options = {temp_dir: Dir.tmpdir})
+  def self.cached?(identifier, options = {})
+    options = {
+      temp_dir: Dir::tmpdir
+    }.merge(options)
     cached_name = cached_filename_for identifier
     path = Pathname(options[:temp_dir]) + cached_name
     File.exist? path
   end
 
-  def self.read_cached(identifier, options = {temp_dir: Dir.tmpdir})
+  def self.read_cached(identifier, options = {})
+    options = {
+      temp_dir: Dir::tmpdir
+    }.merge(options)
     cached_name = cached_filename_for identifier
     path = Pathname(options[:temp_dir]) + cached_name
     File.open(path, "r") do |f|
@@ -95,7 +99,10 @@ module BEL
     path.to_s
   end
 
-  def self.write_cached(identifier, data = '', options = {temp_dir: Dir.tmpdir})
+  def self.write_cached(identifier, data = '', options = {})
+    options = {
+      temp_dir: Dir::tmpdir
+    }.merge(options)
     cached_name = cached_filename_for identifier
     path = Pathname(options[:temp_dir]) + cached_name
     File.open(path, "w") do |f|

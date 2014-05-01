@@ -4,6 +4,11 @@ include BEL::Namespace
 
 describe 'Loading BEL resources from a ResourceIndex object' do
 
+  before(:all) do
+    Dir[Pathname(Dir::tmpdir) + 'BEL_*'].each(&File.method(:delete))
+    expect(Dir[Pathname(Dir::tmpdir) + 'BEL_*'].empty?).to eq(true)
+  end
+
   describe ResourceIndex do
 
     it "loads resources from http urls" do

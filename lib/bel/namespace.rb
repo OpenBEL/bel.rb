@@ -197,16 +197,18 @@ module BEL
           scan(%r{<(idx:)?namespace (idx:)?resourceLocation="(.*)"}).
           map { |matches|
             url = matches[2]
-            header = BEL::multi_open(url) do |f| f.read(100) end
-            prefix = header.match(%r{Keyword=(.*)})[1].to_sym
+            prefix = BEL::read_lines(url).find { |line|
+              line.start_with? 'Keyword'
+            }.split('=').map(&:strip)[1]
             NamespaceDefinition.new(prefix, url)
           }
         @annotations += data.
           scan(%r{<(idx:)?annotationdefinition (idx:)?resourceLocation="(.*)"}).
           map { |matches|
             url = matches[2]
-            header = BEL::multi_open(url) do |f| f.read(100) end
-            prefix = header.match(%r{Keyword=(.*)})[1].to_sym
+            prefix = BEL::read_lines(url).find { |line|
+              line.start_with? 'Keyword'
+            }.split('=').map(&:strip)[1]
             BEL::Language::AnnotationDefinition.new(:url, prefix, url)
           }
 
