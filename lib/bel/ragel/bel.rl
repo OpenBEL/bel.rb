@@ -49,7 +49,13 @@ module BEL
 
       def initialize(content, namespaces = {})
         @content = content
-        @namespaces = namespaces
+        @namespaces =
+          case namespaces
+          when ResourceIndex
+            Hash[namespaces.namespaces.map { |ns| [ns.prefix, ns] }]
+          when Hash
+            namespaces
+          end
         @annotations = {}
         @statement_group = nil
         %% write data;
