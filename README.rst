@@ -86,14 +86,25 @@ Load your own namespace
   # reference caffeine compound, sip, and enjoy
   PUBCHEM['2519']
 
-Load namespaces from a resource index
+Load namespaces from a published OpenBEL version
 
 .. code-block:: ruby
 
   require 'bel'
 
-  index = ResourceIndex.new('http://resource.belframework.org/belframework/20131211/index.xml')
-  index.namespaces.find { |x| x.prefix == :AFFX }
+  RESOURCE_INDEX_1_0.namespaces.find { |x| x.prefix == :HGU133P2 }
+  RESOURCE_INDEX_20131211.namespaces.find { |x| x.prefix == :AFFY }
+
+Load namespaces from a custom resource index
+
+.. code-block:: ruby
+
+  require 'bel'
+
+  ResourceIndex.new('/home/bel/index.xml').namespaces.map(&:prefix)
+  => ["AFFX", "CHEBIID", "CHEBI", "DOID", "DO", "EGID", "GOBPID", "GOBP",
+      "GOCCID", "GOCC", "HGNC", "MESHPP", "MESHCS", "MESHD", "MGI", "RGD",
+      "SCHEM", "SDIS", "SFAM", "SCOMP", "SPAC", "SP"]
 
 Write BEL in Ruby with a DSL
 
