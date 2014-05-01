@@ -192,6 +192,7 @@ module BEL
         return if not @index or @index.empty?
 
         data = BEL::read_all(@index)
+        
         @namespaces += data.
           scan(%r{<(idx:)?namespace (idx:)?resourceLocation="(.*)"}).
           map { |matches|
@@ -279,13 +280,13 @@ module BEL
       # the backdoor
       def reload(url)
         @values = {}
-        open(url).
-          drop_while { |i| not i.start_with? "[Values]" }.
-          drop(1).
-          each do |s|
-            val_enc = s.strip!.split_by_last('|').map(&:to_sym)
-            @values[val_enc[0]] = val_enc[1]
-          end
+        BEL::read_lines(url).
+        drop_while { |i| not i.start_with? "[Values]" }.
+        drop(1).
+        each do |s|
+          val_enc = s.strip!.split_by_last('|').map(&:to_sym)
+          @values[val_enc[0]] = val_enc[1]
+        end
       end
     end
 

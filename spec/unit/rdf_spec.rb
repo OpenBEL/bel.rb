@@ -71,7 +71,7 @@ describe 'RDF functionality of BEL language objects' do
         rdf_statements.include? [term.to_uri, BEL::RDF::RDFS.label, term.to_s]
       ).to be(true)
       expect(
-        rdf_statements.include? [term.to_uri, BEL::RDF::BELV.hasConcept, HGNC['AKT1'].to_uri]
+        rdf_statements.include? [term.to_uri, BEL::RDF::BELV.hasConcept, term.arguments[0].to_uri]
       ).to be(true)
     end
   end
