@@ -1,3 +1,4 @@
+require 'digest'
 require 'open-uri'
 require 'pathname'
 require 'pry'
