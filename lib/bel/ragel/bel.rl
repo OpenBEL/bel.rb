@@ -40,6 +40,16 @@ module BEL
           Parser.new(content, namespaces)
         end
       end
+
+      def parse_file(file, namespaces = {})
+        if block_given?
+          FileParser.new(file, namespaces).each do |obj|
+            yield obj
+          end
+        else
+          FileParser.new(file, namespaces)
+        end
+      end
     end
 
     private
@@ -71,21 +81,70 @@ module BEL
         %% write exec;
       end
     end
+
+    class FileParser
+      include Enumerable
+
+      CHUNK = 1024 * 1024
+
+      def initialize(file, namespaces = {})
+        @file = file
+        @namespaces =
+          case namespaces
+          when ResourceIndex
+            Hash[namespaces.namespaces.map { |ns| [ns.prefix, ns] }]
+          when Hash
+            namespaces
+          end
+        @annotations = {}
+        @statement_group = nil
+        %% write data;
+      end
+
+      def each
+        pe = :ignored
+        eof = :ignored
+        buffer = []
+        stack = []
+
+        %% write init;
+
+        leftover = []
+        my_ts = nil
+        my_te = nil
+        
+        File.open(@file) do |f|
+          while chunk = f.read(CHUNK)
+            data = leftover + chunk.unpack('c*')
+            p = 0
+            pe = data.length
+            %% write exec;
+            if my_ts
+              leftover = data[my_ts..-1]
+              my_te = my_te - my_ts if my_te
+              my_ts = 0
+            else
+              leftover = []
+            end
+          end
+        end
+        end
+      end
+    end
   end
-end
 
-# intended for direct testing
-if __FILE__ == $0
-  require 'bel'
+  # intended for direct testing
+  if __FILE__ == $0
+    require 'bel'
 
-  if ARGV[0]
-    content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
-  else
-    content = $stdin.read
-  end
+    if ARGV[0]
+      content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
+    else
+      content = $stdin.read
+    end
 
-  class DefaultObserver
-    def update(obj)
+    class DefaultObserver
+      def update(obj)
       puts obj
     end
   end
