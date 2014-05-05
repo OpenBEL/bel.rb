@@ -1,4 +1,6 @@
 require 'bel'
+require 'pathname'
+require 'tmpdir'
 
 include BEL::Namespace
 
@@ -41,6 +43,25 @@ describe 'Loading BEL resources from a ResourceIndex object' do
       index = ResourceIndex.new(local_uri)
       expect(index.namespaces.size).to be > 0
       expect(index.annotations.size).to be > 0
+    end
+
+    it "can retrieve OpenBEL published resources" do
+      ['1.0', '20131211'].each do |version|
+        index = ResourceIndex.openbel_published_index(version)
+        expect(index.namespaces.size).to be > 0
+        expect(index.annotations.size).to be > 0
+      end
+    end
+
+    it "fail if location is invalid" do
+      expect {
+        bogus_path = Pathname(Dir.tmpdir) + 'doesnotexist.foobar'
+        ResourceIndex.openbel_published_index(bogus_path).namespaces
+      }.to raise_error
+
+      expect {
+        ResourceIndex.openbel_published_index('FOO_BAR').namespaces
+      }.to raise_error
     end
   end
 end
