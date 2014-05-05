@@ -199,7 +199,7 @@ module BEL
             url = matches[2]
             prefix = BEL::read_lines(url).find { |line|
               line.start_with? 'Keyword'
-            }.split('=').map(&:strip)[1]
+            }.split('=').map(&:strip)[1].to_sym
             NamespaceDefinition.new(prefix, url)
           }
         @annotations += data.
@@ -208,7 +208,7 @@ module BEL
             url = matches[2]
             prefix = BEL::read_lines(url).find { |line|
               line.start_with? 'Keyword'
-            }.split('=').map(&:strip)[1]
+            }.split('=').map(&:strip)[1].to_sym
             BEL::Language::AnnotationDefinition.new(:url, prefix, url)
           }
 
