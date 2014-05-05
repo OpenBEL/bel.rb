@@ -52,7 +52,11 @@ module BEL
             yield obj
           end
         else
-          parser
+          if parser.respond_to? :lazy
+            parser.lazy
+          else
+            parser
+          end
         end
       end
     end

@@ -147,7 +147,7 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     terms = BEL::Script.parse(term, namespace_definitions).find_all {|obj|
       obj.is_a? BEL::Language::Term
-    }
+    }.to_a
     expect(terms.size).to eql(2)
 
     # pmod(P, S)

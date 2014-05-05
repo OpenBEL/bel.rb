@@ -31,7 +31,7 @@ describe BEL::Script, "#parse" do
   it "is enumerable" do
     statements = BEL::Script.parse(BEL_SCRIPT).find_all { |x|
       x.is_a? BEL::Language::Statement
-    }
+    }.to_a
     expect(statements.length).to be 6
     expect(statements.count{|x| x.subject_only?}).to be 3
     expect(statements.count{|x| x.simple?}).to be 2
