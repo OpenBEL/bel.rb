@@ -209,6 +209,15 @@ Parse BEL input
   => BEL::Script::Term: bp(GO:"apoptotic process")
   => BEL::Script::Statement: path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
 
+Iteratively parse BEL from file-like object
+
+.. code-block:: ruby
+
+  require 'bel'
+  BEL::Script.parse(File.open('/home/user/small_corpus.bel')).find_all { |obj|
+    obj.is_a? Statement
+  }.size
+
 Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
 
 .. code-block:: ruby

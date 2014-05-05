@@ -32,22 +32,27 @@ module BEL
 
     class << self
       def parse(content, namespaces = {})
-        if block_given?
-          Parser.new(content, namespaces).each do |obj|
-            yield obj
-          end
-        else
-          Parser.new(content, namespaces)
-        end
-      end
+        return nil unless content
 
-      def parse_file(file, namespaces = {})
+        parser =
+          if content.is_a? String
+            Parser.new(content, namespaces)
+          elsif content.respond_to? :read
+            IOParser.new(content, namespaces)
+          else
+            nil
+          end
+
+        unless parser
+          fail ArgumentError, "content: expected string or file-like"
+        end
+
         if block_given?
-          FileParser.new(file, namespaces).each do |obj|
+          parser.each do |obj|
             yield obj
           end
         else
-          FileParser.new(file, namespaces)
+          parser
         end
       end
     end
@@ -82,10 +87,10 @@ module BEL
       end
     end
 
-    class FileParser
+    class IOParser
       include Enumerable
 
-      CHUNK = 1024 * 1024
+      CHUNK = 1024 * 1024 # 1mb
 
       def initialize(file, namespaces = {})
         @file = file

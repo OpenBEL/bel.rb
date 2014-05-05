@@ -1,5 +1,6 @@
 # vim: ts=2 sw=2:
 require 'bel/script.rb'
+require 'pathname'
 
 BEL_SCRIPT = <<-EOF
 SET DOCUMENT Name = "Spec"
@@ -43,5 +44,15 @@ describe BEL::Script, "#parse" do
       objects << obj
     end
     expect(objects.length).to be 40
+  end
+
+  it "can handle file-like objects" do
+    bel_file = Pathname(File.dirname(__FILE__)) + 'bel' + 'small_corpus.bel'
+    parser = BEL::Script.parse(File.open(bel_file))
+    expect(parser).to respond_to :each
+  end
+
+  it "should fail when content parameter type is not supported" do
+    expect { BEL::Script.parse(3) }.to raise_error(ArgumentError)
   end
 end
