@@ -113,6 +113,14 @@ module BEL
       end
 
       alias_method :eql?, :'=='
+
+      def to_sym
+        @short_form
+      end
+
+      def to_s
+        @long_form.to_s
+      end
     end
 
     class Term
