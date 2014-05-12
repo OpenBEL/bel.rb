@@ -13,7 +13,7 @@ end
 module BEL
   module Namespace
 
-    LATEST_PREFIX = 'http://resource.belframework.org/belframework/20131211/'
+    LATEST_PREFIX = 'http://resource.belframework.org/belframework/latest-release/'
     DEFAULT_URI = 'http://www.openbel.org/bel/namespace/'
 
     NAMESPACE_LATEST = {

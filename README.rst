@@ -61,7 +61,7 @@ bel2rdf_: Converts BEL to RDF.
 api examples
 ------------
 
-Load any standard namespace
+Use OpenBEL namespaces from the latest release.
 
 .. code-block:: ruby
 
@@ -94,6 +94,7 @@ Load namespaces from a published OpenBEL version
 
   ResourceIndex.openbel_published_index('1.0').namespaces.find { |x| x.prefix == :HGU133P2 }
   ResourceIndex.openbel_published_index('20131211').namespaces.find { |x| x.prefix == :AFFY }
+  ResourceIndex.openbel_published_index('latest-release').namespaces.find { |x| x.prefix == :AFFY }
 
 Load namespaces from a custom resource index
 
