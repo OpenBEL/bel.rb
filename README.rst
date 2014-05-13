@@ -217,7 +217,7 @@ Iteratively parse BEL from file-like object
   require 'bel'
   BEL::Script.parse(File.open('/home/user/small_corpus.bel')).find_all { |obj|
     obj.is_a? Statement
-  }.size
+  }.to_a.size
 
 Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
 
