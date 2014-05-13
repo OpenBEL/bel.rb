@@ -23,7 +23,6 @@ machine bel;
 }%%
 =end
 
-require 'observer'
 require_relative 'language'
 require_relative 'namespace'
 
@@ -70,7 +69,7 @@ module BEL
         @content = content
         @namespaces =
           case namespaces
-          when ResourceIndex
+          when BEL::Namespace::ResourceIndex
             Hash[namespaces.namespaces.map { |ns| [ns.prefix, ns] }]
           when Hash
             namespaces
@@ -100,7 +99,7 @@ module BEL
         @file = file
         @namespaces =
           case namespaces
-          when ResourceIndex
+          when BEL::Namespace::ResourceIndex
             Hash[namespaces.namespaces.map { |ns| [ns.prefix, ns] }]
           when Hash
             namespaces
@@ -122,45 +121,40 @@ module BEL
         my_ts = nil
         my_te = nil
         
-        File.open(@file) do |f|
-          while chunk = f.read(CHUNK)
-            data = leftover + chunk.unpack('c*')
-            p = 0
-            pe = data.length
-            %% write exec;
-            if my_ts
-              leftover = data[my_ts..-1]
-              my_te = my_te - my_ts if my_te
-              my_ts = 0
-            else
-              leftover = []
-            end
+        while chunk = @file.read(CHUNK)
+          data = leftover + chunk.unpack('c*')
+          p = 0
+          pe = data.length
+          %% write exec;
+          if my_ts
+            leftover = data[my_ts..-1]
+            my_te = my_te - my_ts if my_te
+            my_ts = 0
+          else
+            leftover = []
           end
-        end
         end
       end
     end
   end
+end
 
-  # intended for direct testing
-  if __FILE__ == $0
-    require 'bel'
+if __FILE__ == $0
+  namespaces = BEL::Namespace::DEFAULT_NAMESPACES.map { |ns|
+    [ns.prefix, ns]
+  }.to_h
 
-    if ARGV[0]
-      content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
-    else
-      content = $stdin.read
+  if ARGV[0]
+    File.open(ARGV[0], 'r:UTF-8') do |f|
+      BEL::Script.parse(f, namespaces).each do |obj|
+        puts obj
+      end
     end
-
-    class DefaultObserver
-      def update(obj)
+  else
+    BEL::Script.parse($stdin, namespaces).each do |obj|
       puts obj
     end
   end
-
-  parser = BEL::Script::Parser.new
-  parser.add_observer(DefaultObserver.new)
-  parser.parse(content) 
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
