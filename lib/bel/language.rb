@@ -125,7 +125,7 @@ module BEL
 
     class Term
       include Comparable
-      attr_reader :fx, :arguments, :signature
+      attr_accessor :fx, :arguments, :signature
 
       def initialize(fx, *arguments)
         @fx = case fx
