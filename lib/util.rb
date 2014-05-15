@@ -1,6 +1,7 @@
 require 'digest'
 require 'open-uri'
 require 'pathname'
+require 'tempfile'
 
 module BEL
 
