@@ -15,12 +15,12 @@ Install from `RubyGems.org`_
 Build from master branch
 
 1. Obtain source for master branch.
-    * `git clone git@github.com:OpenBEL/bel.rb.git`
+    * ``git clone git@github.com:OpenBEL/bel.rb.git``
     * Download `zip`_ of master branch.
 
 2. Build
-    * `gem build bel.gemspec`
-    * gem install bel-[*version*].gem
+    * ``gem build bel.gemspec``
+    * ``gem install bel-[VERSION].gem``
 
 .. _Ruby: https://www.ruby-lang.org
 .. _RubyGems.org: http://rubygems.org
