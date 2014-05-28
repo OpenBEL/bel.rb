@@ -8,7 +8,14 @@ bel
 
 The bel ruby gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
 
-Check out INSTALL_RUBY_...for how to install Ruby!
+License: `Apache License, Version 2.0`_
+
+Dependencies
+
+* Required
+   * Ruby 1.9.2 or greater (`how to install ruby`_)
+* Optional
+   * `rdf gem`_ for BEL_ to RDF_ conversion
 
 Learn more on BEL_.
 
@@ -242,9 +249,12 @@ Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
     end  
   end
 
+.. _Apache License, Version 2.0: http://opensource.org/licenses/Apache-2.0
+.. _rdf gem: https://github.com/ruby-rdf/rdf
 .. _BEL: http://www.openbel.org/content/bel-lang-language
+.. _RDF: http://www.w3.org/RDF
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/
 .. _bel_upgrade: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
 .. _bel_rdfschema: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
 .. _bel2rdf: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel2rdf
-.. _INSTALL_RUBY: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md
+.. _how to install ruby: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md
