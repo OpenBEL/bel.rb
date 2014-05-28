@@ -17,7 +17,8 @@ Dependencies
 * Required
    * Ruby 1.9.2 or greater (`how to install ruby`_)
 * Optional
-   * `rdf gem`_ for BEL_ to RDF_ conversion
+   * `rdf gem`_ and `addressable gem`_ for BEL_ to RDF_ conversion
+   * `rdf-turtle gem`_ for serializing to `turtle`_ format
 
 Install / Build: See `INSTALL`_.
 
@@ -253,7 +254,10 @@ Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
   end
 
 .. _Apache License, Version 2.0: http://opensource.org/licenses/Apache-2.0
-.. _rdf gem: https://github.com/ruby-rdf/rdf
+.. _rdf gem: https://rubygems.org/gems/rdf
+.. _addressable gem: https://rubygems.org/gems/addressable
+.. _rdf-turtle gem: https://rubygems.org/gems/rdf-turtle
+.. _turtle: http://www.w3.org/TR/2014/REC-turtle-20140225
 .. _BEL: http://www.openbel.org/content/bel-lang-language
 .. _RDF: http://www.w3.org/RDF
 .. _INSTALL: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL.rst
