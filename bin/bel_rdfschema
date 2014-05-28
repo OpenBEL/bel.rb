@@ -58,6 +58,7 @@ class Serializer
         rescue LoadError
           $stderr.puts """Turtle format not supported.
 Install the 'rdf-turtle' gem."""
+          raise
         end
       when 'ntriples'
         BEL::RDF::RDF::NTriples::Writer
