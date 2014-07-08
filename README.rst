@@ -104,8 +104,8 @@ Load namespaces from a published OpenBEL version
   require 'bel'
 
   ResourceIndex.openbel_published_index('1.0').namespaces.find { |x| x.prefix == :HGU133P2 }
-  ResourceIndex.openbel_published_index('20131211').namespaces.find { |x| x.prefix == :AFFY }
-  ResourceIndex.openbel_published_index('latest-release').namespaces.find { |x| x.prefix == :AFFY }
+  ResourceIndex.openbel_published_index('20131211').namespaces.find { |x| x.prefix == :AFFX }
+  ResourceIndex.openbel_published_index('latest-release').namespaces.find { |x| x.prefix == :AFFX }
 
 Load namespaces from a custom resource index
 

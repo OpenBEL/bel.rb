@@ -1,7 +1,7 @@
 require 'open-uri'
 
 require_relative '../features'
-require_relative './language' 
+require_relative './language'
 
 class String
   def split_by_last(char=" ")
@@ -17,7 +17,7 @@ module BEL
     DEFAULT_URI = 'http://www.openbel.org/bel/namespace/'
 
     NAMESPACE_LATEST = {
-      AFFY: [
+      AFFX: [
         LATEST_PREFIX + 'namespace/affy-probeset-ids.belns',
         'http://www.openbel.org/bel/namespace/affy-probeset/'
       ],
@@ -183,7 +183,7 @@ module BEL
         read_index if not @loaded
         @namespaces.each { |x| yield x }
       end
-        
+
       def each_annotation
         read_index if not @loaded
         @annotations.each { |x| yield x }
@@ -199,7 +199,6 @@ module BEL
         return if not @index or @index.empty?
 
         data = BEL::read_all(@index)
-        
         @namespaces += data.
           scan(%r{<(idx:)?namespace (idx:)?resourceLocation="(.*)"}).
           map { |matches|
