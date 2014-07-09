@@ -1,6 +1,6 @@
 # Install Ruby
 
-<br><br>
+
 ## Install Ruby (Windows)
 
 1. Download [RubyInstaller](http://rubyinstaller.org/downloads).
