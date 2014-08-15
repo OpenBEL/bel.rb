@@ -110,6 +110,15 @@ class Main
       end
 
       if obj.is_a? Parameter
+        # redefine param namespace based on change log's `redefine` block
+        if @change_log.has_key? 'redefine'
+          redefine = @change_log['redefine']
+          if obj.ns and redefine.has_key? obj.ns.prefix.to_s
+            new_keyword = redefine[obj.ns.prefix.to_s]['new_keyword']
+            new_url = redefine[obj.ns.prefix.to_s]['new_url']
+            obj.ns = NamespaceDefinition.new(new_keyword, new_url)
+          end
+        end
         if obj.ns and @change_log.has_key? obj.ns.prefix.to_s
           clog_ns = @change_log[obj.ns.prefix.to_s]
           if clog_ns.has_key? obj.value
@@ -119,15 +128,6 @@ class Main
               next
             end
             obj.value = replacement
-          end
-        end
-        # redefine param namespace based on change log's `redefine` block
-        if @change_log.has_key? 'redefine'
-          redefine = @change_log['redefine']
-          if obj.ns and redefine.has_key? obj.ns.prefix.to_s
-            new_keyword = redefine[obj.ns.prefix.to_s]['new_keyword']
-            new_url = redefine[obj.ns.prefix.to_s]['new_url']
-            obj.ns = NamespaceDefinition.new(new_keyword, new_url)
           end
         end
         next
