@@ -59,15 +59,15 @@ if group_diff == 0
   puts "Equal number of statement groups."
 elsif group_diff > 0
   puts "Second file has #{group_diff} more statement groups."
-else 
+else
   puts "Second file has #{group_diff.abs} less statement groups."
 end
 
 first_statements = first_groups.values.
-  map {|group| group.statements}.flatten
+  map {|group| group.statements.map {|s| s.to_bel} }.flatten
 puts "First file has #{first_statements.length} statements."
 second_statements = second_groups.values.
-  map {|group| group.statements}.flatten
+  map {|group| group.statements.map {|s| s.to_bel}}.flatten
 puts "Second file has #{second_statements.length} statements."
 
 # statement groups in 1st, but not 2nd
@@ -90,8 +90,8 @@ end
 first_groups.each do |name,first|
   second = second_groups[name]
   if second
-    first_stmt = first.statements || []
-    second_stmt = second.statements || []
+    first_stmt = first.statements ? first.statements.map {|s| s.to_bel } : []
+    second_stmt = second.statements ? second.statements.map {|s| s.to_bel } : []
     if first_stmt == second_stmt
       if options[:verbose]
         puts "#{name}, both contain zero statements" if first_stmt.empty?
@@ -124,12 +124,12 @@ end
 first_terms = first_groups.values.
   map { |group| group.statements }.flatten.
   map { |stmt|
-    l = [stmt.subject]
+    l = [stmt.subject.to_bel]
     if stmt.simple?
-      l << stmt.object
+      l << stmt.object.to_bel
     elsif stmt.nested?
-      l << stmt.object.subject
-      l << stmt.object.object
+      l << stmt.object.subject.to_bel
+      l << stmt.object.object.to_bel
     end
     l
   }.flatten.uniq.
@@ -137,12 +137,12 @@ first_terms = first_groups.values.
 second_terms = second_groups.values.
   map { |group| group.statements }.flatten.
   map { |stmt|
-    l = [stmt.subject]
+    l = [stmt.subject.to_bel]
     if stmt.simple?
-      l << stmt.object
+      l << stmt.object.to_bel
     elsif stmt.nested?
-      l << stmt.object.subject
-      l << stmt.object.object
+      l << stmt.object.subject.to_bel
+      l << stmt.object.object.to_bel
     end
     l
   }.flatten.uniq.
