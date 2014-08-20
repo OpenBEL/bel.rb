@@ -816,7 +816,7 @@ module BEL
 
       class Term
         def to_uri
-          tid = to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+          tid = to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
           BEL::RDF::BELR[tid]
         end
 
@@ -899,19 +899,34 @@ module BEL
         def to_uri
           case
           when subject_only?
-            tid = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            tid = @subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
             BEL::RDF::BELR[tid]
           when simple?
-            sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
-            obj_id = @object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            sub_id = @subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
+            obj_id = @object.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
             rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            if rel
+              rel = rel.path.split('/')[-1]
+            else
+              rel = @relationship.to_s
+            end
             BEL::RDF::BELR["#{sub_id}_#{rel}_#{obj_id}"]
           when nested?
-            sub_id = @subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
-            nsub_id = @object.subject.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
-            nobj_id = @object.object.to_s.squeeze(')').gsub(/[")]/, '').gsub(/[(:, ]/, '_')
+            sub_id = @subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
+            nsub_id = @object.subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
+            nobj_id = @object.object.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
             rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
+            if rel
+              rel = rel.path.split('/')[-1]
+            else
+              rel = @relationship.to_s
+            end
             nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.relationship.to_s]
+            if nrel
+              nrel = nrel.path.split('/')[-1]
+            else
+              nrel = @object.relationship.to_s
+            end
             BEL::RDF::BELR["#{sub_id}_#{rel}_#{nsub_id}_#{nrel}_#{nobj_id}"]
           end
         end
