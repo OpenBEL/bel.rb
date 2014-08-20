@@ -32,7 +32,6 @@ describe 'RDF functionality of BEL language objects' do
     end
 
     it "provides RDF statements for concept types based on encoding" do
-      
       triples = Parameter.new(HGNC, 'AKT1', 'GRP').to_rdf
       expect(triples.size).to eq(3)
       expect(
