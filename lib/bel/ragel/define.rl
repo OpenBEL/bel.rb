@@ -27,7 +27,9 @@
 
   action define_namespace {
     prefix = @name.to_sym
-    ns = BEL::Namespace::NamespaceDefinition.new(prefix, @value)
+		latest_namespace = BEL::Namespace::NAMESPACE_LATEST[prefix]
+		uri = BEL::Namespace::DEFAULT_URI
+    ns = BEL::Namespace::NamespaceDefinition.new(prefix, @value, uri)
     @namespaces[prefix] = ns
     yield ns
   }
