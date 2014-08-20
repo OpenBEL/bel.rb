@@ -1,7 +1,7 @@
 require_relative '../features'
+require_relative 'quoting'
 module BEL
   module Language
-    NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z_]/)
 
     class Newline
       def to_bel
@@ -19,12 +19,10 @@ module BEL
     end
 
     DocumentProperty = Struct.new(:name, :value) do
+      include BEL::Quoting
+
       def to_bel
-        value = self.value
-        if NonWordMatcher.match value
-          value = %Q{"#{value}"}
-        end
-        %Q{SET DOCUMENT #{self.name} = #{value}}
+        %Q{SET DOCUMENT #{self.name} = #{ensure_quotes(self.value)}}
       end
       alias_method :to_s, :to_bel
     end
@@ -44,6 +42,7 @@ module BEL
     end
 
     class Parameter
+      include BEL::Quoting
       include Comparable
       attr_accessor :ns, :value, :enc, :signature
 
@@ -55,9 +54,9 @@ module BEL
       end
 
       def <=>(other)
-        ns_compare = ns <=> other.ns
+        ns_compare = @ns <=> other.ns
         if ns_compare == 0
-          value <=> other.value
+          @value <=> other.value
         else
           ns_compare
         end
@@ -75,11 +74,7 @@ module BEL
       alias_method :eql?, :'=='
 
       def to_bel
-        prepped_value = value
-        if NonWordMatcher.match value
-          prepped_value = %Q{"#{value}"}
-        end
-        "#{self.ns ? self.ns.prefix.to_s + ':' : ''}#{prepped_value}"
+        %Q{#{@ns ? @ns.prefix.to_s + ':' : ''}#{ensure_quotes(@value)}}
       end
 
       alias_method :to_s, :to_bel
@@ -195,15 +190,13 @@ module BEL
     end
 
     Annotation = Struct.new(:name, :value) do
+      include BEL::Quoting
+
       def to_bel
         if self.value.respond_to? :each
           value = "{#{self.value.join(',')}}"
         else
-          value = self.value
-          if NonWordMatcher.match value
-            value.gsub! '"', '\"'
-            value = %Q{"#{value}"}
-          end
+          value = ensure_quotes(self.value)
         end
         "SET #{self.name} = #{value}"
       end
@@ -267,6 +260,7 @@ module BEL
     end
 
     StatementGroup = Struct.new(:name, :statements, :annotations) do
+      include BEL::Quoting
 
       def <=>(other_group)
         if not other_group || other_group.is_a?
@@ -277,11 +271,7 @@ module BEL
       end
 
       def to_bel
-        name = self.name
-        if NonWordMatcher.match name
-          name = %Q{"#{name}"}
-        end
-        %Q{SET STATEMENT_GROUP = #{name}}
+        %Q{SET STATEMENT_GROUP = #{ensure_quotes(self.name)}}
       end
 
       alias_method :to_s, :to_bel
