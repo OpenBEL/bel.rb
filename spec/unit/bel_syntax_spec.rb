@@ -58,3 +58,18 @@ describe Statement, "#to_s" do
     expect(s.to_s).to eql('kin(p(HGNC:AKT1)) increases (a(CHEBI:"phorbol 13-acetate 12-myristate") increases p(HGNC:DUSP1))')
   end
 end
+
+describe Annotation, "#to_s" do
+  it "returns bel syntax" do
+    annotation = Annotation.new('Cell', 'blastoconidium')
+    expect(annotation.to_s).to eql('SET Cell = blastoconidium')
+  end
+
+  it "returns quoted values when necessary" do
+    annotation = Annotation.new('Cell', 'ear hair cell')
+    expect(annotation.to_s).to eql('SET Cell = "ear hair cell"')
+
+    annotation = Annotation.new('CellLine', 'SUM1315MO2')
+    expect(annotation.to_s).to eql('SET CellLine = SUM1315MO2')
+  end
+end
