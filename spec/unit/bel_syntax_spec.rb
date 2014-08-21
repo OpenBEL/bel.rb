@@ -65,6 +65,11 @@ describe Annotation, "#to_s" do
     expect(annotation.to_s).to eql('SET Cell = blastoconidium')
   end
 
+  it "escapes quotes within a quoted value" do
+    annotation = Annotation.new('Evidence', 'a "lung-specific" enolase')
+    expect(annotation.to_s).to eql('SET Evidence = "a \"lung-specific\" enolase"')
+  end
+
   it "returns quoted values when necessary" do
     annotation = Annotation.new('Cell', 'ear hair cell')
     expect(annotation.to_s).to eql('SET Cell = "ear hair cell"')
