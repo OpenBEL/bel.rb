@@ -1,12 +1,29 @@
 #!/usr/bin/env ruby
 # vim: ts=2 sw=2
 
-require 'csv'
 require 'bel'
+require 'csv'
+require 'optparse'
 include BEL::Language
 include BEL::Namespace
 
-input = $stdin.read
+options = {}
+OptionParser.new do |opts|
+  opts.banner = '''Statistic report for BEL script.
+Usage: bel_summarize --bel [FILE]'''
+
+  opts.on('-b', '--bel FILE', 'BEL file to summarize.  STDIN (standard in) can also be used for BEL content.') do |bel|
+    options[:bel] = bel
+  end
+end.parse!
+
+# read bel content
+content =
+  if options[:bel]
+    File.open(options[:bel]).read
+  else
+    $stdin.read
+  end
 
 CSV do |csv_out|
   report = {
@@ -25,7 +42,7 @@ CSV do |csv_out|
   end
 
   active_group = nil
-  BEL::Script.parse(input) do |obj|
+  BEL::Script.parse(content) do |obj|
     if obj.is_a? BEL::Language::StatementGroup
       report[:statement_group_count] += 1
       active_group = obj

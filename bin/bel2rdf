@@ -28,7 +28,7 @@ OptionParser.new do |opts|
 Usage: bel2rdf --bel [FILE]'''
 
   opts.on('-b', '--bel FILE', 'BEL file to convert.  STDIN (standard in) can also be used for BEL content.') do |bel|
-    options['bel'] = bel
+    options[:bel] = bel
   end
 
   opts.on('-f', '--format FORMAT', 'RDF file format.') do |format|
@@ -41,12 +41,12 @@ Usage: bel2rdf --bel [FILE]'''
 end.parse!
 
 # option guards
-unless options['bel'] or not STDIN.tty?
+unless options[:bel] or not STDIN.tty?
   $stderr.puts "No bel content provided.  Either use --bel option or STDIN (standard in).  Use -h / --help for details." 
   exit 1
 end
-if options['bel'] and not File.exists? options['bel']
-  $stderr.puts "No file for bel, #{options['bel']}"
+if options[:bel] and not File.exists? options[:bel]
+  $stderr.puts "No file for bel, #{options[:bel]}"
   exit 1
 end
 unless ['ntriples', 'nquads', 'turtle'].include? options[:format]
@@ -121,7 +121,12 @@ if options[:schema]
 end
 
 # read bel content
-content = (STDIN.tty?) ? File.open(options['bel']).read : $stdin.read
+content =
+  if options[:bel]
+    File.open(options[:bel]).read
+  else
+    $stdin.read
+  end
 
 # parse and write rdf
 Main.new(content, rdf_writer)

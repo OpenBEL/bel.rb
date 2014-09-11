@@ -18,7 +18,7 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: bel_upgrade [options] [.bel file]"
   opts.on('-b', '--bel FILE', 'BEL file to upgrade.  STDIN (standard in) can also be used for BEL content.') do |bel|
-    options['bel'] = bel
+    options[:bel] = bel
   end
   opts.on("-c", "--changelog [FILE | URI]", "Change log JSON") do |change_log|
     options['change_log'] = change_log
@@ -26,7 +26,7 @@ OptionParser.new do |opts|
 end.parse!
 
 # option guards
-unless options['bel'] or not STDIN.tty?
+unless options[:bel] or not STDIN.tty?
   $stderr.puts "No bel content provided.  Either use --bel option or STDIN (standard in).  Use -h / --help for details." 
   exit 1
 end
@@ -47,13 +47,18 @@ if not File.exists? options['change_log']
     exit 1
   end
 end
-if options['bel'] and not File.exists? options['bel']
-  $stderr.puts "No file for bel, #{options['bel']}"
+if options[:bel] and not File.exists? options[:bel]
+  $stderr.puts "No file for bel, #{options[:bel]}"
   exit 1
 end
 
 # read bel content
-content = (STDIN.tty?) ? File.open(options['bel']).read : $stdin.read
+content =
+if options[:bel]
+  File.open(options[:bel]).read
+else
+  $stdin.read
+end
 
 # read change log
 changelog = nil

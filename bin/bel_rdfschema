@@ -7,8 +7,6 @@ require 'optparse'
 require 'set'
 require 'open-uri'
 
-require 'rdf/turtle'
-
 options = {
   format: 'ntriples'
 }
