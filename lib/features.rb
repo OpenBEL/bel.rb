@@ -5,6 +5,7 @@ module BEL
     begin
       require 'rdf'
       require 'addressable/uri'
+      require 'uuid'
       @@rdf_support = true
     rescue LoadError => e
       # exceptional condition; missing non-optional or downstream deps

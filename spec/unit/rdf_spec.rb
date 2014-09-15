@@ -1,5 +1,6 @@
 # vim: ts=2 sw=2:
 require 'bel'
+require 'uuid'
 
 include BEL::Language
 include BEL::Namespace
@@ -83,6 +84,22 @@ describe 'RDF functionality of BEL language objects' do
       (uri, rdf_statements) = statement.to_rdf
       expect(uri).to eq(statement.to_uri)
       expect(rdf_statements.size).to eq(21)
+    end
+
+    it "reference a single Evidence identified by UUID blank node" do
+      statement = kin(p(Parameter.new(SFAM, 'PRKC Family'))).increases cat(p(Parameter.new(SFAM, 'PLD Family')))
+      (_, rdf_statements) = statement.to_rdf
+
+      type_evidence_statements = rdf_statements.find_all { |stmt|
+        stmt[1] == BEL::RDF::RDF.type and stmt[2] == BEL::RDF::BELV.Evidence
+      }
+      expect(type_evidence_statements.size).to eq(1)
+
+      evidence_resource = type_evidence_statements.first[0]
+      expect(evidence_resource).to be_a(BEL::RDF::RDF::Node)
+
+      evidence_resource_identifier = evidence_resource.to_s.gsub(/^_:/, '')
+      expect(UUID.validate(evidence_resource_identifier)).to be(true)
     end
   end
 end

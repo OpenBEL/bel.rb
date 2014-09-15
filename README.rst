@@ -17,7 +17,7 @@ Dependencies
 * Required
    * Ruby 1.9.2 or greater (`how to install ruby`_)
 * Optional
-   * `rdf gem`_ and `addressable gem`_ for BEL_ to RDF_ conversion
+   * `rdf gem`_, `addressable gem`_, and `uuid gem`_ for BEL_ to RDF_ conversion
    * `rdf-turtle gem`_ for serializing to `turtle`_ format
 
 Install / Build: See `INSTALL`_.
@@ -230,7 +230,7 @@ Iteratively parse BEL from file-like object
     obj.is_a? Statement
   }.to_a.size
 
-Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
+Parse BEL and convert to RDF (requires the *rdf*, *addressable*, and *uuid* gems)
 
 .. code-block:: ruby
 
@@ -256,6 +256,7 @@ Parse BEL and convert to RDF (requires the 'rdf' and 'addressable' gems)
 .. _Apache License, Version 2.0: http://opensource.org/licenses/Apache-2.0
 .. _rdf gem: https://rubygems.org/gems/rdf
 .. _addressable gem: https://rubygems.org/gems/addressable
+.. _uuid gem: https://rubygems.org/gems/uuid
 .. _rdf-turtle gem: https://rubygems.org/gems/rdf-turtle
 .. _turtle: http://www.w3.org/TR/2014/REC-turtle-20140225
 .. _BEL: http://www.openbel.org/content/bel-lang-language

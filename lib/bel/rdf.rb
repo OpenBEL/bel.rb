@@ -8,11 +8,13 @@ The rdf and addressable gems are required.
 
 Install the gems:
       gem install rdf
-      gem install addressable}
+      gem install addressable
+      gem install uuid}
 end
 
 require 'rdf'
 require 'addressable/uri'
+require 'uuid'
 
 # rename rdf module to avoid conflict within BEL::RDF
 RUBYRDF = RDF

@@ -978,7 +978,7 @@ module BEL
           statements << [uri, RDF::RDFS.label, to_s]
 
           # evidence
-          evidence_bnode = BEL::RDF::RDF::Node.new
+          evidence_bnode = BEL::RDF::RDF::Node.uuid
           statements << [evidence_bnode, BEL::RDF::RDF.type, BEL::RDF::BELV.Evidence]
           statements << [uri, BEL::RDF::BELV.hasEvidence, evidence_bnode]
           statements << [evidence_bnode, BEL::RDF::BELV.hasStatement, uri]

@@ -14,6 +14,7 @@ end
 group :test do
   gem 'rdf', '~> 1.1'
   gem 'addressable', '~> 2.3'
+  gem 'uuid', '~> 2.3'
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
