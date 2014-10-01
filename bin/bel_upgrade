@@ -79,6 +79,7 @@ end
 class Main
 
   EvidenceMatcher = Regexp.compile(/SET Evidence = ([0-9a-zA-Z]+)/)
+  LostReplaceValues = ['unresolved', 'withdrawn']
   attr_reader :ttl
 
   def initialize(content, change_log)
@@ -115,20 +116,7 @@ class Main
       end
 
       if obj.is_a? Parameter
-        # first replace value (old -> value keyed under old namespace prefix)
-        if obj.ns and @change_log.has_key? obj.ns.prefix.to_s
-          clog_ns = @change_log[obj.ns.prefix.to_s]
-          if clog_ns.has_key? obj.value
-            replacement = clog_ns[obj.value]
-            if replacement == 'unresolved' or replacement == 'withdrawn'
-              $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement}'"
-              next
-            end
-            obj.value = replacement
-          end
-        end
-
-        # then replace namespace
+        # first upgrade namespace for prefix matching...
         if @change_log.has_key? 'redefine'
           redefine = @change_log['redefine']
           if obj.ns and redefine.has_key? obj.ns.prefix.to_s
@@ -137,12 +125,25 @@ class Main
             obj.ns = NamespaceDefinition.new(new_keyword, new_url)
           end
         end
-        next
+
+        # ...then upgrade value; new value is keyed under new prefix
+        if obj.ns and @change_log.has_key? obj.ns.prefix.to_s
+          clog_ns = @change_log[obj.ns.prefix.to_s]
+          if clog_ns.has_key? obj.value
+            replacement = clog_ns[obj.value]
+            if LostReplaceValues.include? replacement
+              $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement}'"
+            else
+              obj.value = replacement
+            end
+          end
+        end
       end
 
-      next if obj.is_a? Term # do not print (part of statement)
-
-      puts obj.to_bel
+      # only print Statement
+      if not obj.is_a? Parameter and not obj.is_a? Term
+        puts obj.to_bel
+      end
     end
   end
 
