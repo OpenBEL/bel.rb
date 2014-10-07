@@ -15,6 +15,7 @@ DEFINE ANNOTATION TextLocation AS  LIST {"Abstract","Results","Legend","Review"}
 SET Disease = "Atherosclerosis"
 path(MESHD:Atherosclerosis) //Comment1
 path(Atherosclerosis)
+UNSET Disease
 bp(GOBP:"lipid oxidation")
 p(MGI:Mapkap1) -> p(MGI:Akt1,pmod(P,S,473)) //Comment2
 path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
@@ -25,7 +26,7 @@ describe BEL::Script, "#parse" do
   it "can return all parsed objects" do
     objects = BEL::Script.parse(BEL_SCRIPT).to_a
     expect(objects).to be
-    expect(objects.length).to eql(40)
+    expect(objects.length).to eql(41)
   end
 
   it "is enumerable" do
@@ -43,7 +44,7 @@ describe BEL::Script, "#parse" do
     BEL::Script.parse(BEL_SCRIPT) do |obj|
       objects << obj
     end
-    expect(objects.length).to be 40
+    expect(objects.length).to be 41
   end
 
   it "can handle file-like objects" do

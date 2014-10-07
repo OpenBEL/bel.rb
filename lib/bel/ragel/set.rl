@@ -59,8 +59,8 @@
   unset :=
     SP+
     (
-      IDENT >s $n %name %unset_annotation NL @return |
-      STATEMENT_GROUP_KW @unset_statement_group NL @return
+      STATEMENT_GROUP_KW @unset_statement_group NL @return |
+      IDENT >s $n %name %unset_annotation NL @return
     );
   set_main :=
     (
