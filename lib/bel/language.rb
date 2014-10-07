@@ -204,6 +204,14 @@ module BEL
       alias_method :to_s, :to_bel
     end
 
+    UnsetAnnotation = Struct.new(:name) do
+      def to_bel
+        %Q{UNSET #{self.name}}
+      end
+
+      alias_method :to_s, :to_bel
+    end
+
     class Statement
       attr_accessor :subject, :relationship, :object, :annotations, :comment
 

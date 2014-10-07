@@ -32,6 +32,7 @@
 
   action unset_annotation {
     @annotations.delete(@name)
+    yield BEL::Language::UnsetAnnotation.new(@name)
   }
 
   action unset_statement_group {
