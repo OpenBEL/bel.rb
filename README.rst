@@ -68,6 +68,16 @@ bel2rdf_: Converts BEL to RDF.
   #   (from standard in)
   cat small_corpus.bel | bel2rdf --format turtle
 
+bel_parse_: Show parsed objects from BEL content for debugging purposes
+
+.. code-block:: bash
+
+  # ...from file
+  bel_parse --bel small_corpus.bel
+
+  # ...from standard in
+  cat small_corpus.bel | bel_parse
+
 
 api examples
 ------------
@@ -266,4 +276,5 @@ Parse BEL and convert to RDF (requires the *rdf*, *addressable*, and *uuid* gems
 .. _bel_upgrade: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
 .. _bel_rdfschema: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
 .. _bel2rdf: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel2rdf
+.. _bel_parse: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_parse
 .. _how to install ruby: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md
