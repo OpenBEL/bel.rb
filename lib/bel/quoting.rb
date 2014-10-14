@@ -2,7 +2,7 @@ module BEL
   module Quoting
 
     NonWordMatcher = Regexp.compile(/[^0-9a-zA-Z_]/)
-    KeywordMatcher = Regexp.compile(/^(SET|DEFINE|a|g|p|r|m)/)
+    KeywordMatcher = Regexp.compile(/^(SET|DEFINE|a|g|p|r|m)$/)
 
     def ensure_quotes identifier
       return "" unless identifier
