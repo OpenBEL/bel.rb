@@ -84,6 +84,7 @@ class Main
 
   def initialize(content, change_log)
     @change_log = change_log
+    @redefine_section = @change_log['redefine']
     @keywords_seen = Set.new
     BEL::Script.parse(content) do |obj|
       # redefine namespace based on change log's `redefine` block
@@ -115,32 +116,46 @@ class Main
         end
       end
 
-      if obj.is_a? Parameter
-        # first upgrade namespace for prefix matching...
-        if @change_log.has_key? 'redefine'
-          redefine = @change_log['redefine']
-          if obj.ns and redefine.has_key? obj.ns.prefix.to_s
-            new_keyword = redefine[obj.ns.prefix.to_s]['new_keyword']
-            new_url = redefine[obj.ns.prefix.to_s]['new_url']
-            obj.ns = NamespaceDefinition.new(new_keyword, new_url)
+      if obj.is_a? Parameter and obj.ns
+        # first try replacing by existing namespace prefix...
+        prefix = obj.ns.prefix.to_s
+        replacements = @change_log[prefix]
+        if replacements
+          replacement_value = replacements[obj.value]
+          if replacement_value
+            if LostReplaceValues.include? replacement_value
+              $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement_value}'"
+            else
+              obj.value = replacement_value
+            end
           end
         end
 
-        # ...then upgrade value; new value is keyed under new prefix
-        if obj.ns and @change_log.has_key? obj.ns.prefix.to_s
-          clog_ns = @change_log[obj.ns.prefix.to_s]
-          if clog_ns.has_key? obj.value
-            replacement = clog_ns[obj.value]
-            if LostReplaceValues.include? replacement
-              $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement}'"
-            else
-              obj.value = replacement
+        # ...then change namespace if redefined...
+        if @redefine_section
+          redefinition = @redefine_section[prefix]
+          if redefinition
+            new_prefix = redefinition['new_keyword']
+            new_url = redefinition['new_url']
+            obj.ns = NamespaceDefinition.new(new_prefix, new_url)
+
+            # ...and replace value using new namespace prefix
+            replacements = @change_log[new_prefix]
+            if replacements
+              replacement_value = replacements[obj.value]
+              if replacement_value
+                if LostReplaceValues.include? replacement_value
+                  $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement_value}'"
+                else
+                  obj.value = replacement_value
+                end
+              end
             end
           end
         end
       end
 
-      # only print Statement
+      # do not print Parameter and Term; they are included in Statement
       if not obj.is_a? Parameter and not obj.is_a? Term
         puts obj.to_bel
       end
