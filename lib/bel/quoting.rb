@@ -6,7 +6,7 @@ module BEL
 
     def ensure_quotes identifier
       return "" unless identifier
-      identifier.gsub! '"', '\"'
+      identifier.to_s.gsub! '"', '\"'
       quotes_required(identifier) ? %Q{"#{identifier}"} : identifier
     end
 
