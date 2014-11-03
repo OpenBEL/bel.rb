@@ -54,7 +54,7 @@ module BEL
           if unbalanced_parens > 0
             [Insert.new(last_token.pos_end, :comma, [','])]
           else
-            [Terminal.new(last_token.pos_start, tk.value, :c_paren)]
+            [Terminal.new(last_token.pos_start, last_token.value, :c_paren)]
           end
         when :STRING
           results = []
