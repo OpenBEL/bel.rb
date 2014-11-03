@@ -1,4 +1,6 @@
 # Load core objects
+require_relative './lib_bel'
+require_relative 'bel/completion'
 require_relative 'bel/language'
 require_relative 'bel/namespace'
 include BEL::Language
