@@ -281,8 +281,8 @@ describe BEL::Completion, '#complete' do
 
   context "when completing 'p(MGI'" do
     subject(:text) { 'p(MGI' }
-    it "returns two results" do
-      expect(BEL::Completion.complete(text).length).to be 2
+    it "returns three results" do
+      expect(BEL::Completion.complete(text).length).to be 3
     end
     it "returns a match" do
       expect(BEL::Completion.complete(text).first).to be_a(Match)
@@ -307,6 +307,21 @@ describe BEL::Completion, '#complete' do
     end
     it "no match value type is :function" do
       expect(BEL::Completion.complete(text)[1].value_type).to be :function
+    end
+    it "the third result is an insert" do
+      expect(BEL::Completion.complete(text)[2]).to be_a(Insert)
+    end
+    it "insert position is at end of text" do
+      expect(BEL::Completion.complete(text)[2].position).to be text.length
+    end
+    it "insert value_type is :colon" do
+      expect(BEL::Completion.complete(text)[2].value_type).to be :colon
+    end
+    it "single value for insert" do
+      expect(BEL::Completion.complete(text)[2].values.length).to be 1
+    end
+    it "insert value to be '('" do
+      expect(BEL::Completion.complete(text)[2].values.first).to eql ':'
     end
   end
 

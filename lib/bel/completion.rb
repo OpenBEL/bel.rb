@@ -24,7 +24,7 @@ module BEL
           previous_token = token_size > 1 ? tokens[token_size - 2] : nil
           ident_result   = complete_ident(last_token, previous_token)
           first_match    = ident_result.find_all { |r| r.is_a?(Match) }.first
-          if first_match and first_match.value_type == :function
+          if first_match
             case first_match.value_type
             when :function
               [
