@@ -52,7 +52,9 @@ module BEL
           ]
         when :C_PAREN
           if unbalanced_parens > 0
-            [Insert.new(last_token.pos_end, :comma   , [','])]
+            [Insert.new(last_token.pos_end, :comma, [','])]
+          else
+            [Terminal.new(last_token.pos_start, tk.value, :c_paren)]
           end
         when :STRING
           results = []
@@ -78,7 +80,7 @@ module BEL
         result << Insert.new(0, :function, SORTED_FUNCTIONS)
       end
 
-      index = 0; size = tokens.size; previous = nil
+      index = 0; size = tokens.size
       while index < size do
         tk = tokens[index]
 
@@ -100,17 +102,19 @@ module BEL
       result
     end
 
-    Insert  = Struct.new(:position, :value_type, :values)
+    Insert  =  Struct.new(:position, :value_type, :values)
 
-    Replace = Struct.new(:position, :match, :value_type, :values)
+    Replace =  Struct.new(:position, :match, :value_type, :values)
 
-    Error   = Struct.new(:position, :match, :value_type, :error, :values)
+    Error   =  Struct.new(:position, :match, :value_type, :error, :values)
 
-    NoMatch = Struct.new(:position, :value, :value_type)
+    NoMatch =  Struct.new(:position, :value, :value_type)
 
-    Match   = Struct.new(:position, :value, :value_type)
+    Match   =  Struct.new(:position, :value, :value_type)
 
-    Option  = Struct.new(:position, :value, :value_type, :options)
+    Option  =  Struct.new(:position, :value, :value_type, :options)
+
+    Terminal = Struct.new(:position, :value, :value_type)
 
     private
 
