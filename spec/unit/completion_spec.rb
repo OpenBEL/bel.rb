@@ -327,7 +327,7 @@ describe BEL::Completion, '#complete' do
 
   context "when completing 'tscript(complex'" do
     subject(:text) { 'tscript(complex' }
-    it "returns two results" do
+    it "returns three results" do
       expect(BEL::Completion.complete(text).length).to be 3
     end
     it "returns a no match" do
@@ -368,6 +368,43 @@ describe BEL::Completion, '#complete' do
     end
     it "insert value to be '('" do
       expect(BEL::Completion.complete(text)[2].values.first).to eql '('
+    end
+  end
+
+  context "when completing 'tscript(p()'" do
+    subject(:text) { 'tscript(p()' }
+    it "returns two results" do
+      expect(BEL::Completion.complete(text).length).to be 2
+    end
+    it "returns an insert" do
+      expect(BEL::Completion.complete(text)[0]).to be_a(Insert)
+    end
+    it "insert position is at end of text" do
+      expect(BEL::Completion.complete(text)[0].position).to be text.length
+    end
+    it "insert value_type is :comma" do
+      expect(BEL::Completion.complete(text)[0].value_type).to be :comma
+    end
+    it "single value for insert" do
+      expect(BEL::Completion.complete(text)[0].values.length).to be 1
+    end
+    it "insert value to be ','" do
+      expect(BEL::Completion.complete(text)[0].values.first).to eql ','
+    end
+    it "the second result is an insert" do
+      expect(BEL::Completion.complete(text)[1]).to be_a(Insert)
+    end
+    it "insert position is at end of text" do
+      expect(BEL::Completion.complete(text)[1].position).to be text.length
+    end
+    it "insert value_type is :c_paren" do
+      expect(BEL::Completion.complete(text)[1].value_type).to be :c_paren
+    end
+    it "single value for insert" do
+      expect(BEL::Completion.complete(text)[1].values.length).to be 1
+    end
+    it "insert value to be ')'" do
+      expect(BEL::Completion.complete(text)[1].values.first).to eql ')'
     end
   end
 end
