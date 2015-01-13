@@ -87,6 +87,18 @@ module LibBEL
     def value
       self[:value].read_string
     end
+
+    def hash
+      [self.type, self.value, self.pos_start, self.pos_end].hash
+    end
+
+    def ==(other)
+      return false if other == nil
+      self.type == other.type && self.value == other.value &&
+        self.pos_start == other.pos_start && self.pos_end == other.pos_end
+    end
+
+    alias_method :eql?, :'=='
   end
 
   class BelTokenList < FFI::ManagedStruct
@@ -107,6 +119,14 @@ module LibBEL
       else
         enum_for(:each)
       end
+    end
+
+    def token_at(position)
+      self.each_with_index { |tk, index|
+        if (tk.pos_start..tk.pos_end).include? position
+          return [tk, index]
+        end
+      }
     end
 
     def self.release(ptr)

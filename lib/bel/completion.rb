@@ -1,6 +1,8 @@
 require_relative '../lib_bel'
+require_relative 'completion_rule'
 require_relative 'language'
 require_relative 'namespace'
+require 'pry'
 
 module BEL
   module Completion
@@ -8,7 +10,87 @@ module BEL
     SORTED_FUNCTIONS  = BEL::Language::FUNCTIONS.keys.sort.map(&:to_s)
     SORTED_NAMESPACES = BEL::Namespace::NAMESPACE_LATEST.keys.sort.map(&:to_s)
 
-    def self.complete(term)
+    def self.complete(term, position)
+      term = (term || '').to_s
+      if not position or position.class != Fixnum
+        position = term.length
+      end
+
+      token_list = LibBEL::tokenize_term(term)
+      active_tok, active_index = token_list.token_at(position)
+
+      context = Hash.new { |hash, k| hash[k] = [] }
+      tokens = token_list.to_a
+      BEL::Completion::rules.each do |rule|
+        rule.apply(context, tokens, active_tok, active_index)
+      end
+
+      completions = []
+      active_tok_value = active_tok.value
+
+      # transform function matches to completions
+      completions += context[:match_function].map { |mf|
+        fx_long  = mf[:long_form]
+        fx_value = "#{fx_long}()"
+        {
+          :type    => 'function',
+          :label   => fx_long,
+          :value   => fx_value,
+          :context => "",
+          # :context => active_tok.type == :IDENT ?
+          #               fx_long.sub(/(#{active_tok_value})/, '<b>\1</b>') :
+          #               "",
+          :actions => [
+            {
+              :delete => {
+                :position => active_tok.pos_start,
+                :length   => active_tok_value.length
+              },
+              :insert => {
+                :position => active_tok.pos_start,
+                :value    => fx_value
+              },
+              :move_cursor => {
+                :position => active_tok.pos_start + fx_long.length + 1
+              }
+            }
+          ]
+        }
+      }
+
+      # transform namespace prefix matches to completions
+      completions += context[:match_namespace_prefix].map { |npfx|
+        npfx_value = "#{npfx}:"
+        {
+          :type    => 'namespace prefix',
+          :label   => npfx,
+          :value   => npfx_value,
+          :context => "",
+          # :context => active_tok.type == :IDENT ?
+          #               npfx.sub(%r{(#{active_tok_value})}, '<b>\1</b>') :
+          #               "",
+          :actions => [
+            {
+              :delete => {
+                :position => active_tok.pos_start,
+                :length   => active_tok_value.length
+              },
+              :insert => {
+                :position => active_tok.pos_start,
+                :value    => npfx_value
+              },
+              :move_cursor => {
+                :position => active_tok.pos_start + npfx.length + 1
+              }
+            }
+          ]
+        }
+      }
+
+      completions
+    end
+
+    def self.old_complete(term)
       term_str = term.to_s
       tokens = LibBEL::tokenize_term(term_str).to_a
       token_size = tokens.size
