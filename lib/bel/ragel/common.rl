@@ -57,7 +57,7 @@ machine bel;
   EQL = '=';
   NL = '\n' | '\r' '\n'?;
   COMMENT = '#';
-  SP = ' ';
+  SP = ' ' | '\t';
 
   # keywords
   ANNOTATION_KW = /ANNOTATION/i;

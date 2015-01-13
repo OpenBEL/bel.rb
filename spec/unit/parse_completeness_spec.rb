@@ -29,6 +29,18 @@ describe BEL::Script, "#parse" do
     expect(objects.length).to eql(41)
   end
 
+  it "can parse spaces and tabs" do
+    objects = BEL::Script.parse(
+<<-EOF
+DEFINE NAMESPACE\tGOBP\tAS URL\t\t"http://resource.belframework.org/belframework/20131211/namespace/go-biological-process.belns"
+DEFINE NAMESPACE\tHGNC\tAS URL\t\t"http://resource.belframework.org/belframework/20131211/namespace/hgnc-human-genes.belns"
+p(HGNC:AKT1)  \t\t  =>  \t\t  bp(GOBP:"apoptotic process")
+EOF
+).to_a
+    expect(objects).to be
+    expect(objects.length).to eql(7)
+  end
+
   it "is enumerable" do
     statements = BEL::Script.parse(BEL_SCRIPT).find_all { |x|
       x.is_a? BEL::Language::Statement

@@ -39,6 +39,20 @@ bel_upgrade_: Upgrade namespaces in BEL content to another version (e.g. `1.0` t
   # using BEL from STDIN and change log from a URL
   cat small_corpus.bel | bel_upgrade --changelog http://resource.belframework.org/belframework/20131211/change_log.json
 
+bel_upgrade_term_: Upgrade BEL terms to another version (e.g. `1.0` to `20131211`)
+
+.. code-block:: bash
+
+  # using BEL terms and change log JSON file
+  bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c change_log.json
+
+  # using BEL terms and change log from a URL
+  bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c http://resource.belframework.org/belframework/20131211/change_log.json
+
+  # using BEL from STDIN
+  echo -e "p(EGID:84)\np(HGNC:A2LD1)" | bel_upgrade_term -n "1.0" -c change_log.json
+  cat terms.bel | bel_upgrade_term -n "1.0" -c change_log.json
+
 bel_rdfschema_: Dumps the RDF Schema triples for BEL.
 
 .. code-block:: bash
@@ -274,6 +288,7 @@ Parse BEL and convert to RDF (requires the *rdf*, *addressable*, and *uuid* gems
 .. _INSTALL: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL.rst
 .. _resource: http://resource.belframework.org/belframework/1.0/namespace/
 .. _bel_upgrade: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
+.. _bel_upgrade_term: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade_term
 .. _bel_rdfschema: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
 .. _bel2rdf: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel2rdf
 .. _bel_parse: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_parse
