@@ -36,7 +36,7 @@ module BEL
 
         value_start = fx_long.to_s.downcase.index(active_tok_value.downcase)
         if value_start
-          value_end = value_start + active_tok_value.length
+          value_end = value_start + active_tok_length
           highlight = {
             :position_start => value_start,
             :position_end   => value_end
@@ -55,7 +55,7 @@ module BEL
               {
                 :delete => {
                   :position => position_start,
-                  :length   => active_tok_value.length
+                  :length   => active_tok_length
                 },
                 :insert => {
                   :position => position_start,
@@ -75,7 +75,7 @@ module BEL
         npfx_value  = "#{npfx}:"
         value_start = npfx.downcase.index(active_tok_value.downcase)
         if value_start
-          value_end = value_start + active_tok_value.length
+          value_end = value_start + active_tok_length
           highlight = {
             :position_start => value_start,
             :position_end   => value_end
@@ -94,7 +94,7 @@ module BEL
               {
                 :delete => {
                   :position => position_start,
-                  :length   => active_tok_value.length
+                  :length   => active_tok_length
                 },
                 :insert => {
                   :position => position_start,
