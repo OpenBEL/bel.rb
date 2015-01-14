@@ -36,9 +36,12 @@ module BEL
         value_start = fx_long.to_s.downcase.index(active_tok_value.downcase)
         if value_start
           value_end = value_start + active_tok_value.length
-          highlight   = fx_long[value_start...value_end]
+          highlight = {
+            :position_start => value_start,
+            :position_end   => value_end
+          }
         else
-          highlight   = ""
+          highlight = nil
         end
 
         {
@@ -72,9 +75,12 @@ module BEL
         value_start = npfx.downcase.index(active_tok_value.downcase)
         if value_start
           value_end = value_start + active_tok_value.length
-          highlight = npfx[value_start...value_end]
+          highlight = {
+            :position_start => value_start,
+            :position_end   => value_end
+          }
         else
-          highlight = ""
+          highlight = nil
         end
 
         {
