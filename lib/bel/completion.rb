@@ -25,8 +25,9 @@ module BEL
       end
 
       completions = []
-      active_tok_value  = active_tok.value
+      active_tok_value  = active_tok ? active_tok.value : ''
       active_tok_length = active_tok_value.length
+      position_start = active_tok ? active_tok.pos_start : 0
 
       # transform function matches to completions
       completions += context[:match_function].map { |mf|
@@ -53,15 +54,15 @@ module BEL
             :actions   => [
               {
                 :delete => {
-                  :position => active_tok.pos_start,
+                  :position => position_start,
                   :length   => active_tok_value.length
                 },
                 :insert => {
-                  :position => active_tok.pos_start,
+                  :position => position_start,
                   :value    => fx_value
                 },
                 :move_cursor => {
-                  :position => active_tok.pos_start + fx_long.length + 1
+                  :position => position_start + fx_long.length + 1
                 }
               }
             ]
@@ -92,15 +93,15 @@ module BEL
             :actions   => [
               {
                 :delete => {
-                  :position => active_tok.pos_start,
+                  :position => position_start,
                   :length   => active_tok_value.length
                 },
                 :insert => {
-                  :position => active_tok.pos_start,
+                  :position => position_start,
                   :value    => npfx_value
                 },
                 :move_cursor => {
-                  :position => active_tok.pos_start + npfx.length + 1
+                  :position => position_start + npfx.length + 1
                 }
               }
             ]

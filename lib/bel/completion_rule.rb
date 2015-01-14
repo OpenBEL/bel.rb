@@ -39,7 +39,12 @@ module BEL
       include Rule
 
       def apply(context, token_list, active_token, active_token_index)
-        return if token_list.empty?
+        if token_list.empty? or active_token.type == :O_PAREN
+          context[:match_function] = SORTED_FUNCTIONS.map { |x|
+            BEL::Language::FUNCTIONS[x.to_sym]
+          }
+          return
+        end
 
         if active_token.type == :IDENT
           value = active_token.value.downcase
@@ -52,10 +57,6 @@ module BEL
           if not matches.empty?
             context[:match_function] = matches
           end
-        elsif active_token.type == :O_PAREN
-          context[:match_function] = SORTED_FUNCTIONS.map { |x|
-            BEL::Language::FUNCTIONS[x.to_sym]
-          }
         end
       end
     end
@@ -64,7 +65,11 @@ module BEL
       include Rule
 
       def apply(context, token_list, active_token, active_token_index)
-        return if token_list.empty?
+        if token_list.empty? or active_token.type == :O_PAREN
+          context[:match_namespace_prefix] = SORTED_NAMESPACES
+          return
+        end
+
         return if active_token == token_list[0] # first token is always function
 
         if active_token.type == :IDENT
@@ -76,8 +81,6 @@ module BEL
           if not matches.empty?
             context[:match_namespace_prefix] = matches
           end
-        elsif active_token.type == :O_PAREN
-          context[:match_namespace_prefix] = SORTED_NAMESPACES
         end
       end
     end
