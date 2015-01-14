@@ -127,6 +127,7 @@ module LibBEL
           return [tk, index]
         end
       }
+      nil
     end
 
     def self.release(ptr)
