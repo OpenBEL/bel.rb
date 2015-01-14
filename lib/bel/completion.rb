@@ -2,7 +2,6 @@ require_relative '../lib_bel'
 require_relative 'completion_rule'
 require_relative 'language'
 require_relative 'namespace'
-require 'pry'
 
 module BEL
   module Completion
@@ -26,22 +25,29 @@ module BEL
       end
 
       completions = []
-      active_tok_value = active_tok.value
+      active_tok_value  = active_tok.value
+      active_tok_length = active_tok_value.length
 
       # transform function matches to completions
       completions += context[:match_function].map { |mf|
-        fx_long  = mf[:long_form]
-        fx_value = "#{fx_long}()"
+        fx_long     = mf[:long_form]
+        fx_value    = "#{fx_long}()"
+
+        value_start = fx_long.to_s.downcase.index(active_tok_value.downcase)
+        if value_start
+          value_end = value_start + active_tok_value.length
+          highlight   = fx_long[value_start...value_end]
+        else
+          highlight   = ""
+        end
+
         {
           :completion => {
-            :type    => 'function',
-            :label   => fx_long,
-            :value   => fx_value,
-            :context => "",
-            # :context => active_tok.type == :IDENT ?
-            #               fx_long.sub(/(#{active_tok_value})/, '<b>\1</b>') :
-            #               "",
-            :actions => [
+            :type      => 'function',
+            :label     => fx_long,
+            :value     => fx_value,
+            :highlight => highlight,
+            :actions   => [
               {
                 :delete => {
                   :position => active_tok.pos_start,
@@ -62,17 +68,22 @@ module BEL
 
       # transform namespace prefix matches to completions
       completions += context[:match_namespace_prefix].map { |npfx|
-        npfx_value = "#{npfx}:"
+        npfx_value  = "#{npfx}:"
+        value_start = npfx.downcase.index(active_tok_value.downcase)
+        if value_start
+          value_end = value_start + active_tok_value.length
+          highlight = npfx[value_start...value_end]
+        else
+          highlight = ""
+        end
+
         {
           :completion => {
-            :type    => 'namespace prefix',
-            :label   => npfx,
-            :value   => npfx_value,
-            :context => "",
-            # :context => active_tok.type == :IDENT ?
-            #               npfx.sub(%r{(#{active_tok_value})}, '<b>\1</b>') :
-            #               "",
-            :actions => [
+            :type      => 'namespace prefix',
+            :label     => npfx,
+            :value     => npfx_value,
+            :highlight => highlight,
+            :actions   => [
               {
                 :delete => {
                   :position => active_tok.pos_start,
