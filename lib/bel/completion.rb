@@ -33,28 +33,30 @@ module BEL
         fx_long  = mf[:long_form]
         fx_value = "#{fx_long}()"
         {
-          :type    => 'function',
-          :label   => fx_long,
-          :value   => fx_value,
-          :context => "",
-          # :context => active_tok.type == :IDENT ?
-          #               fx_long.sub(/(#{active_tok_value})/, '<b>\1</b>') :
-          #               "",
-          :actions => [
-            {
-              :delete => {
-                :position => active_tok.pos_start,
-                :length   => active_tok_value.length
-              },
-              :insert => {
-                :position => active_tok.pos_start,
-                :value    => fx_value
-              },
-              :move_cursor => {
-                :position => active_tok.pos_start + fx_long.length + 1
+          :completion => {
+            :type    => 'function',
+            :label   => fx_long,
+            :value   => fx_value,
+            :context => "",
+            # :context => active_tok.type == :IDENT ?
+            #               fx_long.sub(/(#{active_tok_value})/, '<b>\1</b>') :
+            #               "",
+            :actions => [
+              {
+                :delete => {
+                  :position => active_tok.pos_start,
+                  :length   => active_tok_value.length
+                },
+                :insert => {
+                  :position => active_tok.pos_start,
+                  :value    => fx_value
+                },
+                :move_cursor => {
+                  :position => active_tok.pos_start + fx_long.length + 1
+                }
               }
-            }
-          ]
+            ]
+          }
         }
       }
 
@@ -62,28 +64,30 @@ module BEL
       completions += context[:match_namespace_prefix].map { |npfx|
         npfx_value = "#{npfx}:"
         {
-          :type    => 'namespace prefix',
-          :label   => npfx,
-          :value   => npfx_value,
-          :context => "",
-          # :context => active_tok.type == :IDENT ?
-          #               npfx.sub(%r{(#{active_tok_value})}, '<b>\1</b>') :
-          #               "",
-          :actions => [
-            {
-              :delete => {
-                :position => active_tok.pos_start,
-                :length   => active_tok_value.length
-              },
-              :insert => {
-                :position => active_tok.pos_start,
-                :value    => npfx_value
-              },
-              :move_cursor => {
-                :position => active_tok.pos_start + npfx.length + 1
+          :completion => {
+            :type    => 'namespace prefix',
+            :label   => npfx,
+            :value   => npfx_value,
+            :context => "",
+            # :context => active_tok.type == :IDENT ?
+            #               npfx.sub(%r{(#{active_tok_value})}, '<b>\1</b>') :
+            #               "",
+            :actions => [
+              {
+                :delete => {
+                  :position => active_tok.pos_start,
+                  :length   => active_tok_value.length
+                },
+                :insert => {
+                  :position => active_tok.pos_start,
+                  :value    => npfx_value
+                },
+                :move_cursor => {
+                  :position => active_tok.pos_start + npfx.length + 1
+                }
               }
-            }
-          ]
+            ]
+          }
         }
       }
 
