@@ -18,106 +18,10 @@ module BEL
       token_list = LibBEL::tokenize_term(term)
       active_tok, active_index = token_list.token_at(position)
 
-      context = Hash.new { |hash, k| hash[k] = [] }
       tokens = token_list.to_a
-      BEL::Completion::rules.each do |rule|
-        rule.apply(context, tokens, active_tok, active_index)
-      end
-
-      completions = []
-      active_tok_value  = active_tok ? active_tok.value : ''
-      active_tok_length = active_tok_value.length
-      position_start = active_tok ? active_tok.pos_start : 0
-
-      # transform function matches to completions
-      completions += context[:match_function].map { |mf|
-        fx_long     = mf[:long_form]
-        fx_value    = "#{fx_long}()"
-
-        value_start = fx_long.to_s.downcase.index(active_tok_value.downcase)
-        if value_start
-          value_end = value_start + active_tok_length
-          highlight = {
-            :position_start => value_start,
-            :position_end   => value_end
-          }
-        else
-          highlight = nil
-        end
-
-        {
-          :completion => {
-            :type      => 'function',
-            :label     => fx_long,
-            :value     => fx_value,
-            :highlight => highlight,
-            :actions   => [
-              {
-                :delete => {
-                  :position => position_start,
-                  :length   => active_tok_length
-                }
-              },
-              {
-                :insert => {
-                  :position => position_start,
-                  :value    => fx_value
-                }
-              },
-              {
-                :move_cursor => {
-                  :position => position_start + fx_long.length + 1
-                }
-              }
-            ]
-          }
-        }
+      BEL::Completion::rules.reduce([]) { |completions, rule|
+        completions.concat(rule.apply(tokens, active_tok, active_index))
       }
-
-      # transform namespace prefix matches to completions
-      completions += context[:match_namespace_prefix].map { |npfx|
-        npfx_value  = "#{npfx}:"
-        value_start = npfx.downcase.index(active_tok_value.downcase)
-        if value_start
-          value_end = value_start + active_tok_length
-          highlight = {
-            :position_start => value_start,
-            :position_end   => value_end
-          }
-        else
-          highlight = nil
-        end
-
-        {
-          :completion => {
-            :type      => 'namespace prefix',
-            :label     => npfx,
-            :value     => npfx_value,
-            :highlight => highlight,
-            :actions   => [
-              {
-                :delete => {
-                  :position => position_start,
-                  :length   => active_tok_length
-                }
-              },
-              {
-                :insert => {
-                  :position => position_start,
-                  :value    => npfx_value
-                }
-              },
-              {
-                :move_cursor => {
-                  :position => position_start + npfx.length + 1
-                }
-              }
-            ]
-          }
-        }
-      }
-
-      completions
     end
 
     def self.old_complete(term)
