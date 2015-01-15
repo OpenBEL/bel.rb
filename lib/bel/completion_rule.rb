@@ -58,11 +58,13 @@ module BEL
         position_start = active_token ? active_token.pos_start : 0
         actions = []
 
-        if active_token
+        if active_token and not [:O_PAREN, :COLON].include?(active_token.type)
+          # delete from start of active token to end of a
           actions.push({
             :delete => {
-              :position => position_start,
-              :length   => active_token.value.length
+              :start_position => position_start,
+              :end_position   => active_token.pos_end - 1,
+              :range_type     => 'inclusive'
             }
           })
         end
