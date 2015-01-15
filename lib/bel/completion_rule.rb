@@ -7,6 +7,7 @@ module BEL
 
     SORTED_FUNCTIONS  = BEL::Language::FUNCTIONS.keys.sort.map(&:to_s)
     SORTED_NAMESPACES = BEL::Namespace::NAMESPACE_LATEST.keys.sort.map(&:to_s)
+    EMPTY_MATCH       = []
 
     def self.rules
       [
@@ -99,6 +100,8 @@ module BEL
             x.downcase.include? value
           }.map { |fx| map_function(fx) }.uniq.sort_by { |fx| fx[:label] }
         end
+
+        return EMPTY_MATCH
       end
 
       protected
@@ -139,6 +142,8 @@ module BEL
             map_namespace_prefix(ns_prefix)
           }
         end
+
+        return EMPTY_MATCH
       end
 
       private
@@ -179,7 +184,7 @@ module BEL
           }
         end
 
-        return []
+        return EMPTY_MATCH
       end
 
       protected
@@ -187,8 +192,8 @@ module BEL
       def map_namespace_value(ns_value)
         {
           :type   => 'namespace_value',
-          :label  => value,
-          :value  => ensure_quotes(value),
+          :label  => ns_value,
+          :value  => ensure_quotes(ns_value),
           :offset => 0
         }
       end
