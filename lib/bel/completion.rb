@@ -56,11 +56,15 @@ module BEL
                 :delete => {
                   :position => position_start,
                   :length   => active_tok_length
-                },
+                }
+              },
+              {
                 :insert => {
                   :position => position_start,
                   :value    => fx_value
-                },
+                }
+              },
+              {
                 :move_cursor => {
                   :position => position_start + fx_long.length + 1
                 }
@@ -95,11 +99,15 @@ module BEL
                 :delete => {
                   :position => position_start,
                   :length   => active_tok_length
-                },
+                }
+              },
+              {
                 :insert => {
                   :position => position_start,
                   :value    => npfx_value
-                },
+                }
+              },
+              {
                 :move_cursor => {
                   :position => position_start + npfx.length + 1
                 }
