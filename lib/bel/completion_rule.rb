@@ -112,7 +112,8 @@ module BEL
         fx = Function.new(FUNCTIONS[fx_name.to_sym])
         if fx
           {
-            :type   => 'function',
+            :id     => fx.short_form,
+            :type   => :function,
             :label  => fx.long_form,
             :value  => "#{fx.short_form}()",
             :offset => -1
@@ -152,7 +153,8 @@ module BEL
 
       def map_namespace_prefix(ns_prefix)
         {
-          :type   => 'namespace_prefix',
+          :id     => ns_prefix,
+          :type   => :namespace_prefix,
           :label  => ns_prefix,
           :value  => "#{ns_prefix}:",
           :offset => 0
@@ -193,7 +195,8 @@ module BEL
 
       def map_namespace_value(ns_value)
         {
-          :type   => 'namespace_value',
+          :id     => ns_value,
+          :type   => :namespace_value,
           :label  => ns_value,
           :value  => ensure_quotes(ns_value),
           :offset => 0
