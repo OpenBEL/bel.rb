@@ -69,6 +69,10 @@ module BEL
           })
         end
 
+        if active_token and actions.empty?
+          position_start += active_token.value.length
+        end
+
         actions.concat([
           {
             :insert => {
