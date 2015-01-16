@@ -69,6 +69,7 @@ module BEL
           })
         end
 
+        # add the active_token length if we do not need to delete it
         if active_token and actions.empty?
           position_start += active_token.value.length
         end
