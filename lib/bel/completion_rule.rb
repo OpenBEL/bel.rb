@@ -26,7 +26,7 @@ module BEL
           match = map_highlight(match, active_token)
           match = map_actions(match, active_token)
           match.delete(:offset)
-          { :completion => match }
+          match
         }
       end
 
