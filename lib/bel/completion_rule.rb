@@ -42,8 +42,9 @@ module BEL
           if value_start
             value_end = value_start + active_token.value.length
             highlight = {
-              :position_start => value_start,
-              :position_end   => value_end
+              :start_position => value_start,
+              :end_position   => value_end,
+              :range_type     => 'inclusive'
             }
           else
             highlight = nil
