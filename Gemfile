@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'ffi'
+
 group :development do
   gem 'rake', '~> 10.3'
   gem 'rspec', '~> 2.14'
