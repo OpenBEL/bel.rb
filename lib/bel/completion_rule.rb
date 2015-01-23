@@ -44,7 +44,7 @@ module BEL
             highlight = {
               :start_position => value_start,
               :end_position   => value_end,
-              :range_type     => 'inclusive'
+              :range_type     => :inclusive
             }
           else
             highlight = nil
@@ -65,7 +65,7 @@ module BEL
             :delete => {
               :start_position => position_start,
               :end_position   => active_token.pos_end - 1,
-              :range_type     => 'inclusive'
+              :range_type     => :inclusive
             }
           })
         end
