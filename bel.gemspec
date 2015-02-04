@@ -18,11 +18,20 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version \
                           = '>= 1.9.2'
 
-  spec.add_development_dependency 'rake',    '~> 10.3'
-  spec.add_development_dependency 'rspec',   '~> 2.14'
-  spec.add_development_dependency 'yard',    '~> 0.8'
-  spec.add_development_dependency 'rdoc',    '~> 4.0'
-  spec.add_development_dependency 'bundler', '~> 1.3'
+  # runtime
+  spec.add_dependency             'ffi',         '~> 1.9'
+
+  # test rdf functionality
+  spec.add_development_dependency 'uuid',        '~> 2.3'
+  spec.add_development_dependency 'addressable', '~> 2.3'
+  spec.add_development_dependency 'rdf',         '~> 1.1'
+
+  # development gems
+  spec.add_development_dependency 'bundler',     '~> 1.7'
+  spec.add_development_dependency 'rake',        '~> 10.3'
+  spec.add_development_dependency 'rspec',       '~> 2.14'
+  spec.add_development_dependency 'yard',        '~> 0.8'
+  spec.add_development_dependency 'rdoc',        '~> 4.0'
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
