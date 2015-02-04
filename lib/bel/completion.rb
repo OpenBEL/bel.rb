@@ -9,7 +9,7 @@ module BEL
     SORTED_FUNCTIONS  = BEL::Language::FUNCTIONS.keys.sort.map(&:to_s)
     SORTED_NAMESPACES = BEL::Namespace::NAMESPACE_LATEST.keys.sort.map(&:to_s)
 
-    def self.complete(term, position)
+    def self.complete(term, position = nil)
       term = (term || '').to_s
       if not position or position.class != Fixnum
         position = term.length
