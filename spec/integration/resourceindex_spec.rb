@@ -28,7 +28,7 @@ describe 'Loading BEL resources from a ResourceIndex object' do
 
     it "loads resources from local path" do
       local_path = "#{File.dirname(__FILE__)}/index.xml"
-      expect(File.exist? local_path).to be_true
+      expect(File.exist? local_path).to be_truthy
 
       index = ResourceIndex.new(local_path)
       expect(index.namespaces.size).to be > 0
@@ -37,7 +37,7 @@ describe 'Loading BEL resources from a ResourceIndex object' do
 
     it "loads resources from file urls" do
       local_path = "#{File.dirname(__FILE__)}/index.xml"
-      expect(File.exist? local_path).to be_true
+      expect(File.exist? local_path).to be_truthy
       local_uri = "file://#{local_path}"
 
       index = ResourceIndex.new(local_uri)
