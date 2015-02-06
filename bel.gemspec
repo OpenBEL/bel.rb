@@ -14,6 +14,12 @@ Gem::Specification.new do |spec|
   spec.executables        = Dir.glob('bin/*').map(&File.method(:basename))
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
+  spec.rdoc_options       = [
+                              '--title', 'BEL Ruby Documentation',
+                              '--main', 'README.md',
+                              '--line-numbers',
+                              '--exclude', 'lib/bel/script.rb'
+                            ]
 
   spec.required_ruby_version \
                           = '>= 1.9.2'

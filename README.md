@@ -1,118 +1,125 @@
-bel
-===
+bel ruby
+========
 
-.. image:: https://badge.fury.io/rb/bel.png
-    :target: http://badge.fury.io/rb/bel
-.. image:: https://travis-ci.org/OpenBEL/bel.rb.svg?branch=master
-    :target: https://travis-ci.org/OpenBEL/bel.rb
+[![Gem Version](https://badge.fury.io/rb/bel.svg)](http://badge.fury.io/rb/bel)
 
 The bel ruby gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
 
-Learn more on BEL_.
+Learn more on [BEL](http://www.openbel.org/content/bel-lang-language).
 
-License: `Apache License, Version 2.0`_
+License: [Apache License, Version 2.0](http://opensource.org/licenses/Apache-2.0)
 
 Dependencies
 
-* Required
-   * Ruby 1.9.2 or greater (`how to install ruby`_)
-* Optional
-   * `rdf gem`_, `addressable gem`_, and `uuid gem`_ for BEL_ to RDF_ conversion
-   * `rdf-turtle gem`_ for serializing to `turtle`_ format
+- Required
 
-Install / Build: See `INSTALL`_.
+    - Ruby 1.9.2 or greater ([how to install ruby](https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md))
+
+- Optional
+
+    - *rdf gem*, *addressable gem*, and *uuid gem* for RDF conversion
+    - *rdf-turtle gem* for serializing to RDF turtle format
+
+Install / Build: See [INSTALL](https://github.com/OpenBEL/bel.rb/blob/master/INSTALL.rst).
+
+branches
+--------
+
+- master branch
+  - [![Travis CI Build](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=master)](https://travis-ci.org/OpenBEL/bel.rb)
+
+- next branch
+  - [![Build Status for next branch](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=next)](https://travis-ci.org/OpenBEL/bel.rb)
 
 
 executable commands
 -------------------
 
-bel_upgrade_: Upgrade namespaces in BEL content to another version (e.g. `1.0` to `20131211`)
+**bel_upgrade**: Upgrade namespaces in BEL content to another version (i.e. *1.0* to *20131211*)
 
-.. code-block:: bash
+```bash
+# using BEL file and change log JSON file
+bel_upgrade --bel small_corpus.bel --changelog change_log.json
 
-  # using BEL file and change log JSON file
-  bel_upgrade --bel small_corpus.bel --changelog change_log.json
+# using BEL file and change log from a URL
+bel_upgrade --bel small_corpus.bel --changelog http://resource.belframework.org/belframework/20131211/change_log.json
 
-  # using BEL file and change log from a URL
-  bel_upgrade --bel small_corpus.bel --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+# using BEL from STDIN and change log from a URL
+cat small_corpus.bel | bel_upgrade --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+```
 
-  # using BEL from STDIN and change log from a URL
-  cat small_corpus.bel | bel_upgrade --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+**bel_upgrade_term**: Upgrade BEL terms to another version (e.g. *1.0* to *20131211*)
 
-bel_upgrade_term_: Upgrade BEL terms to another version (e.g. `1.0` to `20131211`)
+```bash
+# using BEL terms and change log JSON file
+bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c change_log.json
 
-.. code-block:: bash
+# using BEL terms and change log from a URL
+bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c http://resource.belframework.org/belframework/20131211/change_log.json
 
-  # using BEL terms and change log JSON file
-  bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c change_log.json
+# using BEL from STDIN
+echo -e "p(EGID:84)\np(HGNC:A2LD1)" | bel_upgrade_term -n "1.0" -c change_log.json
+cat terms.bel | bel_upgrade_term -n "1.0" -c change_log.json
+```
 
-  # using BEL terms and change log from a URL
-  bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c http://resource.belframework.org/belframework/20131211/change_log.json
+**bel_rdfschema**: Dumps the RDF Schema triples for BEL.
 
-  # using BEL from STDIN
-  echo -e "p(EGID:84)\np(HGNC:A2LD1)" | bel_upgrade_term -n "1.0" -c change_log.json
-  cat terms.bel | bel_upgrade_term -n "1.0" -c change_log.json
+```bash
+# dumps schema in ntriples format (default)
+bel_rdfschema
 
-bel_rdfschema_: Dumps the RDF Schema triples for BEL.
+# dumps schema in turtle format
+# note: requires the 'rdf-turtle' gem
+bel_rdfschema --format turtle
+```
 
-.. code-block:: bash
+**bel2rdf**: Converts BEL to RDF.
 
-  # dumps schema in ntriples format (default)
-  bel_rdfschema
+```bash
+# dumps RDF to standard out in ntriples format (default)
+#   (from file)
+bel2rdf --bel small_corpus.bel
 
-  # dumps schema in turtle format
-  # note: requires the 'rdf-turtle' gem
-  bel_rdfschema --format turtle
+#   (from standard in)
+cat small_corpus.bel | bel2rdf
 
-bel2rdf_: Converts BEL to RDF.
+# dumps RDF to standard out in turtle format
+#   (from file)
+bel2rdf --bel small_corpus.bel --format turtle
 
-.. code-block:: bash
+#   (from standard in)
+cat small_corpus.bel | bel2rdf --format turtle
+```
 
-  # dumps RDF to standard out in ntriples format (default)
-  #   (from file)
-  bel2rdf --bel small_corpus.bel
+**bel_parse**: Show parsed objects from BEL content for debugging purposes
 
-  #   (from standard in)
-  cat small_corpus.bel | bel2rdf
+```bash
+# ...from file
+bel_parse --bel small_corpus.bel
 
-  # dumps RDF to standard out in turtle format
-  #   (from file)
-  bel2rdf --bel small_corpus.bel --format turtle
-
-  #   (from standard in)
-  cat small_corpus.bel | bel2rdf --format turtle
-
-bel_parse_: Show parsed objects from BEL content for debugging purposes
-
-.. code-block:: bash
-
-  # ...from file
-  bel_parse --bel small_corpus.bel
-
-  # ...from standard in
-  cat small_corpus.bel | bel_parse
-
+# ...from standard in
+cat small_corpus.bel | bel_parse
+```
 
 api examples
 ------------
 
-Use OpenBEL namespaces from the latest release.
+**Use OpenBEL namespaces from the latest release.**
 
-.. code-block:: ruby
-
-  require 'bel'
+```ruby
+require 'bel'
   
-  # reference namespace value using standard prefixes (HGNC, MGI, RGD, etc.)
-  HGNC['AKT1']
-  => #<BEL::Language::Parameter:0x00000004df5bc0
-   @enc=:GRP,
-   @ns_def="BEL::Namespace::HGNC",
-   @value=:AKT1>
+# reference namespace value using standard prefixes (HGNC, MGI, RGD, etc.)
+HGNC['AKT1']
+=> #<BEL::Language::Parameter:0x00000004df5bc0
+  @enc=:GRP,
+  @ns_def="BEL::Namespace::HGNC",
+  @value=:AKT1>
+```
 
-Load your own namespace
+**Load your own namespace**
 
-.. code-block:: ruby
-
+```ruby
   require 'bel'
 
   # define a NamespaceDefinition with prefix symbol and url
@@ -120,20 +127,21 @@ Load your own namespace
 
   # reference caffeine compound, sip, and enjoy
   PUBCHEM['2519']
+```
 
-Load namespaces from a published OpenBEL version
+**Load namespaces from a published OpenBEL version**
 
-.. code-block:: ruby
-
+```ruby
   require 'bel'
 
   ResourceIndex.openbel_published_index('1.0').namespaces.find { |x| x.prefix == :HGU133P2 }
   ResourceIndex.openbel_published_index('20131211').namespaces.find { |x| x.prefix == :AFFX }
   ResourceIndex.openbel_published_index('latest-release').namespaces.find { |x| x.prefix == :AFFX }
+```
 
-Load namespaces from a custom resource index
+**Load namespaces from a custom resource index**
 
-.. code-block:: ruby
+```ruby
 
   require 'bel'
 
@@ -141,20 +149,21 @@ Load namespaces from a custom resource index
   => ["AFFX", "CHEBIID", "CHEBI", "DOID", "DO", "EGID", "GOBPID", "GOBP",
       "GOCCID", "GOCC", "HGNC", "MESHPP", "MESHCS", "MESHD", "MGI", "RGD",
       "SCHEM", "SDIS", "SFAM", "SCOMP", "SPAC", "SP"]
+```
 
-Write BEL in Ruby with a DSL
+**Write BEL in Ruby with a DSL**
 
-.. code-block:: ruby
-
+```ruby
   require 'bel'
   
   # create BEL statements
   p(HGNC['SKIL']).directlyDecreases tscript(p(HGNC['SMAD3']))
   bp(GO['response to hypoxia']).increases tscript(p(EGID['7157']))
+```
 
-Validate BEL terms
+**Validate BEL terms**
 
-.. code-block:: ruby
+```ruby
 
   require 'bel'
 
@@ -171,11 +180,11 @@ Validate BEL terms
   => ["tscript(F:p)a"]
   tscript(p(HGNC['AKT1'])).invalid_signatures.map(&:to_s)
   => ["tscript(F:complex)a"]
+```
 
-Parse BEL input
+**Parse BEL input**
 
-.. code-block:: ruby
-
+```ruby
   require 'bel'
 
   # example BEL document
@@ -244,20 +253,20 @@ Parse BEL input
   => BEL::Script::Parameter: GO:"apoptotic process"
   => BEL::Script::Term: bp(GO:"apoptotic process")
   => BEL::Script::Statement: path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GO:"apoptotic process"))
+```
 
-Iteratively parse BEL from file-like object
+**Iteratively parse BEL from file-like object**
 
-.. code-block:: ruby
-
+```ruby
   require 'bel'
   BEL::Script.parse(File.open('/home/user/small_corpus.bel')).find_all { |obj|
     obj.is_a? Statement
   }.to_a.size
+```
 
-Parse BEL and convert to RDF (requires the *rdf*, *addressable*, and *uuid* gems)
+**Parse BEL and convert to RDF (requires the *rdf*, *addressable*, and *uuid* gems)**
 
-.. code-block:: ruby
-
+```ruby
   require 'bel'
   parser = BEL::Script::Parser.new
 
@@ -276,20 +285,4 @@ Parse BEL and convert to RDF (requires the *rdf*, *addressable*, and *uuid* gems
       rdf_statements += obj.to_rdf
     end  
   end
-
-.. _Apache License, Version 2.0: http://opensource.org/licenses/Apache-2.0
-.. _rdf gem: https://rubygems.org/gems/rdf
-.. _addressable gem: https://rubygems.org/gems/addressable
-.. _uuid gem: https://rubygems.org/gems/uuid
-.. _rdf-turtle gem: https://rubygems.org/gems/rdf-turtle
-.. _turtle: http://www.w3.org/TR/2014/REC-turtle-20140225
-.. _BEL: http://www.openbel.org/content/bel-lang-language
-.. _RDF: http://www.w3.org/RDF
-.. _INSTALL: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL.rst
-.. _resource: http://resource.belframework.org/belframework/1.0/namespace/
-.. _bel_upgrade: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
-.. _bel_upgrade_term: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade_term
-.. _bel_rdfschema: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_upgrade
-.. _bel2rdf: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel2rdf
-.. _bel_parse: https://github.com/OpenBEL/bel.rb/blob/master/bin/bel_parse
-.. _how to install ruby: https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md
+```
