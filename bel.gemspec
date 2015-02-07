@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
                               '--exclude', 'lib/bel/script.rb',
                               'README.md',
                               'INSTALL.md',
-                              'INSTALL_RUBY.md'
+                              'INSTALL_RUBY.md',
                               'LICENSE'
                             ]
 
