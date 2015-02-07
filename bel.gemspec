@@ -10,7 +10,11 @@ Gem::Specification.new do |spec|
   spec.authors            = ['Anthony Bargnesi']
   spec.date               = %q{2014-01-13}
   spec.email              = %q{abargnesi@selventa.com}
-  spec.files              = Dir.glob('lib/**/*.rb') << 'LICENSE'
+  spec.files              = [
+                              Dir.glob('lib/**/*.rb'),
+                              Dir.glob('*.md'),
+                              'LICENSE'
+                            ].flatten
   spec.executables        = Dir.glob('bin/*').map(&File.method(:basename))
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
@@ -18,7 +22,11 @@ Gem::Specification.new do |spec|
                               '--title', 'BEL Ruby Documentation',
                               '--main', 'README.md',
                               '--line-numbers',
-                              '--exclude', 'lib/bel/script.rb'
+                              '--exclude', 'lib/bel/script.rb',
+                              'README.md',
+                              'INSTALL.md',
+                              'INSTALL_RUBY.md'
+                              'LICENSE'
                             ]
 
   spec.required_ruby_version \
