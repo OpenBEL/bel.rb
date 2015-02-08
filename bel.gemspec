@@ -10,11 +10,12 @@ Gem::Specification.new do |spec|
   spec.authors            = ['Anthony Bargnesi']
   spec.date               = %q{2014-01-13}
   spec.email              = %q{abargnesi@selventa.com}
-  spec.files              = [
-                              Dir.glob('lib/**/*.rb'),
-                              Dir.glob('*.md'),
-                              'LICENSE'
-                            ].flatten
+  spec.files              = %w(INSTALL.md INSTALL_RUBY.md LICENSE README.md)
+  spec.files              += Dir.glob("lib/**/*.rb")
+  spec.files              += Dir.glob("ext/**/*.[ch]")
+  spec.files              += Dir.glob("vendor/libbel/{AUTHORS,ChangeLog,COPYING,INSTALL,NEWS,README}")
+  spec.files              += Dir.glob("vendor/libbel/{autogen.sh,configure.ac,Makefile.am}")
+  spec.files              += Dir.glob("vendor/libbel/{src}/*")
   spec.executables        = Dir.glob('bin/*').map(&File.method(:basename))
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
   spec.require_paths      = ["lib"]
@@ -31,6 +32,8 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version \
                           = '>= 1.9.2'
+
+  spec.extensions         << 'ext/bel/extconf.rb'
 
   # runtime
   spec.add_dependency             'ffi',           '~> 1.9'

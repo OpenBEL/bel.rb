@@ -33,5 +33,7 @@ task :default => :unit
 
 require 'yard'
 YARD::Rake::YardocTask.new
+
+FileList['tasks/**/*.rake'].each { |task| import task }
 # vim: ts=2 sw=2:
 # encoding: utf-8
