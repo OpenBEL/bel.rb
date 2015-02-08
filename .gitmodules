@@ -1,0 +1,4 @@
+[submodule "vendor/libbel"]
+	path = vendor/libbel
+	url = https://github.com/OpenBEL/libbel.git
+	branch = master
