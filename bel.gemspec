@@ -33,19 +33,20 @@ Gem::Specification.new do |spec|
                           = '>= 1.9.2'
 
   # runtime
-  spec.add_dependency             'ffi',         '~> 1.9'
+  spec.add_dependency             'ffi',           '~> 1.9'
 
   # test rdf functionality
-  spec.add_development_dependency 'uuid',        '~> 2.3'
-  spec.add_development_dependency 'addressable', '~> 2.3'
-  spec.add_development_dependency 'rdf',         '~> 1.1'
+  spec.add_development_dependency 'uuid',          '~> 2.3'
+  spec.add_development_dependency 'addressable',   '~> 2.3'
+  spec.add_development_dependency 'rdf',           '~> 1.1'
 
   # development gems
-  spec.add_development_dependency 'bundler',     '~> 1.7'
-  spec.add_development_dependency 'rake',        '~> 10.4'
-  spec.add_development_dependency 'rspec',       '~> 3.2'
-  spec.add_development_dependency 'yard',        '~> 0.8'
-  spec.add_development_dependency 'rdoc',        '~> 4.2'
+  spec.add_development_dependency 'bundler',       '~> 1.7'
+  spec.add_development_dependency 'rake',          '~> 10.4'
+  spec.add_development_dependency 'rake-compiler', '~> 0.9'
+  spec.add_development_dependency 'rspec',         '~> 3.2'
+  spec.add_development_dependency 'yard',          '~> 0.8'
+  spec.add_development_dependency 'rdoc',          '~> 4.2'
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
