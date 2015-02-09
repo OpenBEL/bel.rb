@@ -40,7 +40,6 @@ module LibBEL
 
       cwd    = File.expand_path(File.dirname(__FILE__))
       gem_so = File.join(cwd, 'libbel.so')
-      puts "Looking for: #{gem_so}"
       begin
         ffi_lib gem_so
       rescue LoadError
