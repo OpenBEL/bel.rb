@@ -1,0 +1,2 @@
+void cputs(VALUE);
+

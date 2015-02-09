@@ -34,9 +34,11 @@ Dir.chdir(LIBBEL_DIR) do
   system("./autogen.sh")
   system("./configure")
   system("#{MAKE} clean all")
+  $LDFLAGS << " -I #{LIBBEL_DIR}/src -L#{LIBBEL_DIR}/src/.libs -lbel"
 end
 
-LIBBEL_SO = File.join(LIBBEL_DIR, 'src', '.libs', 'libbel.so')
-FileUtils.cp(LIBBEL_SO, LIB_DIR)
+find_library('bel', 'bel_parse_statement', "#{LIBBEL_DIR}/src/.libs")
 
-create_makefile("bel/bel")
+$DEFLIBPATH.unshift("#{LIBBEL_DIR}/src/.libs")
+dir_config('bel', "#{LIBBEL_DIR}/src", "#{LIBBEL_DIR}/src/.libs")
+create_makefile('bel_c')

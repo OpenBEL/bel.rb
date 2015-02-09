@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version \
                           = '>= 1.9.2'
 
-  spec.extensions         << 'ext/bel/extconf.rb'
+  spec.extensions         << 'ext/bel_c/extconf.rb'
 
   # runtime
   spec.add_dependency             'ffi',           '~> 1.9'
