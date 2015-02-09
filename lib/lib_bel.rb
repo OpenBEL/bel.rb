@@ -38,13 +38,16 @@ module LibBEL
       ffi_module = find_ffi
       extend ffi_module::Library
 
+      cwd    = File.expand_path(File.dirname(__FILE__))
+      gem_so = File.join(cwd, 'libbel.so')
+      puts "Looking for: #{gem_so}"
       begin
-        ffi_lib "BEL"
+        ffi_lib gem_so
       rescue LoadError
         begin
-          ffi_lib "libBEL.so"
+          ffi_lib "libbel.so"
         rescue LoadError
-          ffi_lib "./libBEL.so"
+          ffi_lib "./libbel.so"
         end
       end
     end
