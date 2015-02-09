@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.files              += Dir.glob("lib/**/*.rb")
   spec.files              += Dir.glob("ext/**/*.[ch]")
   spec.files              += Dir.glob("vendor/libbel/{AUTHORS,ChangeLog,COPYING,INSTALL,NEWS,README}")
-  spec.files              += Dir.glob("vendor/libbel/{autogen.sh,configure.ac,Makefile.am}")
+  spec.files              += Dir.glob("vendor/libbel/{autogen.sh,configure.ac,libbel.pc.in,Makefile.am}")
   spec.files              += Dir.glob("vendor/libbel/{src}/*")
   spec.executables        = Dir.glob('bin/*').map(&File.method(:basename))
   spec.homepage           = 'https://github.com/OpenBEL/bel.rb'
