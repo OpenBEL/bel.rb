@@ -64,10 +64,10 @@
 
   comment = '//' ^NL+ >cmts $cmtn %cmte;
   statement :=
-    FUNCTION '(' @term_init @term_fx @call_term SP* %statement_subject comment? NL? @statement @return
+    FUNCTION SP* '(' @term_init @term_fx @call_term SP* %statement_subject comment? NL? @statement @return
     RELATIONSHIP >rels $reln %rele SP+
     (
-      FUNCTION '(' @term_init @term_fx @call_term %statement_oterm SP* ')'? @return
+      FUNCTION SP* '(' @term_init @term_fx @call_term %statement_oterm SP* ')'? @return
       |
       '(' @statement_ostmt @call_statement %statement_pop
     ) SP* comment? %statement NL @{n = 0} @return;
