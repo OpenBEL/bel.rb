@@ -18,7 +18,7 @@ module BEL
 
       GLOBAL_FTS_QUERY = '''
         select
-          distinct uri, snippet(literals_fts)
+          uri, scheme_uri, identifier, pref_label, alt_labels, snippet(literals_fts) as snippet
         from
           literals_fts
         where
@@ -33,21 +33,39 @@ module BEL
         end
 
         @db = SQLite3::Database.new @db_file
+        @db.results_as_hash = true
         @gq = @db.prepare(GLOBAL_FTS_QUERY)
         @sq = @db.prepare(SCHEME_FTS_QUERY)
       end
 
       # see {BEL::IdentifierSearch#search_annotations}
-      def search_annotations(query_expression, scheme_uri = nil)
+      def search_annotations(query_expression, scheme_uri = nil, options = {})
         nil
       end
 
       # see {BEL::IdentifierSearch#search_namespaces}
-      def search_namespaces(query_expression, scheme_uri = nil)
-        if scheme_uri
-          @sq.execute(query_expression, scheme_uri)
-        else
-          @gq.execute(query_expression)
+      def search_namespaces(query_expression, scheme_uri = nil, options = {})
+        result_set =
+          if scheme_uri
+            @sq.execute(query_expression, scheme_uri)
+          else
+            @gq.execute(query_expression)
+          end
+        if result_set.respond_to? :lazy
+          result_set = result_set.lazy
+        end
+        result_set.map { |result_hash|
+          symbolize_keys!(result_hash)
+          result_hash[:alt_labels] = (result_hash[:alt_labels] || '').split('|')
+          SearchResult.new(result_hash)
+        }
+      end
+
+      private
+
+      def symbolize_keys!(hash)
+        hash.keys.each do |key|
+            hash[(key.to_sym rescue key) || key] = hash.delete(key)
         end
       end
     end

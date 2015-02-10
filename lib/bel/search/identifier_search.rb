@@ -2,19 +2,6 @@ module BEL
   module Search
     module IdentifierSearch
 
-      # Search for namespace identifiers based on +query_expression+.
-      #
-      # If +scheme_uri+ is +not nil+ then filter {SearchResult search results} that are contained in the namespace scheme.
-      #
-      # If +scheme_uri+ is +nil+ then do not filter by namespace scheme (e.g. return all {SearchResult search results} matching +query_expression+)
-      #
-      # @param query_expression [responds to #to_s] query expression
-      # @param scheme_uri       [responds to #to_s] scheme uri
-      # @return [Array<SearchResult>, nil]
-      def search_namespaces(query_expression, scheme_uri = nil)
-        fail NotImplementedError.new, "#{__method__} is not implemented"
-      end
-
       # Search for annotation identifiers based on +query_expression+.
       #
       # If +scheme_uri+ is +not nil+ then filter {SearchResult search results} that are contained in the annotation scheme.
@@ -24,7 +11,20 @@ module BEL
       # @param query_expression [responds to #to_s] query expression
       # @param scheme_uri       [responds to #to_s] scheme uri
       # @return [Array<SearchResult>, nil]
-      def search_annotations(query_expression, scheme_uri = nil)
+      def search_annotations(query_expression, scheme_uri = nil, options = {})
+        fail NotImplementedError.new, "#{__method__} is not implemented"
+      end
+
+      # Search for namespace identifiers based on +query_expression+.
+      #
+      # If +scheme_uri+ is +not nil+ then filter {SearchResult search results} that are contained in the namespace scheme.
+      #
+      # If +scheme_uri+ is +nil+ then do not filter by namespace scheme (e.g. return all {SearchResult search results} matching +query_expression+)
+      #
+      # @param query_expression [responds to #to_s] query expression
+      # @param scheme_uri       [responds to #to_s] scheme uri
+      # @return [Array<SearchResult>, nil]
+      def search_namespaces(query_expression, scheme_uri = nil, options = {})
         fail NotImplementedError.new, "#{__method__} is not implemented"
       end
 
@@ -42,7 +42,16 @@ module BEL
       #
       # @example Create from hash
       #   SearchResult.new(*hash.values_at(*SearchResult.members))
-      SearchResult = Struct.new(:uri, :scheme_uri, :identifier, :pref_label, :title, :alt_labels)
+      class SearchResult < Struct.new(:uri, :scheme_uri, :identifier, :pref_label, :title, :alt_labels)
+        def initialize(*args)
+          if args.length == 1 && args.first.is_a?(Hash)
+            hash = args.first
+            super(*hash.values_at(*self.class.members))
+          else
+            super
+          end
+        end
+      end
     end
   end
 end
