@@ -58,7 +58,7 @@ machine bel;
     (
       SP* ',' SP* 
       (
-        (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
+        (IDENT $pbuf ':')? @pns SP* (STRING $pbuf | IDENT $pbuf) %term_arg |
         FUNCTION '(' @term_fx @call_term
       )
     )* SP* ')' >term_pop >term @{n = 0} @return;
