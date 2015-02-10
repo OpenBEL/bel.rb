@@ -52,8 +52,8 @@ machine bel;
 
   term :=
     (
-      (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
-      FUNCTION '(' @term_fx @call_term
+      SP* (IDENT $pbuf ':')? @pns SP* (STRING $pbuf | IDENT $pbuf) %term_arg |
+      SP* FUNCTION '(' @term_fx @call_term
     )
     (
       SP* ',' SP* 
@@ -61,7 +61,7 @@ machine bel;
         (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
         FUNCTION '(' @term_fx @call_term
       )
-    )* ')' >term_pop >term @{n = 0} @return;
+    )* SP* ')' >term_pop >term @{n = 0} @return;
 
   term_main :=
     (
