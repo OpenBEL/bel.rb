@@ -41,7 +41,7 @@ module BEL
       #   )
       #
       # @example Create from hash
-      #   SearchResult.new(*hash.values_at(*SearchResult.members))
+      #   SearchResult.new({ :pref_label => 'AKT1' })
       class SearchResult < Struct.new(:uri, :scheme_uri, :identifier, :pref_label, :title, :alt_labels)
         def initialize(*args)
           if args.length == 1 && args.first.is_a?(Hash)
