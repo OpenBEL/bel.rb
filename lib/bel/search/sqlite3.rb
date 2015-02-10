@@ -16,15 +16,16 @@ module BEL
     class Sqlite3FTS
       include BEL::Search::IdentifierSearch
 
+      LIMIT_CLAUSE     = ' LIMIT ? OFFSET ?'
       GLOBAL_FTS_QUERY = '''
-        select
-          uri, scheme_uri, identifier, pref_label, alt_labels, snippet(literals_fts) as snippet
-        from
+        SELECT
+          uri, scheme_uri, identifier, pref_label, alt_labels, snippet(literals_fts) AS snippet
+        FROM
           literals_fts
-        where
+        WHERE
           literals_fts MATCH ?'''
         .gsub(/[ \n]{2,}/, ' ')
-      SCHEME_FTS_QUERY = GLOBAL_FTS_QUERY + ' and scheme_uri = ?'
+      SCHEME_FTS_QUERY = GLOBAL_FTS_QUERY + ' AND scheme_uri = ?'
 
       def initialize(options = {})
         @db_file = options.delete(:db_file)
@@ -34,8 +35,8 @@ module BEL
 
         @db = SQLite3::Database.new @db_file
         @db.results_as_hash = true
-        @gq = @db.prepare(GLOBAL_FTS_QUERY)
-        @sq = @db.prepare(SCHEME_FTS_QUERY)
+        @gq  = @db.prepare(GLOBAL_FTS_QUERY + LIMIT_CLAUSE)
+        @sq  = @db.prepare(SCHEME_FTS_QUERY + LIMIT_CLAUSE)
       end
 
       # see {BEL::IdentifierSearch#search_annotations}
@@ -45,11 +46,17 @@ module BEL
 
       # see {BEL::IdentifierSearch#search_namespaces}
       def search_namespaces(query_expression, scheme_uri = nil, options = {})
+        start = (options.delete(:start) ||  0).to_i
+        size  = options.delete(:size)   || -1
+        if size.to_i.zero?
+          fail ArgumentError.new(":size is zero")
+        end
+
         result_set =
           if scheme_uri
-            @sq.execute(query_expression, scheme_uri)
+            @sq.execute(query_expression, scheme_uri, size, start)
           else
-            @gq.execute(query_expression)
+            @gq.execute(query_expression, size, start)
           end
         if result_set.respond_to? :lazy
           result_set = result_set.lazy
