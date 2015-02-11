@@ -32,6 +32,7 @@ module BEL
       #
       # @example Create with all parameters
       #   SearchResult.new(
+      #     'viral <b>oncogene</b> homolog',
       #     'http://www.openbel.org/bel/namespace/hgnc-human-genes/391',
       #     'http://www.openbel.org/bel/namespace/hgnc-human-genes',
       #     '391',
@@ -42,7 +43,7 @@ module BEL
       #
       # @example Create from hash
       #   SearchResult.new({ :pref_label => 'AKT1' })
-      class SearchResult < Struct.new(:uri, :scheme_uri, :identifier, :pref_label, :title, :alt_labels)
+      class SearchResult < Struct.new(:snippet, :uri, :scheme_uri, :identifier, :pref_label, :title, :alt_labels)
         def initialize(*args)
           if args.length == 1 && args.first.is_a?(Hash)
             hash = args.first
