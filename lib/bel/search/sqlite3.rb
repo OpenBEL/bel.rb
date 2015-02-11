@@ -19,7 +19,7 @@ module BEL
       LIMIT_CLAUSE     = ' LIMIT ? OFFSET ?'
       GLOBAL_FTS_QUERY = '''
         SELECT
-          uri, scheme_uri, identifier, pref_label, alt_labels, snippet(literals_fts) AS snippet
+          distinct uri, scheme_uri, identifier, pref_label, alt_labels, snippet(literals_fts) AS snippet
         FROM
           literals_fts
         WHERE
