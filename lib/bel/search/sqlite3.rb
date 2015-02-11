@@ -29,7 +29,7 @@ module BEL
 
       def initialize(options = {})
         @db_file = options.delete(:db_file)
-        unless @db_file or File.readable?(@db_file)
+        if not @db_file or not File.readable?(@db_file)
           fail ArgumentError.new('The db_file option cannot be read.')
         end
 
