@@ -39,9 +39,14 @@ module BEL
         @sq  = @db.prepare(SCHEME_FTS_QUERY + LIMIT_CLAUSE)
       end
 
+      # see {BEL::IdentifierSearch#search}
+      def search(query_expression, scheme_uri = nil, options = {})
+        search_namespaces(query_expression, scheme_uri, options)
+      end
+
       # see {BEL::IdentifierSearch#search_annotations}
       def search_annotations(query_expression, scheme_uri = nil, options = {})
-        nil
+        search_namespaces(query_expression, scheme_uri, options)
       end
 
       # see {BEL::IdentifierSearch#search_namespaces}

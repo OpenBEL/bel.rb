@@ -2,6 +2,19 @@ module BEL
   module Search
     module IdentifierSearch
 
+      # Search for identifiers based on +query_expression+.
+      #
+      # If +scheme_uri+ is +not nil+ then filter {SearchResult search results} that are contained in the scheme.
+      #
+      # If +scheme_uri+ is +nil+ then do not filter by scheme (e.g. return all {SearchResult search results} matching +query_expression+)
+      #
+      # @param query_expression [responds to #to_s] query expression
+      # @param scheme_uri       [responds to #to_s] scheme uri
+      # @return [Array<SearchResult>, nil]
+      def search(query_expression, scheme_uri = nil, options = {})
+        fail NotImplementedError.new, "#{__method__} is not implemented"
+      end
+
       # Search for annotation identifiers based on +query_expression+.
       #
       # If +scheme_uri+ is +not nil+ then filter {SearchResult search results} that are contained in the annotation scheme.
