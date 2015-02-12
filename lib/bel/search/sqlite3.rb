@@ -57,8 +57,10 @@ module BEL
           fail ArgumentError.new(":size is zero")
         end
 
+        query_expression = query_expression.encode('UTF-8')
         result_set =
           if scheme_uri
+            scheme_uri = scheme_uri.encode('UTF-8')
             @sq.execute(query_expression, scheme_uri, size, start)
           else
             @gq.execute(query_expression, size, start)
