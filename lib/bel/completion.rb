@@ -43,8 +43,13 @@ module BEL
       return [] unless active_tok
 
       tokens = token_list.to_a
+      options = {
+        :search => search
+      }
       BEL::Completion::rules.reduce([]) { |completions, rule|
-        completions.concat(rule.apply(tokens, active_tok, active_index))
+        completions.concat(
+          rule.apply(tokens, active_tok, active_index, options)
+        )
       }
     end
   end

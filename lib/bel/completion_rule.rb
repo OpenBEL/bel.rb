@@ -19,8 +19,8 @@ module BEL
 
     module Rule
 
-      def apply(token_list, active_token, active_token_index)
-        matches = _apply(token_list, active_token, active_token_index)
+      def apply(token_list, active_token, active_token_index, options = {})
+        matches = _apply(token_list, active_token, active_token_index, options)
 
         matches.map { |match|
           match = map_highlight(match, active_token)
@@ -32,7 +32,7 @@ module BEL
 
       protected
 
-      def _apply(token_list, active_token, active_token_index)
+      def _apply(token_list, active_token, active_token_index, options = {})
         raise NotImplementedError
       end
 
@@ -95,7 +95,7 @@ module BEL
     class MatchFunctionRule
       include Rule
 
-      def _apply(token_list, active_token, active_token_index)
+      def _apply(token_list, active_token, active_token_index, options = {})
         if token_list.empty? or active_token.type == :O_PAREN
           return SORTED_FUNCTIONS.map { |fx| map_function(fx) }.uniq.sort_by { |fx|
             fx[:label]
@@ -133,7 +133,7 @@ module BEL
     class MatchNamespacePrefixRule
       include Rule
 
-      def _apply(token_list, active_token, active_token_index)
+      def _apply(token_list, active_token, active_token_index, options = {})
         if token_list.empty? or active_token.type == :O_PAREN
           return SORTED_NAMESPACES.map { |ns_prefix|
             map_namespace_prefix(ns_prefix)
@@ -172,26 +172,41 @@ module BEL
       include Rule
       include BEL::Quoting
 
-      def _apply(token_list, active_token, active_token_index)
-        return [] if token_list.empty?
-
-        stub_values = [
-          'AKT1', 'AKT1S1', 'AKT2', 'AKT3', 'AKT3-IT1',
-          'AKTIP', 'ALAD', 'ALAS1', 'ALAS2', 'ALB'
-        ]
-
-        if active_token.type == :COLON
-          return stub_values.map { |ns_value|
-            map_namespace_value(ns_value)
-          }
-        end
+      def _apply(token_list, active_token, active_token_index, options = {})
+        search = options.delete(:search)
+        return EMPTY_MATCH if not search or token_list.empty?
 
         if active_token.type == :IDENT
-          return stub_values.find_all { |value|
-            value.include? active_token.value
-          }.map { |ns_value|
-            map_namespace_value(ns_value)
-          }
+          previous_token = token_list[active_token_index - 1]
+          if previous_token and previous_token.type == :COLON
+            # search within a namespace
+            prefix_token = token_list[active_token_index - 2]
+            if prefix_token and prefix_token.type == :IDENT
+              namespace = BEL::Namespace::NAMESPACE_LATEST[prefix_token.value.to_sym]
+              if namespace
+                scheme_uri = namespace[1]
+                return search.search_namespaces(
+                  "#{active_token.value}*",
+                  scheme_uri,
+                  :start => 0,
+                  :size  => 10
+                ).
+                  map { |search_result|
+                    map_namespace_value(search_result.pref_label)
+                  }.to_a
+              end
+            end
+          else
+            return search.search_namespaces(
+              active_token.value,
+              nil,
+              :start => 0,
+              :size  => 10
+            ).
+              map { |search_result|
+                map_namespace_value(search_result.pref_label)
+              }.to_a
+          end
         end
 
         return EMPTY_MATCH
