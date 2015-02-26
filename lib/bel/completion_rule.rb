@@ -176,7 +176,7 @@ module BEL
         search = options.delete(:search)
         return EMPTY_MATCH if not search or token_list.empty?
 
-        if active_token.type == :IDENT
+        if active_token.type == :IDENT && active_token.value.length > 1
           previous_token = token_list[active_token_index - 1]
           if previous_token and previous_token.type == :COLON
             # search within a namespace
