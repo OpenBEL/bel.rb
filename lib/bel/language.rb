@@ -62,6 +62,12 @@ module BEL
         end
       end
 
+      def valid?
+        return false unless value
+        return true unless @ns
+        @ns.respond_to?(:values) && ns.values.include?(value)
+      end
+
       def hash
         [@ns, @value].hash
       end

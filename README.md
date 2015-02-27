@@ -159,15 +159,23 @@ api examples
         "SCHEM", "SDIS", "SFAM", "SCOMP", "SPAC", "SP"]
 ```
 
-**Write BEL in Ruby with a DSL**
+**Validate BEL parameters**
 
 ```ruby
 
     require 'bel'
-    
-    # create BEL statements
-    p(HGNC['SKIL']).directlyDecreases tscript(p(HGNC['SMAD3']))
-    bp(GO['response to hypoxia']).increases tscript(p(EGID['7157']))
+
+    # AKT1 contained within HGNC NamespaceDefinition
+    HGNC[:AKT1].valid?
+    => true
+
+    # not_in_namespace is not contained with HGNC NamespaceDefinition
+    HGNC[:not_in_namespace].valid?
+    => false
+
+    # namespace is nil so :some_value MAY exist
+    Parameter.new(nil, :some_value).valid?
+    => true
 ```
 
 **Validate BEL terms**
@@ -189,6 +197,17 @@ api examples
     => ["tscript(F:p)a"]
     tscript(p(HGNC['AKT1'])).invalid_signatures.map(&:to_s)
     => ["tscript(F:complex)a"]
+```
+
+**Write BEL in Ruby with a DSL**
+
+```ruby
+
+    require 'bel'
+    
+    # create BEL statements
+    p(HGNC['SKIL']).directlyDecreases tscript(p(HGNC['SMAD3']))
+    bp(GO['response to hypoxia']).increases tscript(p(EGID['7157']))
 ```
 
 **Parse BEL input**
