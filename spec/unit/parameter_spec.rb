@@ -1,6 +1,5 @@
 # vim: ts=2 sw=2:
-require 'bel/language'
-require 'bel/namespace'
+require 'bel'
 
 describe BEL::Language::Parameter, "#valid?" do
   include BEL::Language
