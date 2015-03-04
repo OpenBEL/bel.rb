@@ -1,5 +1,4 @@
 require 'bel'
-require 'pry'
 
 include BEL::Language
 include BEL::Namespace
@@ -14,6 +13,7 @@ include BEL::Namespace
 #   * Statement
 
 # BEL Content is provided as data in this script (Accessible with the DATA global).
+# You will find the BEL Script at the end of this file starting from __END__.
 BEL_SCRIPT = DATA.read
 
 # Parse BEL script and output object name and BEL serialization
