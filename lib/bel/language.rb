@@ -200,13 +200,8 @@ module BEL
 
       def to_bel
         if self.value.respond_to? :each
-					#qv = []
-					#self.value.each do |v|
-					#	qv.push(always_quote(v))
-					#end
-          #value = "{#{qv.join(',')}}"
-					value = self.value.map {|v| always_quote(v)}
-					value = "{#{value.join(',')}}"
+          value = self.value.map {|v| always_quote(v)}
+          value = "{#{value.join(',')}}"
         else
           value = ensure_quotes(self.value)
         end

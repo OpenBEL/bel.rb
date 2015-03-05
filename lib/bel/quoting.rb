@@ -10,11 +10,11 @@ module BEL
       quotes_required(identifier) ? %Q{"#{identifier}"} : identifier
     end
 
-		def always_quote identifier
-			return "" unless identifier
-			identifier.to_s.gsub! '"', '\"'
-			%Q("#{identifier}")
-		end
+    def always_quote identifier
+      return "" unless identifier
+      identifier.to_s.gsub! '"', '\"'
+      %Q("#{identifier}")
+    end
 
     def quotes_required identifier
       [NonWordMatcher, KeywordMatcher].any? { |m| m.match identifier }
