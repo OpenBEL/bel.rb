@@ -7,10 +7,20 @@ module BEL
     def ensure_quotes identifier
       return "" unless identifier
       identifier.to_s.gsub! '"', '\"'
-      quotes_required(identifier) ? %Q{"#{identifier}"} : identifier
+      if quotes_required? identifier
+        %Q{"#{identifier}"}
+      else
+        identifier
+      end
     end
 
-    def quotes_required identifier
+    def always_quote identifier
+      return "" unless identifier
+      identifier.to_s.gsub! '"', '\"'
+      %Q("#{identifier}")
+    end
+
+    def quotes_required? identifier
       [NonWordMatcher, KeywordMatcher].any? { |m| m.match identifier }
     end
   end
