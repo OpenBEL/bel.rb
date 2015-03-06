@@ -3,10 +3,8 @@ require_relative './lib_bel'
 require_relative 'bel/completion'
 require_relative 'bel/language'
 require_relative 'bel/namespace'
-require_relative 'bel/search'
 include BEL::Language
 include BEL::Namespace
-include BEL::Search
 
 module BEL
   autoload :Script,    "#{File.dirname(__FILE__)}/bel/script"
