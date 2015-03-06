@@ -23,7 +23,7 @@ module BEL
     #
     # @param bel_expression   [responds to #to_s] the bel expression to
     # complete on
-    # @param search           [IdentifierSearch ] the search object used to
+    # @param search           [IdentifierSearch] the search object used to
     # provide namespace value completions
     # @param position         [responds to #to_i] the position to complete from
     # @return [Array<Completion>]

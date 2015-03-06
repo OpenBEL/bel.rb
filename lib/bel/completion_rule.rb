@@ -1,6 +1,7 @@
 require_relative 'language'
 require_relative 'namespace'
 require_relative 'quoting'
+require 'uri'
 
 module BEL
   module Completion
@@ -185,9 +186,9 @@ module BEL
               namespace = BEL::Namespace::NAMESPACE_LATEST[prefix_token.value.to_sym]
               if namespace
                 scheme_uri = namespace[1]
-                return search.search_namespaces(
+                return search.search_namespace(
+                  URI(scheme_uri),
                   "#{active_token.value}*",
-                  scheme_uri,
                   :start => 0,
                   :size  => 10
                 ).
@@ -197,9 +198,8 @@ module BEL
               end
             end
           else
-            return search.search_namespaces(
+            return search.search(
               active_token.value,
-              nil,
               :start => 0,
               :size  => 10
             ).
