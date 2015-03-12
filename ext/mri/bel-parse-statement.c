@@ -34,6 +34,7 @@ bel_ast* bel_parse_statement(char* line) {
     bel_ast_node*   object;
     bel_ast_node*   term;
     bel_ast_node*   current_nv;
+    bel_ast_node*   arg;
     bel_ast*        ast;
     bel_node_stack* term_stack;
     char            *function;
@@ -8885,7 +8886,7 @@ ctr172:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -8932,7 +8933,7 @@ ctr174:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -9286,7 +9287,7 @@ ctr195:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -9312,7 +9313,7 @@ ctr644:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -9410,7 +9411,7 @@ ctr197:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -9436,7 +9437,7 @@ ctr646:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -9799,7 +9800,7 @@ ctr196:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -9842,7 +9843,7 @@ ctr645:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -9912,7 +9913,7 @@ ctr216:
 	{term = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term->token->right;
+            arg = term->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -10337,7 +10338,7 @@ ctr219:
 {bel_ast_node* term_top = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term_top->token->right;
+            arg = term_top->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -43874,7 +43875,7 @@ ctr173:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -43922,7 +43923,7 @@ ctr420:
 	{term = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term->token->right;
+            arg = term->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -44153,7 +44154,7 @@ ctr423:
 	{bel_ast_node* term_top = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term_top->token->right;
+            arg = term_top->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -62145,7 +62146,7 @@ ctr624:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -62240,7 +62241,7 @@ ctr626:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -62682,7 +62683,7 @@ ctr625:
                 term = stack_peek(term_stack);
 
                 // find ARG leaf
-                bel_ast_node* arg = term->token->right;
+                arg = term->token->right;
                 while(arg->token->right != NULL) {
                     arg = arg->token->right;
                 }
@@ -62764,7 +62765,7 @@ ctr648:
 {term = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term->token->right;
+            arg = term->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -63186,7 +63187,7 @@ ctr651:
 {bel_ast_node* term_top = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term_top->token->right;
+            arg = term_top->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }
@@ -96722,7 +96723,7 @@ ctr852:
 	{term = stack_peek(term_stack);
 
             // find ARG leaf
-            bel_ast_node* arg = term->token->right;
+            arg = term->token->right;
             while(arg->token->right != NULL) {
                 arg = arg->token->right;
             }

@@ -13,6 +13,10 @@ int main(int argc, char *argv[]) {
     int len;
     char line[LINE_CHAR_LEN];
     int type;
+    int print;
+    int verbose;
+    bel_ast* tree;
+    bel_token_list* token_list;
 
     if (argc == 2) {
         type = 0;
@@ -34,12 +38,12 @@ int main(int argc, char *argv[]) {
         input = stdin;
     }
 
-    int print = 0;
+    print = 0;
     if (getenv("AST_PRINT") != NULL) {
         print = 1;
     }
 
-    int verbose = 0;
+    verbose = 0;
     if (getenv("AST_VERBOSE") != NULL) {
         verbose = 1;
     }
@@ -62,7 +66,7 @@ int main(int argc, char *argv[]) {
             if (verbose) {
                 fprintf(stdout, "using default statement parser\n");
             }
-            bel_ast* tree = bel_parse_statement(line);
+            tree = bel_parse_statement(line);
 
             if (!tree->root) {
                 fprintf(stderr, "parse failed\n");
@@ -76,7 +80,7 @@ int main(int argc, char *argv[]) {
             if (verbose) {
                 fprintf(stdout, "using lookahead term parser\n");
             }
-            bel_token_list* token_list = bel_tokenize_term(line);
+            token_list = bel_tokenize_term(line);
             bel_print_token_list(token_list);
             free_bel_token_list(token_list);
         }

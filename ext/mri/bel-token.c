@@ -48,17 +48,17 @@ bel_token_iterator* bel_new_token_iterator(bel_token_list *list) {
 
 bel_token* bel_token_iterator_get(bel_token_iterator *iterator) {
     if (!iterator) {
-	return NULL;
+	      return NULL;
     }
     return iterator->current_token;
 };
 
 void bel_token_iterator_next(bel_token_iterator *iterator) {
-    if (!iterator || !iterator->list) {
-	return;
-    }
-
     bel_token *tokens;
+
+    if (!iterator || !iterator->list) {
+	      return;
+    }
 
     tokens = iterator->list->tokens;
     iterator->current_token = &tokens[++iterator->index];
@@ -66,38 +66,38 @@ void bel_token_iterator_next(bel_token_iterator *iterator) {
 
 int bel_token_iterator_end(bel_token_iterator *iterator) {
     if (!iterator || !(iterator->list)) {
-	return 1;
+	      return 1;
     }
     return (iterator->index < iterator->list->length) ? 0 : 1;
 };
 
 void bel_print_token(bel_token* token) {
     if (!token) {
-	return;
+	      return;
     }
 
     switch(token->type) {
-	case IDENT:
-	    fprintf(stdout, "IDENT(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
-	    break;
-	case STRING:
-	    fprintf(stdout, "STRING(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
-	    break;
-	case O_PAREN:
-	    fprintf(stdout, "O_PAREN(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
-	    break;
-	case C_PAREN:
-	    fprintf(stdout, "C_PAREN(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
-	    break;
-	case COLON:
-	    fprintf(stdout, "COLON(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
-	    break;
-	case COMMA:
-	    fprintf(stdout, "COMMA(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
-	    break;
-	case SPACES:
-	    fprintf(stdout, "SPACES(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
-	    break;
+    case IDENT:
+        fprintf(stdout, "IDENT(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+        break;
+    case STRING:
+        fprintf(stdout, "STRING(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+        break;
+    case O_PAREN:
+        fprintf(stdout, "O_PAREN(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+        break;
+    case C_PAREN:
+        fprintf(stdout, "C_PAREN(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+        break;
+    case COLON:
+        fprintf(stdout, "COLON(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+        break;
+    case COMMA:
+        fprintf(stdout, "COMMA(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+        break;
+    case SPACES:
+        fprintf(stdout, "SPACES(\"%s\", %d, %d) ", token->value, token->pos_start, token->pos_end);
+        break;
     };
 };
 
@@ -105,23 +105,24 @@ void bel_print_token_list(bel_token_list* token_list) {
     bel_token *tokens;
     bel_token *next;
     int       token_i;
+    int       list_length;
 
     if (!token_list) {
-	return;
+        return;
     }
 
     tokens  = token_list->tokens;
-    int list_length = token_list->length;
+    list_length = token_list->length;
     for (token_i = 0; token_i < list_length; token_i++) {
-	next = &tokens[token_i];
-	bel_print_token(next);
+        next = &tokens[token_i];
+        bel_print_token(next);
     }
     fprintf(stdout, "\n");
 };
 
 void free_bel_token(bel_token* token) {
     if (!token) {
-	return;
+        return;
     }
     if (token->value) {
         free(token->value);
@@ -129,22 +130,22 @@ void free_bel_token(bel_token* token) {
 };
 
 void free_bel_token_list(bel_token_list* token_list) {
-    if (!token_list) {
-	return;
-    }
-
     int       token_i;
     int       list_length;
     bel_token *next;
 
+    if (!token_list) {
+        return;
+    }
+
     list_length = token_list->length;
     for (token_i = 0; token_i < list_length; token_i++) {
-	next = &token_list->tokens[token_i];
-	if (!next && next->value) {
-	    free(next->value);
-	}
+        next = &token_list->tokens[token_i];
+        if (!next && next->value) {
+            free(next->value);
+        }
 	// FIXME Memory leak, cannot free, yields, "free(): invalid size"
-	// free(next);
+  //    free(next);
     }
 
     free(token_list->tokens);
@@ -153,7 +154,7 @@ void free_bel_token_list(bel_token_list* token_list) {
 
 void free_bel_token_iterator(bel_token_iterator *iterator) {
     if (!iterator) {
-	return;
+        return;
     }
     free(iterator);
 };
