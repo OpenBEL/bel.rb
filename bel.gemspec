@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
                                   ]
   spec.files                    = [
                                     Dir.glob("lib/**/*.rb"),
-                                    Dir.glob("ext/**/*.[ch]"),
+                                    Dir.glob("ext/**/*.{c,h,def}"),
                                     __FILE__,
                                     'LICENSE',
                                     'INSTALL.md',
