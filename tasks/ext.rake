@@ -7,7 +7,7 @@ else
     ext.ext_dir = 'ext/mri'
     ext.cross_compile = true
     ext.cross_platform = [
-      'x86-mingw32',
+      'i586-mingw32msvc',
       'x64-mingw32'
     ]
   end
