@@ -10,14 +10,10 @@ module LibBEL
     # Determine FFI constant for this ruby engine.
     def find_ffi
       if rubinius?
-        if const_defined? "::Rubinius::FFI"
-          ::Rubinius::FFI
-        elsif const_defined? "::FFI"
-          ::FFI
-        else
-          require "ffi"
-          ::FFI
-        end
+        # Use ffi gem instead of rubinius-bundled FFI
+        # Rubinius 2.5.2 does not seem to support FFI::ManagedStruct
+        require "ffi"
+        ::FFI
       else # mri, jruby, etc
         require "ffi"
         ::FFI
