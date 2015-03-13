@@ -10,6 +10,14 @@ module BEL
     SORTED_NAMESPACES = BEL::Namespace::NAMESPACE_LATEST.keys.sort.map(&:to_s)
     EMPTY_MATCH       = []
 
+    def self.run_rules(tokens, active_index, active_token, options = {})
+      self.rules.reduce([]) { |completion_results, rule|
+        completion_results.concat(
+          rule.apply(tokens, active_token, active_index, options)
+        )
+      }
+    end
+
     def self.rules
       [
         MatchFunctionRule.new,

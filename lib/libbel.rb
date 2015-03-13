@@ -10,14 +10,10 @@ module LibBEL
     # Determine FFI constant for this ruby engine.
     def find_ffi
       if rubinius?
-        if const_defined? "::Rubinius::FFI"
-          ::Rubinius::FFI
-        elsif const_defined? "::FFI"
-          ::FFI
-        else
-          require "ffi"
-          ::FFI
-        end
+        # Use ffi gem instead of rubinius-bundled FFI
+        # Rubinius 2.5.2 does not seem to support FFI::ManagedStruct
+        require "ffi"
+        ::FFI
       else # mri, jruby, etc
         require "ffi"
         ::FFI
@@ -38,16 +34,27 @@ module LibBEL
       ffi_module = find_ffi
       extend ffi_module::Library
 
-      cwd    = File.expand_path(File.dirname(__FILE__))
-      gem_so = File.join(cwd, 'libbel.so')
-      begin
-        ffi_lib gem_so
-      rescue LoadError
+      # libbel.so:     Linux and MinGW
+      # libbel.bundle: Mac OSX
+      messages = []
+      library_loaded = ['libbel.so', 'libbel.bundle'].map { |library_file|
+        File.join(
+          File.expand_path(File.dirname(__FILE__)),
+          library_file
+        )
+      }.any? do |library_path|
         begin
-          ffi_lib "libbel.so"
-        rescue LoadError
-          ffi_lib "./libbel.so"
+          ffi_lib library_path
+          true
+        rescue LoadError => exception
+          messages << exception.to_s
+          false
         end
+      end
+
+      if !library_loaded
+        msg = messages.map { |msg| "  #{msg}" }.join("\n")
+        fail LoadError.new("Failed to load libbel library. Details:\n#{msg}")
       end
     end
   end

@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'bundler'
+
+GEMSPEC = Gem::Specification.load("bel.gemspec")
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -9,8 +12,19 @@ rescue Bundler::BundlerError => e
 end
 
 require 'rake'
+require 'rake/clean'
 require 'rspec/core'
 require 'rspec/core/rake_task'
+
+CLEAN.include(
+  "tmp",
+  "lib/libbel.so"
+)
+
+CLOBBER.include(
+  "doc",
+  "pkg"
+)
 
 UNIT = FileList['spec/unit/**/*_spec.rb']
 INTEGRATION = FileList['spec/integration/**/*_spec.rb']
@@ -29,7 +43,7 @@ RSpec::Core::RakeTask.new(:integration) do |r|
   r.pattern = (not INTEGRATION.empty? and INTEGRATION) or fail "No integration tests"
 end
 
-task :default => :unit
+task :default => [:compile, :unit, :integration]
 
 require 'yard'
 YARD::Rake::YardocTask.new
