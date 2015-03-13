@@ -7,9 +7,8 @@ rvm:
   - 2.1.0
   - 2.2.0
   - rbx-2
+  - ruby-head
 # TODO
 # Need to implement libbel Ragel & API in Java.
 # - jruby
 # - jruby-head
-  - ruby-head
-cache: bundler
