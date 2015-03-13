@@ -61,6 +61,7 @@ bel_ast* bel_parse_statement(char* line) {
     subject      = bel_new_ast_node_token(BEL_TOKEN_SUBJECT);
     rel          = bel_new_ast_node_token(BEL_TOKEN_REL);
     object       = bel_new_ast_node_token(BEL_TOKEN_OBJECT);
+    term         = NULL;
     ast          = bel_new_ast();
     ast->root    = statement;
 
