@@ -34,16 +34,27 @@ module LibBEL
       ffi_module = find_ffi
       extend ffi_module::Library
 
-      cwd    = File.expand_path(File.dirname(__FILE__))
-      gem_so = File.join(cwd, 'libbel.so')
-      begin
-        ffi_lib gem_so
-      rescue LoadError
+      # libbel.so:     Linux and MinGW
+      # libbel.bundle: Mac OSX
+      messages = []
+      library_loaded = ['libbel.so', 'libbel.bundle'].map { |library_file|
+        File.join(
+          File.expand_path(File.dirname(__FILE__)),
+          library_file
+        )
+      }.any? do |library_path|
         begin
-          ffi_lib "libbel.so"
-        rescue LoadError
-          ffi_lib "./libbel.so"
+          ffi_lib library_path
+          true
+        rescue LoadError => exception
+          messages << exception.to_s
+          false
         end
+      end
+
+      if !library_loaded
+        msg = messages.map { |msg| "  #{msg}" }.join("\n")
+        fail LoadError.new("Failed to load libbel library. Details:\n#{msg}")
       end
     end
   end
