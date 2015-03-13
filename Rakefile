@@ -43,7 +43,7 @@ RSpec::Core::RakeTask.new(:integration) do |r|
   r.pattern = (not INTEGRATION.empty? and INTEGRATION) or fail "No integration tests"
 end
 
-task :default => :unit
+task :default => [:compile, :unit, :integration]
 
 require 'yard'
 YARD::Rake::YardocTask.new
