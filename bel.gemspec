@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name                     = 'bel'
-  spec.version                  = '0.3.0.beta1'
+  spec.version                  = '0.3.0.beta2'
   spec.summary                  = '''
                                     Process BEL with ruby.
                                   '''.gsub(%r{^\s+}, ' ').gsub(%r{\n}, '')
@@ -48,7 +48,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version    = '>= 1.9.2'
 
   # runtime
-  spec.add_dependency             'ffi',           '~> 1.9'
+  # ffi 1.9.6 is released for all platforms on rubygems.org
+  # - before upgrading check each platform gem is present in the new version
+  spec.add_dependency             'ffi',           '1.9.6'
 
   # test rdf functionality
   spec.add_development_dependency 'uuid',          '~> 2.3'
