@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name                     = 'bel'
-  spec.version                  = '0.3.0'
+  spec.version                  = '0.3.0.beta1'
   spec.summary                  = '''
                                     Process BEL with ruby.
                                   '''.gsub(%r{^\s+}, ' ').gsub(%r{\n}, '')
