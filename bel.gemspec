@@ -48,9 +48,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version    = '>= 1.9.2'
 
   # runtime
-  # ffi 1.9.6 is released for all platforms on rubygems.org
-  # - before upgrading check each platform gem is present in the new version
-  spec.add_dependency             'ffi',           '1.9.6'
+  spec.add_dependency             'ffi',           '1.9.8'
 
   # test rdf functionality
   spec.add_development_dependency 'uuid',          '~> 2.3'
