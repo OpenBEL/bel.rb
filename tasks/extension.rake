@@ -1,5 +1,12 @@
 require 'rake/extensiontask'
 
+CLEAN.include(
+  "lib/libbel.so",
+  "lib/libbel.bundle",
+  "pkg",
+  "tmp"
+)
+
 if RUBY_PLATFORM =~ /java/
   # support java
 else
