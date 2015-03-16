@@ -12,3 +12,13 @@ else
     ]
   end
 end
+
+task 'gem:win32' => ['gem:win32-i386', 'gem:win32-x64']
+
+task 'gem:win32-i386' do
+  sh("rake cross native:i386-mingw32 gem RUBY_CC_VERSION='1.9.3:2.0.0:2.1.5'") || raise('win32-i386 build failed.')
+end
+
+task 'gem:win32-x64' do
+  sh("rake cross native:x64-mingw32 gem RUBY_CC_VERSION='1.9.3:2.0.0:2.1.5'") || raise('win32-x64 build failed.')
+end
