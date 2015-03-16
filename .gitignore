@@ -1,5 +1,8 @@
+doc
+pkg
+tmp
 .ruby-version
 Gemfile.lock
 *.gem
-pkg
-tmp
+*.so
+*.bundle
