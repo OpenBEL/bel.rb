@@ -7,6 +7,34 @@ module LibBEL
     end
 
     # @api_private
+    # Determines the correct extension path for your ruby version
+    def extension_path(ruby_version = RUBY_VERSION)
+      version =
+        case ruby_version
+        when %r{1\.9}
+          '1.9'
+        when %r{2\.0}
+          '2.0'
+        when %r{2\.1}
+          '2.1'
+        when %r{2\.2}
+          '2.1' # 2.2 is compatible with 2.1, but cannot cross compile 2.2
+        else
+          fail RuntimeError.new("Do not support Ruby #{RUBY_VERSION}.")
+        end
+        extension_path = File.join(
+          File.expand_path(File.dirname(__FILE__)),
+          version
+        )
+        if !File.readable?(extension_path)
+          msg = "Extension path cannot be read: #{extension_path}"
+          fail IOError.new(msg)
+        end
+
+        extension_path
+    end
+
+    # @api_private
     # Determine FFI constant for this ruby engine.
     def find_ffi
       if rubinius?
@@ -29,7 +57,7 @@ module LibBEL
     end
 
     # @api_private
-    # Loads the libkyotocabinet shared library.
+    # Loads the libbel shared library.
     def load_libBEL
       ffi_module = find_ffi
       extend ffi_module::Library
@@ -38,17 +66,28 @@ module LibBEL
       # libbel.bundle: Mac OSX
       messages = []
       library_loaded = ['libbel.so', 'libbel.bundle'].map { |library_file|
-        File.join(
-          File.expand_path(File.dirname(__FILE__)),
-          library_file
-        )
-      }.any? do |library_path|
+        [
+          library_file,
+          File.join(
+            File.expand_path(File.dirname(__FILE__)),
+            library_file
+          )
+        ]
+      }.any? do |library_file, library_path|
+        # Try loading top-level shared library.
         begin
           ffi_lib library_path
           true
-        rescue LoadError => exception
-          messages << exception.to_s
-          false
+        rescue LoadError => exception1
+          # Try loading version-specific shared library.
+          begin
+            ffi_lib File.join(extension_path, library_file)
+            true
+          rescue LoadError => exception2
+            messages << exception1.to_s
+            messages << exception2.to_s
+            false
+          end
         end
       end
 
