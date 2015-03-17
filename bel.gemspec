@@ -49,7 +49,7 @@ Gem::Specification.new do |spec|
                                   ]
 
   spec.extensions              << 'ext/mri/extconf.rb'
-  spec.required_ruby_version    = '>= 1.9.2'
+  spec.required_ruby_version    = '>= 1.9.3'
 
   # runtime
   spec.add_dependency             'ffi',           '1.9.8'
