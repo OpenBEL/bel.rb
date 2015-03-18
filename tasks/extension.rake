@@ -3,6 +3,10 @@ require 'rake/extensiontask'
 CLEAN.include(
   "lib/libbel.so",
   "lib/libbel.bundle",
+  "lib/1.9",
+  "lib/2.0",
+  "lib/2.1",
+  "lib/2.2",
   "pkg",
   "tmp"
 )
