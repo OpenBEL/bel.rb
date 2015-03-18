@@ -22,16 +22,8 @@ module LibBEL
         else
           fail RuntimeError.new("Do not support Ruby #{RUBY_VERSION}.")
         end
-        extension_path = File.join(
-          File.expand_path(File.dirname(__FILE__)),
-          version
-        )
-        if !File.readable?(extension_path)
-          msg = "Extension path cannot be read: #{extension_path}"
-          fail IOError.new(msg)
-        end
 
-        extension_path
+      File.join(File.expand_path(File.dirname(__FILE__)), version)
     end
 
     # @api_private
