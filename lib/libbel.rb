@@ -11,14 +11,14 @@ module LibBEL
     def extension_path(ruby_version = RUBY_VERSION)
       version =
         case ruby_version
-        when %r{1\.9}
+        when /^1\.9/
           '1.9'
-        when %r{2\.0}
+        when /^2\.0/
           '2.0'
-        when %r{2\.1}
+        when /^2\.1/
           '2.1'
-        when %r{2\.2}
-          '2.1' # 2.2 is compatible with 2.1, but cannot cross compile 2.2
+        when /^2\.2/
+          '2.2'
         else
           fail RuntimeError.new("Do not support Ruby #{RUBY_VERSION}.")
         end
