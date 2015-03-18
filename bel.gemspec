@@ -60,7 +60,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rdf',           '~> 1.1'
 
   # development gems
-  spec.add_development_dependency 'bundler',       '~> 1.7'
   spec.add_development_dependency 'rake',          '~> 10.4'
   spec.add_development_dependency 'rake-compiler', '~> 0.9'
   spec.add_development_dependency 'rdoc',          '~> 4.2'
