@@ -1,4 +1,4 @@
-require_relative '../libbel'
+require_relative 'libbel'
 require_relative 'completion_rule'
 require_relative 'language'
 require_relative 'namespace'

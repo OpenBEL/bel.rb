@@ -1,5 +1,5 @@
 # Load core objects
-require_relative 'libbel'
+require_relative 'bel/libbel'
 require_relative 'bel/completion'
 require_relative 'bel/language'
 require_relative 'bel/namespace'

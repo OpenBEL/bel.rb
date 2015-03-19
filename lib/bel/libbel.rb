@@ -105,120 +105,79 @@ module LibBEL
     :SPACES
   ]
 
-  class BelToken < FFI::Struct
+  enum :bel_ast_node_type, [
+    :BEL_TOKEN, 0,
+    :BEL_VALUE
+  ]
 
-    layout :type,      :bel_token_type,
-           :pos_start, :int,
-           :pos_end,   :int,
-           :value,     :pointer
+  enum :bel_ast_token_type, [
+    :BEL_TOKEN_STATEMENT, 0,
+    :BEL_TOKEN_SUBJECT,
+    :BEL_TOKEN_OBJECT,
+    :BEL_TOKEN_REL,
+    :BEL_TOKEN_TERM,
+    :BEL_TOKEN_ARG,
+    :BEL_TOKEN_NV
+  ]
 
-    def type
-      self[:type]
-    end
+  enum :bel_ast_value_type, [
+    :BEL_VALUE_FX, 0,
+    :BEL_VALUE_REL,
+    :BEL_VALUE_PFX,
+    :BEL_VALUE_VAL
+  ]
 
-    def pos_start
-      self[:pos_start]
-    end
+  require_relative 'libbel/bel_ast_structs'
+  require_relative 'libbel/bel_token'
+  require_relative 'libbel/bel_token_iterator'
+  require_relative 'libbel/bel_token_list'
 
-    def pos_end
-      self[:pos_end]
-    end
+  # bel ast
+  attach_function :bel_ast_as_string,       [:pointer                                     ], :string
+  attach_function :bel_copy_ast_node,       [:pointer                                     ], :pointer
+  attach_function :bel_free_ast,            [:pointer                                     ], :void
+  attach_function :bel_free_ast_node,       [:pointer                                     ], :void
+  attach_function :bel_new_ast,             [                                             ], :pointer
+  attach_function :bel_new_ast_node_token,  [:bel_ast_token_type                          ], :pointer
+  attach_function :bel_new_ast_node_value,  [:bel_ast_value_type, :string                 ], :pointer
+  attach_function :bel_print_ast,           [:pointer                                     ], :void
+  attach_function :bel_print_ast_node,      [:pointer, :string                            ], :void
+  attach_function :bel_set_value,           [:pointer, :string                            ], :pointer
 
-    def value
-      self[:value].read_string
-    end
-
-    def hash
-      [self.type, self.value, self.pos_start, self.pos_end].hash
-    end
-
-    def ==(other)
-      return false if other == nil
-      self.type == other.type && self.value == other.value &&
-        self.pos_start == other.pos_start && self.pos_end == other.pos_end
-    end
-
-    alias_method :eql?, :'=='
-  end
-
-  class BelTokenList < FFI::ManagedStruct
-    include Enumerable
-
-    layout :length,    :int,
-           :tokens,    BelToken.ptr
-
-    def each
-      if block_given?
-        iterator = LibBEL::bel_new_token_iterator(self.pointer)
-        while LibBEL::bel_token_iterator_end(iterator).zero?
-          current_token = LibBEL::bel_token_iterator_get(iterator)
-          yield LibBEL::BelToken.new(current_token)
-          LibBEL::bel_token_iterator_next(iterator)
-        end
-        LibBEL::free_bel_token_iterator(iterator)
-      else
-        enum_for(:each)
-      end
-    end
-
-    def token_at(position)
-      self.each_with_index { |tk, index|
-        if (tk.pos_start..tk.pos_end).include? position
-          return [tk, index]
-        end
-      }
-      nil
-    end
-
-    def self.release(ptr)
-      LibBEL::free_bel_token_list(ptr)
-    end
-  end
-
-  class BelTokenIterator < FFI::ManagedStruct
-    include Enumerable
-
-    layout :index,         :int,
-           :list,          :pointer,
-           :current_token, :pointer
-
-    def each
-      if self.null? or not LibBEL::bel_token_iterator_end(self).zero?
-        fail StopIteration, "bel_token_iterator reached end"
-      end
-
-      if block_given?
-        while LibBEL::bel_token_iterator_end(self.pointer).zero?
-          current_token = LibBEL::bel_token_iterator_get(self.pointer)
-          yield LibBEL::BelToken.new(current_token)
-          LibBEL::bel_token_iterator_next(self.pointer)
-        end
-      else
-        enum_for(:each)
-      end
-    end
-
-    def self.release(ptr)
-      LibBEL::free_bel_token_iterator(ptr)
-    end
-  end
-
+  # bel token
   attach_function :bel_new_token,           [:bel_token_type, :pointer, :pointer, :pointer], :pointer
-  attach_function :bel_new_token_list,      [:int                                         ], :pointer
   attach_function :bel_new_token_iterator,  [:pointer                                     ], :pointer
-  attach_function :bel_token_iterator_get,  [:pointer                                     ], :pointer
-  attach_function :bel_token_iterator_next, [:pointer                                     ], :void
-  attach_function :bel_token_iterator_end,  [:pointer                                     ], :int
-  attach_function :bel_parse_term,          [:string                                      ], :pointer
-  attach_function :bel_tokenize_term,       [:string                                      ], :pointer
+  attach_function :bel_new_token_list,      [:int                                         ], :pointer
   attach_function :bel_print_token,         [:pointer                                     ], :void
   attach_function :bel_print_token_list,    [:pointer                                     ], :void
+  attach_function :bel_token_iterator_end,  [:pointer                                     ], :int
+  attach_function :bel_token_iterator_get,  [:pointer                                     ], :pointer
+  attach_function :bel_token_iterator_next, [:pointer                                     ], :void
   attach_function :free_bel_token,          [:pointer                                     ], :void
-  attach_function :free_bel_token_list,     [:pointer                                     ], :void
   attach_function :free_bel_token_iterator, [:pointer                                     ], :void
+  attach_function :free_bel_token_list,     [:pointer                                     ], :void
 
-  def self.tokenize_term(string)
+  # tokenize
+  attach_function :bel_tokenize_term,       [:string                                      ], :pointer
+
+  # parse
+  attach_function :bel_parse_statement,     [:string                                      ], :pointer
+  attach_function :bel_parse_term,          [:string                                      ], :pointer
+
+  def self.parse_statement(bel_string)
+    LibBEL::BelAst.new(LibBEL::bel_parse_statement(bel_string))
+  end
+
+  def self.parse_term(bel_string)
+    LibBEL::BelAst.new(LibBEL::bel_parse_term(bel_string))
+  end
+
+  def self.tokenize_term(bel_string)
     LibBEL::BelTokenList.new(self.bel_tokenize_term(string))
+  end
+
+  def self.print_ast(bel_ast)
+    LibBEL::bel_print_ast(bel_ast)
   end
 
   def self.print_token(token)
