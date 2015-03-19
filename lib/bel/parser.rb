@@ -3,20 +3,37 @@ require_relative 'libbel'
 module BEL
   module Parser
 
-    # Parses BEL expressions to a {BelAST}.
+    # Parses BEL expressions to a {BelAst}.
     #
     # If +bel_expression+ is +nil+ then +nil+ is returned.
     #
-    # @param bel_expression   [responds to #to_s] the bel expression parse
-    # @param                  [Hash]              options
-    # @option options         [responds to #each] :statement_transforms
-    #   - statement transform items must respond to #call
-    # @option options         [responds to #each] :term_transforms
-    #   - term transform items must respond to #call
-    # @return [BelAST]
+    # @param bel_expression [responds to #to_s] the bel expression to parse
+    # @return [BelAst]
     def self.parse(bel_expression, options = {})
-      bel_ast = LibBEL.parse_statement(bel_expression)
-      bel_ast.root
+      if !bel_expression
+        return nil
+      end
+
+      LibBEL.parse_statement(
+        ensure_newline(bel_expression.to_s)
+      )
+    end
+
+    private
+
+    # Ensures a newline (e.g. +\n+) is the last character in +string+.
+    #
+    # +Pure function+ but returns the +string+ reference if it already ends
+    # with a newline.
+    #
+    # @param string [String] the string which must have a newline
+    # @return [String]
+    def self.ensure_newline(string)
+      if string[-1] != "\n"
+        string + "\n"
+      else
+        string
+      end
     end
   end
 end
