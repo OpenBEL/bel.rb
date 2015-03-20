@@ -103,12 +103,32 @@ module LibBEL
   end
 
   class BelAst < FFI::ManagedStruct
+    include NodeTraversal
+
     layout(
       :root,      BelAstNode.ptr
     )
 
     def root
       self[:root]
+    end
+
+    # overrides {NodeTraversal#each_depth_first}
+    def each_depth_first(&block)
+      if block_given?
+        root.each_depth_first(&block)
+      else
+        root.enum_for(:each_depth_first)
+      end
+    end
+
+    # overrides {NodeTraversal#each_breadth_first}
+    def each_breadth_first(queue = [], &block)
+      if block_given?
+        root.each_breadth_first(&block)
+      else
+        root.enum_for(:each_breadth_first)
+      end
     end
 
     def self.release(ptr)

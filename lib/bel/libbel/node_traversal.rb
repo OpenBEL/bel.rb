@@ -32,7 +32,7 @@ module LibBEL
           end
         end
       else
-        enum_for(:each_depth_first, traversal)
+        enum_for(:each_depth_first)
       end
     end
 
@@ -54,7 +54,7 @@ module LibBEL
           queue.first.each_breadth_first(queue, &block)
         end
       else
-        enum_for(:each_depth_first, traversal)
+        enum_for(:each_depth_first)
       end
     end
   end
