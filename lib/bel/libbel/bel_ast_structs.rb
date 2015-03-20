@@ -1,4 +1,5 @@
 require_relative 'node_traversal'
+require_relative 'node_transformation'
 
 module LibBEL
   class AstNodeTypeUnion < FFI::Union
@@ -33,6 +34,7 @@ module LibBEL
 
   class BelAstNode < FFI::Union
     include NodeTraversal
+    include NodeTransformation
 
     layout(
       :type_info, BelAstNodeTypeInfo.ptr,
@@ -44,12 +46,24 @@ module LibBEL
       self[:type_info]
     end
 
+    def type_info=(type_info)
+      self[:type_info] = type_info
+    end
+
     def token
       self[:token]
     end
 
+    def token=(token)
+      self[:token] = token
+    end
+
     def value
       self[:value]
+    end
+
+    def value=(value)
+      self[:value] = value
     end
 
     def to_typed_node
@@ -77,8 +91,16 @@ module LibBEL
       self[:left]
     end
 
+    def left=(left)
+      self[:left] = left
+    end
+
     def right
       self[:right]
+    end
+
+    def right=(right)
+      self[:right] = right
     end
   end
 
@@ -104,6 +126,7 @@ module LibBEL
 
   class BelAst < FFI::ManagedStruct
     include NodeTraversal
+    include NodeTransformation
 
     layout(
       :root,      BelAstNode.ptr
@@ -111,6 +134,10 @@ module LibBEL
 
     def root
       self[:root]
+    end
+
+    def root=(root)
+      self[:root] = root
     end
 
     # overrides {NodeTraversal#each_depth_first}
@@ -131,8 +158,24 @@ module LibBEL
       end
     end
 
+    def transform(transforms, options = {})
+      transform_tree(transforms, :depth_first, options)
+    end
+
+    def transform_tree(transforms, traversal = :depth_first, options = {})
+      copy_ast = LibBEL::copy_ast(self)
+      options = {
+        :mutate => true
+      }.merge(options)
+
+      copy_ast.root.transform_tree(transforms, traversal, options)
+      copy_ast
+    end
+
     def self.release(ptr)
-      LibBEL::bel_free_ast(ptr)
+      if !ptr.null?
+        LibBEL::bel_free_ast(ptr)
+      end
     end
   end
 

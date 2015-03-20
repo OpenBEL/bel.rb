@@ -176,6 +176,17 @@ module LibBEL
     LibBEL::BelTokenList.new(self.bel_tokenize_term(string))
   end
 
+  def self.copy_ast(bel_ast)
+    copy_root = self.copy_ast_node(bel_ast.root)
+    new_ast   = LibBEL::BelAst.new(LibBEL::bel_new_ast())
+    new_ast.root = copy_root
+    new_ast
+  end
+
+  def self.copy_ast_node(bel_ast_node)
+    LibBEL::BelAstNode.new(LibBEL::bel_copy_ast_node(bel_ast_node))
+  end
+
   def self.print_ast(bel_ast)
     LibBEL::bel_print_ast(bel_ast)
   end
