@@ -106,6 +106,9 @@ void bel_free_ast(bel_ast* ast) {
 };
 
 void bel_free_ast_node(bel_ast_node* node) {
+    if(node == NULL) {
+        return;
+    }
     if (node->type_info->type == BEL_TOKEN) {
         if (node->token->left != NULL) {
             bel_free_ast_node(node->token->left);
@@ -113,10 +116,10 @@ void bel_free_ast_node(bel_ast_node* node) {
         if (node->token->right != NULL) {
             bel_free_ast_node(node->token->right);
         }
-	free(node->token);
+        free(node->token);
     } else {
-	free(node->value->value);
-	free(node->value);
+        free(node->value->value);
+        free(node->value);
     }
 
     free(node);
