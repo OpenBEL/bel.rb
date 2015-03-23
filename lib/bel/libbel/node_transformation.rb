@@ -21,11 +21,15 @@ module LibBEL
         ast_node = LibBEL::copy_ast_node(self)
       end
 
-      NodeTransformation.traversal_method(ast_node, traversal).call do |bel_ast_node|
-        transforms.each do |transform|
-          transform.call(bel_ast_node)
-        end
+      transforms.each do |transform|
+        NodeTransformation.traversal_method(ast_node, traversal).call(transform)
       end
+
+      # NodeTransformation.traversal_method(ast_node, traversal).call do |bel_ast_node|
+      #   transforms.each do |transform|
+      #     transform.call(bel_ast_node)
+      #   end
+      # end
       ast_node
     end
 
