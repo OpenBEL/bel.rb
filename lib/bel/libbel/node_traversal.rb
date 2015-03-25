@@ -53,7 +53,7 @@ module LibBEL
       end
     end
 
-    def each_breadth_first(queue = [], &block)
+    def each_breadth_first(callable = nil, queue = [], &block)
       func = if block_given?
                block
              else
@@ -84,6 +84,14 @@ module LibBEL
         if !queue.empty?
           queue.first.each_breadth_first(queue, &block)
         end
+      end
+    end
+
+    def traversal_method(obj, traversal)
+      if traversal == :breadth_first
+        obj.method(:each_breadth_first)
+      else
+        obj.method(:each_depth_first)
       end
     end
   end

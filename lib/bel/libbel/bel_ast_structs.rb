@@ -1,5 +1,6 @@
 require_relative 'node_traversal'
 require_relative 'node_transformation'
+require_relative 'node_test'
 
 module LibBEL
   class AstNodeTypeUnion < FFI::Union
@@ -35,6 +36,7 @@ module LibBEL
   class BelAstNode < FFI::Union
     include NodeTraversal
     include NodeTransformation
+    include NodeTest
 
     layout(
       :type_info, BelAstNodeTypeInfo.ptr,
@@ -127,6 +129,7 @@ module LibBEL
   class BelAst < FFI::ManagedStruct
     include NodeTraversal
     include NodeTransformation
+    include NodeTest
 
     layout(
       :root,      BelAstNode.ptr
@@ -170,6 +173,14 @@ module LibBEL
 
       copy_ast.root.transform_tree(transforms, traversal, options)
       copy_ast
+    end
+
+    def any?(predicates)
+      self.root.any_in_tree?(predicates)
+    end
+
+    def all?(predicates)
+      self.root.all_in_tree?(predicates)
     end
 
     def self.release(ptr)

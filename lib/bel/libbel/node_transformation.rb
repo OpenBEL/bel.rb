@@ -22,25 +22,10 @@ module LibBEL
       end
 
       transforms.each do |transform|
-        NodeTransformation.traversal_method(ast_node, traversal).call(transform)
+        self.traversal_method(ast_node, traversal).call(transform)
       end
 
-      # NodeTransformation.traversal_method(ast_node, traversal).call do |bel_ast_node|
-      #   transforms.each do |transform|
-      #     transform.call(bel_ast_node)
-      #   end
-      # end
       ast_node
-    end
-
-    private
-
-    def self.traversal_method(obj, traversal)
-      if traversal == :breadth_first
-        obj.method(:each_breadth_first)
-      else
-        obj.method(:each_depth_first)
-      end
     end
   end
 end
