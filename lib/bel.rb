@@ -1,5 +1,5 @@
 # Load core objects
-require_relative 'bel/libbel'
+require_relative './bel/libbel.rb'
 require_relative 'bel/parser'
 require_relative 'bel/completion'
 require_relative 'bel/language'
