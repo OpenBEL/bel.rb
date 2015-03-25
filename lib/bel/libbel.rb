@@ -173,7 +173,7 @@ module LibBEL
   end
 
   def self.tokenize_term(bel_string)
-    LibBEL::BelTokenList.new(self.bel_tokenize_term(string))
+    LibBEL::BelTokenList.new(self.bel_tokenize_term(bel_string))
   end
 
   def self.copy_ast(bel_ast)
