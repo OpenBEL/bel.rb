@@ -21,7 +21,10 @@ machine bel;
     if buffer[0] == 34 && buffer[-1] == 34
       buffer = buffer[1...-1]
     end
-    @value = buffer.pack('C*').force_encoding('utf-8').gsub '\"', '"'
+
+    tmp_value = buffer.pack('C*').force_encoding('utf-8')
+    tmp_value.gsub!('\"', '"')
+    @value = tmp_value
   }
 
   action lists {
@@ -34,7 +37,13 @@ machine bel;
   }
 
   action liste {
-    listvals << listbuffer.pack('C*').force_encoding('utf-8')
+    if listbuffer[0] == 34 && listbuffer[-1] == 34
+      listbuffer = listbuffer[1...-1]
+    end
+    tmp_listvalue = listbuffer.pack('C*').force_encoding('utf-8')
+    tmp_listvalue.gsub!('\"', '"')
+
+    listvals << tmp_listvalue
     listbuffer = []
   }
 
@@ -100,7 +109,7 @@ machine bel;
 
   # expressions
   IDENT = [a-zA-Z0-9_]+;
-  STRING = ('"' ('\\\"' | [^"])* '"') >s $n %val;
+  STRING = ('"' ('\\\"' | [^"])** '"') >s $n %val;
   LIST = '{' @lists SP*
          (STRING | IDENT) $listn SP*
          (',' @liste SP* (STRING | IDENT) $listn SP*)*

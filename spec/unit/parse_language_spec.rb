@@ -83,6 +83,22 @@ and apoptosis (programmed cell death) [1,2]"\n}
     expect(objects.length).to eql(6)
   end
 
+  it "understands multi-value lists ( { ... } ) containing commas, end bracket, and escaped quotes within values" do
+    annotations = %Q|SET Citation = { "Pub,\\"Med\\"", "Name of, the \\"article\\"", "1231,\\"2910\\"", ",", "..,..","21,22(13),3265,71}"}\n|
+    objects = BEL::Script.parse(annotations).to_a
+    expect(objects).to be
+    expect(objects.length).to eql(1)
+    puts objects.first.value
+    expect(objects.first.value).to eql([
+      "Pub,\"Med\"",
+      "Name of, the \"article\"",
+      "1231,\"2910\"",
+      ",",
+      "..,..",
+      "21,22(13),3265,71}"
+    ])
+  end
+
   it "provides name/value for annotations" do
     annotations = %Q{SET Disease = Atherosclerosis
 SET Cell = "Endothelial Cells"
