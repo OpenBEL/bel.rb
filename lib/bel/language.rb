@@ -791,7 +791,7 @@ module BEL
 
       class Parameter
         def to_uri
-          @ns.to_rdf_vocabulary[@value]
+          @ns.to_rdf_vocabulary[URI::encode(@value)]
         end
 
         def to_rdf
@@ -832,7 +832,7 @@ module BEL
       class Term
         def to_uri
           tid = to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
-          BEL::RDF::BELR[tid]
+          BEL::RDF::BELR[URI::encode(tid)]
         end
 
         def rdf_type
@@ -915,7 +915,7 @@ module BEL
           case
           when subject_only?
             tid = @subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
-            BEL::RDF::BELR[tid]
+            BEL::RDF::BELR[URI::encode(tid)]
           when simple?
             sub_id = @subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
             obj_id = @object.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
@@ -925,7 +925,7 @@ module BEL
             else
               rel = @relationship.to_s
             end
-            BEL::RDF::BELR["#{sub_id}_#{rel}_#{obj_id}"]
+            BEL::RDF::BELR[URI::encode("#{sub_id}_#{rel}_#{obj_id}")]
           when nested?
             sub_id = @subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
             nsub_id = @object.subject.to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
@@ -942,7 +942,7 @@ module BEL
             else
               nrel = @object.relationship.to_s
             end
-            BEL::RDF::BELR["#{sub_id}_#{rel}_#{nsub_id}_#{nrel}_#{nobj_id}"]
+            BEL::RDF::BELR[URI::encode("#{sub_id}_#{rel}_#{nsub_id}_#{nrel}_#{nobj_id}")]
           end
         end
 
