@@ -10,7 +10,6 @@
 
 int main(int argc, char *argv[]) {
     FILE *input;
-    int len;
     char line[LINE_CHAR_LEN];
     int type;
     int print;
@@ -48,25 +47,16 @@ int main(int argc, char *argv[]) {
         verbose = 1;
     }
 
-    if (argc > 1) {
-    }
-
     while (fgets(line, LINE_CHAR_LEN, input) != NULL) {
-        // force newline if statement ends with closed paren; aids parser
-        len = strlen(line);
-        if (line[len - 1] == ')') {
-            line[len - 1] = '\n';
-        }
-
         if (verbose) {
             fprintf(stdout, "parsing line -> %s\n", line);
         }
 
         if (type == 0) {
             if (verbose) {
-                fprintf(stdout, "using default statement parser\n");
+                fprintf(stdout, "using expression parser\n");
             }
-            tree = bel_parse_statement(line);
+            tree = bel_parse_term(line);
 
             if (!tree->root) {
                 fprintf(stderr, "parse failed\n");
@@ -78,7 +68,7 @@ int main(int argc, char *argv[]) {
             bel_free_ast(tree);
         } else if (type == 1) {
             if (verbose) {
-                fprintf(stdout, "using lookahead term parser\n");
+                fprintf(stdout, "using term tokenizer\n");
             }
             token_list = bel_tokenize_term(line);
             bel_print_token_list(token_list);
