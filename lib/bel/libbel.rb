@@ -142,7 +142,6 @@ module LibBEL
   attach_function :bel_new_ast_node_value,  [:bel_ast_value_type, :string                 ], :pointer
   attach_function :bel_print_ast,           [:pointer                                     ], :void
   attach_function :bel_print_ast_node,      [:pointer, :string                            ], :void
-  attach_function :bel_set_value,           [:pointer, :string                            ], :pointer
 
   # bel token
   attach_function :bel_new_token,           [:bel_token_type, :pointer, :pointer, :pointer], :pointer
@@ -161,12 +160,7 @@ module LibBEL
   attach_function :bel_tokenize_term,       [:string                                      ], :pointer
 
   # parse
-  attach_function :bel_parse_statement,     [:string                                      ], :pointer
   attach_function :bel_parse_term,          [:string                                      ], :pointer
-
-  def self.parse_statement(bel_string)
-    LibBEL::BelAst.new(LibBEL::bel_parse_statement(bel_string))
-  end
 
   def self.parse_term(bel_string)
     LibBEL::BelAst.new(LibBEL::bel_parse_term(bel_string))

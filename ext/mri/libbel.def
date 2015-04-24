@@ -16,7 +16,6 @@ bel_print_ast
 bel_print_ast_node
 bel_print_token
 bel_print_token_list
-bel_set_value
 bel_token_iterator_end
 bel_token_iterator_get
 bel_token_iterator_next
