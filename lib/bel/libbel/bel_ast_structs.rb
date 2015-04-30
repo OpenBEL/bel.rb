@@ -188,6 +188,10 @@ module LibBEL
         LibBEL::bel_free_ast(ptr)
       end
     end
+
+    def to_s
+      LibBEL::bel_ast_as_string(self)
+    end
   end
 
   private
