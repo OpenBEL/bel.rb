@@ -17,10 +17,19 @@ group :development do
     gem 'byebug'
   end
 
+  group :repl do
+
+    gem 'pry'
+    gem 'pry-doc'
+  end
+
   group :testing do
 
     # Property testing
     gem 'rantly',  :git => 'https://github.com/hayeah/rantly.git'
+
+    # Performance
+    gem 'benchmark-ips'
   end
 
   group :guard do
