@@ -127,10 +127,14 @@ module LibBEL
     :BEL_VALUE_VAL
   ]
 
+  # base data structures and algorithms
   require_relative 'libbel/bel_ast_structs'
   require_relative 'libbel/bel_token'
   require_relative 'libbel/bel_token_iterator'
   require_relative 'libbel/bel_token_list'
+
+  # BEL algorithms
+  require_relative 'libbel/bel_token_serialization'
 
   # bel ast
   attach_function :bel_ast_as_string,       [:pointer                                     ], :string
@@ -143,12 +147,14 @@ module LibBEL
   attach_function :bel_print_ast,           [:pointer                                     ], :void
   attach_function :bel_print_ast_node,      [:pointer, :string                            ], :void
 
-  # bel token
+  # bel node
   attach_function :bel_new_token,           [:bel_token_type, :pointer, :pointer, :pointer], :pointer
   attach_function :bel_new_token_iterator,  [:pointer                                     ], :pointer
   attach_function :bel_new_token_list,      [:int                                         ], :pointer
+  attach_function :bel_set_value,           [:pointer, :pointer                           ], :pointer
   attach_function :bel_print_token,         [:pointer                                     ], :void
   attach_function :bel_print_token_list,    [:pointer                                     ], :void
+  attach_function :bel_ast_node_as_string,  [:pointer                                     ], :string
   attach_function :bel_token_iterator_end,  [:pointer                                     ], :int
   attach_function :bel_token_iterator_get,  [:pointer                                     ], :pointer
   attach_function :bel_token_iterator_next, [:pointer                                     ], :void

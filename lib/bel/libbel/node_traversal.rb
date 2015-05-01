@@ -33,22 +33,28 @@ module LibBEL
         enum_for(:each_depth_first)
       else
         typed_node = self.to_typed_node
-        func.call(typed_node)
+
+        pre_method =
+          (func.respond_to?(:pre_order) && :pre_order) ||
+          (func.respond_to?(:call) && :call)
+        if pre_method
+          func.send(pre_method, typed_node)
+        end
 
         if typed_node.is_a? (LibBEL::BelAstNodeToken)
           if !typed_node.left.pointer.null?
             typed_node.left.each_depth_first(func)
           end
-          if func.respond_to?(:between)
-            func.between(typed_node)
+          if func.respond_to?(:in_order)
+            func.in_order(typed_node)
           end
           if !typed_node.right.pointer.null?
             typed_node.right.each_depth_first(func)
           end
         end
 
-        if func.respond_to?(:after)
-          func.after(typed_node)
+        if func.respond_to?(:post_order)
+          func.post_order(typed_node)
         end
       end
     end
