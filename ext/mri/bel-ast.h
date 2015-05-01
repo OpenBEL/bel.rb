@@ -72,6 +72,8 @@ bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value,
 
 bel_ast_node* bel_copy_ast_node(bel_ast_node* node);
 
+bel_ast_node* bel_set_value(bel_ast_node* node, char* value);
+
 bel_ast* bel_new_ast();
 
 void bel_free_ast_node(bel_ast_node* node);
