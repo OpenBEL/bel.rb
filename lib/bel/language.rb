@@ -1,5 +1,22 @@
 require_relative '../features'
 require_relative 'quoting'
+
+class String
+  include BEL::Quoting
+
+  def to_bel
+    ensure_quotes(self)
+  end
+end
+
+class Symbol
+  include BEL::Quoting
+
+  def to_bel
+    ensure_quotes(self)
+  end
+end
+
 module BEL
   module Language
 
