@@ -107,8 +107,7 @@ class Main
         end
       end
     end
-    #$stderr.puts @annotation_url_map
-    @annotation_keyword_map = Hash.new #map changelog keywords to annotation keywords    
+    @annotation_keyword_map = Hash.new # Keys - keywords from AnnotationDefinition, values - prefix associated with ann dataset in changelog
     @keywords_seen = Set.new
     BEL::Script.parse(content) do |obj|
       # redefine namespace based on change log's `redefine` blocik
