@@ -23,9 +23,9 @@ OptionParser.new do |opts|
   opts.on("-c", "--changelog [FILE | URI]", "Change log JSON") do |change_log|
     options['change_log'] = change_log
   end
-  opts.on('-k', '--preserve-keywords','preserve anno keywords during upgrade') do |preserve|
-    options[:preserve] = preserve
-  end
+  #opts.on('-k', '--preserve-keywords','preserve anno keywords during upgrade') do |preserve|
+  #  options[:preserve] = preserve
+  #end
 end.parse!
 
 # option guards
@@ -172,6 +172,7 @@ class Main
                       v = replacement_value
                     end
                   end
+                  v
                 end
               else # single Annotation value
                 replacement_value = replacements[obj.value.to_s]
