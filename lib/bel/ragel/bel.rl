@@ -93,10 +93,10 @@ module BEL
     class IOParser
       include Enumerable
 
-      CHUNK = 1024 * 1024 # 1mb
+      MAX_LENGTH = 1024 * 128 # 128K
 
       def initialize(file, namespaces = {})
-        @file = file
+        @file       = file
         @namespaces =
           case namespaces
           when BEL::Namespace::ResourceIndex
@@ -121,18 +121,25 @@ module BEL
         my_ts = nil
         my_te = nil
         
-        while chunk = @file.read(CHUNK)
-          data = leftover + chunk.unpack('c*')
-          p = 0
-          pe = data.length
-          %% write exec;
-          if my_ts
-            leftover = data[my_ts..-1]
-            my_te = my_te - my_ts if my_te
-            my_ts = 0
-          else
-            leftover = []
+        begin
+          while chunk = @file.read_nonblock(MAX_LENGTH)
+            data = leftover + chunk.unpack('c*')
+            p = 0
+            pe = data.length
+            %% write exec;
+            if my_ts
+              leftover = data[my_ts..-1]
+              my_te = my_te - my_ts if my_te
+              my_ts = 0
+            else
+              leftover = []
+            end
           end
+        rescue IO::WaitReadable
+          IO.select([@file])
+          retry
+        rescue EOFError
+          # end of stream; parsing complete
         end
       end
     end

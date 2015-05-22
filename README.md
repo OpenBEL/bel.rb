@@ -49,21 +49,6 @@ executable commands
     cat small_corpus.bel | bel_upgrade --changelog http://resource.belframework.org/belframework/20131211/change_log.json
 ```
 
-**bel_upgrade_term**: Upgrade BEL terms to another version (e.g. *1.0* to *20131211*)
-
-```bash
-
-    # using BEL terms and change log JSON file
-    bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c change_log.json
-
-    # using BEL terms and change log from a URL
-    bel_upgrade_term -t "p(HGNC:A2LD1)\np(EGID:84)\n" -n "1.0" -c http://resource.belframework.org/belframework/20131211/change_log.json
-
-    # using BEL from STDIN
-    echo -e "p(EGID:84)\np(HGNC:A2LD1)" | bel_upgrade_term -n "1.0" -c change_log.json
-    cat terms.bel | bel_upgrade_term -n "1.0" -c change_log.json
-```
-
 **bel_rdfschema**: Dumps the RDF Schema triples for BEL.
 
 ```bash
