@@ -23,6 +23,9 @@ OptionParser.new do |opts|
   opts.on("-c", "--changelog [FILE | URI]", "Change log JSON") do |change_log|
     options['change_log'] = change_log
   end
+  #opts.on('-k', '--preserve-keywords','preserve anno keywords during upgrade') do |preserve|
+  #  options[:preserve] = preserve
+  #end
 end.parse!
 
 # option guards
@@ -85,12 +88,36 @@ class Main
   def initialize(content, change_log)
     @change_log = change_log
     @redefine_section = @change_log['redefine']
+    if @redefine_section
+      if @redefine_section['namespaces'] 
+        @redefine_section = @change_log['redefine']['namespaces']
+        @redefine_annotations = @change_log['redefine']['annotations']
+      end
+    end
+    if @redefine_annotations # map old_url to new_url
+      @annotation_url_map = Hash.new{ |h,k| h[k] = Hash.new()}
+      @redefine_annotations.each do |prefix, items|
+        old_url = items['old_url']
+        new_url = items['new_url']
+        @annotation_url_map[old_url]['new_url'] = new_url
+        if @annotation_url_map[old_url]['prefix']
+          @annotation_url_map[old_url]['prefix'].add(prefix)
+        else
+          @annotation_url_map[old_url]['prefix'] = Set.new.add(prefix)
+        end
+      end
+    end
+    @annotation_keyword_map = Hash.new # Keys - keywords from AnnotationDefinition, values - prefix associated with ann dataset in changelog
     @keywords_seen = Set.new
     BEL::Script.parse(content) do |obj|
-      # redefine namespace based on change log's `redefine` block
+      # redefine namespace based on change log's `redefine` blocik
+      # use 'namespaces' block, if available
       if obj.is_a? NamespaceDefinition
         if @change_log.has_key? 'redefine'
-          redefine = @change_log['redefine']
+          redefine = @change_log['redefine']['namespaces']
+          if not redefine
+            redefine = @change_log['redefine']
+          end
           if redefine.has_key? obj.prefix.to_s
             entry = redefine[obj.prefix.to_s]
             new_keyword = entry['new_keyword'].to_sym
@@ -106,6 +133,20 @@ class Main
         @keywords_seen.add(obj.prefix)
       end
 
+      # update annotation definitions
+      if obj.is_a? AnnotationDefinition and obj.type.eql? :url
+        if @redefine_annotations
+          old_url = obj.value
+          if @annotation_url_map.has_key? old_url.to_s
+            kw = obj.prefix
+            new_url = @annotation_url_map[old_url]['new_url']
+            prefix = @annotation_url_map[old_url]['prefix']
+            obj = AnnotationDefinition.new(:url, kw, new_url)
+            @annotation_keyword_map[kw] = prefix # map bel doc annotation kw to set of changelog prefixes
+          end
+        end
+      end
+
       # evidence always needs quoting; backwards-compatibility
       if obj.is_a? Annotation
         if obj.name == 'Evidence'
@@ -113,6 +154,40 @@ class Main
           ev.gsub!(EvidenceMatcher, 'SET Evidence = "\1"')
           puts ev.to_s
           next
+        # look for replacement values for annotations  
+        elsif @annotation_keyword_map.has_key? obj.name
+          prefixes = @annotation_keyword_map[obj.name]
+          # prefixes is a Set, since multiple data sources can be combined in a .belanno (e.g., CLO and EFO)
+          prefixes.each do |prefix|
+            replacements = @change_log[prefix]
+            if replacements
+              if obj.value.respond_to?(:map!) # Annotation value is a list
+                obj.value.map! do |v|
+                  replacement_value = replacements[v.to_s]
+                  if replacement_value
+                    if LostReplaceValues.include? replacement_value
+                      $stderr.puts "no replacement value for #{obj.name} '#{v}' - value '#{replacement_value}'"
+                    else
+                      $stderr.puts "Annotation #{obj.name}:#{v} replaced by '#{replacement_value}'"
+                      v = replacement_value
+                    end
+                  end
+                  v
+                end
+              else # single Annotation value
+                replacement_value = replacements[obj.value.to_s]
+                if replacement_value
+                  if LostReplaceValues.include? replacement_value
+                    $stderr.puts "no replacement value for #{obj.name} '#{obj.value}' - value '#{replacement_value}'"
+                  else
+                    $stderr.puts " Annotation #{obj.name}:#{obj.value} replaced by '#{replacement_value}'"
+                    obj.value = replacement_value
+                    next
+                  end
+                end
+              end
+            end
+          end
         end
       end
 
@@ -126,6 +201,7 @@ class Main
             if LostReplaceValues.include? replacement_value
               $stderr.puts "no replacement value for #{obj.ns} '#{obj.value}' - value '#{replacement_value}'"
             else
+              $stderr.puts " #{obj.ns}:#{obj.value} replaced by '#{replacement_value}'"
               obj.value = replacement_value
             end
           end
@@ -154,7 +230,6 @@ class Main
           end
         end
       end
-
       # do not print Parameter and Term; they are included in Statement
       if not obj.is_a? Parameter and not obj.is_a? Term
         puts obj.to_bel
