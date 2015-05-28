@@ -131,6 +131,7 @@ module BEL
       def initialize(fx, *arguments)
         @fx = case fx
         when String
+          Function.new(FUNCTIONS[fx.to_sym])
         when Symbol
           Function.new(FUNCTIONS[fx.to_sym])
         when Function
