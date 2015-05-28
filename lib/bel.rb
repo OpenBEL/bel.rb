@@ -7,12 +7,17 @@ require_relative 'bel/namespace'
 require_relative 'bel/features'
 require_relative 'bel/util'
 
+require_relative 'bel/extension'
+require_relative 'bel/format'
+require_relative 'bel/evidence_model'
+require_relative 'bel/translation'
+
+require_relative 'bel/rdf'
+require_relative 'bel/script'
+
 include BEL::Language
 include BEL::Namespace
 
-module BEL
-  autoload :Script,    "#{File.dirname(__FILE__)}/bel/script"
-  autoload :RDF,       "#{File.dirname(__FILE__)}/bel/rdf"
-end
+BEL::Extension.load_extension('json/json', 'bel')
 # vim: ts=2 sw=2:
 # encoding: utf-8
