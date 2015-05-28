@@ -1,4 +1,4 @@
-require_relative '../features'
+require_relative 'features'
 require_relative 'quoting'
 module BEL
   module Language

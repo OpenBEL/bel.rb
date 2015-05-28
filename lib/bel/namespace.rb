@@ -1,7 +1,7 @@
 require 'open-uri'
 
-require_relative '../features'
-require_relative './language'
+require_relative 'features'
+require_relative 'language'
 
 class String
   def split_by_last(char=" ")
