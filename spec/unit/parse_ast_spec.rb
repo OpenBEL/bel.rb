@@ -20,7 +20,6 @@ describe BEL::Parser do
 
     it "BEL expressions' parsed AST is correct" do
       EXPRESSIONS.each do |term, ast_string|
-        puts "testing expression: #{term}"
         expect(
           LibBEL::bel_ast_as_string(subject.parse(term))
         ).to eq(ast_string)

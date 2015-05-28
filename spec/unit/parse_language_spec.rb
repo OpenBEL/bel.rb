@@ -88,7 +88,6 @@ and apoptosis (programmed cell death) [1,2]"\n}
     objects = BEL::Script.parse(annotations).to_a
     expect(objects).to be
     expect(objects.length).to eql(1)
-    puts objects.first.value
     expect(objects.first.value).to eql([
       "Pub,\"Med\"",
       "Name of, the \"article\"",
