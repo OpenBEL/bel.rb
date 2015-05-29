@@ -1,6 +1,5 @@
 require 'open-uri'
 
-require_relative 'features'
 require_relative 'language'
 
 class String
@@ -291,20 +290,6 @@ module BEL
         each do |s|
           val_enc = s.strip!.split_by_last('|').map(&:to_sym)
           @values[val_enc[0]] = val_enc[1]
-        end
-      end
-    end
-
-    if BEL::Features.rdf_support?
-      require_relative 'rdf'
-
-      class NamespaceDefinition
-        def to_uri
-          @rdf_uri
-        end
-
-        def to_rdf_vocabulary
-          RUBYRDF::Vocabulary.new("#{@rdf_uri}/")
         end
       end
     end

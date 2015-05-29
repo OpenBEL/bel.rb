@@ -8,8 +8,10 @@ include BEL::Namespace
 describe 'RDF functionality of BEL language objects' do
 
   before(:all) do
-    if not BEL::Features.rdf_support?
-      fail RuntimeError, "RDF tests cannot run; install rdf requirements"
+    begin
+      BEL::Extension.load_extension('rdf/rdf')
+    rescue LoadError => e
+      raise
     end
   end
 

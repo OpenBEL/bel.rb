@@ -1,21 +1,6 @@
 # vim: ts=2 sw=2:
 # Defines the RDF vocabulary for BEL structures.
 
-unless BEL::Features.rdf_support?
-  # rdf and addressable are required
-  raise RuntimeError, %Q{BEL::RDF is not supported.
-The rdf and addressable gems are required.
-
-Install the gems:
-      gem install rdf
-      gem install addressable
-      gem install uuid}
-end
-
-require 'rdf'
-require 'addressable/uri'
-require 'uuid'
-
 # rename rdf module to avoid conflict within BEL::RDF
 RUBYRDF = RDF
 
