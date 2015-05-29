@@ -7,6 +7,7 @@
 # From standard in
 # usage: echo "<BEL DOCUMENT STRING>" | bel_upgrade -c file.json
 
+$: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
 require 'bel'
 require 'json'
 require 'optparse'

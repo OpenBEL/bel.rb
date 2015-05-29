@@ -2,6 +2,7 @@
 # bel_rdfschema: Dump RDF schema for BEL.
 # usage: bel_rdfschema --format [ntriples | nquads | turtle]
 
+$: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
 require 'bel'
 require 'optparse'
 require 'set'

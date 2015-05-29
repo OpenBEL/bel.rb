@@ -13,6 +13,7 @@
 # Format option
 # usage: bel2rdf --bel [FILE] --format [ntriples | nquads | turtle]
 
+$: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
 require 'bel'
 require 'optparse'
 require 'set'
