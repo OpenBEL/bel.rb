@@ -1,4 +1,5 @@
-require 'bel/namespace'
+require 'bel/evidence_model'
+require 'bel/language'
 require 'rexml/document'
 require 'rexml/streamlistener'
 
@@ -14,7 +15,7 @@ module BEL::Extension::Format
     end
 
     def deserialize(data)
-      SAXIterator.new(data, EvidenceParser)
+      EvidenceYielder.new(data)
     end
 
     def serialize(objects, writer = StringIO.new)
@@ -22,28 +23,25 @@ module BEL::Extension::Format
 
     private
 
-    class SAXIterator
-      include Enumerable
+    class EvidenceYielder
 
-      def initialize(io, handler_class)
-        @io            = io
-        @handler_class = handler_class
+      def initialize(io)
+        @io = io
       end
 
-      def each
-        evidence_yielder = Proc.new { |evidence|
-          yield evidence
-        }
-        handler = @handler_class.new(evidence_yielder)
-
-        REXML::Document.parse_stream(@io, handler)
+      def each(&block)
+        if block_given?
+          handler = EvidenceHandler.new(block)
+          REXML::Document.parse_stream(@io, handler)
+        else
+          to_enum(:each)
+        end
       end
     end
 
-    class EvidenceParser
+    class EvidenceHandler
       include REXML::StreamListener
-      include ::BEL::Namespace
-      include ::BEL::Language
+      include ::BEL::Model
 
       ANNOTATION                     = "annotation"
       ANNOTATION_DEFINITION_GROUP    = "annotationDefinitionGroup"
@@ -88,179 +86,301 @@ module BEL::Extension::Format
       USAGE                          = "usage"
       VERSION                        = "version"
 
-      def initialize(yielder)
-        @yielder           = yielder
+      def initialize(callable)
+        @callable          = callable
         @element_stack     = []
-        @text              = text
-        @nspc_defs         = {}
-        @anno_defs         = {}
-        @current_anno_def  = nil
+        @text              = nil
+        @evidence          = Evidence.new
       end
 
+      # Called on element start by REXML.
       def tag_start(name, attributes)
-        name.sub!(/^bel:/, '')
+        name.
+          sub!(/^bel:/, '').
+          gsub!(/([A-Z])/) { |match| "_#{match.downcase}" }
 
-        case name
-        when NAMESPACE_GROUP
-          @nspc_defs      = {}
-          @element_stack << :namespace_group
-        when ANNOTATION_DEFINITION_GROUP
-          @anno_defs      = {}
-          @element_stack << :annotation_definition_group
-        when NAMESPACE
-          if stack_top == :namespace_group
-            prefix             = attr_value(attributes, PREFIX)
-            resource_location  = attr_value(attributes, RESOURCE_LOCATION)
-            @nspc_defs[prefix] = NamespaceDefinition.new(prefix, resource_location)
-            @yielder.call(@nspc_defs[prefix])
-          end
-          @element_stack << :namespace
-        when EXTERNAL_ANNOTATION_DEFINITION
-          if stack_top == :annotation_definition_group
-            id                 = attr_value(attributes, ID)
-            url                = attr_value(attributes, URL)
-            @anno_defs[id]     = AnnotationDefinition.new(:url, id, url)
-            @yielder.call(@anno_defs[id])
-          end
-          @element_stack << :external_annotation_definition
-        when INTERNAL_ANNOTATION_DEFINITION
-          if stack_top == :annotation_definition_group
-            id                 = attr_value(attributes, ID)
-            @current_anno_def  = AnnotationDefinition.new(nil, id, nil)
-            @anno_defs[id]     = @current_anno_def
-          end
-          @element_stack << :internal_annotation_definition
-        when LIST_ANNOTATION
-          if stack_top == :internal_annotation_definition
-            @current_anno_def.type = :list
-            # FIXME We cannot save this value to an AnnotationDefinition.
-            # We may want to parse to Hash through an abstraction.
-          end
-          @element_stack << :list_annotation
-        when PATTERN_ANNOTATION
-          if stack_top == :internal_annotation_definition
-            @current_anno_def.type = :pattern
-            # FIXME We cannot save this value to an AnnotationDefinition.
-            # We may want to parse to Hash through an abstraction.
-          end
-          @element_stack << :list_annotation
-        when STATEMENT_GROUP
-          @element_stack << :statement_group
-        when STATEMENT
-          stmt = Statement.new
-          stmt.relationship = attr_value(attributes, RELATIONSHIP)
-          if stack_top == :statement_group
-            @statement_stack = []
-          elsif stack_top == :object
-            @statement_stack.last.object = stmt
-          end
-
-          @statement_stack << stmt
-          @element_stack   << :statement
-        when SUBJECT
-          @element_stack << :subject
-        when OBJECT
-          @element_stack << :object
-        when TERM
-          term = Term.new(attr_value(attributes, FUNCTION), [])
-          if stack_top == :subject || stack_top == :object
-            # outer term
-            @term_stack = []
-          elsif stack_top == :term
-            # nested term
-            @term_stack.last.arguments << term
-          end
-
-          @term_stack    << term
-          @element_stack << :term
-        when PARAMETER
-          if stack_top == :term
-            ns                 = attr_value(attributes, NS)
-            @current_parameter = Parameter.new(@nspc_defs[ns], nil)
-          end
+        start_method = "start_#{name}"
+        if self.respond_to? start_method
+          self.send(start_method, attributes)
         end
       end
 
+      # Called on element end by REXML.
       def tag_end(name)
-        name.sub!(/^bel:/, '')
+        name.
+          sub!(/^bel:/, '').
+          gsub!(/([A-Z])/) { |match| "_#{match.downcase}" }
 
-        case name
-        when NAMESPACE_GROUP
-          @element_stack.pop
-        when ANNOTATION_DEFINITION_GROUP
-          @element_stack.pop
-        when NAMESPACE
-          @element_stack.pop
-        when EXTERNAL_ANNOTATION_DEFINITION
-          @element_stack.pop
-        when INTERNAL_ANNOTATION_DEFINITION
-          @yielder.call(@current_anno_def)
-          @element_stack.pop
-        when LIST_ANNOTATION
-          @element_stack.pop
-        when PATTERN_ANNOTATION
-          begin
-            @current_anno_def.value = Regexp.new(@text)
-          rescue RegexpError
-            @text = Regexp.escape(@text)
-            retry
-          end
-          @element_stack.pop
-        when DESCRIPTION
-          if stack_top == :internal_annotation_definition
-            description       = @text
-            # FIXME We cannot save this value to an AnnotationDefinition.
-            # We may want to parse to Hash through an abstraction.
-          end
-        when USAGE
-          if stack_top == :internal_annotation_definition
-            usage             = @text
-            # FIXME We cannot save this value to an AnnotationDefinition.
-            # We may want to parse to Hash through an abstraction.
-          end
-        when LIST_VALUE
-          if stack_top == :list_annotation
-            (@current_anno_def.value ||= []) << @text
-            # FIXME We cannot save this value to an AnnotationDefinition.
-            # We may want to parse to Hash through an abstraction.
-          end
-        when STATEMENT_GROUP
-          @element_stack.pop
-        when STATEMENT
-          @element_stack.pop
-
-          stmt = @statement_stack.pop
-          if @statement_stack.empty?
-            @yielder.call(stmt)
-          end
-        when SUBJECT
-          @statement_stack.last.subject = @term_stack.last
-          @element_stack.pop
-        when OBJECT
-          if @statement_stack.last.object == nil
-            # sets object if it wasn't already set by OBJECT STATEMENT
-            @statement_stack.last.object  = @term_stack.last
-          end
-          @element_stack.pop
-        when TERM
-          @element_stack.pop
-
-          if @term_stack.size > 1
-            @term_stack.pop
-            @current_term = @term_stack.last
-          end
-        when PARAMETER
-          @current_parameter.value    = @text
-          @term_stack.last.arguments << @current_parameter
+        end_method = "end_#{name}"
+        if self.respond_to? end_method
+          self.send end_method
         end
       end
 
+      # Called on text node by REXML.
       def text(*args)
         if args.size.zero?
           @text = ''
         else
           @text = args.first
         end
+      end
+
+      # Start element methods, dynamically invoked.
+
+      def start_namespace_group(attributes)
+        @element_stack << :namespace_group
+      end
+
+      def start_annotation_definition_group(attributes)
+        @element_stack << :annotation_definition_group
+      end
+
+      def start_namespace(attributes)
+        if stack_top == :namespace_group
+          prefix             = attr_value(attributes, PREFIX)
+          resource_location  = attr_value(attributes, RESOURCE_LOCATION)
+          @evidence.metadata.namespace_definitions[prefix] = resource_location
+        end
+        @element_stack << :namespace
+      end
+
+      def start_external_annotation_definition(attributes)
+        if stack_top == :annotation_definition_group
+          id                 = attr_value(attributes, ID)
+          url                = attr_value(attributes, URL)
+          @evidence.metadata.annotation_definitions[id] = {
+            :type   => :url,
+            :domain => url
+          }
+        end
+        @element_stack << :external_annotation_definition
+      end
+
+      def start_internal_annotation_definition(attributes)
+        if stack_top == :annotation_definition_group
+          id                 = attr_value(attributes, ID)
+          @current_anno_def  = {}
+          @evidence.metadata.annotation_definitions[id] = @current_anno_def
+        end
+        @element_stack << :internal_annotation_definition
+      end
+
+      def start_list_annotation(attributes)
+        if stack_top == :internal_annotation_definition
+          @current_anno_def[:type]   = :list
+          @current_anno_def[:domain] = []
+        end
+        @element_stack << :list_annotation
+      end
+
+      def start_pattern_annotation(attributes)
+        if stack_top == :internal_annotation_definition
+          @current_anno_def[:type] = :pattern
+        end
+        @element_stack << :pattern_annotation
+      end
+
+      def start_statement_group(attributes)
+        @element_stack << :statement_group
+      end
+
+      def start_statement(attributes)
+        stmt = Statement.new
+        stmt.relationship = attr_value(attributes, RELATIONSHIP)
+        if stack_top == :statement_group
+          @statement_stack = []
+        elsif stack_top == :object
+          @statement_stack.last.object = stmt
+        else
+          puts stack_top
+        end
+
+        @statement_stack << stmt
+        @element_stack << :statement
+      end
+
+      def start_subject(attributes)
+        @element_stack << :subject
+      end
+
+      def start_object(attributes)
+        @element_stack << :object
+      end
+
+      def start_term(attributes)
+        term = Term.new(attr_value(attributes, FUNCTION), [])
+        if stack_top == :subject || stack_top == :object
+          # outer term
+          @term_stack = []
+        elsif stack_top == :term
+          # nested term
+          @term_stack.last.arguments << term
+        end
+
+        @term_stack    << term
+        @element_stack << :term
+      end
+
+      def start_parameter(attributes)
+        if stack_top == :term
+          ns_id              = attr_value(attributes, NS)
+          # XXX Hitting a SystemStackError on line 174 (inside call).
+          # Example: large_corpus.xbel
+          ns                 = {
+            :prefix => ns_id,
+            :url    => @evidence.metadata.namespace_definitions[ns_id]
+          }
+          @current_parameter = Parameter.new(ns, nil)
+        end
+        @element_stack << :parameter
+      end
+
+      def start_annotation_group(attributes)
+        @annotation_id = nil
+        @element_stack << :annotation_group
+      end
+
+      def start_annotation(attributes)
+        if @element_stack[-2] == :statement
+          ref_id = attr_value(attributes, REF_ID)
+          @annotation_id = ref_id
+          @element_stack << :annotation
+        end
+      end
+
+      def start_evidence(attributes)
+        @element_stack << :evidence
+      end
+
+      # End element methods, dynamically invoked.
+
+      def end_namespace_group
+        @element_stack.pop
+      end
+
+      def end_annotation_definition_group
+        @element_stack.pop
+      end
+
+      def end_namespace
+        @element_stack.pop
+      end
+
+      def end_external_annotation_definition
+        @element_stack.pop
+      end
+
+      def end_internal_annotation_definition
+        @element_stack.pop
+      end
+
+      def end_list_annotation
+        @element_stack.pop
+      end
+
+      def end_pattern_annotation
+        begin
+          @current_anno_def[:domain] = Regexp.new(@text)
+        rescue RegexpError
+          @text = Regexp.escape(@text)
+          retry
+        end
+        @element_stack.pop
+      end
+
+      def end_description
+        if stack_top == :internal_annotation_definition
+          @current_anno_def[:description] = @text
+        end
+      end
+
+      def end_usage
+        if stack_top == :internal_annotation_definition
+          @current_anno_def[:usage] = @text
+        end
+      end
+
+      def end_list_value
+        if stack_top == :list_annotation
+          @current_anno_def[:domain] << @text
+        end
+      end
+
+      def end_statement_group
+        @element_stack.pop
+      end
+
+      def end_statement
+        @element_stack.pop
+
+        stmt = @statement_stack.pop
+        if @statement_stack.empty?
+          @evidence.bel_statement = stmt
+          @callable.call(@evidence)
+
+          # create new evidence with existing metadata;
+          # header and definitions
+          @evidence = Evidence.create({
+            :metadata => @evidence.metadata
+          })
+        end
+      end
+
+      def end_subject
+        @statement_stack.last.subject = @term_stack.last
+        @element_stack.pop
+      end
+
+      def end_object
+        if @statement_stack.last.object == nil
+          # sets object if it wasn't already set by OBJECT STATEMENT
+          @statement_stack.last.object  = @term_stack.last
+        end
+        @element_stack.pop
+      end
+
+      def end_term
+        @element_stack.pop
+
+        if @term_stack.size > 1
+          @term_stack.pop
+          @current_term = @term_stack.last
+        end
+      end
+
+      def end_parameter
+        @current_parameter.value    = @text
+        @term_stack.last.arguments << @current_parameter
+        @element_stack.pop
+      end
+
+      def end_annotation_group
+        @element_stack.pop
+      end
+
+      def end_annotation
+        if @element_stack[-2] == :statement
+          ref_id = @annotation_id
+
+          value  = @evidence.experiment_context[ref_id]
+          if value
+            # create array for multiple values by refID
+            @evidence.experiment_context[ref_id] = [value, @text].flatten
+          else
+            @evidence.experiment_context[ref_id] = @text
+          end
+        end
+
+        @element_stack.pop
+      end
+
+      def end_evidence
+        if @element_stack[-3] == :statement
+          @evidence.summary_text.value = @text
+        end
+
+        @element_stack.pop
       end
 
       private
