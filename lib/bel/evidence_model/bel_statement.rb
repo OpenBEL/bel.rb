@@ -12,7 +12,7 @@ module BEL
     # - SUBJECT RELATIONSHIP OBJECT(Statement)
     #   - +p(HGNC:VHL) -> (p(HGNC:TNF) -> bp(GOBP:"cell death"))+
     class Statement
-      attr_accessor :subject, :relationship, :object
+      attr_accessor :subject, :relationship, :object, :comment
 
       # Creates a {Statement} with +subject+, +relationship+, and +object+.
       #
@@ -22,10 +22,11 @@ module BEL
       #        {Term subject} and object (either {Term} or {Statement}).
       # @param [Term|Statement] object the object term that is measured for
       #        change within an experiment
-      def initialize(subject:, relationship: nil, object: nil)
-        @subject = subject
+      def initialize(subject: nil, relationship: nil, object: nil, comment: nil)
+        @subject      = subject
         @relationship = relationship
-        @object = object
+        @object       = object
+        @comment      = nil
       end
 
       def subject_only?
@@ -50,8 +51,22 @@ module BEL
         @relationship == other.relationship &&
         @object == other.object
       end
-
       alias_method :eql?, :'=='
+
+      def to_bel
+        lbl = case
+        when subject_only?
+          @subject.to_s
+        when simple?
+          "#{@subject.to_s} #{@relationship} #{@object.to_s}"
+        when nested?
+          "#{@subject.to_s} #{@relationship} (#{@object.to_s})"
+        else
+          ''
+        end
+        comment ? lbl + ' //' + comment : lbl
+      end
+      alias_method :to_s, :to_bel
     end
   end
 end

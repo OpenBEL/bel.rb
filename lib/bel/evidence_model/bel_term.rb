@@ -21,8 +21,13 @@ module BEL
         return false if other == nil
         @fx == other.fx && @arguments == other.arguments
       end
-
       alias_method :eql?, :'=='
+
+      def to_bel
+        arguments = [@arguments].flatten.map(&:to_bel).join(',') 
+        "#@fx(#{arguments})"
+      end
+      alias_method :to_s, :to_bel
     end
   end
 end

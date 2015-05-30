@@ -28,8 +28,18 @@ module BEL
         return false if other == nil
         @ns == other.ns && @value == other.value
       end
-
       alias_method :eql?, :'=='
+
+      def to_bel
+        if @ns
+          prefix = @ns.respond_to?(:prefix) ? @ns.prefix : @ns[:prefix]
+          prefix = prefix.to_s + ':'
+        else
+          prefix = ""
+        end
+        %Q{#{prefix}#{ensure_quotes(@value)}}
+      end
+      alias_method :to_s, :to_bel
     end
   end
 end
