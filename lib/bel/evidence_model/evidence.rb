@@ -13,9 +13,9 @@ module BEL
 
       def self.create(hash)
         ev = Evidence.new
-        ev.bel_statement      = hash[:bel_statement]
+        ev.bel_statement      = hash[:bel_statement] || nil
         ev.citation           = Citation.create(hash[:citation] || {})
-        ev.summary_text.value = hash[:summary_text]
+        ev.summary_text.value = hash[:summary_text] || nil
         ev.experiment_context = ExperimentContext.new(hash[:experiment_context] || {})
         ev.metadata           = Metadata.new(hash[:metadata] || {})
         ev
