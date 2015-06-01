@@ -9,8 +9,6 @@ module BEL
   module Model
 
     class Evidence
-      Statement = ::BEL::Language::Statement
-
       def self.create(hash)
         ev = Evidence.new
         ev.bel_statement      = hash[:bel_statement] || nil

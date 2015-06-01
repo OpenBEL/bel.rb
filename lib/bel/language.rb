@@ -1,4 +1,5 @@
 require_relative 'quoting'
+require_relative 'evidence_model'
 module BEL
   module Language
 
@@ -40,51 +41,6 @@ module BEL
       alias_method :to_s, :to_bel
     end
 
-    class Parameter
-      include BEL::Quoting
-      include Comparable
-      attr_accessor :ns, :value, :enc, :signature
-
-      def initialize(ns, value, enc=nil)
-        @ns = ns
-        @value = value
-        @enc = enc || ''
-        @signature = E.new(@enc)
-      end
-
-      def <=>(other)
-        ns_compare = @ns <=> other.ns
-        if ns_compare == 0
-          @value <=> other.value
-        else
-          ns_compare
-        end
-      end
-
-      def valid?
-        return false unless value
-        return true unless @ns
-        @ns.respond_to?(:values) && ns.values.include?(value)
-      end
-
-      def hash
-        [@ns, @value].hash
-      end
-
-      def ==(other)
-        return false if other == nil
-        @ns == other.ns && @value == other.value
-      end
-
-      alias_method :eql?, :'=='
-
-      def to_bel
-        %Q{#{@ns ? @ns.prefix.to_s + ':' : ''}#{ensure_quotes(@value)}}
-      end
-
-      alias_method :to_s, :to_bel
-    end
-
     class Function
       attr_reader :short_form, :long_form, :return_type,
                   :description, :signatures
@@ -123,78 +79,6 @@ module BEL
       end
     end
 
-    class Term
-      include Comparable
-      attr_accessor :fx, :arguments, :signature
-
-      def initialize(fx, *arguments)
-        @fx = case fx
-        when String
-          Function.new(FUNCTIONS[fx.to_sym])
-        when Symbol
-          Function.new(FUNCTIONS[fx.to_sym])
-        when Function
-          fx
-        when nil
-          raise ArgumentError, 'fx must not be nil'
-        end
-        @arguments = (arguments ||= []).flatten
-        @signature = Signature.new(
-          @fx[:short_form],
-          *@arguments.map { |arg|
-            case arg
-            when Term
-              F.new(arg.fx.return_type)
-            when Parameter
-              E.new(arg.enc)
-            when nil
-              NullE.new
-            end
-          })
-      end
-
-      def <<(item)
-        @arguments << item
-      end
-
-      def valid?
-        invalid_signatures = @arguments.find_all { |arg|
-          arg.is_a? Term
-        }.find_all { |term|
-          not term.valid?
-        }
-        return false if not invalid_signatures.empty?
-
-        sigs = @fx.signatures
-        sigs.any? do |sig| (@signature <=> sig) >= 0 end
-      end
-
-      def valid_signatures
-        @fx.signatures.find_all { |sig| (@signature <=> sig) >= 0 }
-      end
-
-      def invalid_signatures
-        @fx.signatures.find_all { |sig| (@signature <=> sig) < 0 }
-      end
-
-      def hash
-        [@fx, @arguments].hash
-      end
-
-      def ==(other)
-        return false if other == nil
-        @fx == other.fx && @arguments == other.arguments
-      end
-
-      alias_method :eql?, :'=='
-
-      def to_bel
-        "#{@fx[:short_form]}(#{[@arguments].flatten.map(&:to_bel).join(',')})"
-      end
-
-      alias_method :to_s, :to_bel
-    end
-
     Annotation = Struct.new(:name, :value) do
       include BEL::Quoting
 
@@ -214,61 +98,6 @@ module BEL
     UnsetAnnotation = Struct.new(:name) do
       def to_bel
         %Q{UNSET #{self.name}}
-      end
-
-      alias_method :to_s, :to_bel
-    end
-
-    class Statement
-      attr_accessor :subject, :relationship, :object, :annotations, :comment
-
-      def initialize(subject=nil, relationship=nil, object=nil, annotations=[], comment=nil)
-        @subject = subject
-        @relationship = relationship
-        @object = object
-        @annotations = annotations
-        @comment = comment
-      end
-
-      def subject_only?
-        !@relationship
-      end
-
-      def simple?
-        @object and @object.is_a? Term
-      end
-
-      def nested?
-        @object and @object.is_a? Statement
-      end
-
-      def hash
-        [@subject, @relationship, @object, @annotations, @comment].hash
-      end
-
-      def ==(other)
-        return false if other == nil
-        @subject == other.subject &&
-        @relationship == other.relationship &&
-        @object == other.object &&
-        @annotations == other.annotations &&
-        @comment == comment
-      end
-
-      alias_method :eql?, :'=='
-
-      def to_bel
-        lbl = case
-        when subject_only?
-          @subject.to_s
-        when simple?
-          "#{@subject.to_s} #{@relationship} #{@object.to_s}"
-        when nested?
-          "#{@subject.to_s} #{@relationship} (#{@object.to_s})"
-        else
-          ''
-        end
-        comment ? lbl + ' //' + comment : lbl
       end
 
       alias_method :to_s, :to_bel
@@ -769,8 +598,8 @@ module BEL
     ]
 
     RELATIONSHIPS.each do |rel|
-      Term.send(:define_method, rel) do |another|
-        s = Statement.new self
+      BEL::Model::Term.send(:define_method, rel) do |another|
+        s = BEL::Model::Statement.new self
         s.relationship = rel
         s.object = another
         s
@@ -779,10 +608,10 @@ module BEL
     FUNCTIONS.each do |fx, metadata|
       func = Function.new(metadata)
       Language.send(:define_method, fx) do |*args|
-        Term.new(func, *args)
+        BEL::Model::Term.new(func, *args)
       end
       Language.send(:define_method, metadata[:long_form]) do |*args|
-        Term.new(func, *args)
+        BEL::Model::Term.new(func, *args)
       end
     end
   end

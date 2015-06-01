@@ -80,7 +80,7 @@ module BEL::Extension::Format
               header_flag = false
             end
 
-            #yield statements
+            yield element_string(XBELYielder.statement(evidence.bel_statement))
           }
 
           yield end_element_string(el_statement_group)
@@ -88,6 +88,63 @@ module BEL::Extension::Format
         else
           to_enum(:each)
         end
+      end
+
+      def self.statement(statement)
+        el_statement = REXML::Element.new('bel:statement')
+
+        if statement.relationship
+          el_statement.add_attribute 'bel:relationship', statement.relationship
+        end
+
+        el_subject = self.subject(statement.subject)
+        el_statement.add_element(el_subject)
+
+        if statement.object
+          el_object = self.object(statement.object)
+          el_statement.add_element(el_object)
+        end
+
+        el_statement
+      end
+
+      def self.subject(subject)
+        el_subject = REXML::Element.new('bel:subject')
+        el_subject.add_element(self.term(subject))
+      end
+
+      def self.object(object)
+        el_object = REXML::Element.new('bel:object')
+
+        case object
+        when BEL::Model::Term
+          el_object.add_element(self.term(object))
+        when BEL::Model::Statement
+          el_object.add_element(self.statement(object))
+        end
+        el_object
+      end
+
+      def self.term(term)
+        el_term    = REXML::Element.new('bel:term')
+        el_term.add_attribute 'bel:function', term.fx
+
+        term.arguments.each do |arg|
+          case arg
+          when BEL::Model::Term
+            el_term.add_element(self.term(arg))
+          when BEL::Model::Parameter
+            el_term.add_element(self.parameter(arg))
+          end
+        end
+        el_term
+      end
+
+      def self.parameter(parameter)
+        el_parameter      = REXML::Element.new('bel:parameter')
+        el_parameter.text = parameter.value
+        el_parameter.add_attribute 'bel:ns', parameter.ns
+        el_parameter
       end
 
       def self.document
@@ -117,7 +174,7 @@ module BEL::Extension::Format
         # normalize hash keys
         hash = Hash[
           hash.map { |k, v|
-            k = k.to_s
+            k = k.to_s.dup
             k.downcase!
             k.gsub!(/[-_ .]/, '')
             [k, v]
@@ -389,13 +446,12 @@ module BEL::Extension::Format
         stmt.relationship = attr_value(attributes, RELATIONSHIP)
         if stack_top == :statement_group
           @statement_stack = []
+          @statement_stack << stmt
         elsif stack_top == :object
           @statement_stack.last.object = stmt
-        else
-          puts stack_top
+          @statement_stack << stmt
         end
 
-        @statement_stack << stmt
         @element_stack << :statement
       end
 
@@ -519,7 +575,7 @@ module BEL::Extension::Format
           evidence_copy = Evidence.create({
             :bel_statement      => stmt,
             :citation           => nil,
-            :summary_text       => @evidence.summary_text,
+            :summary_text       => @evidence.summary_text.value,
             :experiment_context => @evidence.experiment_context.values.dup,
             :metadata           => @evidence.metadata.values.dup
           })

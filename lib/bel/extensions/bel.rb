@@ -44,7 +44,7 @@ module BEL::Extension::Format
           case parsed_obj
           when ::BEL::Language::DocumentProperty
             @metadata.document_header[parsed_obj.name] = parsed_obj.value
-          when ::BEL::Language::Statement
+          when ::BEL::Model::Statement
             yield to_evidence(parsed_obj, @metadata)
           when ::BEL::Language::AnnotationDefinition
             @metadata.annotation_definitions[parsed_obj.prefix] = {

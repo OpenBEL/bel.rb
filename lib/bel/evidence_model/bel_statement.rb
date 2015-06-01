@@ -22,11 +22,20 @@ module BEL
       #        {Term subject} and object (either {Term} or {Statement}).
       # @param [Term|Statement] object the object term that is measured for
       #        change within an experiment
-      def initialize(subject: nil, relationship: nil, object: nil, comment: nil)
+      def initialize(subject = nil, relationship = nil, object = nil, comment = nil)
         @subject      = subject
         @relationship = relationship
         @object       = object
-        @comment      = nil
+        @comment      = comment
+        @annotations  = annotations
+      end
+
+      def annotations
+        @annotations ||= []
+      end
+
+      def annotations=(annotations)
+        @annotations = annotations
       end
 
       def subject_only?

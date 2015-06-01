@@ -13,22 +13,26 @@
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        yield BEL::Language::Statement.new(
-          @statement.subject, :hasComponent, arg, @statement.annotations, @statement.comment
+        statement = BEL::Model::Statement.new(
+          @statement.subject, :hasComponent, arg, @statement.comment
         )
+        statement.annotations = @statement.annotations
+        yield statement
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        yield BEL::Language::Statement.new(
-          @statement.subject, :hasMember, arg, @statement.annotations, @statement.comment
+        statement = BEL::Model::Statement.new(
+          @statement.subject, :hasMember, arg, @statement.comment
         )
+        statement.annotations = @statement.annotations
+        yield statement
       end
     else
       yield @statement
     end
   }
   action statement_init {
-    @statement = BEL::Language::Statement.new()
+    @statement = BEL::Model::Statement.new()
     @statement_stack = [@statement]
   }
   action statement_subject {
@@ -38,7 +42,7 @@
     @statement_stack.last.object = @term
   }
   action statement_ostmt {
-    nested = BEL::Language::Statement.new()
+    nested = BEL::Model::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   }
@@ -82,6 +86,7 @@
 
 require 'observer'
 require_relative 'language'
+require_relative 'evidence_model'
 
 module BEL
   module Script

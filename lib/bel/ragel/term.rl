@@ -11,7 +11,7 @@ machine bel;
   }
   action term_fx {
     fx = @name.to_sym
-    @term_stack.push(BEL::Language::Term.new(fx, []))
+    @term_stack.push(BEL::Model::Term.new(fx, []))
     pfx = nil
     pbuf = []
   }
@@ -28,7 +28,7 @@ machine bel;
         ns = @namespaces[pfx.to_sym]
       end
 
-      param = BEL::Language::Parameter.new(ns, val)
+      param = BEL::Model::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
