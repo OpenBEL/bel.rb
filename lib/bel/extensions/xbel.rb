@@ -46,8 +46,8 @@ module BEL::Extension::Format
     class XBELYielder
 
       def initialize(data, options = {})
-        @data        = data
-        @write_header = (options[:write_header] || true)
+        @data         = data
+        @write_header = options.fetch(:write_header, true)
       end
 
       def each
@@ -58,11 +58,12 @@ module BEL::Extension::Format
           @data.each { |evidence|
             if header_flag
               # document header
-              if @write_header
-                el_document = XBELYielder.document
-                el_statement_group = XBELYielder.statement_group
+              el_document = XBELYielder.document
+              el_statement_group = XBELYielder.statement_group
 
-                yield start_element_string(el_document)
+              yield start_element_string(el_document)
+
+              if @write_header
                 yield element_string(
                   XBELYielder.header(evidence.metadata.document_header)
                 )
@@ -72,11 +73,9 @@ module BEL::Extension::Format
                 yield element_string(
                   XBELYielder.annotation_definitions(evidence.metadata.annotation_definitions)
                 )
-                yield start_element_string(el_statement_group)
-              else
-                # start statement group; declare namespaces
-                el_statement_group = XBELYielder.statement_group(true)
               end
+
+              yield start_element_string(el_statement_group)
 
               header_flag = false
             end
@@ -85,10 +84,7 @@ module BEL::Extension::Format
           }
 
           yield end_element_string(el_statement_group)
-
-          if @write_header
-            yield end_element_string(el_document)
-          end
+          yield end_element_string(el_document)
         else
           to_enum(:each)
         end
