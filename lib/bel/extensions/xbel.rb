@@ -19,6 +19,10 @@ module BEL::Extension::Format
     end
 
     def serialize(objects, writer = StringIO.new)
+      XBELYielder.new(objects).each { |xml_data|
+        writer << xml_data
+        writer.flush
+      }
     end
 
     private
@@ -37,6 +41,181 @@ module BEL::Extension::Format
           to_enum(:each)
         end
       end
+    end
+
+    class XBELYielder
+
+      def initialize(data, options = {})
+        @data        = data
+        @write_header = (options[:write_header] || true)
+      end
+
+      def each
+        if block_given?
+          header_flag = true
+          el_document = nil
+          @data.each { |evidence|
+            if @write_header && header_flag
+              el_document = XBELYielder.document
+
+              yield start_element_string(el_document)
+              yield element_string(
+                XBELYielder.header(evidence.metadata.document_header)
+              )
+              yield element_string(
+                XBELYielder.namespace_definitions(evidence.metadata.namespace_definitions)
+              )
+              yield element_string(
+                XBELYielder.annotation_definitions(evidence.metadata.annotation_definitions)
+              )
+              header_flag = false
+            end
+
+            #yield bel
+          }
+
+          if @write_header
+            yield end_element_string(el_document)
+          end
+        else
+          to_enum(:each)
+        end
+      end
+
+      def self.document
+        el = REXML::Element.new('bel:document')
+        el.add_namespace('bel', 'http://belframework.org/schema/1.0/xbel')
+        el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+        el.add_attribute('xsi:schemaLocation', 'http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd')
+
+        el
+      end
+
+      def self.header(hash)
+        el_header = REXML::Element.new('bel:header')
+
+        # normalize hash keys
+        hash = Hash[
+          hash.map { |k, v|
+            k = k.to_s
+            k.downcase!
+            k.gsub!(/[-_ .]/, '')
+            [k, v]
+          }
+        ]
+
+        (%w(name description version copyright) & hash.keys).each do |field|
+          el      = REXML::Element.new("bel:#{field}")
+          el.text = hash[field]
+          el_header.add_element(el)
+        end
+
+        # add contactinfo with different element name (contactInfo)
+        if hash.has_key?('contactinfo')
+          el      = REXML::Element.new('bel:contactInfo')
+          el.text = hash['contactinfo']
+          el_header.add_element(el)
+        end
+
+        # handle grouping for authors and licenses
+        if hash.has_key?('authors')
+          authors  = hash['authors']
+          el_group = REXML::Element.new('bel:authorGroup')
+
+          [authors].flatten.each do |author|
+            el      = REXML::Element.new('bel:author')
+            el.text = author.to_s
+            el_group.add_element(el)
+          end
+          el_header.add_element(el_group)
+        end
+        if hash.has_key?('licenses')
+          licenses = hash['licenses']
+          el_group = REXML::Element.new('bel:licenseGroup')
+
+          [licenses].flatten.each do |license|
+            el      = REXML::Element.new('bel:license')
+            el.text = license.to_s
+            el_group.add_element(el)
+          end
+          el_header.add_element(el_group)
+        end
+
+        el_header
+      end
+
+      def self.namespace_definitions(hash)
+        el_nd = REXML::Element.new('bel:namespaceGroup')
+        hash.each do |k, v|
+          el = REXML::Element.new('bel:namespace')
+          el.add_attribute 'bel:prefix',           k.to_s
+          el.add_attribute 'bel:resourceLocation', v.to_s
+          el_nd.add_element(el)
+        end
+
+        el_nd
+      end
+
+      def self.annotation_definitions(hash)
+        el_ad = REXML::Element.new('bel:annotationDefinitionGroup')
+        hash.each do |k, v|
+          type, domain = v.values_at(:type, :domain)
+          case type.to_sym
+          when :url
+            el = REXML::Element.new('bel:externalAnnotationDefinition')
+            el.add_attribute 'bel:url', domain.to_s
+            el.add_attribute 'bel:id',  k.to_s
+          when :pattern
+            el = REXML::Element.new('bel:internalAnnotationDefinition')
+            el.add_attribute 'bel:id', k.to_s
+
+            el_pattern      = REXML::Element.new('bel:patternAnnotation')
+            el_pattern.text =
+              domain.respond_to?(:source) ? domain.source : domain.to_s
+
+            el.add_element(el_pattern)
+          when :list
+            el = REXML::Element.new('bel:internalAnnotationDefinition')
+            el.add_attribute 'bel:id', k.to_s
+
+            el_list = REXML::Element.new('bel:listAnnotation')
+            if domain.respond_to?(:each)
+              domain.each do |value|
+                el_list_value      = REXML::Element.new('bel:listValue')
+                el_list_value.text = value.to_s
+                el_list.add_element(el_list_value)
+              end
+            else
+              el_list_value      = REXML::Element.new('bel:listValue')
+              el_list_value.text = domain.to_s
+              el_list.add_element(el_list_value)
+            end
+
+            el.add_element(el_list)
+          else
+            el = nil
+          end
+
+          el_ad.add_element(el) if el
+        end
+
+        el_ad
+      end
+
+      def start_element_string(element)
+        element.to_s.gsub(%r{(/>)}, '>')
+      end
+      private :start_element_string
+
+      def end_element_string(element)
+        "</#{element.expanded_name}>"
+      end
+      private :end_element_string
+
+      def element_string(element)
+        element.to_s
+      end
+      private :element_string
     end
 
     class EvidenceHandler
