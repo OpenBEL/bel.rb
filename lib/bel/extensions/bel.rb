@@ -17,7 +17,7 @@ module BEL::Extension::Format
     end
 
     def serialize(objects, writer = StringIO.new, options = {})
-      BELYielder.new(objects, {:write_header => true}).each { |bel_part|
+      BELYielder.new(objects).each { |bel_part|
         writer << "#{bel_part}\n"
         writer.flush
       }
@@ -98,7 +98,7 @@ module BEL::Extension::Format
 
     def initialize(data, options = {})
       @data = data
-      @write_header = (options[:write_header] || false)
+      @write_header = (options[:write_header] || true)
     end
 
     def each
