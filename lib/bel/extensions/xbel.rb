@@ -316,14 +316,24 @@ module BEL::Extension::Format
 
         stmt = @statement_stack.pop
         if @statement_stack.empty?
-          @evidence.bel_statement = stmt
-          @callable.call(@evidence)
-
-          # create new evidence with existing metadata;
-          # header and definitions
-          @evidence = Evidence.create({
-            :metadata => @evidence.metadata
+          # create new evidence from parsed data
+          evidence_copy = Evidence.create({
+            :bel_statement      => stmt,
+            :citation           => nil,
+            :summary_text       => @evidence.summary_text,
+            :experiment_context => @evidence.experiment_context.values.dup,
+            :metadata           => @evidence.metadata.values.dup
           })
+
+          # yield evidence
+          @callable.call(evidence_copy)
+
+          # clear evidence parser state
+          # note: this preserves @evidence.metadata for the definitions
+          @evidence.bel_statement      = nil
+          @evidence.citation           = nil
+          @evidence.summary_text       = nil
+          @evidence.experiment_context = nil
         end
       end
 
@@ -360,7 +370,7 @@ module BEL::Extension::Format
       end
 
       def end_annotation
-        if @element_stack[-2] == :statement
+        if @element_stack[-3] == :statement
           ref_id = @annotation_id
 
           value  = @evidence.experiment_context[ref_id]
