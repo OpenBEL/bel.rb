@@ -52,27 +52,39 @@ module BEL::Extension::Format
 
       def each
         if block_given?
-          header_flag = true
-          el_document = nil
+          header_flag        = true
+          el_document        = nil
+          el_statement_group = nil
           @data.each { |evidence|
-            if @write_header && header_flag
-              el_document = XBELYielder.document
+            if header_flag
+              # document header
+              if @write_header
+                el_document = XBELYielder.document
+                el_statement_group = XBELYielder.statement_group
 
-              yield start_element_string(el_document)
-              yield element_string(
-                XBELYielder.header(evidence.metadata.document_header)
-              )
-              yield element_string(
-                XBELYielder.namespace_definitions(evidence.metadata.namespace_definitions)
-              )
-              yield element_string(
-                XBELYielder.annotation_definitions(evidence.metadata.annotation_definitions)
-              )
+                yield start_element_string(el_document)
+                yield element_string(
+                  XBELYielder.header(evidence.metadata.document_header)
+                )
+                yield element_string(
+                  XBELYielder.namespace_definitions(evidence.metadata.namespace_definitions)
+                )
+                yield element_string(
+                  XBELYielder.annotation_definitions(evidence.metadata.annotation_definitions)
+                )
+                yield start_element_string(el_statement_group)
+              else
+                # start statement group; declare namespaces
+                el_statement_group = XBELYielder.statement_group(true)
+              end
+
               header_flag = false
             end
 
-            #yield bel
+            #yield statements
           }
+
+          yield end_element_string(el_statement_group)
 
           if @write_header
             yield end_element_string(el_document)
@@ -87,6 +99,18 @@ module BEL::Extension::Format
         el.add_namespace('bel', 'http://belframework.org/schema/1.0/xbel')
         el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
         el.add_attribute('xsi:schemaLocation', 'http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd')
+
+        el
+      end
+
+      def self.statement_group(declare_namespaces = false)
+        el = REXML::Element.new('bel:statementGroup')
+
+        if declare_namespaces
+          el.add_namespace('bel', 'http://belframework.org/schema/1.0/xbel')
+          el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+          el.add_attribute('xsi:schemaLocation', 'http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd')
+        end
 
         el
       end
