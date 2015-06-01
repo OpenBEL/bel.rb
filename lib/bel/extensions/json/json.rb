@@ -3,7 +3,8 @@ module BEL::Extension::Format
   class FormatJSON
 
     include Formatter
-    ID = :json
+    ID            = :json
+    EVIDENCE_ROOT = :evidence
 
     def initialize
       json_module = load_implementation_module!
@@ -17,7 +18,7 @@ module BEL::Extension::Format
 
     def deserialize(data)
       @json_reader.new(data).each.lazy.map { |hash|
-        ::BEL::Model::Evidence.create(hash)
+        ::BEL::Model::Evidence.create(unwrap(hash))
       }
     end
 
@@ -32,13 +33,13 @@ module BEL::Extension::Format
 
         # write first evidence
         evidence = evidence_enum.next
-        writer  << json_writer.write_json_object(evidence.to_h)
+        writer  << json_writer.write_json_object(wrap(evidence))
 
         # each successive evidence starts with a comma
         while true
           evidence = evidence_enum.next
           writer  << ","
-          writer  << json_writer.write_json_object(evidence.to_h)
+          writer  << json_writer.write_json_object(wrap(evidence))
         end
       rescue StopIteration
         # end of evidence hashes
@@ -77,6 +78,16 @@ module BEL::Extension::Format
         msg   = "Could not load any JSON implementation (tried: #{mod_s})."
         raise LoadError.new(msg)
       end
+    end
+
+    def wrap(evidence)
+      {
+        EVIDENCE_ROOT => evidence.to_h
+      }
+    end
+
+    def unwrap(hash)
+      hash[EVIDENCE_ROOT]
     end
   end
 
