@@ -211,35 +211,35 @@ module BEL::Extension::Format
       def self.citation(citation)
         el_citation  = REXML::Element.new('bel:citation')
 
-        if citation.type
+        if citation.type && !citation.type.to_s.empty?
           el_citation.add_attribute 'bel:type', citation.type
         end
 
-        if citation.id
+        if citation.id && !citation.id.to_s.empty?
           el_reference      = REXML::Element.new('bel:reference')
           el_reference.text = citation.id
           el_citation.add_element(el_reference)
         end
 
-        if citation.name
+        if citation.name && !citation.name.to_s.empty?
           el_name         = REXML::Element.new('bel:name')
           el_name.text    = citation.name
           el_citation.add_element(el_name)
         end
 
-        if citation.date
+        if citation.date && !citation.date.to_s.empty?
           el_date         = REXML::Element.new('bel:date')
           el_date.text    = citation.date
           el_citation.add_element(el_date)
         end
 
-        if citation.comment
+        if citation.comment && !citation.comment.to_s.empty?
           el_comment      = REXML::Element.new('bel:comment')
           el_comment.text = citation.comment
           el_citation.add_element(el_comment)
         end
 
-        if citation.authors
+        if citation.authors && !citation.authors.to_s.empty?
           el_author_group = REXML::Element.new('bel:authorGroup')
           citation.authors.split('|').each do |author|
             el_author      = REXML::Element.new('bel:author')
@@ -608,6 +608,12 @@ module BEL::Extension::Format
         end
       end
 
+      def start_citation(attributes)
+        type = attr_value(attributes, TYPE)
+        @evidence.citation.type = type
+        @element_stack << :citation
+      end
+
       def start_evidence(attributes)
         @element_stack << :evidence
       end
@@ -678,7 +684,7 @@ module BEL::Extension::Format
           # create new evidence from parsed data
           evidence_copy = Evidence.create({
             :bel_statement      => stmt,
-            :citation           => nil,
+            :citation           => @evidence.citation.to_h,
             :summary_text       => @evidence.summary_text.value,
             :experiment_context => @evidence.experiment_context.values.dup,
             :metadata           => @evidence.metadata.values.dup
@@ -750,6 +756,40 @@ module BEL::Extension::Format
         end
 
         @element_stack.pop
+      end
+
+      def end_citation
+        @element_stack.pop
+      end
+
+      def end_reference
+        if stack_top == :citation
+          @evidence.citation.id   = @text
+        end
+      end
+
+      def end_name
+        if stack_top == :citation
+          @evidence.citation.name = @text
+        end
+      end
+
+      def end_date
+        if stack_top == :citation
+          @evidence.citation.date = @text
+        end
+      end
+
+      def end_author
+        if stack_top == :citation
+          (@evidence.citation.authors ||= []) << @text
+        end
+      end
+
+      def end_comment
+        if stack_top == :citation
+          @evidence.citation.comment = @text
+        end
       end
 
       private

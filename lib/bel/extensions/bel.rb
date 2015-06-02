@@ -159,8 +159,17 @@ module BEL::Extension::Format
       # Citation
       citation = evidence.citation
       if citation
-        value = citation.values.collect { |v| v || '' }.inspect
-        bel << "SET Citation = {#{citation.values.inspect[1...-1]}}\n"
+        values = citation.values
+        values.map! { |v| v || "" }
+        values.map! { |v|
+          if v.respond_to?(:each)
+            v.join('|')
+          else
+            v
+          end
+        }
+        value_string = values.inspect[1...-1]
+        bel << "SET Citation = {#{value_string}}\n"
       end
 
       # Evidence
