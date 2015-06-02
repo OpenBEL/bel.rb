@@ -42,7 +42,7 @@ module BEL
       end
 
       def_delegators :@values, :[],    :"[]=", :each, :each_pair,
-                               :fetch, :size,  :sort, :store
+                               :fetch, :keys,  :size, :sort, :store
     end
   end
 end

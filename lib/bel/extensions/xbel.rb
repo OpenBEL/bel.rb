@@ -80,7 +80,7 @@ module BEL::Extension::Format
               header_flag = false
             end
 
-            yield element_string(XBELYielder.statement(evidence.bel_statement))
+            yield element_string(XBELYielder.evidence(evidence))
           }
 
           yield end_element_string(el_statement_group)
@@ -88,6 +88,12 @@ module BEL::Extension::Format
         else
           to_enum(:each)
         end
+      end
+
+      def self.evidence(evidence)
+        el_statement = self.statement(evidence.bel_statement)
+        el_statement.add_element(self.annotation_group(evidence))
+        el_statement
       end
 
       def self.statement(statement)
@@ -145,6 +151,104 @@ module BEL::Extension::Format
         el_parameter.text = parameter.value
         el_parameter.add_attribute 'bel:ns', parameter.ns
         el_parameter
+      end
+
+      def self.annotation_group(evidence)
+        el_ag = REXML::Element.new('bel:annotationGroup')
+
+        # citation
+        el_ag.add_element(self.citation(evidence.citation))
+
+        # evidence
+        xbel_evidence      = REXML::Element.new('bel:evidence')
+        xbel_evidence.text = evidence.summary_text.value
+
+        evidence.experiment_context.each do |k, v|
+          if v.respond_to?(:each)
+            v.each do |value|
+              el_anno      = REXML::Element.new('bel:annotation')
+              el_anno.text = value
+              el_anno.add_attribute 'bel:refID', k.to_s
+
+              el_ag.add_element(el_anno)
+            end
+          else
+              el_anno      = REXML::Element.new('bel:annotation')
+              el_anno.text = v
+              el_anno.add_attribute 'bel:refID', k.to_s
+
+              el_ag.add_element(el_anno)
+          end
+        end
+
+        metadata_keys = evidence.metadata.keys - [
+          :annotation_definitions,
+          :document_header,
+          :namespace_definitions
+        ]
+        metadata_keys.each do |k|
+          v = evidence.metadata[k]
+          if v.respond_to?(:each)
+            v.each do |value|
+              el_anno      = REXML::Element.new('bel:annotation')
+              el_anno.text = value
+              el_anno.add_attribute 'bel:refID', k.to_s
+
+              el_ag.add_element(el_anno)
+            end
+          else
+              el_anno      = REXML::Element.new('bel:annotation')
+              el_anno.text = value
+              el_anno.add_attribute 'bel:refID', k.to_s
+
+              el_ag.add_element(el_anno)
+          end
+        end
+
+        el_ag
+      end
+
+      def self.citation(citation)
+        el_citation  = REXML::Element.new('bel:citation')
+
+        if citation.type
+          el_citation.add_attribute 'bel:type', citation.type
+        end
+
+        if citation.id
+          el_reference      = REXML::Element.new('bel:reference')
+          el_reference.text = citation.id
+          el_citation.add_element(el_reference)
+        end
+
+        if citation.name
+          el_name         = REXML::Element.new('bel:name')
+          el_name.text    = citation.name
+          el_citation.add_element(el_name)
+        end
+
+        if citation.date
+          el_date         = REXML::Element.new('bel:date')
+          el_date.text    = citation.date
+          el_citation.add_element(el_date)
+        end
+
+        if citation.comment
+          el_comment      = REXML::Element.new('bel:comment')
+          el_comment.text = citation.comment
+          el_citation.add_element(el_comment)
+        end
+
+        if citation.authors
+          el_author_group = REXML::Element.new('bel:authorGroup')
+          citation.authors.split('|').each do |author|
+            el_author      = REXML::Element.new('bel:author')
+            el_author.text = author
+            el_author_group.add_element(el_author)
+          end
+        end
+
+        el_citation
       end
 
       def self.document
