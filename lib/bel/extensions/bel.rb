@@ -6,10 +6,20 @@ module BEL::Extension::Format
 
     include Formatter
 
-    ID = :bel
+    ID          = :bel
+    MEDIA_TYPES = %i(application/bel)
+    EXTENSIONS  = %i(bel)
     
     def id
       ID
+    end
+
+    def media_types
+      MEDIA_TYPES
+    end
+
+    def file_extensions
+      EXTENSIONS
     end
 
     def deserialize(data, &block)

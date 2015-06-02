@@ -8,10 +8,20 @@ module BEL::Extension::Format
   class FormatXBEL
 
     include Formatter
-    ID = :xbel
+    ID          = :xbel
+    MEDIA_TYPES = %i(application/xml)
+    EXTENSIONS  = %i(xml xbel)
 
     def id
       ID
+    end
+
+    def media_types
+      MEDIA_TYPES
+    end
+
+    def file_extensions
+      EXTENSIONS
     end
 
     def deserialize(data)

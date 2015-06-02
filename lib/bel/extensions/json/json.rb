@@ -7,6 +7,8 @@ module BEL::Extension::Format
 
     include Formatter
     ID            = :json
+    MEDIA_TYPES   = %i(application/json)
+    EXTENSIONS    = %i(json)
     EVIDENCE_ROOT = :evidence
 
     def initialize
@@ -17,6 +19,14 @@ module BEL::Extension::Format
 
     def id
       ID
+    end
+
+    def media_types
+      MEDIA_TYPES
+    end
+
+    def file_extensions
+      EXTENSIONS
     end
 
     def deserialize(data)

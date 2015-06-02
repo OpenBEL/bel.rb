@@ -23,5 +23,15 @@ module BEL
         Kernel.require "bel/extensions/#{ext}"
       end
     end
+
+    class ExtensionRegistrationError < StandardError
+
+      attr_reader :extension
+
+      def initialize(extension, msg = "Extension error for #{extension}")
+        super(msg)
+        @extension = extension
+      end
+    end
   end
 end

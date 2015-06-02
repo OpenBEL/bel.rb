@@ -288,10 +288,20 @@ module BEL::Extension::Format
   class FormatRDF
 
     include Formatter
-    ID = :rdf
+    ID          = :rdf
+    MEDIA_TYPES = %i(application/n-quads)
+    EXTENSIONS  = %i(nq)
 
     def id
       ID
+    end
+
+    def media_types
+      MEDIA_TYPES
+    end 
+
+    def file_extensions
+      EXTENSIONS
     end
 
     def deserialize(data)

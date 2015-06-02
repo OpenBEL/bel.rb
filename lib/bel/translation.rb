@@ -6,10 +6,10 @@ module BEL
     def self.translate(input, input_format, output_format, writer = nil)
       prepared_input = process_input(input)
 
-      in_formatter  = BEL::Extension::Format.formatters_for(input_format) or
+      in_formatter  = BEL::Extension::Format.formatters(input_format) or
         raise FormatError.new(input_format)
 
-      out_formatter = BEL::Extension::Format.formatters_for(output_format) or
+      out_formatter = BEL::Extension::Format.formatters(output_format) or
         raise FormatError.new(output_format)
 
       objects = in_formatter.deserialize(prepared_input)
