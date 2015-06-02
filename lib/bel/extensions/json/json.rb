@@ -1,3 +1,6 @@
+require 'bel/evidence_model'
+require 'bel/script'
+
 module BEL::Extension::Format
 
   class FormatJSON
@@ -18,7 +21,7 @@ module BEL::Extension::Format
 
     def deserialize(data)
       @json_reader.new(data).each.lazy.map { |hash|
-        ::BEL::Model::Evidence.create(unwrap(hash))
+        unwrap(hash)
       }
     end
 
@@ -81,13 +84,30 @@ module BEL::Extension::Format
     end
 
     def wrap(evidence)
+      hash = evidence.to_h
       {
-        EVIDENCE_ROOT => evidence.to_h
+        EVIDENCE_ROOT => {
+          :bel_statement      => hash[:bel_statement].to_s,
+          :citation           => hash[:citation],
+          :summary_text       => hash[:summary_text],
+          :experiment_context => hash[:experiment_context],
+          :metadata           => hash[:metadata]
+        }
       }
     end
 
     def unwrap(hash)
-      hash[EVIDENCE_ROOT]
+      evidence_hash          = hash[EVIDENCE_ROOT]
+      evidence               = ::BEL::Model::Evidence.create(evidence_hash)
+      namespace_definitions  = evidence.metadata.namespace_definitions
+      evidence.bel_statement = ::BEL::Script.parse(
+        "#{evidence.bel_statement}\n",
+        namespace_definitions
+      ).select { |obj|
+        obj.is_a? ::BEL::Model::Statement
+      }.first
+
+      evidence
     end
   end
 
