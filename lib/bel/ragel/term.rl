@@ -22,11 +22,12 @@ machine bel;
         val = val.strip()[1...-1]
       end
 
-      ns = nil
-      if pfx
-        fail SyntaxError, "The namespace prefix #{pfx} was not defined" if not @namespaces[pfx.to_sym]
-        ns = @namespaces[pfx.to_sym]
-      end
+      ns =
+			  if pfx
+				  @namespaces[pfx.to_sym] ||= NamespaceDefinition.new(pfx, nil, nil)
+			  else
+				  nil
+			  end
 
       param = BEL::Model::Parameter.new(ns, val)
       @term_stack.last << param
