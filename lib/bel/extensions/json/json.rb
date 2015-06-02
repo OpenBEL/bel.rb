@@ -1,4 +1,5 @@
 require 'bel/evidence_model'
+require 'bel/namespace'
 require 'bel/script'
 
 module BEL::Extension::Format
@@ -112,7 +113,11 @@ module BEL::Extension::Format
       namespace_definitions  = evidence.metadata.namespace_definitions
       evidence.bel_statement = ::BEL::Script.parse(
         "#{evidence.bel_statement}\n",
-        namespace_definitions
+        Hash[
+          namespace_definitions.map { |k, v|
+            [k, BEL::Namespace::NamespaceDefinition.new(k, v)]
+          }
+        ]
       ).select { |obj|
         obj.is_a? ::BEL::Model::Statement
       }.first
