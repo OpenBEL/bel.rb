@@ -91,14 +91,16 @@ module BEL::Extension::Format
       end
 
       def self.evidence(evidence)
-        el_statement = self.statement(evidence.bel_statement)
+        statement    = evidence.bel_statement
+        el_statement = REXML::Element.new('bel:statement')
+
         el_statement.add_element(self.annotation_group(evidence))
+        self.statement(statement, el_statement)
+
         el_statement
       end
 
-      def self.statement(statement)
-        el_statement = REXML::Element.new('bel:statement')
-
+      def self.statement(statement, el_statement)
         if statement.relationship
           el_statement.add_attribute 'bel:relationship', statement.relationship
         end
@@ -117,6 +119,8 @@ module BEL::Extension::Format
       def self.subject(subject)
         el_subject = REXML::Element.new('bel:subject')
         el_subject.add_element(self.term(subject))
+
+        el_subject
       end
 
       def self.object(object)
@@ -126,7 +130,9 @@ module BEL::Extension::Format
         when BEL::Model::Term
           el_object.add_element(self.term(object))
         when BEL::Model::Statement
-          el_object.add_element(self.statement(object))
+          el_statement = REXML::Element.new('bel:statement')
+          el_object.add_element(el_statement)
+          self.statement(object, el_statement)
         end
         el_object
       end
@@ -328,9 +334,12 @@ module BEL::Extension::Format
       def self.namespace_definitions(hash)
         el_nd = REXML::Element.new('bel:namespaceGroup')
         hash.each do |k, v|
-          el = REXML::Element.new('bel:namespace')
-          el.add_attribute 'bel:prefix',           k.to_s
-          el.add_attribute 'bel:resourceLocation', v.to_s
+          el               = REXML::Element.new('bel:namespace')
+          el.add_attribute 'bel:prefix', k.to_s
+
+          resourceLocation = v.respond_to?(:url) ? v.url : v
+          el.add_attribute 'bel:resourceLocation', "#{resourceLocation}"
+
           el_nd.add_element(el)
         end
 
