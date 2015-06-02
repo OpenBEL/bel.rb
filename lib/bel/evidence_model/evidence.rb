@@ -62,7 +62,7 @@ module BEL
       def to_h(hash = {})
         hash.merge!(
           {
-            :bel_statement      => bel_statement.to_s,
+            :bel_statement      => bel_statement,
             :citation           => citation.to_h,
             :summary_text       => summary_text.value,
             :experiment_context => experiment_context.values,
