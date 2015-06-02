@@ -305,6 +305,7 @@ module BEL::Extension::Format
     end
 
     def deserialize(data)
+      []
     end
 
     def serialize(objects, writer = StringIO.new)
