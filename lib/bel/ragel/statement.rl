@@ -65,7 +65,7 @@
   comment = '//' ^NL+ >cmts $cmtn %cmte;
   statement :=
     FUNCTION SP* '(' @term_init @term_fx @call_term SP* %statement_subject comment? NL? @statement @return
-    RELATIONSHIP >rels $reln %rele SP+
+    RELATIONSHIP >rels $reln %rele SP*
     (
       FUNCTION SP* '(' @term_init @term_fx @call_term %statement_oterm SP* ')'? @return
       |

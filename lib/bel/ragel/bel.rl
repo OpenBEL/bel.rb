@@ -35,6 +35,9 @@ module BEL
 
         parser =
           if content.is_a? String
+					  if !content.end_with?("\n")
+							content << "\n"
+						end
             Parser.new(content, namespaces)
           elsif content.respond_to? :read
             IOParser.new(content, namespaces)
