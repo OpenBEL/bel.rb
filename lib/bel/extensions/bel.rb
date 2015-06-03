@@ -92,12 +92,28 @@ module BEL::Extension::Format
         evidence.summary_text.value = value
       end
 
-      experiment_context = statement.annotations.dup
-      experiment_context.delete_if { |k, _| SPECIAL_ANNOTATIONS[k] }
-      experiment_context.each { |k, v|
-        experiment_context[k] = v.value
-      }
-      evidence.experiment_context = ExperimentContext.new(experiment_context)
+      annotations = statement.annotations.dup
+      annotations.delete_if { |k, _| SPECIAL_ANNOTATIONS[k] }
+      evidence.experiment_context = ExperimentContext.new(
+        annotations.map { |k, v|
+          value = v.value
+          obj   = {
+            :name  => k,
+            :value => value
+          }
+
+          annotation_def = metadata.annotation_definitions[k]
+          if annotation_def
+            type, domain = annotation_def.values_at(:type, :domain)
+            if type == :url
+              obj[:uri] = "#{domain}/#{value}"
+              obj[:url] = domain
+            end
+          end
+
+          obj
+        }
+      )
 
       evidence.metadata = metadata
       evidence
@@ -194,14 +210,17 @@ module BEL::Extension::Format
       # Annotation
       experiment_context = evidence.experiment_context
       if experiment_context
-        experiment_context.sort.each { |key, value|
-          if value.respond_to? :each
-            value = "{#{value.inspect[1...-1]}}"
-          else
-            value = value.inspect
-          end
-          bel << "SET #{key} = #{value}\n"
-        }
+        experiment_context.
+          sort_by { |obj| obj[:name] }.
+          each    { |obj|
+            name, value = obj.values_at(:name, :value)
+            if value.respond_to? :each
+              value = "{#{value.inspect[1...-1]}}"
+            else
+              value = value.inspect
+            end
+            bel << "SET #{name} = #{value}\n"
+          }
       end
 
       # BEL statement

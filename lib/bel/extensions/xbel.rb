@@ -178,20 +178,23 @@ module BEL::Extension::Format
         # evidence
         xbel_evidence      = REXML::Element.new('bel:evidence')
         xbel_evidence.text = evidence.summary_text.value
+        el_ag.add_element(xbel_evidence)
 
-        evidence.experiment_context.each do |k, v|
-          if v.respond_to?(:each)
-            v.each do |value|
+        evidence.experiment_context.each do |annotation|
+          name, value = annotation.values_at(:name, :value)
+
+          if value.respond_to?(:each)
+            value.each do |v|
               el_anno      = REXML::Element.new('bel:annotation')
-              el_anno.text = value
-              el_anno.add_attribute 'bel:refID', k.to_s
+              el_anno.text = v
+              el_anno.add_attribute 'bel:refID', name.to_s
 
               el_ag.add_element(el_anno)
             end
           else
               el_anno      = REXML::Element.new('bel:annotation')
-              el_anno.text = v
-              el_anno.add_attribute 'bel:refID', k.to_s
+              el_anno.text = value
+              el_anno.add_attribute 'bel:refID', name.to_s
 
               el_ag.add_element(el_anno)
           end
@@ -757,12 +760,17 @@ module BEL::Extension::Format
         if @element_stack[-3] == :statement
           ref_id = @annotation_id
 
-          value  = @evidence.experiment_context[ref_id]
-          if value
+          annotation  = @evidence.experiment_context.find { |annotation|
+            annotation[:name] == ref_id
+          }
+          if annotation
             # create array for multiple values by refID
-            @evidence.experiment_context[ref_id] = [value, @text].flatten
+            annotation[:value] = [annotation[:value], @text].flatten
           else
-            @evidence.experiment_context[ref_id] = @text
+            @evidence.experiment_context << {
+              :name  => ref_id,
+              :value => @text
+            }
           end
         end
 

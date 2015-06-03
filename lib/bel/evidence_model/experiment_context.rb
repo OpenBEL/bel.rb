@@ -8,12 +8,12 @@ module BEL
       extend Forwardable
       include Enumerable
 
-      def initialize(values = {})
+      def initialize(values = [])
         @values = values
       end
 
-      def_delegators :@values, :[],    :"[]=", :each, :each_pair,
-                               :fetch, :size,  :sort, :store
+      def_delegators :@values, :<<,    :[],    :"[]=",
+                               :each,  :size,  :sort
     end
   end
 end
