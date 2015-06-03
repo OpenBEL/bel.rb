@@ -1,8 +1,19 @@
 module BEL
   module Model
+
+    module ParameterValidation
+
+      def valid?
+        return false unless value
+        return true unless @ns
+        @ns.respond_to?(:values) && ns.values.include?(value)
+      end
+    end
+
     class Parameter
       include BEL::Quoting
       include Comparable
+      include ParameterValidation
       attr_accessor :ns, :value, :enc
 
       def initialize(ns, value, enc=nil)
