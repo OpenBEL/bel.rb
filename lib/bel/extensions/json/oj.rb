@@ -37,8 +37,7 @@ module BEL::Extension::Format
       end
 
       def hash_end
-        # FIXME The top-level key should be "evidence".
-        if @hash.has_key?(:bel_statement)
+        if @hash.has_key?(:evidence)
           @callable.call @hash 
         end
       end
