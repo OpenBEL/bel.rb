@@ -22,7 +22,7 @@ class ::BEL::Namespace::NamespaceDefinition
   end
 end
 
-class ::BEL::Language::Parameter
+class ::BEL::Model::Parameter
 
   def to_uri
     @ns.to_rdf_vocabulary[URI::encode(@value)]
@@ -64,7 +64,7 @@ class ::BEL::Language::Parameter
   end
 end
 
-class BEL::Language::Term
+class BEL::Model::Term
 
   def to_uri
     tid = to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
@@ -146,7 +146,7 @@ class BEL::Language::Term
   end
 end
 
-class BEL::Language::Statement
+class BEL::Model::Statement
 
   def to_uri
     case

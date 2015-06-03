@@ -53,10 +53,10 @@ CSV do |csv_out|
         report[:empty_statement_groups] += 1
       end
     end
-    if obj.is_a? BEL::Language::Term
+    if obj.is_a? BEL::Model::Term
       report['fx_' + obj.fx[:long_form].to_s] += 1
     end
-    if obj.is_a? BEL::Language::Statement
+    if obj.is_a? BEL::Model::Statement
       report[:statement_count] += 1
       obj.relationship = case obj.relationship
       when :"->"
