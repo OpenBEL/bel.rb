@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+$: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
+require_relative '../lib/bel'
+
+if ARGV.size == 3
+  io = File.open(ARGV.shift, :ext_enc => Encoding::UTF_8)
+else
+  io = $stdin
+end
+
+from_format, to_format = *ARGV
+BEL::Format.translate(io, from_format, to_format, $stdout)
