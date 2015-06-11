@@ -1,6 +1,7 @@
 # Example:
 #   Illustrates how to add an Annotation definition and values to evidence
-#   objects. The evidence results are then serializes out to BEL.
+#   objects. Evidence is read from BEL script (e.g. bel formatter) and written
+#   as JSON evidence (e.g. json formatter).
 # Usage:
 #   ruby examples/add_annotation.rb large_corpus.bel
 
@@ -10,7 +11,8 @@ require 'bel'
 bel_file       = File.open(ARGV.first)
 
 # retrieve the formatter for BEL script
-bel_formatter  = BEL::Extension::Format.formatters(:bel)
+bel_formatter   = BEL::Extension::Format.formatters(:bel)
+json_formatter  = BEL::Extension::Format.formatters(:json)
 
 # create new LIST annotation definition
 new_annotation = {
@@ -24,14 +26,11 @@ new_evidence = bel_formatter.deserialize(bel_file).each.lazy.map { |evidence|
 
   # ...add definition and value
   evidence.metadata.annotation_definitions[:Status] = new_annotation
-  evidence.experiment_context << {
-    :name  => 'Status',
-    :value => 'Approved'
-  }
+  evidence.metadata[:Status] = 'Approved'
 
   # ...return new evidence
   evidence
 }
 
 # serialize new evidence to BEL script and write out
-bel_formatter.serialize(new_evidence, $stdout)
+json_formatter.serialize(new_evidence, $stdout)
