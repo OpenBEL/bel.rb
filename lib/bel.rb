@@ -16,7 +16,7 @@ require_relative 'bel/script'
 include BEL::Language
 include BEL::Namespace
 
-BEL::Extension.load_extension('json/json', 'bel', 'xbel')
+BEL::Extension.load_extension('jgf', 'json/json', 'bel', 'xbel')
 
 begin
   BEL::Extension.load_extension('rdf/rdf')

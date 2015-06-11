@@ -37,22 +37,26 @@ module BEL::Extension::Format
       end
 
       def hash_end
-        if @hash.has_key?(:evidence)
-          @callable.call @hash 
-        end
+        @callable.call @hash 
       end
 
-      def hash_set(h,k,v)
-        h[k]  = v
-        @hash = h
+      def hash_set(hash, key, value)
+        hash[key]  = value
+        @hash = hash
       end
 
       def array_start
-        []
+        @array = []
+        @array
       end
 
-      def array_append(a,v)
-        a << v
+      def array_append(array, value)
+        array << value
+        @array = array
+      end
+
+      def array_end()
+        @callable.call @array
       end
 
       def error(message, line, column)

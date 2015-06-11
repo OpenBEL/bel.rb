@@ -28,7 +28,7 @@ module BEL::Extension::Format
 
     def serialize(objects, writer = StringIO.new, options = {})
       BELYielder.new(objects).each { |bel_part|
-        writer << "#{bel_part}\n"
+        writer << "#{bel_part}"
         writer.flush
       }
     end
@@ -149,6 +149,8 @@ module BEL::Extension::Format
     private
 
     def document_header(header)
+      return "" unless header
+
       header.reduce("") { |bel, (name, value)|
         bel << %Q{SET DOCUMENT #{name} = "#{value}"\n}
         bel
@@ -156,6 +158,8 @@ module BEL::Extension::Format
     end
 
     def annotation_definitions(annotation_definitions)
+      return "" unless annotation_definitions
+
       annotation_definitions.reduce("") { |bel, (prefix, annotation)|
         bel << "DEFINE ANNOTATION #{prefix} AS "
         type   = annotation[:type]   || annotation["type"]
@@ -173,6 +177,8 @@ module BEL::Extension::Format
     end
 
     def namespace_definitions(namespace_definitions)
+      return "" unless namespace_definitions
+
       namespace_definitions.reduce("") { |bel, (prefix, url)|
         bel << %Q{DEFINE NAMESPACE #{prefix} AS URL "#{url}"\n}
         bel
@@ -184,7 +190,7 @@ module BEL::Extension::Format
 
       # Citation
       citation = evidence.citation
-      if citation
+      if citation && citation.values.any?
         values = citation.values
         values.map! { |v| v || "" }
         values.map! { |v|
@@ -200,7 +206,7 @@ module BEL::Extension::Format
 
       # Evidence
       summary_text = evidence.summary_text
-      if summary_text
+      if summary_text && summary_text.value
         value = summary_text.value
         value.gsub!("\n", "")
         value.gsub!('"', %Q{\\"})
@@ -224,7 +230,7 @@ module BEL::Extension::Format
       end
 
       # BEL statement
-      bel << evidence.bel_statement.to_s
+      bel << "#{evidence.bel_statement.to_s}\n"
       bel
     end
   end

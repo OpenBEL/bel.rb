@@ -31,7 +31,9 @@ module BEL::Extension::Format
     end
 
     def deserialize(data)
-      @json_reader.new(data).each.lazy.map { |hash|
+      @json_reader.new(data).each.lazy.select { |obj|
+        obj.include?(:evidence)
+      }.map { |hash|
         unwrap(hash)
       }
     end
