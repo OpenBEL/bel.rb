@@ -55,6 +55,8 @@ module BEL::Extension::Format
 
     class XBELYielder
 
+      FUNCTIONS = ::BEL::Language::FUNCTIONS
+
       def initialize(data, options = {})
         @data         = data
         @write_header = options.fetch(:write_header, true)
@@ -149,7 +151,13 @@ module BEL::Extension::Format
 
       def self.term(term)
         el_term    = REXML::Element.new('bel:term')
-        el_term.add_attribute 'bel:function', term.fx
+        term_fx    = term.fx.to_s
+        term_fx    = (
+                       FUNCTIONS.fetch(term_fx.to_sym, {}).
+                                 fetch(:long_form, nil) || term_fx
+                     ).to_s
+
+        el_term.add_attribute 'bel:function', term_fx
 
         term.arguments.each do |arg|
           case arg
