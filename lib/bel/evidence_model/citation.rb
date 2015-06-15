@@ -59,6 +59,10 @@ module BEL
         }
         citation
       end
+
+      def valid?
+        type != nil && id != nil && name != nil
+      end
     end
   end
 end

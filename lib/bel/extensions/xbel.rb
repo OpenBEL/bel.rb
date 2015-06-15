@@ -172,13 +172,17 @@ module BEL::Extension::Format
       def self.annotation_group(evidence)
         el_ag = REXML::Element.new('bel:annotationGroup')
 
-        # citation
-        el_ag.add_element(self.citation(evidence.citation))
+        # XBEL citation
+        if evidence.citation && evidence.citation.valid?
+          el_ag.add_element(self.citation(evidence.citation))
+        end
 
-        # evidence
-        xbel_evidence      = REXML::Element.new('bel:evidence')
-        xbel_evidence.text = evidence.summary_text.value
-        el_ag.add_element(xbel_evidence)
+        # XBEL evidence (::BEL::Model::SummaryText)
+        if evidence.summary_text && evidence.summary_text.value
+          xbel_evidence      = REXML::Element.new('bel:evidence')
+          xbel_evidence.text = evidence.summary_text.value
+          el_ag.add_element(xbel_evidence)
+        end
 
         evidence.experiment_context.each do |annotation|
           name, value = annotation.values_at(:name, :value)
