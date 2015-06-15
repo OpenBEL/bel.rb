@@ -1,12 +1,15 @@
+require 'bel'
+
 module BEL::Extension::Format
 
   class FormatJGF
 
     include Formatter
 
-    ID          = :jgf
-    MEDIA_TYPES = %i(application/vnd.jgf+json)
-    EXTENSIONS  = %i(jgf.json)
+    ID            = :jgf
+    MEDIA_TYPES   = %i(application/vnd.jgf+json)
+    EXTENSIONS    = %i(jgf.json)
+    ResourceIndex = ::BEL::Namespace::ResourceIndex
 
     def initialize
       json_module = load_implementation_module!
@@ -26,11 +29,15 @@ module BEL::Extension::Format
       EXTENSIONS
     end
 
-    def deserialize(data, &block)
+    def deserialize(data, options = {}, &block)
+      default_resource_index = options.fetch(:default_resource_index) {
+        ResourceIndex.openbel_published_index('20131211')
+      }
+
       @json_reader.new(data).each.lazy.select { |obj|
         obj.include?(:nodes) && obj.include?(:edges)
       }.flat_map { |graph|
-        unwrap(graph)
+        unwrap(graph, default_resource_index)
       }
     end
 
@@ -76,7 +83,7 @@ module BEL::Extension::Format
 
     private
 
-    def unwrap(graph)
+    def unwrap(graph, default_resource_index)
       # index nodes
       id_nodes = Hash[
         graph[:nodes].map { |node|
@@ -101,10 +108,7 @@ module BEL::Extension::Format
           rel  = 'association' unless rel
 
           bel_statement = ::BEL::Script.parse(
-            "#{source_node} #{rel} #{target_node}\n"
-          ).select { |obj|
-            obj.is_a? ::BEL::Model::Statement
-          }.first
+            "#{source_node} #{rel} #{target_node}\n").select { |obj| obj.is_a? ::BEL::Model::Statement }.first
         end
       }.compact
 
@@ -123,7 +127,55 @@ module BEL::Extension::Format
 
       # map statements to evidence objects
       bel_statements.map { |bel_statement|
-        ::BEL::Model::Evidence.create(:bel_statement => bel_statement)
+        graph_name = graph[:label] || graph[:id] || 'BEL Graph'
+        metadata   = ::BEL::Model::Metadata.new
+
+        # establish document header
+        metadata.document_header[:Name]        = graph_name
+        metadata.document_header[:Description] = graph_name
+        metadata.document_header[:Version]     = '1.0'
+
+        # establish annotation definitions
+        annotations = graph.fetch(:metadata, {}).
+                            fetch(:annotation_definitions, nil)
+        if !annotations && default_resource_index
+          annotations = Hash[
+            default_resource_index.annotations.sort_by { |anno|
+              anno.prefix
+            }.map { |anno|
+              [
+                anno.prefix,
+                {
+                  :type   => anno.type,
+                  :domain => anno.value
+                }
+              ]
+            }
+          ]
+        end
+        metadata.annotation_definitions = annotations if annotations
+
+        # establish namespace definitions
+        namespaces = graph.fetch(:metadata, {}).
+                           fetch(:namespace_definitions, nil)
+        if !namespaces && default_resource_index
+          namespaces = Hash[
+            default_resource_index.namespaces.sort_by { |ns|
+              ns.prefix
+            }.map { |ns|
+              [
+                ns.prefix,
+                ns.url
+              ]
+            }
+          ]
+        end
+        metadata.namespace_definitions = namespaces if namespaces
+
+        ::BEL::Model::Evidence.create(
+          :bel_statement => bel_statement,
+          :metadata      => metadata
+        )
       }
     end
 
