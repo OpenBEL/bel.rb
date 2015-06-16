@@ -53,11 +53,13 @@ Gem::Specification.new do |spec|
 
   # runtime
   spec.add_dependency             'ffi',           '1.9.8'
+  spec.add_dependency             'gli',           '~> 2.13'
 
   # test rdf functionality
   spec.add_development_dependency 'uuid',          '~> 2.3'
   spec.add_development_dependency 'addressable',   '~> 2.3'
   spec.add_development_dependency 'rdf',           '~> 1.1'
+  spec.add_development_dependency 'rdf-turtle',    '~> 1.1'
 
   # development gems
   spec.add_development_dependency 'rake',          '~> 10.4'

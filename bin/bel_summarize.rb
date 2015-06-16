@@ -21,9 +21,9 @@ end.parse!
 # read bel content
 content =
   if options[:bel]
-    File.open(options[:bel]).read
+    File.open(options[:bel])
   else
-    $stdin.read
+    $stdin
   end
 
 CSV do |csv_out|
@@ -54,7 +54,11 @@ CSV do |csv_out|
       end
     end
     if obj.is_a? BEL::Model::Term
-      report['fx_' + obj.fx[:long_form].to_s] += 1
+      fx = obj.fx
+      fx = fx.respond_to?(:long_form) ?
+             fx.long_form.to_s :
+             fx.to_s
+      report["fx_#{fx}"] += 1
     end
     if obj.is_a? BEL::Model::Statement
       report[:statement_count] += 1

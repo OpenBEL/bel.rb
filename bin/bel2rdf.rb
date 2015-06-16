@@ -41,11 +41,6 @@ Usage: bel2rdf --bel [FILE]'''
   end
 end.parse!
 
-# option guards
-unless options[:bel] or not STDIN.tty?
-  $stderr.puts "No bel content provided.  Either use --bel option or STDIN (standard in).  Use -h / --help for details." 
-  exit 1
-end
 if options[:bel] and not File.exists? options[:bel]
   $stderr.puts "No file for bel, #{options[:bel]}"
   exit 1
@@ -58,6 +53,7 @@ end
 
 class Main
   include BEL::Language
+  include BEL::Model
 
   def initialize(content, writer)
     BEL::Script.parse(content).find_all { |obj|

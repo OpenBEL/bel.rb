@@ -29,11 +29,6 @@ OptionParser.new do |opts|
   #end
 end.parse!
 
-# option guards
-unless options[:bel] or not STDIN.tty?
-  $stderr.puts "No bel content provided.  Either use --bel option or STDIN (standard in).  Use -h / --help for details." 
-  exit 1
-end
 unless options['change_log']
   $stderr.puts "Missing --changelog option. Use -h / --help for details."
   exit 1
@@ -59,9 +54,9 @@ end
 # read bel content
 content =
 if options[:bel]
-  File.open(options[:bel]).read
+  File.open(options[:bel])
 else
-  $stdin.read
+  $stdin
 end
 
 # read change log
@@ -192,7 +187,7 @@ class Main
         end
       end
 
-      if obj.is_a? Parameter and obj.ns
+      if obj.is_a? BEL::Model::Parameter and obj.ns
         # first try replacing by existing namespace prefix...
         prefix = obj.ns.prefix.to_s
         replacements = @change_log[prefix]
@@ -232,7 +227,7 @@ class Main
         end
       end
       # do not print Parameter and Term; they are included in Statement
-      if not obj.is_a? Parameter and not obj.is_a? Term
+      if not obj.is_a? BEL::Model::Parameter and not obj.is_a? BEL::Model::Term
         puts obj.to_bel
       end
     end
