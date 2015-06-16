@@ -240,7 +240,7 @@ module BEL::Extension::Format
             end
           else
               el_anno      = REXML::Element.new('bel:annotation')
-              el_anno.text = value
+              el_anno.text = v
               el_anno.add_attribute 'bel:refID', k.to_s
 
               el_ag.add_element(el_anno)
