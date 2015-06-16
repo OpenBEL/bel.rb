@@ -59,33 +59,32 @@ module BEL::Extension::Format
 
       def initialize(data, options = {})
         @data         = data
-        @write_header = options.fetch(:write_header, true)
       end
 
       def each
         if block_given?
           header_flag        = true
-          el_document        = nil
+
+          # yield <document>
+          el_document = XBELYielder.document
+          yield start_element_string(el_document)
+
           el_statement_group = nil
+          evidence_count = 0
           @data.each { |evidence|
             if header_flag
               # document header
-              el_document = XBELYielder.document
               el_statement_group = XBELYielder.statement_group
 
-              yield start_element_string(el_document)
-
-              if @write_header
-                yield element_string(
-                  XBELYielder.header(evidence.metadata.document_header)
-                )
-                yield element_string(
-                  XBELYielder.namespace_definitions(evidence.metadata.namespace_definitions)
-                )
-                yield element_string(
-                  XBELYielder.annotation_definitions(evidence.metadata.annotation_definitions)
-                )
-              end
+              yield element_string(
+                XBELYielder.header(evidence.metadata.document_header)
+              )
+              yield element_string(
+                XBELYielder.namespace_definitions(evidence.metadata.namespace_definitions)
+              )
+              yield element_string(
+                XBELYielder.annotation_definitions(evidence.metadata.annotation_definitions)
+              )
 
               yield start_element_string(el_statement_group)
 
@@ -93,9 +92,21 @@ module BEL::Extension::Format
             end
 
             yield element_string(XBELYielder.evidence(evidence))
+            evidence_count += 1
           }
 
-          yield end_element_string(el_statement_group)
+          if evidence_count > 0
+            yield end_element_string(el_statement_group)
+          else
+            # empty head sections; required for XBEL schema
+            empty_header = Hash[%w(name description version).map { |element|
+              [element, ""]
+            }]
+            yield element_string(XBELYielder.header(empty_header))
+            yield element_string(XBELYielder.namespace_definitions({}))
+            yield element_string(XBELYielder.annotation_definitions({}))
+            yield element_string(XBELYielder.statement_group)
+          end
           yield end_element_string(el_document)
         else
           to_enum(:each)
