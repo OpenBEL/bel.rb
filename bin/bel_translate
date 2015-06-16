@@ -9,4 +9,9 @@ else
 end
 
 from_format, to_format = *ARGV
-BEL::Format.translate(io, from_format, to_format, $stdout)
+
+begin
+  BEL::Format.translate(io, from_format, to_format, $stdout)
+ensure
+  $stdout.close
+end

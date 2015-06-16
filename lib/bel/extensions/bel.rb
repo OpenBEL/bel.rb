@@ -45,6 +45,7 @@ module BEL::Extension::Format
 
     def initialize(data)
       @data                   = data
+      @references             = References.new
       @metadata               = Metadata.new
     end
 
@@ -55,14 +56,14 @@ module BEL::Extension::Format
           when ::BEL::Language::DocumentProperty
             @metadata.document_header[parsed_obj.name] = parsed_obj.value
           when ::BEL::Model::Statement
-            yield to_evidence(parsed_obj, @metadata)
+            yield to_evidence(parsed_obj, @references, @metadata)
           when ::BEL::Language::AnnotationDefinition
-            @metadata.annotation_definitions[parsed_obj.prefix] = {
+            @references.annotation_definitions[parsed_obj.prefix] = {
               :type   => parsed_obj.type,
               :domain => parsed_obj.value
             }
           when ::BEL::Namespace::NamespaceDefinition
-            @metadata.namespace_definitions[parsed_obj.prefix] = parsed_obj.url
+            @references.namespace_definitions[parsed_obj.prefix] = parsed_obj.url
           end
         }
       else
@@ -72,7 +73,7 @@ module BEL::Extension::Format
 
     private
 
-    def to_evidence(statement, metadata)
+    def to_evidence(statement, references, metadata)
       evidence = Evidence.new
       evidence.bel_statement = statement
 
@@ -102,7 +103,7 @@ module BEL::Extension::Format
             :value => value
           }
 
-          annotation_def = metadata.annotation_definitions[k]
+          annotation_def = references.annotation_definitions[k]
           if annotation_def
             type, domain = annotation_def.values_at(:type, :domain)
             if type == :url
@@ -115,7 +116,8 @@ module BEL::Extension::Format
         }
       )
 
-      evidence.metadata = metadata
+      evidence.references = references
+      evidence.metadata   = metadata
       evidence
     end
   end
@@ -134,8 +136,12 @@ module BEL::Extension::Format
           bel = to_bel(evidence)
           if @write_header && header_flag
             yield document_header(evidence.metadata.document_header)
-            yield namespace_definitions(evidence.metadata.namespace_definitions)
-            yield annotation_definitions(evidence.metadata.annotation_definitions)
+            yield namespace_definitions(
+              evidence.references.namespace_definitions
+            )
+            yield annotation_definitions(
+              evidence.references.annotation_definitions
+            )
             header_flag = false
           end
 
@@ -152,7 +158,20 @@ module BEL::Extension::Format
       return "" unless header
 
       header.reduce("") { |bel, (name, value)|
-        bel << %Q{SET DOCUMENT #{name} = "#{value}"\n}
+        name_s  = name.to_s
+        value_s =
+          if value.respond_to?(:each)
+            value.join('|')
+          else
+            value.to_s
+          end
+
+        # handle casing for document properties (special case, contactinfo)
+        name_s = (name_s.downcase == 'contactinfo') ?
+          'ContactInfo' :
+          name_s.capitalize
+
+        bel << %Q{SET DOCUMENT #{name_s} = "#{value_s}"\n}
         bel
       }
     end

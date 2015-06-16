@@ -3,6 +3,7 @@ require 'bel'
 require_relative 'citation'
 require_relative 'summary_text'
 require_relative 'experiment_context'
+require_relative 'references'
 require_relative 'metadata'
 
 module BEL
@@ -15,6 +16,7 @@ module BEL
         ev.citation           = Citation.create(hash[:citation] || {})
         ev.summary_text.value = hash[:summary_text] || nil
         ev.experiment_context = ExperimentContext.new(hash[:experiment_context] || [])
+        ev.references         = References.new(hash[:references] || {})
         ev.metadata           = Metadata.new(hash[:metadata] || {})
         ev
       end
@@ -51,6 +53,14 @@ module BEL
         @experiment_context = experiment_context
       end
 
+      def references
+        (@references ||= References.new)
+      end
+
+      def references=(references)
+        @references = references
+      end
+
       def metadata
         (@metadata ||= Metadata.new)
       end
@@ -62,11 +72,12 @@ module BEL
       def to_h(hash = {})
         hash.merge!(
           {
-            :bel_statement      => bel_statement,
-            :citation           => citation.to_h,
-            :summary_text       => summary_text.value,
-            :experiment_context => experiment_context.values,
-            :metadata           => metadata.values
+            :bel_statement      => @bel_statement,
+            :citation           => @citation.to_h,
+            :summary_text       => @summary_text.value,
+            :experiment_context => @experiment_context.values,
+            :references         => @references.values,
+            :metadata           => @metadata.values
           }
         )
         hash

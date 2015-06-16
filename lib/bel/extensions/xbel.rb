@@ -80,10 +80,10 @@ module BEL::Extension::Format
                 XBELYielder.header(evidence.metadata.document_header)
               )
               yield element_string(
-                XBELYielder.namespace_definitions(evidence.metadata.namespace_definitions)
+                XBELYielder.namespace_definitions(evidence.references.namespace_definitions)
               )
               yield element_string(
-                XBELYielder.annotation_definitions(evidence.metadata.annotation_definitions)
+                XBELYielder.annotation_definitions(evidence.references.annotation_definitions)
               )
 
               yield start_element_string(el_statement_group)
@@ -223,11 +223,7 @@ module BEL::Extension::Format
           end
         end
 
-        metadata_keys = evidence.metadata.keys - [
-          :annotation_definitions,
-          :document_header,
-          :namespace_definitions
-        ]
+        metadata_keys = evidence.metadata.keys - [:document_header]
         metadata_keys.each do |k|
           v = evidence.metadata[k]
           if v.respond_to?(:each)
@@ -239,11 +235,11 @@ module BEL::Extension::Format
               el_ag.add_element(el_anno)
             end
           else
-              el_anno      = REXML::Element.new('bel:annotation')
-              el_anno.text = v
-              el_anno.add_attribute 'bel:refID', k.to_s
+            el_anno      = REXML::Element.new('bel:annotation')
+            el_anno.text = v
+            el_anno.add_attribute 'bel:refID', k.to_s
 
-              el_ag.add_element(el_anno)
+            el_ag.add_element(el_anno)
           end
         end
 
@@ -384,6 +380,8 @@ module BEL::Extension::Format
 
       def self.annotation_definitions(hash)
         el_ad = REXML::Element.new('bel:annotationDefinitionGroup')
+        internal = []
+        external = []
         hash.each do |k, v|
           type, domain = v.values_at(:type, :domain)
           case type.to_sym
@@ -391,18 +389,24 @@ module BEL::Extension::Format
             el = REXML::Element.new('bel:externalAnnotationDefinition')
             el.add_attribute 'bel:url', domain.to_s
             el.add_attribute 'bel:id',  k.to_s
+            external << el
           when :pattern
             el = REXML::Element.new('bel:internalAnnotationDefinition')
             el.add_attribute 'bel:id', k.to_s
+            el.add_element(REXML::Element.new('bel:description'))
+            el.add_element(REXML::Element.new('bel:usage'))
 
             el_pattern      = REXML::Element.new('bel:patternAnnotation')
             el_pattern.text =
               domain.respond_to?(:source) ? domain.source : domain.to_s
 
             el.add_element(el_pattern)
+            internal << el
           when :list
             el = REXML::Element.new('bel:internalAnnotationDefinition')
             el.add_attribute 'bel:id', k.to_s
+            el.add_element(REXML::Element.new('bel:description'))
+            el.add_element(REXML::Element.new('bel:usage'))
 
             el_list = REXML::Element.new('bel:listAnnotation')
             if domain.respond_to?(:each)
@@ -418,11 +422,20 @@ module BEL::Extension::Format
             end
 
             el.add_element(el_list)
+            internal << el
           else
             el = nil
           end
+        end
 
-          el_ad.add_element(el) if el
+        # first add internal annotation definitions
+        internal.each do |internal_element|
+          el_ad.add_element(internal_element)
+        end
+
+        # second add external annotation definitions
+        external.each do |external_element|
+          el_ad.add_element(external_element)
         end
 
         el_ad
@@ -533,6 +546,10 @@ module BEL::Extension::Format
 
       # Start element methods, dynamically invoked.
 
+      def start_header(attributes)
+        @element_stack << :header
+      end
+
       def start_namespace_group(attributes)
         @element_stack << :namespace_group
       end
@@ -545,7 +562,7 @@ module BEL::Extension::Format
         if stack_top == :namespace_group
           prefix             = attr_value(attributes, PREFIX)
           resource_location  = attr_value(attributes, RESOURCE_LOCATION)
-          @evidence.metadata.namespace_definitions[prefix] = resource_location
+          @evidence.references.namespace_definitions[prefix] = resource_location
         end
         @element_stack << :namespace
       end
@@ -554,7 +571,7 @@ module BEL::Extension::Format
         if stack_top == :annotation_definition_group
           id                 = attr_value(attributes, ID)
           url                = attr_value(attributes, URL)
-          @evidence.metadata.annotation_definitions[id] = {
+          @evidence.references.annotation_definitions[id] = {
             :type   => :url,
             :domain => url
           }
@@ -566,7 +583,7 @@ module BEL::Extension::Format
         if stack_top == :annotation_definition_group
           id                 = attr_value(attributes, ID)
           @current_anno_def  = {}
-          @evidence.metadata.annotation_definitions[id] = @current_anno_def
+          @evidence.references.annotation_definitions[id] = @current_anno_def
         end
         @element_stack << :internal_annotation_definition
       end
@@ -633,7 +650,7 @@ module BEL::Extension::Format
           # Example: large_corpus.xbel
           ns                 = {
             :prefix => ns_id,
-            :url    => @evidence.metadata.namespace_definitions[ns_id]
+            :url    => @evidence.references.namespace_definitions[ns_id]
           }
           @current_parameter = Parameter.new(ns, nil)
         end
@@ -664,6 +681,35 @@ module BEL::Extension::Format
       end
 
       # End element methods, dynamically invoked.
+
+      def end_header
+        @element_stack.pop
+      end
+
+      def end_version
+        if stack_top == :header
+          @evidence.metadata.document_header['version'] = @text
+        end
+      end
+
+      def end_copyright
+        if stack_top == :header
+          @evidence.metadata.document_header['copyright'] = @text
+        end
+      end
+
+      def end_contact_info
+        if stack_top == :header
+          @evidence.metadata.document_header['contactInfo'] = @text
+        end
+      end
+
+      def end_license
+        if stack_top == :header
+          @evidence.metadata.document_header['licenses'] ||= []
+          @evidence.metadata.document_header['licenses'] <<  @text
+        end
+      end
 
       def end_namespace_group
         @element_stack.pop
@@ -700,6 +746,10 @@ module BEL::Extension::Format
       end
 
       def end_description
+        if stack_top == :header
+          @evidence.metadata.document_header['description'] = @text
+        end
+
         if stack_top == :internal_annotation_definition
           @current_anno_def[:description] = @text
         end
@@ -732,6 +782,7 @@ module BEL::Extension::Format
             :citation           => @evidence.citation.to_h,
             :summary_text       => @evidence.summary_text.value,
             :experiment_context => @evidence.experiment_context.values.dup,
+            :references         => @evidence.references.values.dup,
             :metadata           => @evidence.metadata.values.dup
           })
 
@@ -739,11 +790,16 @@ module BEL::Extension::Format
           @callable.call(evidence_copy)
 
           # clear evidence parser state
-          # note: this preserves @evidence.metadata for the definitions
+          # note:
+          #   - preserve @evidence.references
+          #   - preserve @evidence.metadata.document_header
           @evidence.bel_statement      = nil
           @evidence.citation           = nil
           @evidence.summary_text       = nil
           @evidence.experiment_context = nil
+          @evidence.metadata.delete_if { |key|
+            key != :document_header
+          }
         end
       end
 
@@ -819,6 +875,10 @@ module BEL::Extension::Format
       end
 
       def end_name
+        if stack_top == :header
+          @evidence.metadata.document_header['name'] = @text
+        end
+
         if stack_top == :citation
           @evidence.citation.name = @text
         end
@@ -831,6 +891,11 @@ module BEL::Extension::Format
       end
 
       def end_author
+        if stack_top == :header
+          @evidence.metadata.document_header['authors'] ||= []
+          @evidence.metadata.document_header['authors'] <<  @text
+        end
+
         if stack_top == :citation
           (@evidence.citation.authors ||= []) << @text
         end

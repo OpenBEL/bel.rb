@@ -44,9 +44,9 @@ module BEL
       def to_bel
         if @ns
           prefix = @ns.respond_to?(:prefix) ? @ns.prefix : @ns[:prefix]
-          prefix = prefix.to_s + ':'
+          prefix = prefix ? (prefix.to_s + ':') : ''
         else
-          prefix = ""
+          prefix = ''
         end
         %Q{#{prefix}#{ensure_quotes(@value)}}
       end

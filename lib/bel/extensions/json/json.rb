@@ -104,6 +104,7 @@ module BEL::Extension::Format
           :citation           => hash[:citation],
           :summary_text       => hash[:summary_text],
           :experiment_context => hash[:experiment_context],
+          :references         => hash[:references],
           :metadata           => hash[:metadata]
         }
       }
@@ -112,7 +113,7 @@ module BEL::Extension::Format
     def unwrap(hash)
       evidence_hash          = hash[EVIDENCE_ROOT]
       evidence               = ::BEL::Model::Evidence.create(evidence_hash)
-      namespace_definitions  = evidence.metadata.namespace_definitions
+      namespace_definitions  = evidence.references.namespace_definitions
       evidence.bel_statement = ::BEL::Script.parse(
         "#{evidence.bel_statement}\n",
         Hash[
