@@ -35,61 +35,114 @@ branches
 executable commands
 -------------------
 
-**bel_upgrade**: Upgrade namespaces in BEL content to another version (i.e. *1.0* to *20131211*)
+**bel**: A single executable command with subcommands.
 
 ```bash
 
-    # using BEL file and change log JSON file
-    bel_upgrade --bel small_corpus.bel --changelog change_log.json
+    NAME
+        bel - Command line utilities for BEL.
 
-    # using BEL file and change log from a URL
-    bel_upgrade --bel small_corpus.bel --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+    SYNOPSIS
+        bel [global options] command [command options] [arguments...]
 
-    # using BEL from STDIN and change log from a URL
-    cat small_corpus.bel | bel_upgrade --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+    VERSION
+        0.3.0
+
+    GLOBAL OPTIONS
+        --help         - Show this message
+        --[no-]verbose - Enables verbose output.
+        --version      - Display the program version
+
+    COMMANDS
+        bel2rdf.rb   - Converts BEL to RDF.
+        compare   - Compares knowledge in two BEL script.
+        help      - Shows a list of commands or help for one command
+        parse     - Shows parse of BEL script.
+        rdfschema - Outputs the RDFS (e.g. RDF Schema) for BEL.
+        summarize - Show summary statistics. for knowledge in provided BEL script.
+        translate - Translates BEL evidence between file formats.
+        upgrade   - Upgrades BEL knowledge and annotation.
 ```
 
-**bel_rdfschema**: Dumps the RDF Schema triples for BEL.
 
-```bash
-
-    # dumps schema in ntriples format (default)
-    bel_rdfschema
-
-    # dumps schema in turtle format
-    # note: requires the 'rdf-turtle' gem
-    bel_rdfschema --format turtle
-```
-
-**bel2rdf**: Converts BEL to RDF.
+**bel2rdf.rb**: Converts BEL to RDF.
 
 ```bash
 
     # dumps RDF to standard out in ntriples format (default)
     #   (from file)
-    bel2rdf --bel small_corpus.bel
+    bel2rdf.rb --bel small_corpus.bel
 
     #   (from standard in)
-    cat small_corpus.bel | bel2rdf
+    cat small_corpus.bel | bel2rdf.rb
 
     # dumps RDF to standard out in turtle format
     #   (from file)
-    bel2rdf --bel small_corpus.bel --format turtle
+    bel2rdf.rb --bel small_corpus.bel --format turtle
 
     #   (from standard in)
-    cat small_corpus.bel | bel2rdf --format turtle
+    cat small_corpus.bel | bel2rdf.rb --format turtle
 ```
 
-**bel_parse**: Show parsed objects from BEL content for debugging purposes
+
+**bel_compare.rb**: Compares knowledge in two BEL script files.
+
+```bash
+
+    bel_compare.rb small_corpus.bel large_corpus.bel
+```
+
+
+**bel_parse.rb**: Show parsed objects from BEL content for debugging purposes
 
 ```bash
 
     # ...from file
-    bel_parse --bel small_corpus.bel
+    bel_parse.rb --bel small_corpus.bel
 
     # ...from standard in
-    cat small_corpus.bel | bel_parse
+    cat small_corpus.bel | bel_parse.rb
 ```
+
+
+**bel_rdfschema.rb**: Dumps the RDF Schema triples for BEL.
+
+```bash
+
+    # dumps schema in ntriples format (default)
+    bel_rdfschema.rb
+
+    # dumps schema in turtle format
+    # note: requires the 'rdf-turtle' gem
+    bel_rdfschema.rb --format turtle
+```
+
+
+**bel_summarize.rb**: Show summary statistics for knowledge in BEL script.
+
+```bash
+    # using BEL file
+    bel_summarize.rb --bel small_corpus.bel
+
+    # using BEL from STDIN
+    cat small_corpus.bel | bel_summarize.rb
+```
+
+
+**bel_upgrade.rb**: Upgrade namespaces in BEL content to another version (i.e. *1.0* to *20131211*)
+
+```bash
+
+    # using BEL file and change log JSON file
+    bel_upgrade.rb --bel small_corpus.bel --changelog change_log.json
+
+    # using BEL file and change log from a URL
+    bel_upgrade.rb --bel small_corpus.bel --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+
+    # using BEL from STDIN and change log from a URL
+    cat small_corpus.bel | bel_upgrade.rb --changelog http://resource.belframework.org/belframework/20131211/change_log.json
+```
+
 
 api examples
 ------------
