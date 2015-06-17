@@ -13,7 +13,7 @@ Dependencies
 
 - Required
 
-    - Ruby 1.9.2 or greater ([how to install ruby](INSTALL_RUBY.md))
+    - Ruby 2.0.0 or greater ([how to install ruby](INSTALL_RUBY.md))
 
 - Optional
 

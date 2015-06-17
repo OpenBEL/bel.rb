@@ -11,8 +11,6 @@ module LibBEL
     def extension_path(ruby_version = RUBY_VERSION)
       version =
         case ruby_version
-        when /^1\.9/
-          '1.9'
         when /^2\.0/
           '2.0'
         when /^2\.1/

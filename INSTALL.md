@@ -1,7 +1,7 @@
 Install
 =======
 
-This library requires [Ruby](https://www.ruby-lang.org) (**>= 1.9.2**).  See [how to install ruby](https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md).
+This library requires [Ruby](https://www.ruby-lang.org) (**>= 2.0.0**).  See [how to install ruby](https://github.com/OpenBEL/bel.rb/blob/master/INSTALL_RUBY.md).
 
 Install from [RubyGems.org](http://rubygems.org/gems/bel)
 

@@ -40,7 +40,6 @@ Gem::Specification.new do |spec|
                                     '--main', 'README.md',
                                     '--line-numbers',
                                     '--exclude', 'lib/bel/script.rb',
-                                    '--exclude', 'lib/1.9/*',
                                     '--exclude', 'lib/2.0/*',
                                     '--exclude', 'lib/2.1/*',
                                     '--exclude', 'lib/2.2/*',
