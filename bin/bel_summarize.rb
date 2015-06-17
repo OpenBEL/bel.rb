@@ -58,6 +58,7 @@ CSV do |csv_out|
       fx = fx.respond_to?(:long_form) ?
              fx.long_form.to_s :
              fx.to_s
+      fx = FUNCTIONS[fx.to_sym][:long_form]
       report["fx_#{fx}"] += 1
     end
     if obj.is_a? BEL::Model::Statement
