@@ -3,6 +3,7 @@ require 'bel'
 
 include BEL::Language
 include BEL::Namespace
+include BEL::Model
 
 describe Parameter, "#to_s" do
   it "returns bel syntax without namespace" do

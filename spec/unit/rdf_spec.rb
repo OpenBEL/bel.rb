@@ -1,15 +1,21 @@
 # vim: ts=2 sw=2:
+$: << File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', 'lib')
 require 'bel'
 require 'uuid'
 
+BEL::Extension.load_extension %s(rdf/rdf)
+
 include BEL::Language
 include BEL::Namespace
+include BEL::Model
 
 describe 'RDF functionality of BEL language objects' do
 
   before(:all) do
-    if not BEL::Features.rdf_support?
-      fail RuntimeError, "RDF tests cannot run; install rdf requirements"
+    begin
+      BEL::Extension.load_extension('rdf/rdf')
+    rescue LoadError => e
+      raise
     end
   end
 
@@ -17,7 +23,7 @@ describe 'RDF functionality of BEL language objects' do
 
     it "provides a URI based on namespace name" do
       stable_prefix = 'http://www.openbel.org/bel/namespace/'
-      expect(HGNC.to_uri).to eq(stable_prefix + 'hgnc-human-genes/')
+      expect(HGNC.to_uri).to eq(stable_prefix + 'hgnc-human-genes')
     end
   end
 

@@ -1,2 +1,11 @@
+doc
+pkg
+tmp
 .ruby-version
+Gemfile.lock
 *.gem
+*.so
+*.bundle
+*.swp
+/tags
+*.tags

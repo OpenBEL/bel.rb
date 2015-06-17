@@ -41,9 +41,23 @@ EOF
     expect(objects.length).to eql(7)
   end
 
+  it "support flexible spacing around relationship" do
+    [
+      'p(A)->p(B)',
+      'p(A) ->p(B)',
+      'p(A)-> p(B)',
+      'p(A) -> p(B)',
+      "p(A)\t->\tp(B)",
+      "p(A)  \t  ->  \t  p(B)"
+    ].each do |bel_expression|
+      statement_obj = BEL::Script.parse(bel_expression).to_a.last
+      expect(statement_obj.to_s).to eql('p(A) -> p(B)')
+    end
+  end
+
   it "is enumerable" do
     statements = BEL::Script.parse(BEL_SCRIPT).find_all { |x|
-      x.is_a? BEL::Language::Statement
+      x.is_a? BEL::Model::Statement
     }.to_a
     expect(statements.length).to be 6
     expect(statements.count{|x| x.subject_only?}).to be 3

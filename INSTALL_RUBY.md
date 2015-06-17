@@ -4,7 +4,7 @@
 ## Install Ruby (Windows)
 
 1. Download [RubyInstaller](http://rubyinstaller.org/downloads).
-   * Versions 1.9.3 and 2.x.x are supported.
+   * Versions 2.x.x are supported.
 2. Install RubyInstaller version.
    * Enable the _Add Ruby executables to your PATH_ option presented during installation.
 3. Open a command prompt (Windows Key + R then type `cmd`).

@@ -88,7 +88,6 @@ and apoptosis (programmed cell death) [1,2]"\n}
     objects = BEL::Script.parse(annotations).to_a
     expect(objects).to be
     expect(objects.length).to eql(1)
-    puts objects.first.value
     expect(objects.first.value).to eql([
       "Pub,\"Med\"",
       "Name of, the \"article\"",
@@ -148,7 +147,7 @@ translocation(proteinAbundance(SFAM:"RAS Family"),MESHCS:"Intracellular Space",M
 proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
 
     BEL::Script.parse(terms, namespace_definitions) do |obj|
-      if obj.is_a? BEL::Language::Term
+      if obj.is_a? BEL::Model::Term
         expect(obj).to respond_to(:fx)
         expect(obj).to respond_to(:arguments)
       end
@@ -162,7 +161,7 @@ proteinAbundance(HGNC:RAF1,proteinModification(P,S))\n}
     term = 'p(HGNC:FOXO3, pmod(P, S))'
 
     terms = BEL::Script.parse(term, namespace_definitions).find_all {|obj|
-      obj.is_a? BEL::Language::Term
+      obj.is_a? BEL::Model::Term
     }.to_a
     expect(terms.size).to eql(2)
 
@@ -206,7 +205,7 @@ path(MESHD:Atherosclerosis) => bp(GOBP:"lipid oxidation")
 path(MESHD:Atherosclerosis) =| (p(HGNC:MYC) -> bp(GOBP:"apoptotic process")) //Comment3\n}
 
     BEL::Script.parse(statements, namespace_definitions).find_all {|obj|
-      obj.is_a? BEL::Language::Statement
+      obj.is_a? BEL::Model::Statement
     }.each do |obj|
       expect(obj).to respond_to(:subject)
       expect(obj).to respond_to(:relationship)

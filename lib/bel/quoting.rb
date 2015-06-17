@@ -14,6 +14,11 @@ module BEL
       end
     end
 
+    def remove_quotes identifier
+      identifier.gsub!(/\A"|"\Z/, '')
+      identifier
+    end
+
     def always_quote identifier
       return "" unless identifier
       identifier.to_s.gsub! '"', '\"'

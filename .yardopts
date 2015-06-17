@@ -1,0 +1,8 @@
+--title 'BEL Ruby'
+--readme README.md
+--charset UTF-8
+--main README.md
+--files "README.md,INSTALL.md,INSTALL_RUBY.md,LICENSE"
+--exclude 'lib/bel/script.rb'
+"examples/**/*.rb"
+"lib/**/*.rb"

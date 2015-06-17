@@ -1,9 +1,10 @@
 # vim: ts=2 sw=2:
 require 'bel'
 
-describe BEL::Language::Parameter, "#valid?" do
+describe BEL::Model::Parameter, "#valid?" do
   include BEL::Language
   include BEL::Namespace
+  include BEL::Model
 
   it """false when parameter value is nil""" do
     expect(

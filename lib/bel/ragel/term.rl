@@ -11,7 +11,7 @@ machine bel;
   }
   action term_fx {
     fx = @name.to_sym
-    @term_stack.push(BEL::Language::Term.new(fx, []))
+    @term_stack.push(BEL::Model::Term.new(fx, []))
     pfx = nil
     pbuf = []
   }
@@ -22,13 +22,14 @@ machine bel;
         val = val.strip()[1...-1]
       end
 
-      ns = nil
-      if pfx
-        fail SyntaxError, "The namespace prefix #{pfx} was not defined" if not @namespaces[pfx.to_sym]
-        ns = @namespaces[pfx.to_sym]
-      end
+      ns =
+			  if pfx
+				  @namespaces[pfx.to_sym] ||= NamespaceDefinition.new(pfx, nil, nil)
+			  else
+				  nil
+			  end
 
-      param = BEL::Language::Parameter.new(ns, val)
+      param = BEL::Model::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -52,20 +53,20 @@ machine bel;
 
   term :=
     (
-      (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
-      FUNCTION '(' @term_fx @call_term
+      SP* (IDENT $pbuf ':')? @pns SP* (STRING $pbuf | IDENT $pbuf) %term_arg |
+      SP* FUNCTION SP* '(' @term_fx @call_term
     )
     (
       SP* ',' SP* 
       (
-        (IDENT $pbuf ':')? @pns (STRING $pbuf | IDENT $pbuf) %term_arg |
-        FUNCTION '(' @term_fx @call_term
+        (IDENT $pbuf ':')? @pns SP* (STRING $pbuf | IDENT $pbuf) %term_arg |
+        FUNCTION SP* '(' @term_fx @call_term
       )
-    )* ')' >term_pop >term @{n = 0} @return;
+    )* SP* ')' >term_pop >term @{n = 0} @return;
 
   term_main :=
     (
-      FUNCTION '(' @term_init @term_fx @call_term NL @term
+      FUNCTION SP* '(' @term_init @term_fx @call_term NL @term
     )+;
 }%%
 =end

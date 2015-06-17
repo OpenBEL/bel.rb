@@ -1,0 +1,37 @@
+.node {
+    cursor: pointer;
+}
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+.node text {
+    font: 10px sans-serif;
+}
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+
+.largefont { 
+    color: #0066FF; 
+    font-family: 'Roboto Slab';
+    font-size: 32px; 
+}
+
+body {
+    margin:50px 0px; padding:0px;
+    text-align:center;
+    overflow: scroll;
+}
+        
+#body {
+    width:900px;
+    margin:0px auto;
+    text-align:left;
+    padding:15px;
+    border:1px dashed #333;
+    background-color:#5B7988;
+}
