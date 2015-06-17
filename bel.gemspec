@@ -1,6 +1,8 @@
+require_relative 'lib/bel/version'
+
 Gem::Specification.new do |spec|
   spec.name                     = 'bel'
-  spec.version                  = '0.3.0.beta5'
+  spec.version                  = BEL::VERSION
   spec.summary                  = '''
                                     Process BEL with ruby.
                                   '''.gsub(%r{^\s+}, ' ').gsub(%r{\n}, '')
