@@ -196,6 +196,84 @@ module BEL
         require_relative 'bel_summarize'
       end
     end
+
+    class TranslateCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def which_io(input_file)
+        case input_file
+        when nil
+          $stdin
+        when '-'
+          $stdin
+        else
+          input_file
+        end
+      end
+
+      def run
+        parsed_options =
+          Trollop::options do
+            synopsis "Translates BEL evidence between file formats."
+            usage    "[OPTIONS]... translate [OPTIONS] FROM_FORMAT TO_FORMAT"
+
+            opt      :'input-file', 'The file containing evidence data to translate. If not specified the default is to read from STDIN.',
+                     :type    => String,
+                     :long    => :'input-file',
+                     :short   => :i,
+                     :default => nil
+          end
+
+        input_io = which_io(parsed_options[:'input-file'])
+
+        if ![$stdin, '-'].include?(input_io)
+          unless File.readable?(input_io)
+            $stderr.puts %Q{File "#{input_io}" is not readable.}
+            $stderr.puts
+            Trollop::educate
+          end
+        end
+
+        unless ARGV.size == 2
+          $stderr.puts %Q{Formats were not provided.}
+          $stderr.puts
+          Trollop::educate
+        end
+
+        from_format, to_format = ARGV
+
+        from = BEL::Extension::Format.formatters(from_format)
+        unless from
+          $stderr.puts(
+            from_format ?
+              %Q{The format "#{from_format}" is not available.} :
+              "The from_format argument was not specified."
+          )
+          $stderr.puts
+          Trollop::educate
+        end
+
+        to   = BEL::Extension::Format.formatters(to_format)
+        unless to
+          $stderr.puts(
+            to_format ?
+              %Q{The format "#{to_format}" is not available."} :
+              "The to_format argument was not specified."
+          )
+          $stderr.puts
+          Trollop::educate
+        end
+
+        begin
+          BEL::Format.translate(input_io, from_format, to_format, $stdout)
+        ensure
+          $stdout.close
+        end
+      end
+    end
   end
 end
 
