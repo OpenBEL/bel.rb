@@ -55,7 +55,6 @@ Gem::Specification.new do |spec|
 
   # runtime
   spec.add_dependency             'ffi',           '1.9.8'
-  spec.add_dependency             'gli',           '~> 2.13'
 
   # test rdf functionality
   spec.add_development_dependency 'uuid',          '~> 2.3'
