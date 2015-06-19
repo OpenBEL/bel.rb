@@ -39,29 +39,29 @@ executable commands
 
 ```bash
 
-    NAME
-        bel - Command line utilities for BEL.
+    Usage: bel [OPTIONS]... COMMAND
+    A set of commands to process BEL knowledge.
 
-    SYNOPSIS
-        bel [global options] command [command options] [arguments...]
+    Subcommands:
 
-    VERSION
-        0.3.1
+      bel2rdf
+      compare
+      parse
+      rdfschema
+      summarize
+      translate
+      upgrade
 
-    GLOBAL OPTIONS
-        --help         - Show this message
-        --[no-]verbose - Enables verbose output.
-        --version      - Display the program version
 
-    COMMANDS
-        bel2rdf.rb   - Converts BEL to RDF.
-        compare   - Compares knowledge in two BEL script.
-        help      - Shows a list of commands or help for one command
-        parse     - Shows parse of BEL script.
-        rdfschema - Outputs the RDFS (e.g. RDF Schema) for BEL.
-        summarize - Show summary statistics. for knowledge in provided BEL script.
-        translate - Translates BEL evidence between file formats.
-        upgrade   - Upgrades BEL knowledge and annotation.
+    bel 0.3.1
+    Copyright (C) 2015 OpenBEL
+    Apache License, Version 2.0, January 2004
+    http://www.apache.org/licenses/
+
+    Options:
+      -v, --verbose    Verbose output.
+      -e, --version    Print version and exit
+      -h, --help       Show this message
 ```
 
 
