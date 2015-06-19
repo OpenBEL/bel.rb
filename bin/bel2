@@ -14,8 +14,10 @@ module BEL
 
     class BelCommand
 
+      attr_reader :global_options
+
       def run
-        Trollop::options do
+        @global_options = Trollop::options do
           synopsis "A set of commands to process BEL knowledge."
           usage    "[OPTIONS]... COMMAND"
           version  ::VERSION_BANNER
@@ -34,32 +36,11 @@ module BEL
       end
     end
 
-    class ParseCommand
-
-      def run
-        parsed_options =
-          Trollop::options do
-            synopsis "Shows parse of BEL script."
-            usage    "[OPTIONS]... parse [OPTIONS]"
-
-            opt      :bel,       'The BEL script to parse and output. If not provided the default is to read from standard in (STDIN).',
-                     :type    => String,
-                     :long    => :bel,
-                     :short   => :b,
-                     :default => nil
-          end
-
-        if parsed_options[:bel]
-          ARGV.concat(['--bel', parsed_options[:bel]])
-        else
-          Trollop::educate if !ARGV.empty?
-        end
-
-        require_relative 'bel_parse'
-      end
-    end
-
     class Bel2rdfCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
 
       def run
         parsed_options =
@@ -92,16 +73,82 @@ module BEL
         require_relative 'bel2rdf'
       end
     end
+
+    class CompareCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        parsed_options =
+          Trollop::options do
+            synopsis "Compares knowledge in two BEL script files."
+            usage    "[OPTIONS]... parse FILE1 FILE2"
+          end
+
+        # Error if two file arguments were not provided.
+        Trollop::educate unless ARGV.size == 2
+
+        # Error if file arguments are not readable.
+        missing = ARGV.select { |arg|
+          !File.readable?(arg)
+        }
+        if !missing.empty?
+          missing.each do |arg|
+            $stderr.puts %Q{File "#{arg}" is not readable.}
+          end
+          $stderr.puts
+          Trollop::educate
+        end
+
+        ARGV.insert(0, '--verbose') if @global_options[:verbose]
+        require_relative 'bel_compare'
+      end
+    end
+
+    class ParseCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        parsed_options =
+          Trollop::options do
+            synopsis "Shows parse of BEL script."
+            usage    "[OPTIONS]... parse [OPTIONS]"
+
+            opt      :bel,       'The BEL script to parse and output. If not provided the default is to read from standard in (STDIN).',
+                     :type    => String,
+                     :long    => :bel,
+                     :short   => :b,
+                     :default => nil
+          end
+
+        if parsed_options[:bel]
+          ARGV.concat(['--bel', parsed_options[:bel]])
+        else
+          Trollop::educate if !ARGV.empty?
+        end
+
+        require_relative 'bel_parse'
+      end
+    end
   end
 end
 
-BEL::Commands::BelCommand.new.run
+# Run bel command
+bel_command     = BEL::Commands::BelCommand.new
+bel_command.run
 
-sub_command = ARGV.shift
-sub_class   = :"#{sub_command.capitalize}Command"
+global_options  = bel_command.global_options
 
+# Run subcommand
+sub_command     = ARGV.shift
+sub_class       = :"#{sub_command.capitalize}Command"
 if BEL::Commands.const_defined?(sub_class)
-  BEL::Commands.const_get(sub_class).new.run
+  BEL::Commands.const_get(sub_class).new(global_options).run
 else
   $stderr.puts "error: The command #{sub_command} is not valid.\n\n"
   Trollop::educate
