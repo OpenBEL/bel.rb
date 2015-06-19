@@ -135,6 +135,38 @@ module BEL
         require_relative 'bel_parse'
       end
     end
+
+    class RdfschemaCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        parsed_options =
+          Trollop::options do
+            synopsis "Outputs the RDFS (e.g. RDF Schema) for BEL."
+            usage    "[OPTIONS]... rdfschema [OPTIONS]"
+
+            opt      :format,    'The RDF format to output.',
+                     :type    => String,
+                     :long    => :format,
+                     :short   => :f,
+                     :default => 'ntriples'
+          end
+
+        formats = ['nquads', 'ntriples', 'turtle']
+        unless formats.include? parsed_options[:format]
+          fmt = parsed_options[:format]
+          $stderr.puts %Q{Format "#{fmt}" must be one of #{formats.join(' ')}.}
+          $stderr.puts
+          Trollop::educate
+        end
+
+        ARGV.concat(['--format', parsed_options[:format]]) if parsed_options[:format]
+        require_relative 'bel_rdfschema'
+      end
+    end
   end
 end
 
