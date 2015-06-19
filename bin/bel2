@@ -167,6 +167,35 @@ module BEL
         require_relative 'bel_rdfschema'
       end
     end
+
+    class SummarizeCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        parsed_options =
+          Trollop::options do
+            synopsis "Show summary statistics. for knowledge in provided BEL script."
+            usage    "[OPTIONS]... summarize [OPTIONS]"
+
+            opt      :bel,       'The BEL script to parse and output. If not provided the default is to read from standard in (STDIN).',
+                     :type    => String,
+                     :long    => :bel,
+                     :short   => :b,
+                     :default => nil
+          end
+
+        if parsed_options[:bel]
+          ARGV.concat(['--bel', parsed_options[:bel]])
+        else
+          Trollop::educate if !ARGV.empty?
+        end
+
+        require_relative 'bel_summarize'
+      end
+    end
   end
 end
 
