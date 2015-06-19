@@ -35,9 +35,9 @@ end
 # read bel content
 content =
 if options[:bel]
-  File.open(options[:bel]).read
+  File.open(options[:bel])
 else
-  $stdin.read
+  $stdin
 end
 
 class Main
