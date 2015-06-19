@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'erb'
 require 'bel'
 require 'bel/vendor/trollop'
 
@@ -16,9 +17,22 @@ module BEL
 
       attr_reader :global_options
 
+      def initialize(sub_commands)
+        @sub_commands = sub_commands
+      end
+
       def run
+        with_this_binding = binding
         @global_options = Trollop::options do
-          synopsis "A set of commands to process BEL knowledge."
+          synopsis ERB.new(
+          <<-SYNOPSIS
+A set of commands to process BEL knowledge.
+
+Subcommands:
+<% @sub_commands.each do |cmd| %>
+  <%= cmd %><% end %>
+          SYNOPSIS
+          ).result(with_this_binding)
           usage    "[OPTIONS]... COMMAND"
           version  ::VERSION_BANNER
 
@@ -314,8 +328,18 @@ module BEL
   end
 end
 
+def find_subcommands_in_module(mod)
+  mod.constants.map(&:to_s).select { |constant|
+    constant.end_with?('Command')
+  }.map { |cmd|
+    cmd.sub(/Command$/, '').downcase
+  }
+end
+
 # Run bel command
-bel_command     = BEL::Commands::BelCommand.new
+bel_command     = BEL::Commands::BelCommand.new(
+  find_subcommands_in_module(BEL::Commands) - ['bel']
+)
 bel_command.run
 
 global_options  = bel_command.global_options
