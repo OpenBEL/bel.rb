@@ -19,6 +19,14 @@ require 'optparse'
 require 'set'
 require 'open-uri'
 
+# Check if RDF format extension is loaded
+unless BEL::Extension::Format.formatters(:rdf)
+  $stderr.puts "An RDF format extension is not loaded."
+  $stderr.puts "Try loading one with:"
+  $stderr.puts "    Try BEL::Extension.load_extension('rdf')"
+  exit 1
+end
+
 # setup and parse options
 options = {
   format: 'ntriples',
@@ -90,19 +98,19 @@ class Serializer
 
   def find_writer(format)
     case format
-      when 'nquads'
-        BEL::RDF::RDF::NQuads::Writer
-      when 'turtle'
-        begin
-          require 'rdf/turtle'
-          BEL::RDF::RDF::Turtle::Writer
-        rescue LoadError
-          $stderr.puts """Turtle format not supported.
+    when 'nquads'
+      BEL::RDF::RDF::NQuads::Writer
+    when 'turtle'
+      begin
+        require 'rdf/turtle'
+        BEL::RDF::RDF::Turtle::Writer
+      rescue LoadError
+        $stderr.puts """Turtle format not supported.
 Install the 'rdf-turtle' gem."""
-          raise
-        end
-      when 'ntriples'
-        BEL::RDF::RDF::NTriples::Writer
+        raise
+      end
+    when 'ntriples'
+      BEL::RDF::RDF::NTriples::Writer
     end
   end
 end

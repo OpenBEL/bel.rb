@@ -2,209 +2,216 @@
 require 'gli'
 require 'bel'
 
-include GLI::App
+module BEL
+  module Commands
 
-# main command
-program_desc 'Command line utilities for BEL.'
-version BEL::VERSION
+    include GLI::App
+    extend  self
 
-# settings
-subcommand_option_handling :normal
-arguments :strict
+    # main command
+    program_desc 'Command line utilities for BEL.'
+    version BEL::VERSION
 
-# global options
-desc 'Enables verbose output.'
-switch [:verbose], :default_value => false
+    # settings
+    subcommand_option_handling :normal
+    arguments :strict
 
-# helpers
-def which_io(input_file)
-  case input_file
-  when nil
-    $stdin
-  when '-'
-    $stdin
-  else
-    input_file
-  end
-end
+    # global options
+    desc 'Enables verbose output.'
+    switch [:verbose], :default_value => false
 
-# Command: bel2rdf
-# ----------------
-desc      'Converts BEL to RDF.'
-long_desc <<-LONGDESC
-  Convers BEL script content into RDF triples. The RDFS schema for BEL can also be included in output.
-LONGDESC
-command :bel2rdf do |c|
-  c.flag [:b, :bel],
-    :desc => 'The BEL script file to convert to RDF.'
-  c.flag [:f, :format],
-    :desc => 'The RDF format to serialize.',
-    :default_value => 'ntriples',
-    :must_match => ['ntriples','nquads','turtle']
-  c.switch [:s, :schema], :default_value => false
-  c.action do |global_options,options,args|
-    bel_io = which_io(options[:bel])
-    ARGV.clear.concat([
-      '--format', options[:format]
-    ])
-    if bel_io != $stdin
-      ARGV.concat(['--bel', bel_io])
-    end
-    if options[:schema]
-      ARGV.concat(['--schema', options[:schema]])
-    end
-
-    require_relative 'bel2rdf'
-  end
-end
-
-
-# Command: compare
-# ----------------
-desc      'Compares knowledge in two BEL script.'
-long_desc <<-LONGDESC
-  Compare shows a quick breakdown of the differences between knowledge in two BEL script files.
-LONGDESC
-arg_name 'file1'
-arg_name 'file2'
-command :compare do |c|
-
-  c.action do |global_options,options,args|
-    file1, file2 = args
-
-    raise "The first file was not specified."  unless file1
-    raise "The second file was not specified." unless file2
-
-    ARGV.clear.concat([file1, file2])
-    require_relative 'bel_compare'
-  end
-end
-
-
-# Command: parse
-# --------------
-desc      'Shows parse of BEL script.'
-long_desc <<-LONGDESC
-  Show parsed objects from BEL content for debugging purposes. The parsed object name is show along with the BEL script text.
-LONGDESC
-command :parse do |c|
-  c.flag [:b, :bel],
-    :desc => 'The BEL script to parse.'
-  c.action do |global_options,options,args|
-    bel_io = which_io(options[:bel])
-    if bel_io != $stdin
-      ARGV.clear.concat(['--bel', bel_io])
-    end
-    require_relative 'bel_parse'
-  end
-end
-
-
-# Command: rdfschema
-# ----------------
-desc      'Outputs the RDFS (e.g. RDF Schema) for BEL.'
-long_desc <<-LONGDESC
-  Outputs the RDFS for BEL to the chosen RDF file format.
-LONGDESC
-command :rdfschema do |c|
-  c.flag [:f, :format],
-    :desc => 'The RDF format to serialize.',
-    :default_value => 'ntriples',
-    :must_match => ['ntriples','nquads','turtle']
-  c.action do |global_options,options,args|
-    ARGV.clear.concat(['--format', options[:format]])
-    require_relative 'bel_rdfschema'
-  end
-end
-
-
-# Command: summarize
-# ------------------
-desc      'Show summary statistics. for knowledge in provided BEL script.'
-long_desc <<-LONGDESC
-  Show summary statistics for knowledge in provided BEL script. The output is provided in CSV with an initial header row.
-LONGDESC
-command :summarize do |c|
-  c.flag [:b, :bel],
-    :desc => 'The BEL script to parse.'
-  c.action do |global_options,options,args|
-    bel_io = which_io(options[:bel])
-    if bel_io != $stdin
-      ARGV.clear.concat(['--bel', bel_io])
-    end
-    require_relative 'bel_summarize'
-  end
-end
-
-
-# Command: translate
-# ------------------
-desc      'Translates BEL evidence between file formats.'
-long_desc <<-LONGDESC
-  Translates BEL evidence from one format (e.g. <from_format>) to another format (e.g. <to_format>). If --input-file was not provided then evidence data is read from STDIN (e.g. -).
-LONGDESC
-arg_name 'from_format'
-arg_name 'to_format'
-command :translate do |c|
-
-  c.flag [:i, :"input-file"],
-    :desc          => 'The file to read evidence data from.'
-  c.action do |global_options,options,args|
-    input_io = which_io(options[:'input-file'])
-
-    if ![$stdin, '-'].include?(input_io)
-      unless File.readable?(input_io)
-        raise "File #{input_io} does not exist or is not readable."
+    # helpers
+    def which_io(input_file)
+      case input_file
+      when nil
+        $stdin
+      when '-'
+        $stdin
+      else
+        input_file
       end
     end
 
-    from_format, to_format = args
+    # Command: bel2rdf
+    # ----------------
+    desc      'Converts BEL to RDF.'
+    long_desc <<-LONGDESC
+      Convers BEL script content into RDF triples. The RDFS schema for BEL can also be included in output.
+    LONGDESC
+    command :bel2rdf do |c|
+      c.flag [:b, :bel],
+        :desc => 'The BEL script file to convert to RDF.'
+      c.flag [:f, :format],
+        :desc => 'The RDF format to serialize.',
+        :default_value => 'ntriples',
+        :must_match => ['ntriples','nquads','turtle']
+      c.switch [:s, :schema], :default_value => false
+      c.action do |global_options,options,args|
+        bel_io = which_io(options[:bel])
+        ARGV.clear.concat([
+          '--format', options[:format]
+        ])
+        if bel_io != $stdin
+          ARGV.concat(['--bel', bel_io])
+        end
+        if options[:schema]
+          ARGV.concat(['--schema', options[:schema]])
+        end
 
-    from = BEL::Extension::Format.formatters(from_format)
-    unless from
-      from_format ?
-        (raise %Q{The format "#{from_format}" is not available.}) :
-        (raise "The from_format argument was not specified.")
-    end
-    to   = BEL::Extension::Format.formatters(to_format)
-    unless to
-      to_format ?
-        (raise %Q{The format "#{to_format}" is not available."}) :
-        (raise "The to_format argument was not specified.")
+        require_relative 'bel2rdf'
+      end
     end
 
-    begin
-      BEL::Format.translate(input_io, from_format, to_format, $stdout)
-    ensure
-      $stdout.close
+
+    # Command: compare
+    # ----------------
+    desc      'Compares knowledge in two BEL script.'
+    long_desc <<-LONGDESC
+      Compare shows a quick breakdown of the differences between knowledge in two BEL script files.
+    LONGDESC
+    arg_name 'file1'
+    arg_name 'file2'
+    command :compare do |c|
+
+      c.action do |global_options,options,args|
+        file1, file2 = args
+
+        raise "The first file was not specified."  unless file1
+        raise "The second file was not specified." unless file2
+
+        ARGV.clear.concat([file1, file2])
+        require_relative 'bel_compare'
+      end
     end
+
+
+    # Command: parse
+    # --------------
+    desc      'Shows parse of BEL script.'
+    long_desc <<-LONGDESC
+      Show parsed objects from BEL content for debugging purposes. The parsed object name is show along with the BEL script text.
+    LONGDESC
+    command :parse do |c|
+      c.flag [:b, :bel],
+        :desc => 'The BEL script to parse.'
+      c.action do |global_options,options,args|
+        bel_io = which_io(options[:bel])
+        if bel_io != $stdin
+          ARGV.clear.concat(['--bel', bel_io])
+        end
+        require_relative 'bel_parse'
+      end
+    end
+
+
+    # Command: rdfschema
+    # ----------------
+    desc      'Outputs the RDFS (e.g. RDF Schema) for BEL.'
+    long_desc <<-LONGDESC
+      Outputs the RDFS for BEL to the chosen RDF file format.
+    LONGDESC
+    command :rdfschema do |c|
+      c.flag [:f, :format],
+        :desc => 'The RDF format to serialize.',
+        :default_value => 'ntriples',
+        :must_match => ['ntriples','nquads','turtle']
+      c.action do |global_options,options,args|
+        ARGV.clear.concat(['--format', options[:format]])
+        require_relative 'bel_rdfschema'
+      end
+    end
+
+
+    # Command: summarize
+    # ------------------
+    desc      'Show summary statistics. for knowledge in provided BEL script.'
+    long_desc <<-LONGDESC
+      Show summary statistics for knowledge in provided BEL script. The output is provided in CSV with an initial header row.
+    LONGDESC
+    command :summarize do |c|
+      c.flag [:b, :bel],
+        :desc => 'The BEL script to parse.'
+      c.action do |global_options,options,args|
+        bel_io = which_io(options[:bel])
+        if bel_io != $stdin
+          ARGV.clear.concat(['--bel', bel_io])
+        end
+        require_relative 'bel_summarize'
+      end
+    end
+
+
+    # Command: translate
+    # ------------------
+    desc      'Translates BEL evidence between file formats.'
+    long_desc <<-LONGDESC
+      Translates BEL evidence from one format (e.g. <from_format>) to another format (e.g. <to_format>). If --input-file was not provided then evidence data is read from STDIN (e.g. -).
+    LONGDESC
+    arg_name 'from_format'
+    arg_name 'to_format'
+    command :translate do |c|
+
+      c.flag [:i, :"input-file"],
+        :desc          => 'The file to read evidence data from.'
+      c.action do |global_options,options,args|
+        input_io = which_io(options[:'input-file'])
+
+        if ![$stdin, '-'].include?(input_io)
+          unless File.readable?(input_io)
+            raise "File #{input_io} does not exist or is not readable."
+          end
+        end
+
+        from_format, to_format = args
+
+        from = BEL::Extension::Format.formatters(from_format)
+        unless from
+          from_format ?
+            (raise %Q{The format "#{from_format}" is not available.}) :
+            (raise "The from_format argument was not specified.")
+        end
+        to   = BEL::Extension::Format.formatters(to_format)
+        unless to
+          to_format ?
+            (raise %Q{The format "#{to_format}" is not available."}) :
+            (raise "The to_format argument was not specified.")
+        end
+
+        begin
+          BEL::Format.translate(input_io, from_format, to_format, $stdout)
+        ensure
+          $stdout.close
+        end
+      end
+    end
+
+
+    # Command: upgrade
+    # ----------------
+    desc      'Upgrades BEL knowledge and annotation.'
+    long_desc <<-LONGDESC
+      Upgrades BEL knowledge, including annotations ane namespaces, by applying changelog file. A changelog file is published with new resource versions to allow for the upgrade.
+    LONGDESC
+    command :upgrade do |c|
+      c.flag [:b, :bel],
+        :desc          => 'The BEL script to parse.'
+      c.flag [:c, :changelog],
+        :desc     => 'The changelog JSON file or URL.',
+        :required => true
+      c.action do |global_options,options,args|
+        ARGV.clear.concat([
+          '--changelog', options[:changelog]
+        ])
+        bel_io = which_io(options[:bel])
+        if bel_io != $stdin
+          ARGV.concat(['--bel', bel_io])
+        end
+
+        require_relative 'bel_upgrade'
+      end
+    end
+
+    exit run(ARGV)
   end
 end
 
-
-# Command: upgrade
-# ----------------
-desc      'Upgrades BEL knowledge and annotation.'
-long_desc <<-LONGDESC
-  Upgrades BEL knowledge, including annotations ane namespaces, by applying changelog file. A changelog file is published with new resource versions to allow for the upgrade.
-LONGDESC
-command :upgrade do |c|
-  c.flag [:b, :bel],
-    :desc          => 'The BEL script to parse.'
-  c.flag [:c, :changelog],
-    :desc     => 'The changelog JSON file or URL.',
-    :required => true
-  c.action do |global_options,options,args|
-    ARGV.clear.concat([
-      '--changelog', options[:changelog]
-    ])
-    bel_io = which_io(options[:bel])
-    if bel_io != $stdin
-      ARGV.concat(['--bel', bel_io])
-    end
-
-    require_relative 'bel_upgrade'
-  end
-end
-
-exit run(ARGV)
