@@ -84,7 +84,7 @@ module BEL
         parsed_options =
           Trollop::options do
             synopsis "Compares knowledge in two BEL script files."
-            usage    "[OPTIONS]... parse FILE1 FILE2"
+            usage    "[OPTIONS]... compare FILE1 FILE2"
           end
 
         # Error if two file arguments were not provided.
@@ -272,6 +272,43 @@ module BEL
         ensure
           $stdout.close
         end
+      end
+    end
+
+    class UpgradeCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        parsed_options =
+          Trollop::options do
+            synopsis "Upgrades BEL knowledge and annotation."
+            usage    "[OPTIONS]... upgrade [OPTIONS]"
+
+            opt      :bel,       'The BEL script to parse and output. If not provided the default is to read from standard in (STDIN).',
+                     :type    => String,
+                     :long    => :bel,
+                     :short   => :b,
+                     :default => nil
+
+            opt      :changelog, 'The changelog JSON file or URL.',
+                     :type    => String,
+                     :long    => :changelog,
+                     :short   => :c,
+                     :default => 'http://resource.belframework.org/belframework/latest-release/change_log.json'
+          end
+
+        if parsed_options[:bel]
+          ARGV.concat(['--bel', parsed_options[:bel]])
+        else
+          Trollop::educate if !ARGV.empty?
+        end
+
+        ARGV.concat(['--changelog', parsed_options[:changelog]])
+
+        require_relative 'bel_upgrade'
       end
     end
   end
