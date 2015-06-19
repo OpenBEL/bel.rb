@@ -15,34 +15,32 @@ require 'set'
 require 'open-uri'
 
 # setup and parse options
-options = {}
+options = {
+  :change_log => 'http://resource.belframework.org/belframework/latest-release/change_log.json'
+}
 OptionParser.new do |opts|
   opts.banner = "Usage: bel_upgrade [options] [.bel file]"
   opts.on('-b', '--bel FILE', 'BEL file to upgrade.  STDIN (standard in) can also be used for BEL content.') do |bel|
     options[:bel] = bel
   end
   opts.on("-c", "--changelog [FILE | URI]", "Change log JSON") do |change_log|
-    options['change_log'] = change_log
+    options[:change_log] = change_log
   end
   #opts.on('-k', '--preserve-keywords','preserve anno keywords during upgrade') do |preserve|
   #  options[:preserve] = preserve
   #end
 end.parse!
 
-unless options['change_log']
-  $stderr.puts "Missing --changelog option. Use -h / --help for details."
-  exit 1
-end
-if not File.exists? options['change_log']
+if not File.exists? options[:change_log]
   begin
-    open(options['change_log']) do |f|
+    open(options[:change_log]) do |f|
       unless f.content_type == 'application/json'
         $stderr.puts "Expected application/json content type, actual: #{f.content_type}"
         exit 1
       end
     end
   rescue OpenURI::HTTPError => e
-    $stderr.puts "Cannot read URI for change_log, #{options['change_log']}, status: #{e}"
+    $stderr.puts "Cannot read URI for change_log, #{options[:change_log]}, status: #{e}"
     exit 1
   end
 end
@@ -61,18 +59,18 @@ end
 
 # read change log
 changelog = nil
-if File.exists? options['change_log']
-  File.open(options['change_log']) do |f|
+if File.exists? options[:change_log]
+  File.open(options[:change_log]) do |f|
     changelog = JSON.parse(f.read)
   end
 else
-  open(options['change_log']) do |file|
+  open(options[:change_log]) do |file|
     changelog = JSON.parse(file.read)
   end
 end
 
 unless changelog
-  $stderr.puts "Cannot retrieve change_log #{options['change_log']}"
+  $stderr.puts "Cannot retrieve change_log #{options[:change_log]}"
 end
 
 class Main
