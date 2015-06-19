@@ -46,7 +46,7 @@ executable commands
         bel [global options] command [command options] [arguments...]
 
     VERSION
-        0.3.0
+        0.3.1
 
     GLOBAL OPTIONS
         --help         - Show this message
