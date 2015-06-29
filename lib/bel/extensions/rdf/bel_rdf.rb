@@ -142,16 +142,26 @@ module BEL
     }
 
     ACTIVITY_TYPE = {
-      cat: BELV.Catalytic,
-      chap: BELV.Chaperone,
-      gtp: BELV.GtpBound,
-      kin: BELV.Kinase,
-      act: BELV.Activity,
-      pep: BELV.Peptidase,
-      phos: BELV.Phosphatase,
-      ribo: BELV.Ribosylase,
-      tscript: BELV.Transcription,
-      tport: BELV.Transport
+      cat:                     BELV.Catalytic,
+      catalyticActivity:       BELV.Catalytic,
+      chap:                    BELV.Chaperone,
+      chaperoneActivity:       BELV.Chaperone,
+      gtp:                     BELV.GtpBound,
+      gtpBoundActivity:        BELV.GtpBound,
+      kin:                     BELV.Kinase,
+      kinaseActivity:          BELV.Kinase,
+      act:                     BELV.Activity,
+      molecularActivity:       BELV.Activity,
+      pep:                     BELV.Peptidase,
+      peptidaseActivity:       BELV.Peptidase,
+      phos:                    BELV.Phosphatase,
+      phosphataseActivity:     BELV.Phosphatase,
+      ribo:                    BELV.Ribosylase,
+      ribosylationActivity:    BELV.Ribosylase,
+      tscript:                 BELV.Transcription,
+      transcriptionalActivity: BELV.Transcription,
+      tport:                   BELV.Transport,
+      transportActivity:       BELV.Transport
     }
 
     # maps modification types to bel/vocabulary class
