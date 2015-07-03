@@ -1,6 +1,8 @@
 bel ruby
 ========
 
+[![Join the chat at https://gitter.im/OpenBEL/bel.rb](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OpenBEL/bel.rb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Gem Version](https://badge.fury.io/rb/bel.svg)](http://badge.fury.io/rb/bel)
 
 The bel ruby gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
