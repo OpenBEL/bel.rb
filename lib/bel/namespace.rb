@@ -247,16 +247,16 @@ module BEL
         reload(@url) if not @values
         sym = value.to_sym
         encoding = @values[sym] || :""
-        Language::Parameter.new(self, sym, encoding)
+        Model::Parameter.new(self, sym, encoding)
       end
 
       def each &block
         reload(@url) if not @values
         @values.each do |val, enc|
           if block_given?
-            block.call(Language::Parameter.new(self, val, enc))
+            block.call(Model::Parameter.new(self, val, enc))
           else
-            yield Language::Parameter.new(self, val, enc)
+            yield Model::Parameter.new(self, val, enc)
           end
         end
       end
