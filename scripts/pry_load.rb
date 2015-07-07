@@ -1,5 +1,6 @@
 # vim: ts=2 sw=2:
-require '../lib/bel.rb'
+$: << File.join(File.expand_path('.'), '..', 'lib')
+require 'bel'
 
 begin
   include BEL::RDF
