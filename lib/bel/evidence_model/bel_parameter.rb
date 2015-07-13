@@ -6,7 +6,7 @@ module BEL
       def valid?
         return false unless value
         return true unless @ns
-        @ns.respond_to?(:values) && ns.values.include?(value)
+        @ns.respond_to?(:values) && ns.values.include?(value.to_sym)
       end
     end
 
