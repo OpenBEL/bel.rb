@@ -57,11 +57,11 @@ describe 'Loading BEL resources from a ResourceIndex object' do
       expect {
         bogus_path = Pathname(Dir.tmpdir) + 'doesnotexist.foobar'
         ResourceIndex.openbel_published_index(bogus_path).namespaces
-      }.to raise_error
+      }.to raise_error(OpenURI::HTTPError)
 
       expect {
         ResourceIndex.openbel_published_index('FOO_BAR').namespaces
-      }.to raise_error
+      }.to raise_error(OpenURI::HTTPError)
     end
   end
 end
