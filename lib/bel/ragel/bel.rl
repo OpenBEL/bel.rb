@@ -26,6 +26,7 @@ machine bel;
 require_relative 'language'
 require_relative 'namespace'
 require_relative 'evidence_model'
+require_relative 'nonblocking_io_wrapper'
 
 module BEL
   module Script
@@ -47,7 +48,7 @@ module BEL
           end
 
         unless parser
-          fail ArgumentError, "content: expected string or file-like"
+          fail ArgumentError, "content: expected string or io-like"
         end
 
         if block_given?
@@ -99,8 +100,8 @@ module BEL
 
       MAX_LENGTH = 1024 * 128 # 128K
 
-      def initialize(file, namespaces = {})
-        @file       = file
+      def initialize(io, namespaces = {})
+        @io         = NonblockingIOWrapper.new(io, MAX_LENGTH)
         @namespaces =
           case namespaces
           when BEL::Namespace::ResourceIndex
@@ -125,26 +126,19 @@ module BEL
         my_ts = nil
         my_te = nil
         
-        begin
-          while chunk = @file.read_nonblock(MAX_LENGTH)
-            data = leftover + chunk.unpack('c*')
-            p = 0
-            pe = data.length
-            %% write exec;
-            if my_ts
-              leftover = data[my_ts..-1]
-              my_te = my_te - my_ts if my_te
-              my_ts = 0
-            else
-              leftover = []
-            end
-          end
-        rescue IO::WaitReadable
-          IO.select([@file])
-          retry
-        rescue EOFError
-          # end of stream; parsing complete
-        end
+				@io.each do |chunk|
+					data = leftover + chunk.unpack('c*')
+					p = 0
+					pe = data.length
+					%% write exec;
+					if my_ts
+						leftover = data[my_ts..-1]
+						my_te = my_te - my_ts if my_te
+						my_ts = 0
+					else
+						leftover = []
+					end
+				end
       end
     end
   end

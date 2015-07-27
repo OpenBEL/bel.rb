@@ -1,19 +1,36 @@
+require 'rake/testtask'
 require 'rspec/core'
 require 'rspec/core/rake_task'
 
-UNIT = FileList['spec/unit/**/*_spec.rb']
-INTEGRATION = FileList['spec/integration/**/*_spec.rb']
+# Tests using a classical xunit-style.
+TEST_UNIT_TESTS        = FileList['test/unit/**/test_*.rb']
+TEST_INTEGRATION_TESTS = FileList['test/integration/**/test_*.rb']
+
+# Tests using a specification style.
+SPEC_UNIT_TESTS        = FileList['spec/unit/**/*_spec.rb']
+SPEC_INTEGRATION_TESTS = FileList['spec/integration/**/*_spec.rb']
+
+task :unit =>        [:spec_unit,        :test_unit]
+task :integration => [:spec_integration, :test_integration]
 
 # unit tests
-RSpec::Core::RakeTask.new(:unit) do |r|
+RSpec::Core::RakeTask.new(:spec_unit) do |r|
   r.ruby_opts = '-Ilib/'
   r.rspec_opts = "--format documentation"
-  r.pattern = (not UNIT.empty? and UNIT) or fail "No unit tests"
+  r.pattern = SPEC_UNIT_TESTS
+end
+Rake::TestTask.new(:test_unit) do |t|
+  t.test_files = TEST_UNIT_TESTS
+  t.verbose = true
 end
 
 # integration tests
-RSpec::Core::RakeTask.new(:integration) do |r|
+RSpec::Core::RakeTask.new(:spec_integration) do |r|
   r.ruby_opts = '-Ilib/'
   r.rspec_opts = "--format documentation"
-  r.pattern = (not INTEGRATION.empty? and INTEGRATION) or fail "No integration tests"
+  r.pattern = SPEC_INTEGRATION_TESTS
+end
+Rake::TestTask.new(:test_integration) do |t|
+  t.test_files = TEST_INTEGRATION_TESTS
+  t.verbose = true
 end

@@ -4,5 +4,7 @@
 --main README.md
 --files "README.md,INSTALL.md,INSTALL_RUBY.md,LICENSE"
 --exclude 'lib/bel/script.rb'
+--private
 "examples/**/*.rb"
 "lib/**/*.rb"
+"test/**/*.rb"
