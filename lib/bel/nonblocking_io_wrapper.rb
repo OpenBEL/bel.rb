@@ -44,7 +44,7 @@ class NonblockingIOWrapper
   # @return [Method] a non-blocking read method
   def nonblocking_read(io)
     if Gem.win_platform?
-      io.method(:read)
+      io.method(:sysread)
     else
       io.method(:read_nonblock)
     end
