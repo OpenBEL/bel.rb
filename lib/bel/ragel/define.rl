@@ -27,11 +27,19 @@
 
   action define_namespace {
     prefix = @name.to_sym
-		latest_namespace = BEL::Namespace::NAMESPACE_LATEST[prefix]
-		uri = BEL::Namespace::DEFAULT_URI
-    ns = BEL::Namespace::NamespaceDefinition.new(prefix, @value, uri)
-    @namespaces[prefix] = ns
-    yield ns
+		@namespaces[prefix] =
+		  if BEL::Namespace.const_defined?(prefix)
+		    BEL::Namespace.const_get(prefix)
+		  else
+				uri = BEL::Namespace::DEFAULT_URI
+				BEL::Namespace::NamespaceDefinition.new(
+					prefix,
+					@value,
+					uri
+				)
+			end
+
+    yield @namespaces[prefix]
   }
 
   include 'common.rl';
