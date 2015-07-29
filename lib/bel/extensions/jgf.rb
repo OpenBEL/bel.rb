@@ -129,6 +129,7 @@ module BEL::Extension::Format
       bel_statements.map { |bel_statement|
         graph_name = graph[:label] || graph[:id] || 'BEL Graph'
         metadata   = ::BEL::Model::Metadata.new
+        references = ::BEL::Model::References.new
 
         # establish document header
         metadata.document_header[:Name]        = graph_name
@@ -153,7 +154,7 @@ module BEL::Extension::Format
             }
           ]
         end
-        metadata.annotation_definitions = annotations if annotations
+        references.annotation_definitions = annotations if annotations
 
         # establish namespace definitions
         namespaces = graph.fetch(:metadata, {}).
@@ -170,11 +171,12 @@ module BEL::Extension::Format
             }
           ]
         end
-        metadata.namespace_definitions = namespaces if namespaces
+        references.namespace_definitions = namespaces if namespaces
 
         ::BEL::Model::Evidence.create(
           :bel_statement => bel_statement,
-          :metadata      => metadata
+          :metadata      => metadata,
+          :references    => references
         )
       }
     end
