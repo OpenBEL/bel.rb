@@ -28,27 +28,27 @@ machine bel;
   }
 
   action lists {
-    listvals = []
-    listbuffer = []
+    @listvals = []
+    @listbuffer = []
   }
 
   action listn {
-    listbuffer << fc
+    @listbuffer << fc
   }
 
   action liste {
-    if listbuffer[0] == 34 && listbuffer[-1] == 34
-      listbuffer = listbuffer[1...-1]
+    if @listbuffer[0] == 34 && @listbuffer[-1] == 34
+      @listbuffer = @listbuffer[1...-1]
     end
-    tmp_listvalue = listbuffer.pack('C*').force_encoding('utf-8')
+    tmp_listvalue = @listbuffer.pack('C*').force_encoding('utf-8')
     tmp_listvalue.gsub!('\"', '"')
 
-    listvals << tmp_listvalue
-    listbuffer = []
+    @listvals << tmp_listvalue
+    @listbuffer = []
   }
 
   action listv {
-    @value = listvals
+    @value = @listvals
   }
 
   action newline {

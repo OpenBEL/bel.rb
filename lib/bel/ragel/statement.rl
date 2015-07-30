@@ -49,10 +49,10 @@
   action statement_pop {
     @statement = @statement_stack.pop
   }
-  action rels {relbuffer = []}
-  action reln {relbuffer << fc}
+  action rels {@relbuffer = []}
+  action reln {@relbuffer << fc}
   action rele {
-    rel = relbuffer.pack('C*').force_encoding('utf-8')
+    rel = @relbuffer.pack('C*').force_encoding('utf-8')
     @statement_stack.last.relationship = rel.to_sym
   }
   action cmts {cmtbuffer = []}
