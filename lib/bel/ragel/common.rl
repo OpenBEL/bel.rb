@@ -64,7 +64,7 @@ machine bel;
 
   # basic tokens
   EQL = '=';
-  NL = '\n' | '\r' '\n'?;
+  NL = '\r\n' | '\n';
   COMMENT = '#';
   SP = ' ' | '\t';
 

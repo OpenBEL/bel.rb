@@ -5,20 +5,18 @@ machine bel;
   include 'common.rl';
   include 'define.rl';
   include 'set.rl';
-  include 'term.rl';
   include 'statement.rl';
+  include 'term.rl';
 
-  # TODO
-  # - allow EOF for end of record
   document_main :=
     (
-      NL @newline |
+			DEFINE_KW SP+ ANNOTATION_KW @call_define_annotation |
+			DEFINE_KW SP+ NAMESPACE_KW @call_define_namespace |
       COMMENT ^NL+ >s $n NL %comment |
-      DEFINE_KW SP+ ANNOTATION_KW @call_define_annotation |
-      DEFINE_KW SP+ NAMESPACE_KW @call_define_namespace |
-      SET_KW @call_set |
+			SET_KW @call_set |
       UNSET_KW @call_unset |
-      ^(NL | '#' | 'D' | 'S' | 'U') >{fpc -= 1;} >statement_init >call_statement
+      ^('\r' | '\n' | '#' | 'D' | 'S' | 'U') >{fpc -= 1;} >statement_init >call_statement |
+      NL @newline
     )+;
 }%%
 =end
