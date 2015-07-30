@@ -28,9 +28,9 @@
   action define_namespace {
     prefix = @name.to_sym
 		@namespaces[prefix] =
-		  if BEL::Namespace.const_defined?(prefix)
-		    BEL::Namespace.const_get(prefix)
-		  else
+			begin
+				BEL::Namespace.const_get(prefix)
+			rescue NameError
 				uri = BEL::Namespace::DEFAULT_URI
 				BEL::Namespace::NamespaceDefinition.new(
 					prefix,
