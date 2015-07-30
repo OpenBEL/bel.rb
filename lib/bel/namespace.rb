@@ -64,12 +64,24 @@ module BEL
         LATEST_PREFIX + 'namespace/mesh-cellular-structures.belns',
         'http://www.openbel.org/bel/namespace/mesh-cellular-structures'
       ],
+      MESHCSID: [
+        LATEST_PREFIX + 'namespace/mesh-cellular-structures-ids.belns',
+        'http://www.openbel.org/bel/namespace/mesh-cellular-structures'
+      ],
       MESHD: [
         LATEST_PREFIX + 'namespace/mesh-diseases.belns',
         'http://www.openbel.org/bel/namespace/mesh-diseases',
       ],
+      MESHDID: [
+        LATEST_PREFIX + 'namespace/mesh-diseases-ids.belns',
+        'http://www.openbel.org/bel/namespace/mesh-diseases',
+      ],
       MESHPP: [
         LATEST_PREFIX + 'namespace/mesh-processes.belns',
+        'http://www.openbel.org/bel/namespace/mesh-processes'
+      ],
+      MESHPPID: [
+        LATEST_PREFIX + 'namespace/mesh-processes-ids.belns',
         'http://www.openbel.org/bel/namespace/mesh-processes'
       ],
       MGI: [
@@ -100,7 +112,7 @@ module BEL
         LATEST_PREFIX + 'namespace/swissprot.belns',
         'http://www.openbel.org/bel/namespace/swissprot'
       ],
-      SPAC: [
+      SPID: [
         LATEST_PREFIX + 'namespace/swissprot-ids.belns',
         'http://www.openbel.org/bel/namespace/swissprot-ids'
       ]
