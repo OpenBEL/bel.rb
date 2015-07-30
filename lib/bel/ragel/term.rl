@@ -13,10 +13,10 @@ machine bel;
     fx = @name.to_sym
     @term_stack.push(BEL::Model::Term.new(fx, []))
     pfx = nil
-    pbuf = []
+    @pbuf = []
   }
   action term_arg {
-    val = pbuf.map(&:chr).join()
+    val = @pbuf.map(&:chr).join()
     if not val.empty?
       if val.start_with? '"' and val.end_with? '"'
         val = val.strip()[1...-1]
@@ -34,7 +34,7 @@ machine bel;
 
       yield param
     end
-    pbuf = []
+    @pbuf = []
     pfx = nil
   }
   action term_pop {
@@ -43,10 +43,10 @@ machine bel;
       @term_stack.last << @term
     end
   }
-  action pbuf {pbuf << fc}
+  action pbuf  { @pbuf << fc }
   action pns {
-    pfx = pbuf.map(&:chr).join()
-    pbuf = []
+    pfx = @pbuf.map(&:chr).join()
+    @pbuf = []
   }
 
   include 'common.rl';
