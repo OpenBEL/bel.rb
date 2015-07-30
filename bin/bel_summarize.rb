@@ -21,7 +21,7 @@ end.parse!
 # read bel content
 content =
   if options[:bel]
-    File.open(options[:bel])
+    File.open(options[:bel], :external_encoding => 'UTF-8')
   else
     $stdin
   end

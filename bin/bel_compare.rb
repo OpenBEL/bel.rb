@@ -46,11 +46,11 @@ threads = []
 first_groups = {}
 second_groups = {}
 threads << Thread.new {
-  first_groups.update(fetch_groups(File.read(ARGV[0])))
+  first_groups.update(fetch_groups(File.open(ARGV[0], :external_encoding => 'UTF-8')))
 }
 
 threads << Thread.new {
-  second_groups.update(fetch_groups(File.read(ARGV[1])))
+  second_groups.update(fetch_groups(File.open(ARGV[1], :external_encoding => 'UTF-8')))
 }
 
 threads.each { |t| t.join }
