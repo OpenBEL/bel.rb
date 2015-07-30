@@ -40,22 +40,28 @@ describe 'RDF functionality of BEL language objects' do
 
     it "provides RDF statements for concept types based on encoding" do
       triples = Parameter.new(HGNC, 'AKT1', 'GRP').to_rdf
-      expect(triples.size).to eq(3)
+      expect(triples.size).to eq(4)
       expect(
-        triples.find_all { |x|
+        triples.count { |x|
+          x.object.uri? and x.object.value == BEL::RDF::BELV.AbundanceConcept
+        }).to eq(1)
+      expect(
+        triples.count { |x|
           x.object.uri? and x.object.value == BEL::RDF::BELV.GeneConcept
-        }.size
-      ).to eq(1)
+        }).to eq(1)
       expect(
-        triples.find_all { |x|
+        triples.count { |x|
           x.object.uri? and x.object.value == BEL::RDF::BELV.RNAConcept
-        }.size
-      ).to eq(1)
+        }).to eq(1)
       expect(
-        triples.find_all { |x|
+        triples.count { |x|
           x.object.uri? and x.object.value == BEL::RDF::BELV.ProteinConcept
-        }.size
-      ).to eq(1)
+        }).to eq(1)
+    end
+
+    it "URL-encodes UTF-8 concepts" do
+      uri = Parameter.new(CHEBI, '5α-androst-16-en-3-one').to_uri
+      expect(uri.to_s).to include("%CE%B1")
     end
   end
 
@@ -79,6 +85,16 @@ describe 'RDF functionality of BEL language objects' do
       expect(
         rdf_statements.include? [term.to_uri, BEL::RDF::BELV.hasConcept, term.arguments[0].to_uri]
       ).to be(true)
+    end
+
+    it "forces term labels as UTF-8" do
+      (_, rdf_statements) = a(Parameter.new(CHEBI, '5α-androst-16-en-3-one')).to_rdf
+      _, _, label_literal = rdf_statements.find { |stmt|
+        stmt[1] == BEL::RDF::RDFS.label
+      }
+
+      expect(label_literal.encoding).to eql(Encoding::UTF_8)
+      expect(label_literal).to          eql(%Q{abundance(CHEBI:"5α-androst-16-en-3-one")})
     end
   end
 
@@ -106,6 +122,34 @@ describe 'RDF functionality of BEL language objects' do
 
       evidence_resource_identifier = evidence_resource.to_s.gsub(/^_:/, '')
       expect(UUID.validate(evidence_resource_identifier)).to be(true)
+    end
+
+    it "forces statement labels as UTF-8" do
+      (_, rdf_statements) =
+        (a(Parameter.new(CHEBI, '5α-androst-16-en-3-one')).association a(Parameter.new(CHEBI, 'luteolin 7-O-β-D-glucosiduronate'))).to_rdf
+      _, _, label_literal = rdf_statements.select { |stmt|
+        stmt[1] == BEL::RDF::RDFS.label
+      }.last
+
+      expect(label_literal.encoding).to eql(Encoding::UTF_8)
+      expect(label_literal).to          eql(%Q{abundance(CHEBI:"5α-androst-16-en-3-one") association abundance(CHEBI:"luteolin 7-O-β-D-glucosiduronate")})
+    end
+
+    it "forces evidence text as UTF-8" do
+      EVIDENCE_TEST = '''
+        SET Evidence = "Contains UTF-8 ... 84±3 55±7% α O-β-D γ κ"
+        a(SCHEM:Sorbitol) -> kin(p(RGD:Mapk8))
+        SET Evidence = "Plain text ASCII."
+        a(SCHEM:"Prostaglandin F1") -| bp(MESHPP:Apoptosis)
+      '''.gsub(%r{^\s*}, '')
+
+      BEL::Script.parse(EVIDENCE_TEST).select { |obj|
+        obj.is_a? Statement
+      }.each do |stmt|
+        expect(stmt.annotations).to include('Evidence')
+        evidence = stmt.annotations['Evidence']
+        expect(evidence.value.encoding).to eql(Encoding::UTF_8)
+      end
     end
   end
 end

@@ -128,9 +128,9 @@ end
 # read bel content
 content =
   if options[:bel]
-    File.open(options[:bel]).read
+    File.open(options[:bel], :external_encoding => 'UTF-8')
   else
-    $stdin.read
+    $stdin
   end
 
 # parse and write rdf

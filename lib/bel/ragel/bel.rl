@@ -125,7 +125,7 @@ module BEL
         my_te = nil
         
 				@io.each do |chunk|
-					data = leftover + chunk.unpack('c*')
+					data = leftover + chunk.unpack('C*')
 					p = 0
 					pe = data.length
 					%% write exec;

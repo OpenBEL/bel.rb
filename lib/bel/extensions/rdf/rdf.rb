@@ -30,13 +30,13 @@ class ::BEL::Model::Parameter
 
   def to_rdf
     uri = to_uri
-    char_enum = @enc.to_s.each_char
+    encodings = ['A'].concat(@enc.to_s.each_char.to_a).uniq
     if block_given?
-      char_enum.map {|c| concept_statement(c, uri) }.each do |stmt|
+      encodings.map { |enc| concept_statement(enc, uri) }.each do |stmt|
         yield stmt
       end
     else
-      char_enum.map { |c| concept_statement(c, uri)}
+      encodings.map { |enc| concept_statement(enc, uri)}
     end
   end
 
@@ -120,7 +120,7 @@ class BEL::Model::Term
     end
 
     # rdfs:label
-    statements << [uri, BEL::RDF::RDFS.label, to_s]
+    statements << [uri, BEL::RDF::RDFS.label, to_s.force_encoding('UTF-8')]
 
     # special proteins (does not recurse into pmod)
     if [:p, :proteinAbundance].include?(fx)
@@ -259,7 +259,7 @@ class BEL::Model::Statement
 
     # common statement triples
     statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Statement]
-    statements << [uri, RDF::RDFS.label, to_s]
+    statements << [uri, RDF::RDFS.label, to_s.force_encoding('UTF-8')]
 
     # evidence
     evidence_bnode = BEL::RDF::RDF::Node.uuid
@@ -284,7 +284,7 @@ class BEL::Model::Statement
     # evidence
     evidence_text = @annotations.delete('Evidence')
     if evidence_text
-      value = evidence_text.value.gsub('"', '')
+      value = evidence_text.value.gsub('"', '').force_encoding('UTF-8')
       statements << [evidence_bnode, BEL::RDF::BELV.hasEvidenceText, value]
     end
 
