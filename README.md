@@ -3,7 +3,7 @@ bel ruby
 
 [![Gem Version](https://badge.fury.io/rb/bel.svg)](http://badge.fury.io/rb/bel)
 
-[![Changelog](https://img.shields.io/badge/bel.rb-changelog-brightgreen.svg)](https://raw.githubusercontent.com/OpenBEL/bel.rb/master/CHANGELOG)
+[![Changelog](https://img.shields.io/badge/bel.rb-changelog-brightgreen.svg)](https://github.com/OpenBEL/bel.rb/blob/master/CHANGELOG.md)
 
 [![Issues](https://img.shields.io/github/issues/OpenBEL/bel.rb.svg)](https://github.com/OpenBEL/bel.rb/issues)
 
@@ -365,3 +365,5 @@ api examples
       end  
     end
 ```
+
+[CHANGELOG]: https://github.com/OpenBEL/bel.rb/blob/master/CHANGELOG.md
