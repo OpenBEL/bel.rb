@@ -1,0 +1,76 @@
+##################################################################################  
+# Document Properties Section  
+	  
+	SET DOCUMENT Name = "BEL Framework Small Corpus Document"  
+	SET DOCUMENT Description = "Approximately 2000 hand curated statements drawn from 57 PubMeds."  
+	SET DOCUMENT Version = 20150611  
+	SET DOCUMENT Copyright = "Copyright (c) 2011-2015, Selventa. All Rights Reserved."  
+	SET DOCUMENT Authors = Selventa  
+	SET DOCUMENT Licenses = "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License"  
+	SET DOCUMENT ContactInfo = "support@belframework.org"  
+	  
+    ##################################################################################  
+    # Definitions Section  
+	  
+	DEFINE NAMESPACE CHEBI AS URL "http://resource.belframework.org/belframework/20150611/namespace/chebi.belns"  
+	DEFINE NAMESPACE CHEBIID AS URL "http://resource.belframework.org/belframework/20150611/namespace/chebi-ids.belns"  
+	DEFINE NAMESPACE EGID AS URL "http://resource.belframework.org/belframework/20150611/namespace/entrez-gene-ids.belns"  
+	DEFINE NAMESPACE GOBP AS URL "http://resource.belframework.org/belframework/20150611/namespace/go-biological-process.belns"  
+	DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"  
+	DEFINE NAMESPACE MESHCS AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-cellular-structures.belns"  
+	DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-diseases.belns"  
+	DEFINE NAMESPACE MESHPP AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-processes.belns"  
+	DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/20150611/namespace/mgi-mouse-genes.belns"  
+	DEFINE NAMESPACE RGD AS URL "http://resource.belframework.org/belframework/20150611/namespace/rgd-rat-genes.belns"  
+	DEFINE NAMESPACE SCHEM AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-legacy-chemicals.belns"  
+	DEFINE NAMESPACE SCOMP AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns"  
+	DEFINE NAMESPACE SDIS AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-legacy-diseases.belns"  
+	DEFINE NAMESPACE SFAM AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-protein-families.belns"  
+	DEFINE NAMESPACE SPID AS URL "http://resource.belframework.org/belframework/20150611/namespace/swissprot-ids.belns"  
+          
+	DEFINE ANNOTATION Anatomy AS URL "http://resource.belframework.org/belframework/20150611/annotation/anatomy.belanno"  
+	DEFINE ANNOTATION Cell AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell.belanno"  
+	DEFINE ANNOTATION CellLine AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"  
+	DEFINE ANNOTATION CellStructure AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell-structure.belanno"  
+	DEFINE ANNOTATION Disease AS URL "http://resource.belframework.org/belframework/20150611/annotation/disease.belanno"  
+	DEFINE ANNOTATION MeSHAnatomy AS URL "http://resource.belframework.org/belframework/20150611/annotation/mesh-anatomy.belanno"  
+	DEFINE ANNOTATION Species AS URL "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"  
+	DEFINE ANNOTATION TextLocation AS LIST {"Abstract", "Results", "Legend", "Review"}  
+          
+    ##################################################################################  
+    # Statements Section  
+	  
+	SET STATEMENT_GROUP = "Group 1"  
+	  
+	    SET Disease = atherosclerosis  
+	    SET Anatomy = artery  
+	    SET TextLocation = Review  
+	    SET Evidence = "Oxidation and nitration of macromolecules, such as proteins..."  
+	    SET Citation = {"PubMed","Trends in molecular medicine","12928037","","",""}  
+  
+	    path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"lipid oxidation")  
+	    path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"protein oxidation")  
+  
+	    SET Evidence = "Arterial cells are highly susceptible to oxidative stress..."  
+  
+	    bp(GOBP:"response to oxidative stress") increases bp(GOBP:"apoptotic process")  
+	    bp(GOBP:"response to oxidative stress") increases bp(GOBP:necrosis)  
+  
+	UNSET STATEMENT_GROUP  
+  
+	SET STATEMENT_GROUP = "Group 2"  
+  
+	    SET TextLocation = Abstract  
+	    SET Evidence = "Phosphorylation at Ser473, along with Thr308 of its activation..."  
+	    SET Citation = {"PubMed","Cell","16962653","2006-10-07","",""}  
+	    SET Species = 9606  
+  
+	    p(HGNC:AKT1,pmod(P,T,308)) directlyIncreases kin(p(HGNC:AKT1))  
+	    p(HGNC:AKT1,pmod(P,S,473)) directlyIncreases kin(p(HGNC:AKT1))  
+  
+	    SET Evidence = "Genetic ablation of sin1 abolished Akt-Ser473 phosphorylation..."  
+  
+	    p(HGNC:MAPKAP1) increases p(HGNC:AKT1,pmod(P,S,473)) //sin1 = MAPKAP1  
+  
+	UNSET STATEMENT_GROUP  
+
