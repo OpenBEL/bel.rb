@@ -4,7 +4,7 @@ include BEL::Model
 
 describe 'Reading BEL' do
 
-  it "successfully parsed with interleaved spaces" do
+  it "successfully parses with interleaved spaces" do
     bel_file = File.open(
       File.join(
         File.expand_path('..', __FILE__), 'bel', 'bel_with_spacing.bel'
