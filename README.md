@@ -30,7 +30,7 @@ Dependencies
 
 Install / Build: See [INSTALL](INSTALL.md).
 
-A changelog is maintained at [CHANGELOG](CHANGELOG).
+A changelog is maintained at [CHANGELOG][CHANGELOG].
 
 branches
 --------
