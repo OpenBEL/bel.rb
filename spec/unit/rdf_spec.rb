@@ -94,7 +94,7 @@ describe 'RDF functionality of BEL language objects' do
       }
 
       expect(label_literal.encoding).to eql(Encoding::UTF_8)
-      expect(label_literal).to          eql(%Q{abundance(CHEBI:"5α-androst-16-en-3-one")})
+      expect(label_literal).to          eql(%Q{a(CHEBI:"5α-androst-16-en-3-one")})
     end
   end
 
@@ -132,7 +132,7 @@ describe 'RDF functionality of BEL language objects' do
       }.last
 
       expect(label_literal.encoding).to eql(Encoding::UTF_8)
-      expect(label_literal).to          eql(%Q{abundance(CHEBI:"5α-androst-16-en-3-one") association abundance(CHEBI:"luteolin 7-O-β-D-glucosiduronate")})
+      expect(label_literal).to          eql(%Q{a(CHEBI:"5α-androst-16-en-3-one") association a(CHEBI:"luteolin 7-O-β-D-glucosiduronate")})
     end
 
     it "forces evidence text as UTF-8" do
