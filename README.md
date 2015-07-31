@@ -1,9 +1,15 @@
 bel ruby
 ========
 
-[![Join the chat at https://gitter.im/OpenBEL/bel.rb](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OpenBEL/bel.rb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Gem Version](https://badge.fury.io/rb/bel.svg)](http://badge.fury.io/rb/bel)
+
+[![Changelog](https://img.shields.io/badge/bel.rb-changelog-brightgreen.svg)](https://raw.githubusercontent.com/OpenBEL/bel.rb/master/CHANGELOG)
+
+[![Issues](https://img.shields.io/github/issues/OpenBEL/bel.rb.svg)](https://github.com/OpenBEL/bel.rb/issues)
+
+[![Dependencies](https://img.shields.io/gemnasium/OpenBEL/bel.rb.svg)]()
+
+[![Join the chat at https://gitter.im/OpenBEL/bel.rb](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OpenBEL/bel.rb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The bel ruby gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
 
@@ -23,6 +29,8 @@ Dependencies
     - *rdf-turtle gem* for serializing to RDF turtle format
 
 Install / Build: See [INSTALL](INSTALL.md).
+
+A changelog is maintained at [CHANGELOG](CHANGELOG).
 
 branches
 --------
