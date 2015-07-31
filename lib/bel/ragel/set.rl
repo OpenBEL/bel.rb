@@ -60,7 +60,7 @@
     SP+
     (
       STATEMENT_GROUP_KW @unset_statement_group SP* NL @return |
-      IDENT >s $n %name %unset_annotation SP* NL @return
+      (IDENT - STATEMENT_GROUP_KW) >s $n %name %unset_annotation SP* NL @return
     );
   set_main :=
     (
