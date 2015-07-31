@@ -1,0 +1,32 @@
+<h1>Change Log</h1>
+
+<p>All notable changes to bel.rb will be documented in this file. The curated log begins at changes to version 0.3.2.</p>
+
+<p>This project adheres to <a href="http://semver.org/">Semantic Versioning</a>.</p>
+
+<h2><a href="https://github.com/OpenBEL/bel.rb/compare/0.3.1...0.3.2">0.3.2</a> - 2015-07-31</h2>
+
+<h3>Fixed</h3>
+
+<ul>
+<li>Allow whitespace (space/tab) within blank lines (<a href="https://github.com/OpenBEL/bel.rb/issues/13">Issue #13</a>).</li>
+<li>Parse CRLF line terminators (i.e. Windows) when parsing BEL Script (<a href="https://github.com/OpenBEL/bel.rb/issues/21">Issue #21</a>).</li>
+<li>Allow whitespace before BEL Script records (<a href="https://github.com/OpenBEL/bel.rb/issues/25">Issue #25</a>).</li>
+<li>Support RDF conversion of unicode string literals (<a href="https://github.com/OpenBEL/bel.rb/issues/40">Issue #40</a>).</li>
+<li>Support translation from and to RDF (<a href="https://github.com/OpenBEL/bel.rb/issues/51">Issue #51</a>).</li>
+<li>(Regression) Unable to parse BEL files on Windows (<a href="https://github.com/OpenBEL/bel.rb/issues/59">Issue #59</a>).</li>
+<li>RDF "hasConcept" property triple is missing namespace (<a href="https://github.com/OpenBEL/bel.rb/issues/64">Issue #64</a>).</li>
+</ul>
+
+<h3>Changed</h3>
+
+<ul>
+<li>Updates defined namespaces to reflect the <a href="http://resource.belframework.org/belframework/20150611/">20150611</a> resources.</li>
+<li>Full support for all BEL functions and relationships during RDF conversion.</li>
+</ul>
+
+<h3>Added</h3>
+
+<ul>
+<li>Development gem dependencies (i.e. byebug, pry, pry-byebug) for debugging.</li>
+</ul>
