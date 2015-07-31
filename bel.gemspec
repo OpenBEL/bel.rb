@@ -63,7 +63,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'uuid',          '~> 2.3'
 
   # development gems
+  spec.add_development_dependency 'byebug',        '~> 5.0'
   spec.add_development_dependency 'minitest',      '~> 5.7'
+  spec.add_development_dependency 'pry-byebug',    '~> 3.2'
   spec.add_development_dependency 'rake',          '~> 10.4'
   spec.add_development_dependency 'rake-compiler', '~> 0.9'
   spec.add_development_dependency 'rdoc',          '~> 4.2'
