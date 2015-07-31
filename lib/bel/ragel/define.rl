@@ -29,13 +29,17 @@
     prefix = @name.to_sym
 		@namespaces[prefix] =
 			begin
-				BEL::Namespace.const_get(prefix)
-			rescue NameError
-				uri = BEL::Namespace::DEFAULT_URI
+				const_namespace = BEL::Namespace.const_get(prefix)
 				BEL::Namespace::NamespaceDefinition.new(
 					prefix,
 					@value,
-					uri
+					const_namespace.rdf_uri
+				)
+			rescue NameError
+				BEL::Namespace::NamespaceDefinition.new(
+					prefix,
+					@value,
+					BEL::Namespace::DEFAULT_URI
 				)
 			end
 
