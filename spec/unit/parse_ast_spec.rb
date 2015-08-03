@@ -1,3 +1,8 @@
+# These tests rely on the Ruby C extension, skip on JRuby.
+if RUBY_PLATFORM =~ /java/
+  skip
+end
+
 require 'bel'
 
 describe BEL::Parser do
