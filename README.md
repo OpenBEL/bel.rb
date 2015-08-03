@@ -63,7 +63,7 @@ executable commands
       upgrade
 
 
-    bel 0.3.2
+    bel 0.3.3
     Copyright (C) 2015 OpenBEL
     Apache License, Version 2.0, January 2004
     http://www.apache.org/licenses/

@@ -3,6 +3,10 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.3][0.3.3] - 2015-08-05
+### Fixed
+
+
 ## [0.3.2][0.3.2] - 2015-07-31
 ### Fixed
 - Allow whitespace (space/tab) within blank lines ([Issue #13][13]).
