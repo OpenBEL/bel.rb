@@ -10,29 +10,14 @@ CLEAN.include(
   "tmp"
 )
 
-if RUBY_PLATFORM =~ /java/
-  # TODO support java
-
-  # Don't do anything when run in JRuby; this allows gem installation to pass.
-  # We need to write a dummy Makefile so that RubyGems doesn't think compilation
-  # failed.
-  File.open('Makefile', 'w') do |f|
-    f.puts "all:"
-    f.puts "\t@true"
-    f.puts "install:"
-    f.puts "\t@true"
-  end
-  exit 0
-else
-  Rake::ExtensionTask.new('libbel', GEMSPEC) do |ext|
-    ext.ext_dir = 'ext/mri'
-    ext.lib_dir = 'lib/bel'
-    ext.cross_compile = true
-    ext.cross_platform = [
-      'i386-mingw32',
-      'x64-mingw32'
-    ]
-  end
+Rake::ExtensionTask.new('libbel', GEMSPEC) do |ext|
+  ext.ext_dir = 'ext/mri'
+  ext.lib_dir = 'lib/bel'
+  ext.cross_compile = true
+  ext.cross_platform = [
+    'i386-mingw32',
+    'x64-mingw32'
+  ]
 end
 
 task 'gem:win32' => ['gem:win32-i386', 'gem:win32-x64']
