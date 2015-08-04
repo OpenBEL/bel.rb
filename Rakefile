@@ -14,6 +14,11 @@ require 'rake'
 require 'rake/clean'
 
 FileList['tasks/**/*.rake'].each { |task| import task }
-task :default => [:compile, :unit, :integration]
+
+if RUBY_PLATFORM =~ /java/
+  task :default => [:unit, :integration]
+else
+  task :default => [:compile, :unit, :integration]
+end
 # vim: ts=2 sw=2:
 # encoding: utf-8
