@@ -15,5 +15,5 @@ addons:
   artifacts:
     debug: true
   paths:
-    - lib/bel/libbel.bundle
-    - lib/bel/libbel.so
+  - $TRAVIS_BUILD_DIR/lib/bel/libbel.bundle
+  - $TRAVIS_BUILD_DIR/lib/bel/libbel.so
