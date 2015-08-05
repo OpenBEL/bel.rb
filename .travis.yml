@@ -1,5 +1,8 @@
 script: 'bundle exec rake'
 language: ruby
+os:
+  - linux
+  - osx
 rvm:
   - 2.0.0
   - 2.1.0
@@ -8,3 +11,9 @@ rvm:
   - ruby-head
   - jruby-9.0.0.0
   - jruby-head
+addons:
+  artifacts:
+    debug: true
+  paths:
+    - lib/bel/libbel.bundle
+    - lib/bel/libbel.so
