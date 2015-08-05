@@ -14,6 +14,3 @@ rvm:
 addons:
   artifacts:
     debug: true
-  paths:
-  - $TRAVIS_BUILD_DIR/lib/bel/libbel.bundle
-  - $TRAVIS_BUILD_DIR/lib/bel/libbel.so
