@@ -17,3 +17,6 @@ addons:
     paths:
       - lib/bel/libbel.so
       - lib/bel/libbel.bundle
+matrix:
+  allow_failures:
+    - os: osx
