@@ -25,8 +25,9 @@ Gem::Specification.new do |spec|
                                     'whayes@selventa.com'
                                   ]
   spec.files                    = [
-                                    Dir.glob("lib/**/*.rb"),
-                                    Dir.glob("ext/**/*.{c,h,def}"),
+                                    Dir.glob('lib/**/*.rb'),
+                                    Dir.glob('ext/**/*.{c,h,def}'),
+                                    Dir.glob('lib/bel/libbel/ext/{java,mingw}/**/*.{so,bundle}'),
                                     __FILE__,
                                     'LICENSE',
                                     'INSTALL.md',

@@ -1,4 +1,4 @@
-if RUBY_PLATFORM =~ /java/
+if RUBY_PLATFORM =~ /java/i
 
   # Don't do anything when run in JRuby; this allows gem installation to pass.
   # We need to write a dummy Makefile so that RubyGems doesn't think compilation
@@ -18,5 +18,5 @@ else
   #   CC=gcc-4.8 gem install bel.rb
   RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 
-  create_makefile('bel/libbel')
+  create_makefile('bel/libbel/ext/libbel')
 end

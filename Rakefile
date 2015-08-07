@@ -16,6 +16,7 @@ require 'rake/clean'
 FileList['tasks/**/*.rake'].each { |task| import task }
 
 if RUBY_PLATFORM =~ /java/
+  # JRuby will not compile libbel. Native extensions are not supported.
   task :default => [:unit, :integration]
 else
   task :default => [:compile, :unit, :integration]

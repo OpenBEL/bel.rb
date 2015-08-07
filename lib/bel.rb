@@ -10,11 +10,9 @@ require_relative 'bel/format'
 
 require_relative 'bel/script'
 
-unless RUBY_PLATFORM =~ /java/
-  require_relative 'bel/libbel.rb'
-  require_relative 'bel/parser'
-  require_relative 'bel/completion'
-end
+require_relative 'bel/libbel.rb'
+require_relative 'bel/parser'
+require_relative 'bel/completion'
 
 include BEL::Language
 include BEL::Namespace
