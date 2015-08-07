@@ -14,7 +14,7 @@ unless RUBY_PLATFORM =~ /java/
 
   Rake::ExtensionTask.new('libbel', GEMSPEC) do |ext|
     ext.ext_dir = 'ext/mri'
-    ext.lib_dir = 'lib/bel'
+    ext.lib_dir = 'lib/bel/libbel/ext'
     ext.cross_compile = true
     ext.cross_platform = [
       'i386-mingw32',

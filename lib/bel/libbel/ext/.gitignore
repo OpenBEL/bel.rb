@@ -1,0 +1,5 @@
+# Native extensions, built by Ruby, are placed in lib/bel/libbel/ext.
+# Git ignore native extensions built at gem installation.
+
+*.so
+*.bundle
