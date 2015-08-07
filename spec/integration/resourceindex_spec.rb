@@ -13,6 +13,25 @@ describe 'Loading BEL resources from a ResourceIndex object' do
 
   describe ResourceIndex do
 
+    def load_with_retry(index_location, tries = 3)
+      index =
+        if !index_location.to_i.zero?
+          ResourceIndex.openbel_published_index(index_location)
+        else
+          ResourceIndex.new(index_location)
+        end
+
+      # force resources to load
+      index.namespaces
+      index.annotations
+
+      index
+    rescue StandardError => err
+      tries -= 1
+      $stderr.puts "Error: #{err.class} (#{tries} tries left), message: #{err.message}"
+      retry unless tries.zero?
+    end
+
     it "loads resources from http urls" do
       URLS = [
         'http://resource.belframework.org/belframework/1.0/index.xml',
@@ -20,7 +39,7 @@ describe 'Loading BEL resources from a ResourceIndex object' do
       ]
 
       URLS.each do |url|
-        index = ResourceIndex.new(url)
+        index = load_with_retry(url)
         expect(index.namespaces.size).to be > 0
         expect(index.annotations.size).to be > 0
       end
@@ -30,7 +49,7 @@ describe 'Loading BEL resources from a ResourceIndex object' do
       local_path = "#{File.dirname(__FILE__)}/index.xml"
       expect(File.exist? local_path).to be_truthy
 
-      index = ResourceIndex.new(local_path)
+      index = load_with_retry(local_path)
       expect(index.namespaces.size).to be > 0
       expect(index.annotations.size).to be > 0
     end
@@ -40,14 +59,15 @@ describe 'Loading BEL resources from a ResourceIndex object' do
       expect(File.exist? local_path).to be_truthy
       local_uri = "file://#{local_path}"
 
-      index = ResourceIndex.new(local_uri)
+      index = load_with_retry(local_uri)
       expect(index.namespaces.size).to be > 0
       expect(index.annotations.size).to be > 0
     end
 
     it "can retrieve OpenBEL published resources" do
       ['1.0', '20131211'].each do |version|
-        index = ResourceIndex.openbel_published_index(version)
+        index = load_with_retry(version)
+
         expect(index.namespaces.size).to be > 0
         expect(index.annotations.size).to be > 0
       end
