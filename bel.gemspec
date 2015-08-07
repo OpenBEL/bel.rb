@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
                                     Dir.glob('ext/**/*.{c,h,def}'),
                                     Dir.glob('lib/bel/libbel/ext/{java,mingw}/**/*.{so,bundle}'),
                                     __FILE__,
+                                    'CHANGELOG.md',
                                     'LICENSE',
                                     'INSTALL.md',
                                     'INSTALL_RUBY.md',

@@ -3,9 +3,10 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.3.3][0.3.3] - 2015-08-05
+## [0.3.3][0.3.3] - 2015-08-07
 ### Fixed
-
+- ResourceIndex integration test causes intermittent timeouts ([Issue #61][61]).
+- Support running on JRuby, including libbel native library ([Issue #68][68]).
 
 ## [0.3.2][0.3.2] - 2015-07-31
 ### Fixed
@@ -25,11 +26,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Development gem dependencies (i.e. byebug, pry, pry-byebug) for debugging.
 
 [0.3.2]:    https://github.com/OpenBEL/bel.rb/compare/0.3.1...0.3.2
+[0.3.3]:    https://github.com/OpenBEL/bel.rb/compare/0.3.2...0.3.3
 [13]:       https://github.com/OpenBEL/bel.rb/issues/13
 [21]:       https://github.com/OpenBEL/bel.rb/issues/21
 [25]:       https://github.com/OpenBEL/bel.rb/issues/25
 [40]:       https://github.com/OpenBEL/bel.rb/issues/40
 [51]:       https://github.com/OpenBEL/bel.rb/issues/51
 [59]:       https://github.com/OpenBEL/bel.rb/issues/59
+[61]:       https://github.com/OpenBEL/bel.rb/issues/61
 [64]:       https://github.com/OpenBEL/bel.rb/issues/64
+[68]:       https://github.com/OpenBEL/bel.rb/issues/68
 [20150611]: http://resource.belframework.org/belframework/20150611/
