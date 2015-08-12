@@ -80,8 +80,21 @@ class Serializer
 
   def initialize(stream, format)
     rdf_writer = find_writer(format)
-    @writer = rdf_writer.new($stdout, {
-        :stream => stream
+    @writer = rdf_writer.new($stdout,
+      {
+        :stream => stream,
+        :prefixes => {
+          :bel       => 'http://www.openbel.org/bel/',
+          :belv      => 'http://www.openbel.org/vocabulary/',
+          :cell_line => 'http://www.openbel.org/bel/annotation/cell-line/',
+          :chebi     => 'http://www.openbel.org/bel/namespace/chebi/',
+          :hgnc      => 'http://www.openbel.org/bel/namespace/hgnc-human-genes/',
+          :pubmed    => 'http://bio2rdf.org/pubmed:',
+          :rdf       => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+          :rdfs      => 'http://www.w3.org/2000/01/rdf-schema#',
+          :sfam      => 'http://www.openbel.org/bel/namespace/selventa-protein-families/',
+          :taxon     => 'http://www.openbel.org/bel/annotation/species-taxonomy-id/',
+        }
       }
     )
   end
