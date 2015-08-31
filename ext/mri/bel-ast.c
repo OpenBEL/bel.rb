@@ -5,16 +5,21 @@
 
 bel_ast_node* bel_new_ast_node_token(bel_ast_token_type type) {
     bel_ast_node* node;
-    node = malloc(sizeof(bel_ast_node));
-    node->token = malloc(sizeof(bel_ast_node_token));
-    node->token->type  = BEL_TOKEN;
-    node->token->ttype = type;
-    node->token->left  = NULL;
-    node->token->right = NULL;
+
+    node                              = malloc(sizeof(bel_ast_node));
+    node->token                       = malloc(sizeof(bel_ast_node_token));
+    node->token->type                 = BEL_TOKEN;
+    node->token->ttype                = type;
+    node->token->left                 = NULL;
+    node->token->right                = NULL;
+	node->token->is_complete          = 0;
+	node->token->start_position       = -1;
+	node->token->end_position         = -1;
     return node;
 };
 
-bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value) {
+bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value,
+		int start_position, int end_position) {
     bel_ast_node* node;
     char*         copy_value;
 
@@ -26,10 +31,12 @@ bel_ast_node* bel_new_ast_node_value(bel_ast_value_type type, char* value) {
     }
 
     node = malloc(sizeof(bel_ast_node));
-    node->value = malloc(sizeof(bel_ast_node_value));
-    node->value->type  = BEL_VALUE;
-    node->value->vtype = type;
-    node->value->value = copy_value;
+    node->value                 = malloc(sizeof(bel_ast_node_value));
+    node->value->type           = BEL_VALUE;
+    node->value->vtype          = type;
+    node->value->value          = copy_value;
+	node->value->start_position = start_position;
+	node->value->end_position   = end_position;
     return node;
 };
 
@@ -52,15 +59,20 @@ bel_ast_node* bel_copy_ast_node(bel_ast_node* node) {
 		}
 
 		copy_node->value = malloc(sizeof(bel_ast_node_value));
-		copy_node->value->type  = node->value->type;
-		copy_node->value->vtype = node->value->vtype;
-		copy_node->value->value = copy_value;
+		copy_node->value->type           = node->value->type;
+		copy_node->value->vtype          = node->value->vtype;
+		copy_node->value->value          = copy_value;
+		copy_node->value->start_position = node->value->start_position;
+		copy_node->value->end_position   = node->value->end_position;
     } else {
 		copy_node->token = malloc(sizeof(bel_ast_node_token));
-		copy_node->token->type  = node->token->type;
-		copy_node->token->ttype = node->token->ttype;
-		copy_node->token->left  = bel_copy_ast_node(node->token->left);
-		copy_node->token->right = bel_copy_ast_node(node->token->right);
+		copy_node->token->type                 = node->token->type;
+		copy_node->token->ttype                = node->token->ttype;
+		copy_node->token->left                 = bel_copy_ast_node(node->token->left);
+		copy_node->token->right                = bel_copy_ast_node(node->token->right);
+		copy_node->token->is_complete          = node->token->is_complete;
+		copy_node->token->start_position       = node->token->start_position;
+		copy_node->token->end_position         = node->token->end_position;
 	}
 
 	return copy_node;
@@ -86,8 +98,9 @@ bel_ast_node* bel_set_value(bel_ast_node* node, char* value) {
         copy_value = NULL;
     }
 
-	node->value->value = copy_value;
-	return node;
+    free(node->value->value);
+    node->value->value = copy_value;
+    return node;
 }
 
 bel_ast* bel_new_ast() {
@@ -106,7 +119,7 @@ void bel_free_ast(bel_ast* ast) {
 };
 
 void bel_free_ast_node(bel_ast_node* node) {
-    if(node == NULL) {
+    if(!node) {
         return;
     }
     if (node->type_info->type == BEL_TOKEN) {
@@ -135,26 +148,43 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
     switch(node->type_info->type) {
         case BEL_TOKEN:
             switch(node->type_info->ttype) {
+				case BEL_TOKEN_NULL:
+					sprintf(val, "NULL[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
+                    break;
                 case BEL_TOKEN_ARG:
-                    strcat(tree_flat_string, "ARG ");
+					sprintf(val, "ARG[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_NV:
-                    strcat(tree_flat_string, "NV ");
+					sprintf(val, "NV[%d][%d, %d] ",
+							node->token->is_complete,
+							node->token->start_position,
+							node->token->end_position);
+                    strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_TERM:
-                    strcat(tree_flat_string, "TERM ");
+					sprintf(val, "TERM[%d][%d, %d] ",
+							node->token->is_complete,
+							node->token->start_position,
+							node->token->end_position);
+                    strcat(tree_flat_string, val);
                     break;
 				case BEL_TOKEN_SUBJECT:
-                    strcat(tree_flat_string, "SUBJECT ");
+					sprintf(val, "SUBJECT[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
 				case BEL_TOKEN_REL:
-                    strcat(tree_flat_string, "REL ");
+					sprintf(val, "REL[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
 				case BEL_TOKEN_OBJECT:
-                    strcat(tree_flat_string, "OBJECT ");
+					sprintf(val, "OBJECT[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
                 case BEL_TOKEN_STATEMENT:
-                    strcat(tree_flat_string, "STATEMENT ");
+					sprintf(val, "STATEMENT[%d] ", node->token->is_complete);
+                    strcat(tree_flat_string, val);
                     break;
             };
             bel_print_ast_node(node->token->left, tree_flat_string);
@@ -166,7 +196,9 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
 					if (node->value->value == NULL) {
 						strcat(tree_flat_string, "fx((null)) ");
 					} else {
-						sprintf(val, "fx(%s) ", node->value->value);
+						sprintf(val, "fx(%s)[%d, %d] ", node->value->value,
+								node->value->start_position,
+								node->value->end_position);
 						strcat(tree_flat_string, val);
 					}
                     break;
@@ -174,7 +206,10 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
 					if (node->value->value == NULL) {
 						strcat(tree_flat_string, "rel((null)) ");
 					} else {
-						sprintf(val, "rel(%s) ", node->value->value);
+						sprintf(val, "rel(%s)[%d, %d] ",
+								node->value->value,
+								node->value->start_position,
+								node->value->end_position);
 						strcat(tree_flat_string, val);
 					}
                     break;
@@ -182,7 +217,10 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
 					if (node->value->value == NULL) {
 						strcat(tree_flat_string, "pfx((null)) ");
 					} else {
-						sprintf(val, "pfx(%s) ", node->value->value);
+						sprintf(val, "pfx(%s)[%d, %d] ",
+								node->value->value,
+								node->value->start_position,
+								node->value->end_position);
 						strcat(tree_flat_string, val);
 					}
                     break;
@@ -190,7 +228,10 @@ void bel_print_ast_node(bel_ast_node* node, char* tree_flat_string) {
 					if (node->value->value == NULL) {
 						strcat(tree_flat_string, "val((null)) ");
 					} else {
-						sprintf(val, "val(%s) ", node->value->value);
+						sprintf(val, "val(%s)[%d, %d] ",
+								node->value->value,
+								node->value->start_position,
+								node->value->end_position);
 						strcat(tree_flat_string, val);
 					}
                     break;
@@ -220,5 +261,17 @@ char* bel_ast_as_string(bel_ast* ast) {
 
     tree_flat_string = calloc(1024 * 32, 1);
     bel_print_ast_node(ast->root, tree_flat_string);
+    return tree_flat_string;
+};
+
+char* bel_ast_node_as_string(bel_ast_node* node) {
+    char *tree_flat_string;
+
+    if (!node) {
+        return NULL;
+    }
+
+    tree_flat_string = calloc(1024 * 32, 1);
+    bel_print_ast_node(node, tree_flat_string);
     return tree_flat_string;
 };

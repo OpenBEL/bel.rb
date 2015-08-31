@@ -123,12 +123,7 @@ module BEL
     attach_function :bel_tokenize_term,       [:string                                      ], :pointer
 
     # parse
-    attach_function :bel_parse_statement,     [:string                                      ], :pointer
     attach_function :bel_parse_term,          [:string                                      ], :pointer
-
-    def self.parse_statement(bel_string)
-      BEL::LibBEL::BelAst.new(BEL::LibBEL::bel_parse_statement(bel_string))
-    end
 
     def self.parse_term(bel_string)
       BEL::LibBEL::BelAst.new(BEL::LibBEL::bel_parse_term(bel_string))

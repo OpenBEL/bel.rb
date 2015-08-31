@@ -14,8 +14,8 @@ module BEL
         return nil
       end
 
-      LibBEL.parse_statement(
-        ensure_newline(bel_expression.to_s)
+      LibBEL.parse_term(
+        bel_expression.to_s
       )
     end
 
