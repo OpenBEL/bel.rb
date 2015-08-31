@@ -10,7 +10,6 @@ bel_new_ast_node_value
 bel_new_token
 bel_new_token_iterator
 bel_new_token_list
-bel_parse_statement
 bel_parse_term
 bel_print_ast
 bel_print_ast_node
