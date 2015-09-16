@@ -4,13 +4,13 @@ describe BEL::Parser do
 
   describe "#parse" do
 
-    it "nil expressions yield nil" do
+    xit "nil expressions yield nil" do
       expect(
         subject.parse(nil)
       ).to eq(nil)
     end
 
-    it "BEL expressions parse to an AST class" do
+    xit "BEL expressions parse to an AST class" do
       EXPRESSIONS.each do |term, _|
         expect(
           subject.parse(term)
@@ -18,7 +18,7 @@ describe BEL::Parser do
       end
     end
 
-    it "BEL expressions' parsed AST is correct" do
+    xit "BEL expressions' parsed AST is correct" do
       EXPRESSIONS.each do |term, ast_string|
         expect(
           BEL::LibBEL::bel_ast_as_string(subject.parse(term))

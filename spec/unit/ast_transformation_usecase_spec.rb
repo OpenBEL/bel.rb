@@ -4,7 +4,7 @@ describe BEL::LibBEL::BelAstNode do
 
   describe "#transform" do
 
-    it "supports parameter replacement" do
+    xit "supports parameter replacement" do
       replacements = {
         ['EGID', '207'] => ['HGNC', 'AKT1']
       }
