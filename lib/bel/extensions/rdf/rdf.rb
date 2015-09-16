@@ -444,11 +444,11 @@ module BEL::Extension::Format
             case citation.value
             when /pubmed:(\d+)$/
               pubmed_id = $1.to_i
-              Citation.create(
+              Citation.new({
                 :type => 'PubMed',
                 :id   => pubmed_id,
                 :name => "PubMed Citation - #{pubmed_id}"
-              )
+              })
             else
               nil
             end

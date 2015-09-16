@@ -1,46 +1,41 @@
 module BEL
   module Model
 
-    # A Citation provides a reference to the resource containing the
-    # {Evidence} information. The fields are defined as:
+    # A Citation describes a cited reference which {Evidence} is derived from.
     #
-    # - +date+
-    #   - The date represents when the article was published.
-    # - +authors+
-    #   - The authors refer to the authors of the article.
-    #
-    # @attr [String] type the type of the article commonly defined by
-    #       +"PubMed"+, +"Journal"+, +"Book"+, or +"Online Resource"+
-    # @attr [String] name the name of the article
-    # @attr [String] id the identifier of the article. For example, for a
-    #       +"PubMed"+ type the identifier is the PMID (i.e. 12102192)
-    # @attr [String] date the date when the article was published
-    # @attr [String] authors the authors of the article
-    # @attr [String] comment a comment on the citation
-    class Citation < Struct.new(
-      :type,
-      :name,
-      :id,
-      :date,
-      :authors,
-      :comment
-    )
+    # @attr [String] type the type of resource the cited material appears in
+    #       (e.g. PubMed, Journal, Book, Online Resource, etc...)
+    # @attr [String] name the name of the cited resource
+    # @attr [String] id the unique identifier for the cited resource. For
+    #       example, a +"PubMed"+ type should have a PMID (i.e. 12102192).
+    # @attr [String] date the date the resource was published
+    # @attr [String] authors the authors of the resource
+    # @attr [String] comment an additional comment related to this resource
+    class Citation
 
-      # Creates a {Citation} struct from a +Hash+.
-      # @param [Hash] fields the citation fields to populate based on hash
-      #        keys
-      # @example Create a minimal {Citation}.
-      #   Citation.create(
-      #     {
-      #       :type => 'PubMed',
-      #       :name => 'Biocompatibility study of biological tissues fixed
-      #                 by a natural compound (reuterin) produced by
-      #                 Lactobacillus reuteri.',
-      #       :id   => '12102192'
-      #     }
+      MEMBER_ORDER = %i(type name id date authors comment)
+
+      attr_accessor(*MEMBER_ORDER)
+
+      # Creates a {Citation} object from variable arguments.
+      #
+      # a +Hash+.
+      # @param [Array<Object>] *args Argument array of Object; If the array
+      #        contains a single value then it is expected to either respond
+      #        to +:each+ (according to #MEMBER_ORDER) or +:each_pair+
+      #        (keys matching that of #MEMBER_ORDER). If the array has
+      #        multiple values then they are set sequentially according to
+      #        #MEMBER_ORDER.
+      # @example Create an empty {Citation}.
+      #   Citation.new
+      # @example Create a minimal {Citation} by positional members.
+      #   Citation.new('PubMed', 'Biocompatibility study of...', '12102192')
+      # @example Create a minimal {Citation} by positional members in array.
+      #   Citation.new(
+      #     ['PubMed', 'Biocompatibility study of...', '12102192']
       #   )
-      # @example Create a full {Citation}.
-      #   Citation.create(
+      # @example Create a full {Citation} by hash using keys for members.
+      #   Citation.new(
       #     {
       #       :type    => 'PubMed',
       #       :name    => 'Biocompatibility study of biological tissues fixed
@@ -52,16 +47,73 @@ module BEL
       #       :comment => 'This article is primary research.'
       #     }
       #   )
-      def self.create(fields = {})
-        citation = Citation.new
-        (Citation.members & fields.keys).each { |member|
-          citation.send(:"#{member}=", fields[member])
-        }
-        citation
+      def initialize(*args)
+        return if !args || args.empty?
+
+        if args.length == 1
+          enumerable = args.first
+          if enumerable.respond_to? :each
+            MEMBER_ORDER.zip(enumerable.each).each do |member, value|
+              self.send(:"#{member}=", value)
+            end
+          elsif hash.respond_to? :each_pair
+            (MEMBER_ORDER & hash.keys).each do |member|
+              self.send(:"#{member}=", hash[member])
+            end
+          end
+        else
+          (MEMBER_ORDER & args).each do |member|
+            self.send(:"#{member}=", hash[member])
+          end
+        end
       end
 
+      # Returns the +Array+ of +String+ authors.
+      #
+      # @return [Array<String>] array of authors
+      def authors
+        @authors
+      end
+
+      # Sets the authors value.
+      #
+      # @param [#each, #each_pair, #to_s] author an authors value
+      def authors=(authors)
+        @authors = convert_authors(authors)
+      end
+
+      # Returns whether the citation has enough pertinent information to be
+      # considered valid.
+      #
+      # @return [true, false] whether the citation is valid
       def valid?
         type != nil && id != nil && name != nil
+      end
+
+      # Returns a +Hash+ of the citation members accoring to #MEMBER_ORDER.
+      #
+      # @return [Hash] citation +Hash+
+      def to_h
+        MEMBER_ORDER.reduce({}) { |hash, member|
+          hash[member] = self.send(member)
+          hash
+        }
+      end
+
+      private
+
+      def convert_authors(authors)
+        return nil unless authors
+
+        if authors.respond_to? :to_a
+          authors.to_a.map(&:to_s)
+        elsif authors.respond_to? :each
+          @authors = authors.each.to_a.map(&:to_s)
+        elsif authors.respond_to? :to_s
+          authors.to_s.split('|').map(&:strip)
+        else
+          raise ArgumentError.new("authors must be a string-like or iterable")
+        end
       end
     end
   end

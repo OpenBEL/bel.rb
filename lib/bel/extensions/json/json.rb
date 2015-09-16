@@ -113,8 +113,16 @@ module BEL::Extension::Format
     def unwrap(hash)
       evidence_hash          = hash[EVIDENCE_ROOT]
       evidence               = ::BEL::Model::Evidence.create(evidence_hash)
-      namespace_definitions  = evidence.references.namespace_definitions
-      evidence.bel_statement = ::BEL::Script.parse(
+
+      evidence.bel_statement = parse_statement(evidence)
+      evidence
+    end
+
+    private
+
+    def parse_statement(evidence)
+      namespace_definitions = evidence.references.namespace_definitions
+      ::BEL::Script.parse(
         "#{evidence.bel_statement}\n",
         Hash[
           namespace_definitions.map { |k, v|
@@ -124,8 +132,6 @@ module BEL::Extension::Format
       ).select { |obj|
         obj.is_a? ::BEL::Model::Statement
       }.first
-
-      evidence
     end
   end
 

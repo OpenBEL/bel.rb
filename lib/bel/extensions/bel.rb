@@ -81,7 +81,7 @@ module BEL::Extension::Format
         fields              = statement.annotations['Citation'].value
         if fields.respond_to? :each
           evidence.citation = Citation.new(
-            *fields.map { |field|
+            fields.map { |field|
               remove_quotes(field)
             }.to_a
           )

@@ -13,7 +13,7 @@ module BEL
       def self.create(hash)
         ev = Evidence.new
         ev.bel_statement      = hash[:bel_statement] || nil
-        ev.citation           = Citation.create(hash[:citation] || {})
+        ev.citation           = Citation.new(hash[:citation] || {})
         ev.summary_text.value = hash[:summary_text] || nil
         ev.experiment_context = ExperimentContext.new(hash[:experiment_context] || [])
         ev.references         = References.new(hash[:references] || {})
