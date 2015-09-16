@@ -4,7 +4,7 @@ gemspec
 # Required due to git dependency. The latest version on rubygems
 # is outdated.
 group :development do
-  gem 'rantly',  :git => 'https://github.com/hayeah/rantly.git'
+  gem 'rantly', '~> 0.3'
 end
 
 # vim: ts=2 sw=2:
