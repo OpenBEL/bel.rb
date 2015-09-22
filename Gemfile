@@ -1,8 +1,12 @@
 source 'http://rubygems.org'
 gemspec
 
+group :development do
+  gem 'bundler', '~> 1.10'
+end
+
 group :test do
-  gem 'rantly', '~> 0.3'
+  gem 'rantly',  '~> 0.3'
 end
 
 group :debug, optional: true do
