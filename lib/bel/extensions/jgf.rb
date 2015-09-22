@@ -154,7 +154,7 @@ module BEL::Extension::Format
             }
           ]
         end
-        references.annotation_definitions = annotations if annotations
+        references.annotations = annotations if annotations
 
         # establish namespace definitions
         namespaces = graph.fetch(:metadata, {}).
@@ -171,7 +171,7 @@ module BEL::Extension::Format
             }
           ]
         end
-        references.namespace_definitions = namespaces if namespaces
+        references.namespaces = namespaces if namespaces
 
         ::BEL::Model::Evidence.create(
           :bel_statement => bel_statement,

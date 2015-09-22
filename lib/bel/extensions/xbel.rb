@@ -80,10 +80,10 @@ module BEL::Extension::Format
                 XBELYielder.header(evidence.metadata.document_header)
               )
               yield element_string(
-                XBELYielder.namespace_definitions(evidence.references.namespace_definitions)
+                XBELYielder.namespace_definitions(evidence.references.namespaces)
               )
               yield element_string(
-                XBELYielder.annotation_definitions(evidence.references.annotation_definitions)
+                XBELYielder.annotation_definitions(evidence.references.annotations)
               )
 
               yield start_element_string(el_statement_group)
@@ -279,11 +279,12 @@ module BEL::Extension::Format
 
         if citation.authors && !citation.authors.to_s.empty?
           el_author_group = REXML::Element.new('bel:authorGroup')
-          citation.authors.split('|').each do |author|
+          citation.authors.each do |author|
             el_author      = REXML::Element.new('bel:author')
             el_author.text = author
             el_author_group.add_element(el_author)
           end
+          el_citation.add_element(el_author_group)
         end
 
         el_citation
@@ -562,7 +563,7 @@ module BEL::Extension::Format
         if stack_top == :namespace_group
           prefix             = attr_value(attributes, PREFIX)
           resource_location  = attr_value(attributes, RESOURCE_LOCATION)
-          @evidence.references.namespace_definitions[prefix] = resource_location
+          @evidence.references.namespaces[prefix] = resource_location
         end
         @element_stack << :namespace
       end
@@ -571,7 +572,7 @@ module BEL::Extension::Format
         if stack_top == :annotation_definition_group
           id                 = attr_value(attributes, ID)
           url                = attr_value(attributes, URL)
-          @evidence.references.annotation_definitions[id] = {
+          @evidence.references.annotations[id] = {
             :type   => :url,
             :domain => url
           }
@@ -583,7 +584,7 @@ module BEL::Extension::Format
         if stack_top == :annotation_definition_group
           id                 = attr_value(attributes, ID)
           @current_anno_def  = {}
-          @evidence.references.annotation_definitions[id] = @current_anno_def
+          @evidence.references.annotations[id] = @current_anno_def
         end
         @element_stack << :internal_annotation_definition
       end
@@ -650,7 +651,7 @@ module BEL::Extension::Format
           # Example: large_corpus.xbel
           ns                 = {
             :prefix => ns_id,
-            :url    => @evidence.references.namespace_definitions[ns_id]
+            :url    => @evidence.references.namespaces[ns_id]
           }
           @current_parameter = Parameter.new(ns, nil)
         end

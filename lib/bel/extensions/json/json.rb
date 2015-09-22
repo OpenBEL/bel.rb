@@ -105,7 +105,7 @@ module BEL::Extension::Format
           :summary_text       => hash[:summary_text],
           :experiment_context => hash[:experiment_context],
           :references         => hash[:references],
-          :metadata           => hash[:metadata]
+          :metadata           => hash[:metadata].to_a
         }
       }
     end
@@ -121,11 +121,11 @@ module BEL::Extension::Format
     private
 
     def parse_statement(evidence)
-      namespace_definitions = evidence.references.namespace_definitions
+      namespaces = evidence.references.namespaces
       ::BEL::Script.parse(
         "#{evidence.bel_statement}\n",
         Hash[
-          namespace_definitions.map { |k, v|
+          namespaces.map { |k, v|
             [k, BEL::Namespace::NamespaceDefinition.new(k, v)]
           }
         ]

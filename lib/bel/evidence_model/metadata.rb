@@ -9,10 +9,14 @@ module BEL
       extend Forwardable
       include Enumerable
 
-      DOCUMENT_HEADER        = :document_header
+      DOCUMENT_HEADER = :document_header
 
       def initialize(values = {})
-        @values = values
+        if values.is_a? Array
+          @values = Hash[values.map { |item| item.values_at(:name, :value) }]
+        else
+          @values = values
+        end
       end
 
       def document_header
@@ -21,6 +25,15 @@ module BEL
 
       def document_header=(document_header)
         @values[DOCUMENT_HEADER] = document_header
+      end
+
+      def to_a
+        @values.each_pair.map { |key, value|
+          {
+            name:  key,
+            value: value
+          }
+        }
       end
 
       def_delegators :@values, :[],    :"[]=", :delete_if, :each, :each_pair,

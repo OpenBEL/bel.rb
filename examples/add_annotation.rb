@@ -25,7 +25,7 @@ new_evidence = bel_formatter.deserialize(bel_file).each.lazy.map { |evidence|
   # for each piece of evidence
 
   # ...add definition and value
-  evidence.metadata.annotation_definitions[:Status] = new_annotation
+  evidence.references.annotations[:Status] = new_annotation
   evidence.metadata[:Status] = 'Approved'
 
   # ...return new evidence

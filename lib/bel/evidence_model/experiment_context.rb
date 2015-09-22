@@ -3,6 +3,7 @@ require 'forwardable'
 module BEL
   module Model
     class ExperimentContext
+
       attr_reader :values
 
       extend Forwardable

@@ -58,12 +58,12 @@ module BEL::Extension::Format
           when ::BEL::Model::Statement
             yield to_evidence(parsed_obj, @references, @metadata)
           when ::BEL::Language::AnnotationDefinition
-            @references.annotation_definitions[parsed_obj.prefix] = {
+            @references.annotations[parsed_obj.prefix] = {
               :type   => parsed_obj.type,
               :domain => parsed_obj.value
             }
           when ::BEL::Namespace::NamespaceDefinition
-            @references.namespace_definitions[parsed_obj.prefix] = parsed_obj.url
+            @references.namespaces[parsed_obj.prefix] = parsed_obj.url
           end
         }
       else
@@ -103,7 +103,7 @@ module BEL::Extension::Format
             :value => value
           }
 
-          annotation_def = references.annotation_definitions[k]
+          annotation_def = references.annotations[k]
           if annotation_def
             type, domain = annotation_def.values_at(:type, :domain)
             if type == :url
@@ -136,11 +136,11 @@ module BEL::Extension::Format
           bel = to_bel(evidence)
           if @write_header && header_flag
             yield document_header(evidence.metadata.document_header)
-            yield namespace_definitions(
-              evidence.references.namespace_definitions
+            yield namespaces(
+              evidence.references.namespaces
             )
-            yield annotation_definitions(
-              evidence.references.annotation_definitions
+            yield annotations(
+              evidence.references.annotations
             )
             header_flag = false
           end
@@ -176,10 +176,10 @@ module BEL::Extension::Format
       }
     end
 
-    def annotation_definitions(annotation_definitions)
-      return "" unless annotation_definitions
+    def annotations(annotations)
+      return "" unless annotations
 
-      annotation_definitions.reduce("") { |bel, (prefix, annotation)|
+      annotations.reduce("") { |bel, (prefix, annotation)|
         bel << "DEFINE ANNOTATION #{prefix} AS "
         type   = annotation[:type]   || annotation["type"]
         domain = annotation[:domain] || annotation["domain"]
@@ -195,10 +195,10 @@ module BEL::Extension::Format
       }
     end
 
-    def namespace_definitions(namespace_definitions)
-      return "" unless namespace_definitions
+    def namespaces(namespaces)
+      return "" unless namespaces
 
-      namespace_definitions.reduce("") { |bel, (prefix, url)|
+      namespaces.reduce("") { |bel, (prefix, url)|
         bel << %Q{DEFINE NAMESPACE #{prefix} AS URL "#{url}"\n}
         bel
       }
@@ -209,8 +209,8 @@ module BEL::Extension::Format
 
       # Citation
       citation = evidence.citation
-      if citation && citation.values.any?
-        values = citation.values
+      if citation && citation.valid?
+        values = citation.to_a
         values.map! { |v| v || "" }
         values.map! { |v|
           if v.respond_to?(:each)

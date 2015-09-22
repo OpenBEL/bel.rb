@@ -9,27 +9,27 @@ module BEL
       extend Forwardable
       include Enumerable
 
-      ANNOTATION_DEFINITIONS = :annotation_definitions
-      NAMESPACE_DEFINITIONS  = :namespace_definitions
+      ANNOTATIONS = :annotations
+      NAMESPACES  = :namespaces
 
       def initialize(values = {})
         @values = values
       end
 
-      def annotation_definitions
-        @values[ANNOTATION_DEFINITIONS] ||= {}
+      def annotations
+        @values[ANNOTATIONS] ||= {}
       end
 
-      def annotation_definitions=(annotation_definitions)
-        @values[ANNOTATION_DEFINITIONS] = annotation_definitions
+      def annotations=(annotations)
+        @values[ANNOTATIONS] = annotations
       end
 
-      def namespace_definitions
-        @values[NAMESPACE_DEFINITIONS] ||= {}
+      def namespaces
+        @values[NAMESPACES] ||= {}
       end
 
-      def namespace_definitions=(namespace_definitions)
-        @values[NAMESPACE_DEFINITIONS] = namespace_definitions
+      def namespaces=(namespaces)
+        @values[NAMESPACES] = namespaces
       end
 
       def_delegators :@values, :[],    :"[]=", :delete_if,   :each, :each_pair,

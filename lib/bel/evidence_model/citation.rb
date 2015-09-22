@@ -52,13 +52,13 @@ module BEL
 
         if args.length == 1
           enumerable = args.first
-          if enumerable.respond_to? :each
+          if enumerable.respond_to? :each_pair
+            (MEMBER_ORDER & enumerable.keys).each do |member|
+              self.send(:"#{member}=", enumerable[member])
+            end
+          elsif enumerable.respond_to? :each
             MEMBER_ORDER.zip(enumerable.each).each do |member, value|
               self.send(:"#{member}=", value)
-            end
-          elsif hash.respond_to? :each_pair
-            (MEMBER_ORDER & hash.keys).each do |member|
-              self.send(:"#{member}=", hash[member])
             end
           end
         else
@@ -97,6 +97,13 @@ module BEL
         MEMBER_ORDER.reduce({}) { |hash, member|
           hash[member] = self.send(member)
           hash
+        }
+      end
+
+      def to_a
+        MEMBER_ORDER.reduce([]) { |array, member|
+          array << self.send(member)
+          array
         }
       end
 

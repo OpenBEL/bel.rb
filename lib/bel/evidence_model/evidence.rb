@@ -77,7 +77,7 @@ module BEL
             :summary_text       => @summary_text.value,
             :experiment_context => @experiment_context.values,
             :references         => @references.values,
-            :metadata           => @metadata.values
+            :metadata           => @metadata.to_a
           }
         )
         hash
