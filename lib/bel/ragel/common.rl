@@ -90,7 +90,7 @@ machine bel;
               'transportActivity'|'tport'|'gtpBoundActivity'|'gtp'|
               'chaperoneActivity'|'chap'|'proteinModification'|'pmod'|
               'substitution'|'sub'|'truncation'|'trunc'|'reactants'|
-              'products'|'list') >s $n %name;
+              'products'|'list'|'loc') >s $n %name;
   LIST_KW = /LIST/i;
   NAMESPACE_KW = /NAMESPACE/i;
   PATTERN_KW = /PATTERN/i;

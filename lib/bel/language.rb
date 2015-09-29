@@ -246,7 +246,8 @@ module BEL
         description: 'Denotes the abundance of an entity',
         return_type: :a,
         signatures: [
-          Signature.new(:a, E.new(:A))
+          Signature.new(:a, E.new(:A)),
+          Signature.new(:a, F.new(:loc))
         ]
       },
       bp: {
@@ -303,7 +304,9 @@ module BEL
         return_type: :complex,
         signatures: [
           Signature.new(:complex, E.new(:A)),
-          Signature.new(:complex, F.new(:a, true))
+          Signature.new(:complex, E.new(:A), F.new(:loc)),
+          Signature.new(:complex, F.new(:a, true)),
+          Signature.new(:complex, F.new(:a, true), F.new(:loc))
         ]
       },
       composite: {
@@ -312,7 +315,8 @@ module BEL
         description: 'Denotes the frequency or abundance of events in which members are present',
         return_type: :a,
         signatures: [
-          Signature.new(:composite, F.new(:a, true))
+          Signature.new(:composite, F.new(:a, true)),
+          Signature.new(:composite, F.new(:a, true), F.new(:loc)),
         ]
       },
       deg: {
@@ -345,7 +349,8 @@ module BEL
         return_type: :g,
         signatures: [
           Signature.new(:g, E.new(:G)),
-          Signature.new(:g, E.new(:G), F.new(:fus))
+          Signature.new(:g, E.new(:G), F.new(:fus)),
+          Signature.new(:g, E.new(:G), F.new(:loc)),
         ]
       },
       gtp: {
@@ -376,6 +381,15 @@ module BEL
         signatures: [
           Signature.new(:list, E.new(:A, true)),
           Signature.new(:list, F.new(:a, true))
+        ]
+      },
+      loc: {
+        short_form: :loc,
+        long_form: :location,
+        description: 'Represents a distinct subset of the abundance at that location',
+        return_type: :loc,
+        signatures: [
+          Signature.new(:loc, E.new(:A)),
         ]
       },
       m: {
@@ -444,7 +458,8 @@ module BEL
           Signature.new(:p, E.new(:P), F.new(:pmod)),
           Signature.new(:p, E.new(:P), F.new(:sub)),
           Signature.new(:p, E.new(:P), F.new(:fus)),
-          Signature.new(:p, E.new(:P), F.new(:trunc))
+          Signature.new(:p, E.new(:P), F.new(:trunc)),
+          Signature.new(:p, E.new(:P), F.new(:loc)),
         ]
       },
       pmod: {
@@ -493,7 +508,8 @@ module BEL
         return_type: :g,
         signatures: [
           Signature.new(:r, E.new(:R)),
-          Signature.new(:r, E.new(:R), F.new(:fus))
+          Signature.new(:r, E.new(:R), F.new(:fus)),
+          Signature.new(:r, E.new(:R), F.new(:loc)),
         ]
       },
       sub: {
