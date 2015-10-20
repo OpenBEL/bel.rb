@@ -32,15 +32,50 @@ Install / Build: See [INSTALL](INSTALL.md).
 
 A changelog is maintained at [CHANGELOG][CHANGELOG].
 
+development
+-----------
+
+Developing on bel.rb requires a few steps.
+
+1. [Install Ruby](INSTALL_RUBY.md).
+2. Clone this repository:
+
+    ```
+    git@github.com:OpenBEL/bel.rb.git
+    ```
+
+3. Install bundler to pull in project dependencies.
+
+    ```
+    gem install bundler
+    ```
+
+4. Change to repository directory. Install bel.rb's dependencies (including development dependencies):
+
+    ```
+    cd bel.rb; bundle install
+    ```
+
+5. Build C extension (i.e. [libbel parser](https://github.com/OpenBEL/libbel)) using Rake:
+
+    ```
+    rake compile
+    ```
+
+  This will build the C shared library you will need to use the C-based parser.
+
+  Note: Windows users will need to install the [RubyInstaller DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit) to build the C extension.
+
 branches
 --------
 
 - master branch
+  - Contains stable code. Releases are created from this branch using a tag (e.g. 0.3.3).
   - [![Travis CI Build](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=master)](https://travis-ci.org/OpenBEL/bel.rb)
 
 - next branch
+  - Contains unstable code. Commits should be merged into master after it stabilizes.
   - [![Build Status for next branch](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=next)](https://travis-ci.org/OpenBEL/bel.rb)
-
 
 executable commands
 -------------------
