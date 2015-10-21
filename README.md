@@ -77,6 +77,14 @@ branches
   - Contains unstable code. Commits should be merged into master after it stabilizes.
   - [![Build Status for next branch](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=next)](https://travis-ci.org/OpenBEL/bel.rb)
 
+contributors
+------------
+
+- @abargnesi (Maintainer)
+- @nbargnesi (Maintainer)
+- @ncatlett  (Contributor)
+- @wshayes   (Contributor)
+
 executable commands
 -------------------
 
