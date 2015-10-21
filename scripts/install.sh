@@ -5,5 +5,5 @@ source "$DIR"/env.sh || exit 1
 cd "$DIR" || exit 1
 
 assert-env-or-die SCRIPTS
-gem install "$DIR"/bel-"$($SCRIPTS/version.rb)".gem $@
+gem install "$DIR"/bel-"$($SCRIPTS/version.rb)".gem $GEM_INSTALL_OPTS $@
 
