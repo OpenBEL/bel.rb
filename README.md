@@ -80,10 +80,10 @@ branches
 contributors
 ------------
 
-- @abargnesi (Maintainer)
-- @nbargnesi (Maintainer)
-- @ncatlett  (Contributor)
-- @wshayes   (Contributor)
+- [@abargnesi](https://github.com/abargnesi) (Maintainer)
+- [@nbargnesi](https://github.com/nbargnesi) (Maintainer)
+- [@ncatlett](https://github.com/ncatlett)   (Contributor)
+- [@wshayes](https://github.com/wshayes)     (Contributor)
 
 executable commands
 -------------------
