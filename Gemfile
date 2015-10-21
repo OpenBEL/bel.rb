@@ -3,6 +3,7 @@ gemspec
 
 group :development do
   gem 'bundler', '~> 1.10'
+  gem 'rubocop'
 end
 
 group :test do

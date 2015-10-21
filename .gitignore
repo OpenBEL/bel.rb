@@ -8,3 +8,12 @@ Gemfile.lock
 /tags
 *.tags
 Makefile
+
+# formwork-io/gosh shell history
+.goshhst
+# formwork-io/gosh custom env.sh
+/env.sh.custom
+
+# ignore top-level .gems directory if used
+/.gems
+
