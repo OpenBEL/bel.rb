@@ -55,27 +55,12 @@ Gem::Specification.new do |spec|
   spec.extensions              << 'ext/mri/extconf.rb'
   spec.required_ruby_version    = '>= 2.0.0'
 
-  # runtime
-  spec.add_dependency             'ffi',           '1.9.8'
-
-  # test rdf functionality
-  spec.add_development_dependency 'addressable',   '~> 2.3'
-  spec.add_development_dependency 'rdf',           '~> 1.1'
-  spec.add_development_dependency 'rdf-turtle',    '~> 1.1'
-  spec.add_development_dependency 'uuid',          '~> 2.3'
-
-  # development gems
-  spec.add_development_dependency 'minitest',      '~> 5.7'
-  spec.add_development_dependency 'rake',          '~> 10.4'
-  spec.add_development_dependency 'rake-compiler', '~> 0.9'
-  spec.add_development_dependency 'rdoc',          '~> 4.2'
-  spec.add_development_dependency 'rspec',         '~> 3.2'
-  spec.add_development_dependency 'yard',          '~> 0.8'
-  spec.add_development_dependency 'byebug',        '~> 6.0'
-  spec.add_development_dependency 'pry',           '~> 0.10'
-  spec.add_development_dependency 'pry-byebug',    '~> 3.2'
-  spec.add_development_dependency 'rubocop',       '~> 0.34'
-  spec.add_development_dependency 'rantly',        '~> 0.3'
+  spec.add_runtime_dependency 'ffi', '1.9.8'
+  spec.post_install_message = %q(
+  -- bel.rb notice --
+  Install any of these additional gems for more functionality:
+  bel-rdf, clapper, carillon, peal, ...
+  )
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
