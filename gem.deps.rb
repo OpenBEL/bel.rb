@@ -5,6 +5,9 @@
 # - http://docs.ruby-lang.org/en/2.2.0/Gem.html#method-c-use_gemdeps
 source 'https://rubygems.org'
 
+# Gems used at runtime.
+gem 'ffi', '1.9.8'
+
 # Gems used in development.
 gem 'minitest', '~> 5.7'
 gem 'rake', '~> 10.4'
