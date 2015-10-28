@@ -17,6 +17,9 @@ Makefile
 # ignore top-level .gems directory if used
 /.gems
 
+# ignore top-level gems.dep.rb.lock if old gem versions are used
+/gem.deps.rb.lock
+
 # ignore top-level .bundle directory if used
 /.bundle
 
