@@ -24,6 +24,8 @@ if [ $BR_ISOLATE == "yes" ]; then
         _OPTS+=" --no-lock"
     fi
     $BR_GEM_CMD install -g $BR_DEV_DEPS $_OPTS --no-user-install || exit 1
+    # Just say no to lock files (cleanup if we're using an old gem version)
+    rm -f "$BR_DEV_DEPS".lock
 else
     echo "Installing development dependencies."
     $BR_GEM_CMD install -g $BR_DEV_DEPS || exit 1
