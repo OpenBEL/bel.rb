@@ -56,11 +56,16 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version    = '>= 2.0.0'
 
   spec.add_runtime_dependency 'ffi', '1.9.8'
-  spec.post_install_message = %q(
-  -- bel.rb notice --
-  Install any of these additional gems for more functionality:
-  bel-rdf, clapper, carillon, peal, ...
-  )
+
+  # Example post-install message.
+  #
+  # These aren't real BEL-related gems, but if we can sneak the names passed
+  # abargnesi, maybe one day... ;)
+  # spec.post_install_message = %q(
+  # -- bel.rb notice --
+  # Install any of these additional gems for more functionality:
+  # bel-rdf, clapper, carillon, peal, ...
+  # )
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
