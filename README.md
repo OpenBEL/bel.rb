@@ -1,5 +1,4 @@
-bel ruby
-========
+# bel ruby
 
 [![Gem Version](https://badge.fury.io/rb/bel.svg)](http://badge.fury.io/rb/bel)
 
@@ -32,8 +31,7 @@ Install / Build: See [INSTALL](INSTALL.md).
 
 A changelog is maintained at [CHANGELOG][CHANGELOG].
 
-development
------------
+## development
 
 Developing on bel.rb requires a few steps.
 
@@ -44,19 +42,13 @@ Developing on bel.rb requires a few steps.
     git@github.com:OpenBEL/bel.rb.git
     ```
 
-3. Install bundler to pull in project dependencies.
+3. Change to repository directory. Install bel.rb's dependencies (including development dependencies):
 
     ```
-    gem install bundler
+    cd bel.rb; ./scripts/gem-install-devdeps.sh
     ```
 
-4. Change to repository directory. Install bel.rb's dependencies (including development dependencies):
-
-    ```
-    cd bel.rb; bundle install
-    ```
-
-5. Build C extension (i.e. [libbel parser](https://github.com/OpenBEL/libbel)) using Rake:
+4. Build C extension (i.e. [libbel parser](https://github.com/OpenBEL/libbel)) using Rake:
 
     ```
     rake compile
@@ -66,8 +58,21 @@ Developing on bel.rb requires a few steps.
 
   Note: Windows users will need to install the [RubyInstaller DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit) to build the C extension.
 
-branches
---------
+### isolated development
+
+During development, it is recommended to isolate bel.rb from any existing user
+or system gems. This will help keep gems used during development entirely
+separate from all others.
+
+To accomplish this, set ``BR_ISOLATE`` to ``"yes"`` in ``env.sh.custom``, at
+the root of the bel.rb tree:
+
+```bash
+    export BR_ISOLATE="yes"
+```
+
+
+## branches
 
 - master branch
   - Contains stable code. Releases are created from this branch using a tag (e.g. 0.3.3).
@@ -77,16 +82,14 @@ branches
   - Contains unstable code. Commits should be merged into master after it stabilizes.
   - [![Build Status for next branch](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=next)](https://travis-ci.org/OpenBEL/bel.rb)
 
-contributors
-------------
+## contributors
 
 - [@abargnesi](https://github.com/abargnesi) (Maintainer)
 - [@nbargnesi](https://github.com/nbargnesi) (Maintainer)
 - [@ncatlett](https://github.com/ncatlett)   (Contributor)
 - [@wshayes](https://github.com/wshayes)     (Contributor)
 
-executable commands
--------------------
+## executable commands
 
 **bel**: A single executable command with subcommands.
 
@@ -197,8 +200,7 @@ executable commands
 ```
 
 
-api examples
-------------
+## api examples
 
 **Use OpenBEL namespaces from the latest release.**
 

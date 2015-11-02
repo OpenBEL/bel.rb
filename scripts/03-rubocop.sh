@@ -7,6 +7,6 @@ export SCRIPT_HELP="Run rubocop."
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/../
 source "$DIR"/env.sh || exit 1
-assert-env-or-die SCRIPTS
-"$SCRIPTS"/rubocop.sh
+assert-env-or-die BR_SCRIPTS
+"$BR_SCRIPTS"/rubocop.sh
 

@@ -1,7 +1,9 @@
 language: ruby
-before_install:
-  - gem update bundler
-script: 'bundle exec rake'
+sudo: false
+env:
+  - BR_ISOLATE="yes"
+install: scripts/gem-install-devdeps.sh
+script: scripts/ci.sh
 os:
   - linux
   - osx

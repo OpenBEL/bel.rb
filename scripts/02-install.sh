@@ -7,6 +7,6 @@ export SCRIPT_HELP="Run gem install"
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/../
 source "$DIR"/env.sh || exit 1
-assert-env-or-die SCRIPTS
-"$SCRIPTS"/install.sh
+assert-env-or-die BR_SCRIPTS
+"$BR_SCRIPTS"/install.sh
 
