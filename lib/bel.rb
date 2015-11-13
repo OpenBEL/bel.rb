@@ -1,4 +1,5 @@
 require_relative 'bel/version'
+require_relative 'bel/vendor/little-plugger'
 require_relative 'bel/language'
 require_relative 'bel/namespace'
 require_relative 'bel/util'
