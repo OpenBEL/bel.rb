@@ -13,7 +13,8 @@ module BEL
     # return all BEL functions as possible completions.
     #
     # If +search+ is +nil+ then namespace values will not be provided as
-    # completion. +search+ is expected to implement {IdentifierSearch}.
+    # completion. +search+ is expected to provide +#search+ and
+    # +#search_namespace+ methods.
     #
     # If +position+ is +nil+ then its assumed to be the last index of
     # +bel_expression+ otherwise the +to_i+ method is called.
@@ -23,7 +24,7 @@ module BEL
     #
     # @param bel_expression   [responds to #to_s] the bel expression to
     # complete on
-    # @param search           [IdentifierSearch] the search object used to
+    # @param search           [#search_namespace, #search] the search object used to
     # provide namespace value completions
     # @param position         [responds to #to_i] the position to complete from
     # @return [Array<Completion>]

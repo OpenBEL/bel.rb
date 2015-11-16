@@ -12,7 +12,6 @@ module BEL
         defined?(RUBY_ENGINE) && ("rbx" == RUBY_ENGINE)
       end
 
-      # @api_private
       # Determine FFI constant for this ruby engine.
       def find_ffi
         if rubinius?
@@ -26,7 +25,6 @@ module BEL
         end
       end
 
-      # @api_private
       # Extend with the correct ffi implementation.
       def load_ffi
         ffi_module = BEL::LibBEL::find_ffi
@@ -34,7 +32,6 @@ module BEL
         ffi_module
       end
 
-      # @api_private
       # Loads the libbel shared library.
       def load_libBEL
         ffi_module = find_ffi

@@ -1,18 +1,46 @@
 module BEL
+
+  # Translate module defines translation capabilities in the library. This
+  # module provides the API to use translator plugins.
+  #
+  # @see ::BEL::Translator::Plugins
   module Translate
 
+    # Defines the translate API that is provided under the {BEL} module as a
+    # mixin.
     module ClassMethods
 
-      def evidence(input, input_format)
+      # Return a stream of {::BEL::Model::Evidence} objects for the input.
+      #
+      # @param  [IO]                     input        the IO to read from
+      # @param  [Symbol]                 input_format the symbol that can be
+      #         used to identify the translator plugin that can read the
+      #         +input+
+      # @param  [Hash{Symbol => Object}] options
+      # @return [#each]                  an object that responds to +each+ and
+      #         provides {::BEL::Model::Evidence} objects
+      def evidence(input, input_format, options = {})
         prepared_input = process_input(input)
 
         in_translator  = self.translator(input_format) or
           raise TranslateError.new(input_format)
 
-        EvidenceIterable.new(prepared_input, in_translator)
+        in_translator.read(prepared_input)
       end
 
-      def translate(input, input_format, output_format, writer = nil)
+      # Translate from one file format to another using
+      # {::BEL::Model::Evidence} as a shared model. The translation is written
+      # to the IO +writer+ directly.
+      #
+      # @param  [IO]                     input         the IO to read from
+      # @param  [#to_sym]                input_format  the identifier for the
+      #         translator plugin that will read the +input+
+      # @param  [#to_sym]                output_format the identifier for the
+      #         translator plugin that will write to +writer+
+      # @param  [Hash{Symbol => Object}] options
+      # @return [IO   ]                  the IO +writer+ that the translation
+      #         was written to
+      def translate(input, input_format, output_format, writer = StringIO.new, options = {})
         prepared_input = process_input(input)
 
         in_translator  = self.translator(input_format) or
@@ -23,8 +51,17 @@ module BEL
 
         evidence = in_translator.read(prepared_input)
         output   = out_translator.write(evidence, writer)
+        writer
       end
 
+      # Return the {::BEL::Translator} plugin given an identifier.
+      #
+      # @param  [#to_sym]                input_format the identifier for the
+      #         translator plugin
+      # @param  [Hash{Symbol => Object}] options
+      # @return [::BEL::Translator]      the translator instance that is
+      #         responds to {::BEL::Translator#read} and
+      #         {::BEL::Translator#write}
       def translator(input_format, options = {})
         return nil unless input_format
 
@@ -57,27 +94,8 @@ module BEL
       end
     end
 
-    class EvidenceIterable
-      include Enumerable
-
-      def initialize(input, format)
-        @input  = input
-        @format = format
-      end
-
-      def each
-        if block_given?
-          @format.deserialize(@input).each do |evidence|
-            yield evidence
-          end
-        else
-          to_enum(:each)
-        end
-      end
-    end
-
     # TranslateError represents an error when the specified format is not
-    # supported by the {Format} extension framework.
+    # supported by any translator plugin.
     class TranslateError < StandardError
 
       FORMAT_ERROR = %Q{Format "%s" is not supported.}

@@ -19,8 +19,7 @@ module BEL
 
       # Creates a {Citation} object from variable arguments.
       #
-      # a +Hash+.
-      # @param [Array<Object>] *args Argument array of Object; If the array
+      # @param [Array<Object>] args Argument array of Object; If the array
       #        contains a single value then it is expected to either respond
       #        to +:each+ (according to #MEMBER_ORDER) or +:each_pair+
       #        (keys matching that of #MEMBER_ORDER). If the array has
@@ -77,7 +76,7 @@ module BEL
 
       # Sets the authors value.
       #
-      # @param [#each, #each_pair, #to_s] author an authors value
+      # @param [#each, #each_pair, #to_s] authors an authors value
       def authors=(authors)
         @authors = convert_authors(authors)
       end

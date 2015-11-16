@@ -3,12 +3,12 @@ require_relative 'libbel'
 module BEL
   module Parser
 
-    # Parses BEL expressions to a {BelAst}.
+    # Parses BEL expressions to a {BEL::LibBEL::BelAst}.
     #
     # If +bel_expression+ is +nil+ then +nil+ is returned.
     #
     # @param bel_expression [responds to #to_s] the bel expression to parse
-    # @return [BelAst]
+    # @return [BEL::LibBEL::BelAst]
     def self.parse(bel_expression, options = {})
       if !bel_expression
         return nil
