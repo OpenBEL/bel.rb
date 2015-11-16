@@ -4,6 +4,8 @@ require_relative 'bel/language'
 require_relative 'bel/namespace'
 require_relative 'bel/util'
 
+require_relative 'bel/translator'
+
 require_relative 'bel/extension'
 require_relative 'bel/extension_format'
 require_relative 'bel/evidence_model'
