@@ -21,34 +21,6 @@ module BEL::Translator::Plugins
 
       include ::BEL::Translator
 
-      ID          = :rdf
-      MEDIA_TYPES = %i(
-        application/n-quads
-        application/n-triples
-        application/rdf+xml
-        application/turtle
-        application/x-turtle
-        text/turtle
-      )
-      EXTENSIONS  = %i(
-        nq
-        nt
-        rdf
-        ttl
-      )
-
-      def id
-        ID
-      end
-
-      def media_types
-        MEDIA_TYPES
-      end 
-
-      def file_extensions
-        EXTENSIONS
-      end
-
       def read(data, options = {})
         Reader::UnbufferedEvidenceYielder.new(data)
       end

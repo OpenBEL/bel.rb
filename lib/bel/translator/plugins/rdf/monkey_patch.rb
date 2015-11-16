@@ -10,7 +10,7 @@ module BEL::Translator::Plugins
       end
 
       def to_rdf_vocabulary
-        RUBYRDF::Vocabulary.new("#{@rdf_uri}/")
+        ::RDF::Vocabulary.new("#{@rdf_uri}/")
       end
     end
 
@@ -37,21 +37,21 @@ module BEL::Translator::Plugins
       def concept_statement(encoding_character, uri)
           case encoding_character
           when 'G'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.GeneConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.GeneConcept)
           when 'R'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.RNAConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.RNAConcept)
           when 'P'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.ProteinConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.ProteinConcept)
           when 'M'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.MicroRNAConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.MicroRNAConcept)
           when 'C'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.ComplexConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.ComplexConcept)
           when 'B'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.BiologicalProcessConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.BiologicalProcessConcept)
           when 'A'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.AbundanceConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.AbundanceConcept)
           when 'O'
-            RUBYRDF::Statement(uri, RUBYRDF.type, BEL::RDF::BELV.PathologyConcept)
+            ::RDF::Statement(uri, ::RDF.type, BEL::RDF::BELV.PathologyConcept)
           end
       end
     end
@@ -251,7 +251,7 @@ module BEL::Translator::Plugins
 
         # common statement triples
         statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Statement]
-        statements << [uri, RUBYRDF::RDFS.label, to_s.force_encoding('UTF-8')]
+        statements << [uri, ::RDF::RDFS.label, to_s.force_encoding('UTF-8')]
 
         # evidence
         evidence_bnode = BEL::RDF::RDF::Node.uuid

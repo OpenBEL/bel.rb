@@ -9,32 +9,6 @@ module BEL::Translator::Plugins
 
       include ::BEL::Translator
 
-      ID          = :jgf
-      NAME        = 'JSON Graph Format Translator'
-      DESCRIPTION = 'A translator that can read and write evidence statements in a JSON Graph Format.'
-      MEDIA_TYPES   = %i(application/vnd.jgf+json)
-      EXTENSIONS    = %i(jgf.json)
-
-      def id
-        ID
-      end
-
-      def name
-        NAME
-      end
-
-      def description
-        DESCRIPTION
-      end
-
-      def media_types
-        MEDIA_TYPES
-      end
-
-      def file_extensions
-        EXTENSIONS
-      end
-
       def read(data, options = {})
         default_resource_index = options.fetch(:default_resource_index) {
           ResourceIndex.openbel_published_index('20131211')

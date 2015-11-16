@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     module EvidenceYielder
 
-      BELV = BEL::RDF::BELV
+      BELV = Rdf::BEL::RDF::BELV
 
       include ::BEL::Model
       include ::BEL::Quoting

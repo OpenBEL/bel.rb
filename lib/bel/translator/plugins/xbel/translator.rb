@@ -9,32 +9,6 @@ module BEL::Translator::Plugins
 
       include ::BEL::Translator
 
-      ID          = :xbel
-      NAME        = 'XBEL Translator'
-      DESCRIPTION = 'A translator that can read and write evidence to XBEL (version 1.0). XBEL is an XML dialect. XML Schema for version 1.0 is published here (http://resource.belframework.org/belframework/1.0/schema/xbel.xsd).'
-      MEDIA_TYPES = %i(application/xml)
-      EXTENSIONS  = %i(xml xbel)
-
-      def id
-        ID
-      end
-
-      def name
-        NAME
-      end
-
-      def description
-        DESCRIPTION
-      end
-
-      def media_types
-        MEDIA_TYPES
-      end
-
-      def file_extensions
-        EXTENSIONS
-      end
-
       def read(data)
         EvidenceYielder.new(data)
       end

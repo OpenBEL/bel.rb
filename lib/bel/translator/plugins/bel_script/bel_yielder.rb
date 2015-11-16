@@ -82,6 +82,7 @@ module BEL::Translator::Plugins
       def namespaces(namespaces)
         return "" unless namespaces
 
+        binding.pry
         namespaces.reduce("") { |bel, namespace|
           keyword = namespace[:keyword]
           uri     = namespace[:uri]

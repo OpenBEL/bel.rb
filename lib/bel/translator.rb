@@ -55,41 +55,12 @@ module BEL
       :module => BEL::Translator::Plugins
     )
 
-    def id
-      raise NotImplementedError.new("#{__method__} is not implemented.")
-    end
-
-    def media_types
-      # optional
-      nil
-    end
-
-    def file_extensions
-      # optional
-      nil
-    end
-
-    def evidence_hash(object)
-      raise NotImplementedError.new("#{__method__} is not implemented.")
-    end
-
     def read(data, options = {})
       raise NotImplementedError.new("#{__method__} is not implemented.")
     end
 
     def write(data, writer = nil, options = {})
       raise NotImplementedError.new("#{__method__} is not implemented.")
-    end
-  end
-
-  # TranslateError represents an error when the specified format is not
-  # supported by the {Format} extension framework.
-  class TranslateError < StandardError
-
-    FORMAT_ERROR = %Q{Format "%s" is not supported.}
-
-    def initialize(format)
-      super(FORMAT_ERROR % format)
     end
   end
 end

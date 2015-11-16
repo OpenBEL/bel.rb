@@ -260,7 +260,7 @@ Subcommands:
 
         from_format, to_format = ARGV
 
-        from = BEL::Extension::Format.formatters(from_format)
+        from = BEL.translator(from_format)
         unless from
           $stderr.puts(
             from_format ?
@@ -271,7 +271,7 @@ Subcommands:
           Trollop::educate
         end
 
-        to   = BEL::Extension::Format.formatters(to_format)
+        to   = BEL.translator(to_format)
         unless to
           $stderr.puts(
             to_format ?
@@ -283,7 +283,7 @@ Subcommands:
         end
 
         begin
-          BEL::Format.translate(input_io, from_format, to_format, $stdout)
+          BEL.translate(input_io, from_format, to_format, $stdout)
         ensure
           $stdout.close
         end

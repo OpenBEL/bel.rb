@@ -37,7 +37,7 @@ module BEL::Translator::Plugins
             raise
           end
         when :ntriples
-          BEL::RDF::RDF::NTriples::Writer
+          Rdf::BEL::RDF::RDF::NTriples::Writer
         end
       end
     end
