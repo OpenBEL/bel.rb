@@ -1,12 +1,12 @@
 require_relative 'bel/version'
+require_relative 'bel/vendor/little-plugger'
 require_relative 'bel/language'
 require_relative 'bel/namespace'
 require_relative 'bel/util'
 
-require_relative 'bel/extension'
-require_relative 'bel/extension_format'
 require_relative 'bel/evidence_model'
-require_relative 'bel/format'
+require_relative 'bel/translator'
+require_relative 'bel/translate'
 
 require_relative 'bel/script'
 
@@ -17,13 +17,8 @@ require_relative 'bel/completion'
 include BEL::Language
 include BEL::Namespace
 
-BEL::Extension.load_extension('jgf', 'json/json', 'bel', 'xbel')
-
-begin
-  BEL::Extension.load_extension('rdf/rdf')
-rescue LoadError => e
-  # No RDF support.
-  # TODO Report extension load failure.
+module BEL
+  extend BEL::Translate::ClassMethods
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8

@@ -10,7 +10,7 @@ describe 'Reading RDF from BEL' do
     )
 
     writer = StringIO.new
-    BEL::Format.translate(bel_file, :bel, :rdf, writer)
+    BEL.translate(bel_file, :bel, :rdf, writer)
 
     rdf_triples = writer.string
     expect(rdf_triples.each_line.count).to eql(301)
