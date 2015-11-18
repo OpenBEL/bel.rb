@@ -344,6 +344,19 @@ Subcommands:
         end
 
         if options[:list]
+          $stdout.puts "RDF Repository plugins"
+          $stdout.puts "----------------------"
+          $stdout.puts
+          BEL::RdfRepository.plugins.
+            values.
+            sort_by { |plugin| plugin.name}.
+            each do |plugin|
+              $stdout.puts %Q{
+                Name:        #{plugin.name}
+                Description: #{plugin.description}
+              }.gsub(%r{^\s+}, ' ')
+            end
+
           $stdout.puts "Translator plugins"
           $stdout.puts "------------------"
           $stdout.puts

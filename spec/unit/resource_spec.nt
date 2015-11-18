@@ -1,0 +1,69 @@
+<http://www.openbel.org/bel/namespace/hgnc-human-genes> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConceptScheme> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes> <http://www.openbel.org/vocabulary/domain> "gene and gene product"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes> <http://www.openbel.org/vocabulary/prefix> "hgnc"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hgnc Human Genes"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConceptScheme> .
+<http://www.openbel.org/bel/namespace/entrez-gene> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<http://www.openbel.org/bel/namespace/entrez-gene> <http://www.openbel.org/vocabulary/domain> "gene and gene product"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene> <http://www.openbel.org/vocabulary/prefix> "egid"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene> <http://www.w3.org/2004/02/skos/core#prefLabel> "Entrez Gene"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/GeneConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/AbundanceConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/ProteinConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/AbundanceConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/RNAConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/AbundanceConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConcept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://purl.org/dc/terms/identifier> "391"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://purl.org/dc/terms/title> "v-akt murine thymoma viral oncogene homolog 1"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.openbel.org/vocabulary/fromSpecies> "9606"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.openbel.org/vocabulary/orthologousMatch> <http://www.openbel.org/bel/namespace/mgi-mouse-genes/87986> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.openbel.org/vocabulary/orthologousMatch> <http://www.openbel.org/bel/namespace/rgd-rat-genes/2081> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/2004/02/skos/core#altLabel> "AKT"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/2004/02/skos/core#altLabel> "PKB"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/2004/02/skos/core#altLabel> "PRKBA"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/2004/02/skos/core#altLabel> "RAC"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/2004/02/skos/core#inScheme> <http://www.openbel.org/bel/namespace/hgnc-human-genes> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/2004/02/skos/core#prefLabel> "AKT1"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/391> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://www.openbel.org/bel/namespace/entrez-gene/207> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/GeneConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/AbundanceConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/ProteinConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/AbundanceConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/RNAConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/AbundanceConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.openbel.org/vocabulary/NamespaceConcept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://purl.org/dc/terms/identifier> "207"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://purl.org/dc/terms/title> "v-akt murine thymoma viral oncogene homolog 1"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.openbel.org/vocabulary/fromSpecies> "9606"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.openbel.org/vocabulary/orthologousMatch> <http://www.openbel.org/bel/namespace/entrez-gene/11651> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.openbel.org/vocabulary/orthologousMatch> <http://www.openbel.org/bel/namespace/entrez-gene/24185> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "AKT"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "AKT1"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "AKT1m"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "CWS6"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "PKB"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "PKB alpha"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "PKB-ALPHA"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "PRKBA"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "RAC"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "RAC-ALPHA"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "RAC-PK-alpha"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "protein kinase B alpha"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "proto-oncogene c-Akt"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "rac protein kinase alpha"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#altLabel> "v-akt murine thymoma viral oncogene homolog 1"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#exactMatch> <http://www.openbel.org/bel/namespace/hgnc-human-genes/391> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#inScheme> <http://www.openbel.org/bel/namespace/entrez-gene> .
+<http://www.openbel.org/bel/namespace/entrez-gene/207> <http://www.w3.org/2004/02/skos/core#prefLabel> "207"^^<http://www.w3.org/2001/XMLSchema#string> .

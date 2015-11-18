@@ -8,6 +8,7 @@ Gemfile.lock
 /tags
 *.tags
 Makefile
+.netrwhist
 
 # formwork-io/gosh shell history
 .goshhst
