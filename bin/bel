@@ -326,6 +326,39 @@ Subcommands:
         require_relative 'bel_upgrade'
       end
     end
+
+    class PluginsCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        options = Trollop::options do
+          synopsis "Interact with available plugins."
+          usage    "[OPTIONS]... plugins [OPTIONS]"
+          opt      :list,  'Lists available plugins',
+                   :long    => :list,
+                   :short   => :l,
+                   :default => true
+        end
+
+        if options[:list]
+          $stdout.puts "Translator plugins"
+          $stdout.puts "------------------"
+          $stdout.puts
+          BEL::Translator.plugins.
+            values.
+            sort_by { |plugin| plugin.name}.
+            each do |plugin|
+              $stdout.puts %Q{
+                Name:        #{plugin.name}
+                Description: #{plugin.description}
+              }.gsub(%r{^\s+}, ' ')
+            end
+        end
+      end
+    end
   end
 end
 

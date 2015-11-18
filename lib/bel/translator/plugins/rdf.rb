@@ -4,6 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :rdf
     NAME        = 'BEL RDF Translator'
+    DESCRIPTION = 'A translator that can read and write evidence to BEL RDF.'
     MEDIA_TYPES = %i(
       application/n-quads
       application/n-triples
@@ -30,6 +31,10 @@ module BEL::Translator::Plugins
 
     def self.name
       NAME
+    end
+
+    def self.description
+      DESCRIPTION
     end
 
     def self.media_types
