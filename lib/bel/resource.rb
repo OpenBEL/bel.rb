@@ -21,3 +21,4 @@ end
 require_relative 'resource/namespaces'
 require_relative 'resource/namespace'
 require_relative 'resource/namespace_value'
+require_relative 'resource/search'
