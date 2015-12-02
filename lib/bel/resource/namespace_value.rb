@@ -1,4 +1,5 @@
 require          'rdf'
+require_relative 'namespace'
 require_relative 'namespaces'
 
 module BEL
@@ -24,6 +25,10 @@ module BEL
         ]
         @predicates     = @rdf_repository.query(:subject => @uri).
                             each.map(&:predicate).uniq
+      end
+
+      def namespace
+        Namespace.new(@rdf_repository, self.inScheme)
       end
 
       def equivalents(target_namespaces = :all)

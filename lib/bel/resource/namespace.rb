@@ -1,5 +1,4 @@
 require          'rdf'
-require_relative '../resource'
 require_relative 'namespace_value'
 
 module BEL

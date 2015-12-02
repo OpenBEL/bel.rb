@@ -1,3 +1,4 @@
+require          'rdf'
 require_relative 'namespace'
 
 module BEL
