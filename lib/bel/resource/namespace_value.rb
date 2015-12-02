@@ -1,4 +1,4 @@
-require_relative '../resource'
+require_relative 'namespaces'
 
 module BEL
   module Resource
@@ -25,20 +25,54 @@ module BEL
                             each.map(&:predicate).uniq
       end
 
-      def equivalents
-        return to_enum(:equivalents) unless block_given?
-				@rdf_repository.
-					query(@eq_query) { |solution|
-						yield NamespaceValue.new(@rdf_repository, solution.object)
-					}
+      def equivalents(target_namespaces = :all)
+        return to_enum(:equivalents, target_namespaces) unless block_given?
+        if target_namespaces == :all
+          @rdf_repository.
+            query(@eq_query) { |solution|
+              yield NamespaceValue.new(@rdf_repository, solution.object)
+            }
+        else
+          target_namespaces = Namespaces.new(@rdf_repository).
+            find([target_namespaces].flatten).to_a
+          target_namespaces.compact!
+          target_namespaces.map! { |ns| ns.uri }
+
+          @rdf_repository.
+            query(@eq_query).map { |solution|
+              NamespaceValue.new(@rdf_repository, solution.object)
+            }.select { |value|
+              scheme_uri = value.inScheme
+              target_namespaces.include?(scheme_uri)
+            }.each { |value|
+              yield value
+            }
+        end
 			end
 
-      def orthologs
-        return to_enum(:orthologs) unless block_given?
-				@rdf_repository.
-					query(@ortho_query) { |solution|
-						yield NamespaceValue.new(@rdf_repository, solution.object)
-					}
+      def orthologs(target_namespaces = :all)
+        return to_enum(:orthologs, target_namespaces) unless block_given?
+        if target_namespaces == :all
+          @rdf_repository.
+            query(@ortho_query) { |solution|
+              yield NamespaceValue.new(@rdf_repository, solution.object)
+            }
+        else
+          target_namespaces = Namespaces.new(@rdf_repository).
+            find([target_namespaces].flatten).to_a
+          target_namespaces.compact!
+          target_namespaces.map! { |ns| ns.uri }
+
+          @rdf_repository.
+            query(@ortho_query).map { |solution|
+              NamespaceValue.new(@rdf_repository, solution.object)
+            }.select { |value|
+              scheme_uri = value.inScheme
+              target_namespaces.include?(scheme_uri)
+            }.each { |value|
+              yield value
+            }
+        end
 			end
 
       def hash

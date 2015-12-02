@@ -1,4 +1,3 @@
-require_relative '../resource'
 require_relative 'namespace'
 
 module BEL
