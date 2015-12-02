@@ -1,6 +1,8 @@
+require_relative '../language'
 module BEL
   module Model
     class Term
+      include BEL::Language
       include Comparable
       attr_accessor :fx, :arguments, :signature
 
@@ -12,10 +14,10 @@ module BEL
       def initialize(fx, *arguments)
         @fx = case fx
         when String
-          BEL::Language::Function.new(FUNCTIONS[fx.to_sym])
+          Function.new(FUNCTIONS[fx.to_sym])
         when Symbol
-          BEL::Language::Function.new(FUNCTIONS[fx.to_sym])
-        when BEL::Language::Function
+          Function.new(FUNCTIONS[fx.to_sym])
+        when Function
           fx
         when nil
           raise ArgumentError, 'fx must not be nil'

@@ -1,5 +1,6 @@
 require 'bel'
 
+include BEL::Language
 include BEL::Model
 
 describe 'Reading BEL' do

@@ -1,5 +1,4 @@
 require_relative 'quoting'
-require_relative 'evidence_model'
 module BEL
   module Language
 
@@ -597,21 +596,23 @@ module BEL
       :translocates
     ]
 
-    RELATIONSHIPS.each do |rel|
-      BEL::Model::Term.send(:define_method, rel) do |another|
-        s = BEL::Model::Statement.new self
-        s.relationship = rel
-        s.object = another
-        s
+    def self.include_bel_dsl
+      RELATIONSHIPS.each do |rel|
+        BEL::Model::Term.send(:define_method, rel) do |another|
+          s = BEL::Model::Statement.new self
+          s.relationship = rel
+          s.object = another
+          s
+        end
       end
-    end
-    FUNCTIONS.each do |fx, metadata|
-      func = Function.new(metadata)
-      Language.send(:define_method, fx) do |*args|
-        BEL::Model::Term.new(func, *args)
-      end
-      Language.send(:define_method, metadata[:long_form]) do |*args|
-        BEL::Model::Term.new(func, *args)
+      FUNCTIONS.each do |fx, metadata|
+        func = Function.new(metadata)
+        Language.send(:define_method, fx) do |*args|
+          BEL::Model::Term.new(func, *args)
+        end
+        Language.send(:define_method, metadata[:long_form]) do |*args|
+          BEL::Model::Term.new(func, *args)
+        end
       end
     end
   end

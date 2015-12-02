@@ -6,8 +6,10 @@ require 'uuid'
 BEL.translator(:rdf)
 
 include BEL::Language
-include BEL::Namespace
+BEL::Language.include_bel_dsl
+
 include BEL::Model
+include BEL::Namespace
 
 describe 'RDF functionality of BEL language objects' do
 
