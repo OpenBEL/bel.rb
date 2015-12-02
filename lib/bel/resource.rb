@@ -18,6 +18,9 @@ module BEL
   end
 end
 
+require_relative 'resource/annotations'
+require_relative 'resource/annotation'
+require_relative 'resource/annotation_value'
 require_relative 'resource/namespaces'
 require_relative 'resource/namespace'
 require_relative 'resource/namespace_value'
