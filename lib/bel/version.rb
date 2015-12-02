@@ -1,3 +1,3 @@
 module BEL
-  VERSION = '0.4.0.beta1'
+  VERSION = '0.4.0.beta.2'
 end
