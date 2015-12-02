@@ -1,3 +1,4 @@
+require          'rdf'
 require_relative '../resource'
 require_relative 'namespace_value'
 
@@ -12,13 +13,13 @@ module BEL
       # TODO Document
       def initialize(rdf_repository, uri)
         @rdf_repository = rdf_repository
-        @uri            = uri
-        @uri_hash       = uri.hash
+        @uri            = RDF::URI(uri.to_s)
+        @uri_hash       = @uri.hash
         @concept_query  = [
           :predicate => RDF::SKOS.inScheme,
-          :object    => uri
+          :object    => @uri
         ]
-        @predicates     = @rdf_repository.query(:subject => uri).
+        @predicates     = @rdf_repository.query(:subject => @uri).
                             each.map(&:predicate)
       end
 
