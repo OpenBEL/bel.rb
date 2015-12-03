@@ -24,7 +24,7 @@ machine bel;
 
       ns =
 			  if pfx
-				  @namespaces[pfx.to_sym] ||= NamespaceDefinition.new(pfx, nil, nil)
+				  @namespaces[pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(pfx, nil, nil)
 			  else
 				  nil
 			  end
