@@ -567,40 +567,49 @@ module BEL
       r: [:r, :a]
     }
 
-    RELATIONSHIPS = [
-      :actsIn,
-      :analogous,
-      :association,
-      :biomarkerFor,
-      :causesNoChange,
-      :decreases,
-      :directlyDecreases,
-      :directlyIncreases,
-      :hasComponent, :hasComponents,
-      :hasMember, :hasMembers,
-      :hasModification,
-      :hasProduct,
-      :hasVariant,
-      :includes,
-      :increases,
-      :isA,
-      :negativeCorrelation,
-      :orthologous,
-      :positiveCorrelation,
-      :prognosticBiomarkerFor,
-      :rateLimitingStepOf,
-      :reactantIn,
-      :subProcessOf,
-      :transcribedTo,
-      :translatedTo,
-      :translocates
-    ]
+    RELATIONSHIPS = {
+      :actsIn                 => :actsIn,
+      :analogous              => :analogous,
+      :'--'                   => :association,
+      :association            => :association,
+      :biomarkerFor           => :biomarkerFor,
+      :causesNoChange         => :causesNoChange,
+      :'-|'                   => :decreases,
+      :decreases              => :decreases,
+      :'=|'                   => :directlyDecreases,
+      :directlyDecreases      => :directlyDecreases,
+      :'=>'                   => :directlyIncreases,
+      :directlyIncreases      => :directlyIncreases,
+      :'->'                   => :increases,
+      :increases              => :increases,
+      :hasComponent           => :hasComponent,
+      :hasComponents          => :hasComponents,
+      :hasMember              => :hasMember,
+      :hasMembers             => :hasMembers,
+      :hasModification        => :hasModification,
+      :hasProduct             => :hasProduct,
+      :hasVariant             => :hasVariant,
+      :includes               => :includes,
+      :isA                    => :isA,
+      :negativeCorrelation    => :negativeCorrelation,
+      :orthologous            => :orthologous,
+      :positiveCorrelation    => :positiveCorrelation,
+      :prognosticBiomarkerFor => :prognosticBiomarkerFor,
+      :rateLimitingStepOf     => :rateLimitingStepOf,
+      :reactantIn             => :reactantIn,
+      :subProcessOf           => :subProcessOf,
+      :':>'                   => :transcribedTo,
+      :transcribedTo          => :transcribedTo,
+      :'>>'                   => :translatedTo,
+      :translatedTo           => :translatedTo,
+      :translocates           => :translocates,
+    }
 
     def self.include_bel_dsl
-      RELATIONSHIPS.each do |rel|
+      RELATIONSHIPS.each do |rel, long_form|
         BEL::Model::Term.send(:define_method, rel) do |another|
           s = BEL::Model::Statement.new self
-          s.relationship = rel
+          s.relationship = long_form
           s.object = another
           s
         end

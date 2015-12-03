@@ -38,7 +38,7 @@ CSV do |csv_out|
     report['fx_' + v[:long_form].to_s] = 0
   end
 
-  RELATIONSHIPS.each do |r|
+  RELATIONSHIPS.values.each do |r|
     report['rel_' + r.to_s] = 0
   end
 
