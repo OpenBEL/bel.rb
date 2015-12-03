@@ -13,8 +13,13 @@ module BEL::JSON
     def read(data, options = {})
       if block_given?
         options = { :symbolize_names => true }.merge!(options)
-        JSON.load(data, nil, options).each do |obj|
-          yield obj
+        parsed  = JSON.load(data, nil, options)
+        if parsed.respond_to?(:each_pair)
+          yield parsed
+        else
+          parsed.each do |obj|
+            yield obj
+          end
         end
       else
         to_enum(:read, data, options)
