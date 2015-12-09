@@ -1,13 +1,6 @@
-# Load RDF library dependencies
-begin
-  require 'rdf'
-  require 'addressable/uri'
-  require 'uuid'
-rescue LoadError => e
-  # Raise LoadError if the requirements were not met.
-  raise
-end
+require 'rdf'
 
+require_relative 'uuid'
 require_relative 'bel_schema'
 require_relative 'monkey_patch'
 require_relative 'reader'
@@ -26,8 +19,8 @@ module BEL::Translator::Plugins
       end
 
       def write(objects, writer = StringIO.new, options = {})
-        format = options[:format] || :ntriples
-        rdf_writer = Writer::RDFYielder.new(writer, format)
+        # format = options[:format] || :ntriples
+        rdf_writer = Writer::RDFYielder.new(writer, :nquads)
 
         objects.each do |evidence|
           rdf_writer << evidence

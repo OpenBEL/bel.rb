@@ -1,3 +1,5 @@
+require_relative 'uuid'
+
 module BEL::Translator::Plugins
 
   module Rdf::Writer
@@ -5,15 +7,18 @@ module BEL::Translator::Plugins
     class RDFYielder
       attr_reader :writer
 
+      Rdf = ::BEL::Translator::Plugins::Rdf
+
       def initialize(io, format)
         rdf_writer = find_writer(format)
         @writer = rdf_writer.new(io, { :stream => true })
       end
 
       def <<(evidence)
+        graph = RDF::URI("http://www.openbel.org/evidence-graphs/#{Rdf.generate_uuid}")
         triples = evidence.bel_statement.to_rdf[1]
         triples.each do |triple|
-          @writer.write_statement(::RDF::Statement(*triple))
+          @writer.write_statement(::RDF::Statement(*triple, :graph_name => graph))
         end
       end
 
@@ -26,18 +31,18 @@ module BEL::Translator::Plugins
       def find_writer(format)
         case format.to_s.to_sym
         when :nquads
-          BEL::RDF::RDF::NQuads::Writer
+          RDF::NQuads::Writer
         when :turtle
           begin
             require 'rdf/turtle'
-            BEL::RDF::RDF::Turtle::Writer
+            RDF::Turtle::Writer
           rescue LoadError
             $stderr.puts """Turtle format not supported.
     Install the 'rdf-turtle' gem."""
             raise
           end
         when :ntriples
-          Rdf::BEL::RDF::RDF::NTriples::Writer
+          RDF::NTriples::Writer
         end
       end
     end

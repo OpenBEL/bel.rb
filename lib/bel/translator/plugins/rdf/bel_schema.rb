@@ -9,19 +9,20 @@ module BEL::Translator::Plugins
         # uri prefixes
         BELR    = ::RDF::Vocabulary.new('http://www.openbel.org/bel/')
         BELV    = ::RDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
+        BELE    = ::RDF::Vocabulary.new('http://www.openbel.org/evidence/')
         PUBMED  = ::RDF::Vocabulary.new('http://bio2rdf.org/pubmed:')
         RDF     = ::RDF
         RDFS    = ::RDF::RDFS
 
         # annotations
-        Anatomy       = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/anatomy/')
-        Cell          = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/cell/')
-        CellLine      = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/cell-line/')
-        CellStructure = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/cell-structure/')
-        Disease       = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/disease/')
-        MeSHAnatomy   = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/mesh-anatomy/')
-        MeSHDisease   = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/mesh-diseases/')
-        Species       = ::RDF::Vocabulary.new('http://www.openbel.org/bel/annotation/species-taxonomy-id/')
+        Anatomy       = 'http://www.openbel.org/bel/annotation/anatomy/'
+        Cell          = 'http://www.openbel.org/bel/annotation/cell/'
+        CellLine      = 'http://www.openbel.org/bel/annotation/cell-line/'
+        CellStructure = 'http://www.openbel.org/bel/annotation/cell-structure/'
+        Disease       = 'http://www.openbel.org/bel/annotation/disease/'
+        MeSHAnatomy   = 'http://www.openbel.org/bel/annotation/mesh-anatomy/'
+        MeSHDisease   = 'http://www.openbel.org/bel/annotation/mesh-diseases/'
+        Species       = 'http://www.openbel.org/bel/annotation/species-taxonomy-id/'
 
         # maps outer function to bel/vocabulary class
         FUNCTION_TYPE = {

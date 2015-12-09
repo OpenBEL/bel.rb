@@ -1,3 +1,5 @@
+require_relative 'uuid'
+
 module BEL::Translator::Plugins
 
   module Rdf
@@ -155,8 +157,8 @@ module BEL::Translator::Plugins
         @arguments.find_all{ |x|
           x.is_a? ::BEL::Model::Parameter and x.ns != nil
         }.each do |param|
-          concept_uri = param.ns.to_rdf_vocabulary[param.value.to_s]
-          statements << [uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(Addressable::URI.encode(concept_uri))]
+          concept_uri = param.ns.to_uri + param.value.to_s
+          statements << [uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(URI.encode(concept_uri))]
         end
 
         # BEL::RDF::BELV.hasChild]
@@ -254,10 +256,10 @@ module BEL::Translator::Plugins
         statements << [uri, ::RDF::RDFS.label, to_s.force_encoding('UTF-8')]
 
         # evidence
-        evidence_bnode = BEL::RDF::RDF::Node.uuid
-        statements << [evidence_bnode, BEL::RDF::RDF.type, BEL::RDF::BELV.Evidence]
-        statements << [uri, BEL::RDF::BELV.hasEvidence, evidence_bnode]
-        statements << [evidence_bnode, BEL::RDF::BELV.hasStatement, uri]
+        evidence    = BEL::RDF::BELE[Rdf.generate_uuid]
+        statements << [evidence, BEL::RDF::RDF.type, BEL::RDF::BELV.Evidence]
+        statements << [uri, BEL::RDF::BELV.hasEvidence, evidence]
+        statements << [evidence, BEL::RDF::BELV.hasStatement, uri]
 
         # citation
         citation = @annotations.delete('Citation')
@@ -266,9 +268,9 @@ module BEL::Translator::Plugins
           if citation and value[0] == 'PubMed'
             pid = value[2]
             statements << [
-              evidence_bnode,
+              evidence,
               BEL::RDF::BELV.hasCitation,
-              BEL::RDF::RDF::URI(BEL::RDF::PUBMED[pid])
+              BEL::RDF::PUBMED[pid]
             ]
           end
         end
@@ -277,7 +279,7 @@ module BEL::Translator::Plugins
         evidence_text = @annotations.delete('Evidence')
         if evidence_text
           value = evidence_text.value.gsub('"', '').force_encoding('UTF-8')
-          statements << [evidence_bnode, BEL::RDF::BELV.hasEvidenceText, value]
+          statements << [evidence, BEL::RDF::BELV.hasEvidenceText, value]
         end
 
         # annotations
@@ -287,8 +289,8 @@ module BEL::Translator::Plugins
           if BEL::RDF::const_defined? name
             annotation_scheme = BEL::RDF::const_get name
             [anno.value].flatten.map{|x| x.gsub('"', '')}.each do |val|
-              value_uri = BEL::RDF::RDF::URI(Addressable::URI.encode(annotation_scheme[val.to_s]))
-              statements << [evidence_bnode, BEL::RDF::BELV.hasAnnotation, value_uri]
+              value_uri = BEL::RDF::RDF::URI(URI.encode(annotation_scheme + val.to_s))
+              statements << [evidence, BEL::RDF::BELV.hasAnnotation, value_uri]
             end
           end
         end
