@@ -194,9 +194,11 @@ module BEL
               namespace = BEL::Namespace::NAMESPACE_LATEST[prefix_token.value.to_sym]
               if namespace
                 scheme_uri = namespace[1]
-                return search.search_namespace(
-                  URI(scheme_uri),
+                return search.search(
                   "#{active_token.value}*",
+                  :namespace_concept,
+                  URI(scheme_uri),
+                  nil,
                   :start => 0,
                   :size  => 10
                 ).
@@ -207,7 +209,10 @@ module BEL
             end
           else
             return search.search(
-              active_token.value,
+              "#{active_token.value}*",
+              :namespace_concept,
+              nil,
+              nil,
               :start => 0,
               :size  => 10
             ).
