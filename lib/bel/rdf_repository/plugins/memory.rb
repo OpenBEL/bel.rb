@@ -1,8 +1,6 @@
 # Load RDF library dependencies
 require 'rdf'
 require 'rdf/mongo'
-require 'addressable/uri'
-require 'uuid'
 
 module BEL::RdfRepository::Plugins
 
