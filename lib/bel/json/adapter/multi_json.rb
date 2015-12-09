@@ -27,7 +27,7 @@ module BEL::JSON
     end
 
     def write(data, output_io, options = {})
-      json = MultiJson.dump(json_object)
+      json = MultiJson.dump(data)
       if output_io
         # write json and return IO
         output_io.write json
