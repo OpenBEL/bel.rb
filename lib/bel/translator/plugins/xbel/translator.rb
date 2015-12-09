@@ -14,10 +14,20 @@ module BEL::Translator::Plugins
       end
 
       def write(objects, writer = StringIO.new, options = {})
-        XBELYielder.new(objects).each { |xml_data|
-          writer << xml_data
-          writer.flush
-        }
+        if block_given?
+          XBELYielder.new(objects).each { |xml_data|
+            yield xml_data
+          }
+        else
+          if writer
+            XBELYielder.new(objects).each { |xml_data|
+              writer << xml_data
+              writer.flush
+            }
+          else
+            XBELYielder.new(objects)
+          end
+        end
       end
     end
   end
