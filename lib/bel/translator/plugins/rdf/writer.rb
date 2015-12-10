@@ -9,17 +9,37 @@ module BEL::Translator::Plugins
 
       Rdf = ::BEL::Translator::Plugins::Rdf
 
-      def initialize(io, format)
-        rdf_writer = find_writer(format)
-        @writer = rdf_writer.new(io, { :stream => true })
+      def initialize(io, format, options = {})
+        rdf_writer       = find_writer(format)
+        @writer          = rdf_writer.new(io, { :stream => true })
+
+        if options[:void_dataset_uri]
+          void_dataset_uri = options.delete(:void_dataset_uri)
+          void_dataset_uri = RDF::URI(void_dataset_uri)
+          unless void_dataset_uri.valid?
+            raise ArgumentError.new 'void_dataset_uri is not a valid URI'
+          end
+          @void_dataset_uri = void_dataset_uri
+        else
+          @void_dataset_uri = nil
+        end
+        @wrote_dataset    = false
       end
 
       def <<(evidence)
-        graph = RDF::URI("http://www.openbel.org/evidence-graphs/#{Rdf.generate_uuid}")
-        triples = evidence.bel_statement.to_rdf[1]
-        triples.each do |triple|
-          @writer.write_statement(::RDF::Statement(*triple, :graph_name => graph))
+        if !@wrote_dataset && @void_dataset_uri
+          void_dataset_triples = evidence.to_void_dataset(@void_dataset_uri)
+          if void_dataset_triples && void_dataset_triples.respond_to?(:each)
+            void_dataset_triples.each do |void_triple|
+              @writer.write_statement(void_triple)
+            end
+          end
         end
+        evidence_uri, statements = evidence.to_rdf
+        statements.each do |statement|
+          @writer.write_statement(statement)
+        end
+        @writer.write_statement(RDF::Statement.new(@void_dataset_uri, RDF::DC.hasPart, evidence_uri))
       end
 
       def done

@@ -20,7 +20,7 @@ module BEL::Translator::Plugins
 
       def write(objects, writer = StringIO.new, options = {})
         # format = options[:format] || :ntriples
-        rdf_writer = Writer::RDFYielder.new(writer, :nquads)
+        rdf_writer = Writer::RDFYielder.new(writer, :nquads, options)
 
         objects.each do |evidence|
           rdf_writer << evidence

@@ -50,7 +50,7 @@ module BEL
           raise TranslateError.new(output_format)
 
         evidence = in_translator.read(prepared_input)
-        output   = out_translator.write(evidence, writer)
+        out_translator.write(evidence, writer, options)
         writer
       end
 

@@ -9,7 +9,7 @@ module BEL::Translator::Plugins
 
       include ::BEL::Translator
 
-      def read(data)
+      def read(data, options = {})
         EvidenceYielder.new(data)
       end
 
