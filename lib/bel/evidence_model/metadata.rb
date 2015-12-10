@@ -13,7 +13,11 @@ module BEL
 
       def initialize(values = {})
         if values.is_a? Array
-          @values = Hash[values.map { |item| item.values_at(:name, :value) }]
+          @values = Hash[
+            values.map { |item|
+              [item[:name].to_sym, item[:value]]
+            }
+          ]
         else
           @values = values
         end
