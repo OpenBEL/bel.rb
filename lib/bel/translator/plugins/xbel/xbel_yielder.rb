@@ -77,12 +77,21 @@ module BEL::Translator::Plugins
       end
 
       def self.statement(statement, el_statement)
+        if statement.is_a?(String)
+          statement = BEL::Script.parse(statement.to_s).find { |x|
+            x.is_a? BEL::Model::Statement
+          }
+          return el_statement if statement == nil
+        end
+
         if statement.relationship
           el_statement.add_attribute 'bel:relationship', statement.relationship
         end
 
-        el_subject = self.subject(statement.subject)
-        el_statement.add_element(el_subject)
+        if statement.subject
+          el_subject = self.subject(statement.subject)
+          el_statement.add_element(el_subject)
+        end
 
         if statement.object
           el_object = self.object(statement.object)
