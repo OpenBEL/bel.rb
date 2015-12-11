@@ -52,6 +52,9 @@ module BEL
         if args.length == 1
           enumerable = args.first
           if enumerable.respond_to? :each_pair
+            enumerable.keys.each do |key|
+              enumerable[key.to_s.to_sym] = enumerable.delete(key)
+            end
             (MEMBER_ORDER & enumerable.keys).each do |member|
               self.send(:"#{member}=", enumerable[member])
             end

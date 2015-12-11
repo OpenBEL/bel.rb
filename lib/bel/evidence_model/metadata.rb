@@ -15,7 +15,9 @@ module BEL
         if values.is_a? Array
           @values = Hash[
             values.map { |item|
-              [item[:name].to_sym, item[:value]]
+              name  = item[:name]  || item['name']
+              value = item[:value] || item['value']
+              [name.to_sym, value]
             }
           ]
         else

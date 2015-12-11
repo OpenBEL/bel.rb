@@ -10,7 +10,14 @@ module BEL
       include Enumerable
 
       def initialize(values = [])
-        @values = values
+        @values = values.map { |item|
+          name  = item[:name]  || item['name']
+          value = item[:value] || item['value']
+          {
+            :name  => name.to_sym,
+            :value => value
+          }
+        }
       end
 
       def_delegators :@values, :<<,    :[],    :"[]=",
