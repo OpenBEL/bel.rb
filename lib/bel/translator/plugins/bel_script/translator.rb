@@ -14,10 +14,21 @@ module BEL::Translator::Plugins
       end
 
       def write(objects, writer = StringIO.new, options = {})
-        BelYielder.new(objects).each { |bel_part|
-          writer << "#{bel_part}"
-          writer.flush
-        }
+        if block_given?
+          BelYielder.new(objects).each { |bel_part|
+            yield bel_part
+          }
+        else
+          if writer
+            BelYielder.new(objects).each { |bel_part|
+              writer << "#{bel_part}"
+              writer.flush
+            }
+            writer
+          else
+            BelYielder.new(objects)
+          end
+        end
       end
     end
   end

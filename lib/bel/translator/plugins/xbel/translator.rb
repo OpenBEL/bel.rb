@@ -24,6 +24,7 @@ module BEL::Translator::Plugins
               writer << xml_data
               writer.flush
             }
+            writer
           else
             XBELYielder.new(objects)
           end

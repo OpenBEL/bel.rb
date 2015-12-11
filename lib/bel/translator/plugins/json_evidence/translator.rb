@@ -18,26 +18,42 @@ module BEL::Translator::Plugins
       end
 
       def write(objects, writer = StringIO.new, options = {})
-        write_array_start(writer)
-        begin
-          evidence_enum = objects.each
+        json_strings = Enumerator.new { |yielder|
+          yielder << '['
+          begin
+            evidence_enum = objects.each
 
-          # write first evidence object
-          evidence = evidence_enum.next
-          ::BEL::JSON.write(wrap(evidence), writer)
-
-          # each successive evidence starts with a comma
-          while true
+            # write first evidence object
             evidence = evidence_enum.next
-            writer  << ","
-            ::BEL::JSON.write(wrap(evidence), writer)
-          end
-        rescue StopIteration
-          # end of evidence hashes
-        end
-        write_array_end(writer)
+            yielder << ::BEL::JSON.write(wrap(evidence), nil)
 
-        writer
+            # each successive evidence starts with a comma
+            while true
+              evidence = evidence_enum.next
+              yielder << ','
+              yielder << ::BEL::JSON.write(wrap(evidence), nil)
+            end
+          rescue StopIteration
+            # end of evidence hashes
+          end
+          yielder << ']'
+        }
+
+        if block_given?
+          json_strings.each do |string|
+            yield string
+          end
+        else
+          if writer
+            json_strings.each do |string|
+              writer << string
+              writer.flush
+            end
+            writer
+          else
+            json_strings
+          end
+        end
       end
 
       private
