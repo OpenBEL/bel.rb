@@ -124,7 +124,7 @@ module BEL
       protected
 
       def map_function(fx_name)
-        fx = Function.new(FUNCTIONS[fx_name.to_sym])
+        fx = BEL::Language::Function.new(BEL::Language::FUNCTIONS[fx_name.to_sym])
         if fx
           {
             :id     => fx.short_form,
