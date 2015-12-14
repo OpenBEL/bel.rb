@@ -103,8 +103,8 @@ module BEL::Translator::Plugins
 
       def each
         if block_given?
-          graph = RUBYRDF::Graph.new
-          RUBYRDF::Reader.for(@format).new(@data) do |reader|
+          graph = RDF::Graph.new
+          RDF::Reader.for(@format).new(@data) do |reader|
             reader.each_statement do |statement|
               graph << statement
             end
@@ -129,13 +129,13 @@ module BEL::Translator::Plugins
 
       def each
         if block_given?
-          graph             = RUBYRDF::Graph.new
+          graph             = RDF::Graph.new
           evidence_resource = nil
-          RUBYRDF::Reader.for(@format).new(@data) do |reader|
+          RDF::Reader.for(@format).new(@data) do |reader|
             reader.each_statement do |statement|
               case
               when statement.object == BELV.Evidence &&
-                   statement.predicate == RUBYRDF.type
+                   statement.predicate == RDF.type
                 evidence_resource = statement.subject
               when evidence_resource &&
                    statement.predicate != BELV.hasEvidence &&
