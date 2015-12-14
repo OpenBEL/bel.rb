@@ -39,7 +39,10 @@ module BEL::Translator::Plugins
         statements.each do |statement|
           @writer.write_statement(statement)
         end
-        @writer.write_statement(RDF::Statement.new(@void_dataset_uri, RDF::DC.hasPart, evidence_uri))
+
+        if @void_dataset_uri
+          @writer.write_statement(RDF::Statement.new(@void_dataset_uri, RDF::DC.hasPart, evidence_uri))
+        end
       end
 
       def done
