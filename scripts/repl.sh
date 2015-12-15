@@ -11,7 +11,7 @@ fi
 
 echo "Compiling libbel C extension."
 COMPILE_OUT=$(mktemp)
-rake compile > /dev/null 2> $COMPILE_OUT
+rake compile 2> $COMPILE_OUT
 if [ $? -ne 0 ]; then
   echo "Compilation error, output of \"rake compile\":"
   cat $COMPILE_OUT
