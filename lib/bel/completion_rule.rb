@@ -200,7 +200,8 @@ module BEL
                   URI(scheme_uri),
                   nil,
                   :start => 0,
-                  :size  => 10
+                  :size  => 10,
+                  :exclude_identifier_schemes => false
                 ).
                   map { |search_result|
                     map_namespace_value(search_result.pref_label)
@@ -214,7 +215,8 @@ module BEL
               nil,
               nil,
               :start => 0,
-              :size  => 10
+              :size  => 10,
+              :exclude_identifier_schemes => true
             ).
               map { |search_result|
                 map_namespace_value(search_result.pref_label)
