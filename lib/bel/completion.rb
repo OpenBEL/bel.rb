@@ -12,9 +12,11 @@ module BEL
     # otherwise the +to_s+ method is called. An empty +bel_expression+ will
     # return all BEL functions as possible completions.
     #
-    # If +search+ is +nil+ then namespace values will not be provided as
-    # completion. +search+ is expected to provide +#search+ and
-    # +#search_namespace+ methods.
+    # A {BEL::Resource::Search} plugin must be provided that provides
+    # completions for namespaces and namespace values.
+    #
+    # A {BEL::Resource::Namespaces} API must be provided to resolve namespace
+    # properties given a URI.
     #
     # If +position+ is +nil+ then its assumed to be the last index of
     # +bel_expression+ otherwise the +to_i+ method is called.
@@ -28,7 +30,14 @@ module BEL
     # provide namespace value completions
     # @param position         [responds to #to_i] the position to complete from
     # @return [Array<Completion>]
-    def self.complete(bel_expression, search = nil, position = nil)
+    def self.complete(bel_expression, search, namespaces, position = nil)
+      raise ArgumentError.new(
+        "search should be a BEL::Resource::Search plugin implementation"
+      ) unless search
+      raise ArgumentError.new(
+        "namespaces should be a BEL::Resource::Namespaces object"
+      ) unless namespaces
+
       bel_expression = (bel_expression || '').to_s
       position = (position || bel_expression.length).to_i
       if position < 0 or position > bel_expression.length
@@ -47,7 +56,11 @@ module BEL
       options = {
         :search => search
       }
-      BEL::Completion::run_rules(tokens, active_index, active_token, options)
+      BEL::Completion::run_rules(
+        tokens, active_index, active_token,
+        :search     => search,
+        :namespaces => namespaces
+      )
     end
   end
 end
