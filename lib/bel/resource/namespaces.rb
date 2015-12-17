@@ -40,13 +40,13 @@ module BEL
         # nil input always yield nil
         return nil if namespace == nil
 
-        # RDF::URI input handled as a special case
-        return find_namespace_uri(namespace) if namespace.is_a?(RDF::URI)
-
-        # input handled as literal identifier; empty literals will match
-        # in a pattern as if it was nil so return nil if empty string
-        nstr  = namespace.to_s
+        # empty literals will match in a pattern as if it was nil
+        # so return nil if empty string
+        nstr = namespace.to_s
         return nil if nstr.empty?
+
+        # URI handled by regex match on string
+        return find_namespace_uri(nstr) if nstr =~ FULL_URI_REGEX
 
         # match input as namespace prefix
 				nlit   = RDF::Literal(nstr)
@@ -64,10 +64,11 @@ module BEL
 				return Namespace.new(@rdf_repository, label.subject) if label
       end
 
-      def find_namespace_uri(uri)
-        type_check = RDF::Statement(uri, RDF.type, BELV.NamespaceConceptScheme)
+      def find_namespace_uri(uri_s)
+        subject    = RDF::URI(uri_s)
+        type_check = RDF::Statement(subject, RDF.type, BELV.NamespaceConceptScheme)
 				if @rdf_repository.has_statement?(type_check)
-          return Namespace.new(@rdf_repository, uri)
+          return Namespace.new(@rdf_repository, subject)
         end
 			end
 

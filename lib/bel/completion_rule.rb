@@ -1,7 +1,6 @@
 require_relative 'language'
 require_relative 'namespace'
 require_relative 'quoting'
-require 'uri'
 
 module BEL
   module Completion
@@ -182,8 +181,9 @@ module BEL
       include BEL::Quoting
 
       def _apply(token_list, active_token, active_token_index, options = {})
-        search = options.delete(:search)
-        return EMPTY_MATCH if not search or token_list.empty?
+        search     = options.delete(:search)
+        namespaces = options.delete(:namespaces)
+        return EMPTY_MATCH if !search || !namespaces || token_list.empty?
 
         if active_token.type == :IDENT && active_token.value.length > 1
           previous_token = token_list[active_token_index - 1]
@@ -191,16 +191,16 @@ module BEL
             # search within a namespace
             prefix_token = token_list[active_token_index - 2]
             if prefix_token and prefix_token.type == :IDENT
-              namespace = BEL::Namespace::NAMESPACE_LATEST[prefix_token.value.to_sym]
+              namespace = namespaces.find(prefix_token.value.downcase).first
               if namespace
-                scheme_uri = namespace[1]
                 return search.search(
                   "#{active_token.value}*",
                   :namespace_concept,
-                  URI(scheme_uri),
+                  namespace.uri.to_s,
                   nil,
                   :start => 0,
-                  :size  => 10
+                  :size  => 10,
+                  :exclude_identifier_schemes => false
                 ).
                   map { |search_result|
                     map_namespace_value(search_result.pref_label)
@@ -214,10 +214,12 @@ module BEL
               nil,
               nil,
               :start => 0,
-              :size  => 10
+              :size  => 10,
+              :exclude_identifier_schemes => true
             ).
               map { |search_result|
-                map_namespace_value(search_result.pref_label)
+                ns = namespaces.find(search_result.scheme_uri).first
+                map_namespace_value_with_prefix(ns, search_result.pref_label)
               }.to_a
           end
         end
@@ -233,6 +235,24 @@ module BEL
           :type   => :namespace_value,
           :label  => ns_value,
           :value  => ensure_quotes(ns_value),
+          :offset => 0
+        }
+      end
+
+      def map_namespace_value_with_prefix(ns, ns_value)
+        quoted_value = ensure_quotes(ns_value)
+
+        if ns
+          ns_prefix    = ns.prefix.to_s.upcase
+          ns_value     = "#{ns_prefix}:#{ns_value}"
+          quoted_value = "#{ns_prefix}:#{quoted_value}"
+        end
+
+        {
+          :id     => ns_value,
+          :type   => :namespace_value,
+          :label  => ns_value,
+          :value  => quoted_value,
           :offset => 0
         }
       end

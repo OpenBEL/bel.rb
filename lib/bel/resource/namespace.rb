@@ -55,13 +55,13 @@ module BEL
         # nil input always yield nil
         return nil if value == nil
 
-        # RDF::URI input handled as a special case
-        return find_namespace_value_uri(value) if value.is_a?(RDF::URI)
-
         # input handled as literal identifier; empty literals match in a
         # pattern as if it was nil so return nil if empty string
         vstr  = value.to_s
         return nil if vstr.empty?
+
+        # URI handled by regex match on string
+        return find_namespace_value_uri(vstr) if vstr =~ FULL_URI_REGEX
 
         # match input as namespace value prefLabel
 				vlit  = RDF::Literal(vstr)
@@ -86,15 +86,16 @@ module BEL
 				return NamespaceValue.new(@rdf_repository, title.subject) if title
       end
 
-      def find_namespace_value_uri(uri)
+      def find_namespace_value_uri(uri_s)
+        subject            = RDF::URI(uri_s)
         in_namespace_check = @rdf_repository.has_statement?(
-          RDF::Statement(uri, RDF::SKOS.inScheme, @uri)
+          RDF::Statement(subject, RDF::SKOS.inScheme, @uri)
         )
         return nil if !in_namespace_check
 
-        type_check = RDF::Statement(uri, RDF.type, BELV.NamespaceConcept)
+        type_check = RDF::Statement(subject, RDF.type, BELV.NamespaceConcept)
 				if @rdf_repository.has_statement?(type_check)
-          return NamespaceValue.new(@rdf_repository, uri)
+          return NamespaceValue.new(@rdf_repository, subject)
         end
 			end
 

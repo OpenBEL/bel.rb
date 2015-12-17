@@ -15,6 +15,8 @@ module BEL
       property :inScheme
       property :orthologousMatch
     end
+
+    FULL_URI_REGEX = /\A#{URI::regexp}\z/
   end
 end
 

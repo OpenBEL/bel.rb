@@ -3,6 +3,18 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.1][0.4.1] - 2015-12-17
+### Added
+- Updated `find` API of `BEL::Resource::Namespaces` and `BEL::Resource::Namespace` to find by string representing a URI.
+
+### Fixed
+- [Development] Install `pry-byebug` only for `ruby` platforms. This allows development on JRuby.
+- [Development] No-op `rake compile` when running on JRuby. Report informative message when compiling on JRuby.
+
+### Changed
+- Complete BEL namespaces and namespace values using the Namespaces API backed by RDF data.
+- Enable :exclude_identifier_schemes option for BEL completion to disallow namespace value results that report an identifier as their preferred name. This is allowed if the namespace prefix is first provided (e.g. "EG:AKT" will find "EG:207").
+
 ## [0.4.0][0.4.0] - 2015-12-14
 ### Fixed
 - Improved conversion of evidence to JSON Evidence format.

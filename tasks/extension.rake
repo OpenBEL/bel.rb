@@ -1,5 +1,11 @@
 # Disable extension building for JRuby.
-unless RUBY_PLATFORM =~ /java/
+if RUBY_PLATFORM =~ /^java/
+
+  task 'compile' do
+    puts "Compilation of C extension not supported on JRuby. In this case libbel is provided in the source tree."
+  end
+else
+
   require 'rake/extensiontask'
 
   CLEAN.include(
