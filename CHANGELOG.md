@@ -3,6 +3,11 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.2][0.4.2] - 2015-12-21
+### Fixed
+- [Regression] Failure to run BEL upgrade command; yields name error ([Issue #90][90]).
+- [Regression] Incorrect namespace concept URI when converting Term to RDF ([Issue #91][91]).
+
 ## [0.4.1][0.4.1] - 2015-12-17
 ### Added
 - Updated `find` API of `BEL::Resource::Namespaces` and `BEL::Resource::Namespace` to find by string representing a URI.
@@ -57,6 +62,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Development gem dependencies (i.e. byebug, pry, pry-byebug) for debugging.
 
+[0.4.2]:    https://github.com/OpenBEL/bel.rb/compare/0.4.1...0.4.2
 [0.4.1]:    https://github.com/OpenBEL/bel.rb/compare/0.4.0...0.4.1
 [0.4.0]:    https://github.com/OpenBEL/bel.rb/compare/0.3.3...0.4.0
 [0.3.2]:    https://github.com/OpenBEL/bel.rb/compare/0.3.1...0.3.2
@@ -73,5 +79,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [68]:       https://github.com/OpenBEL/bel.rb/issues/68
 [82]:       https://github.com/OpenBEL/bel.rb/issues/82
 [86]:       https://github.com/OpenBEL/bel.rb/pull/86
+[90]:       https://github.com/OpenBEL/bel.rb/issues/90
+[91]:       https://github.com/OpenBEL/bel.rb/issues/91
 [20150611]: http://resource.belframework.org/belframework/20150611/
 [RDF.rb]:   https://github.com/ruby-rdf/rdf
