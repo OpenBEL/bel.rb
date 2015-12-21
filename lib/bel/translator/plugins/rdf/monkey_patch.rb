@@ -154,7 +154,7 @@ module BEL::Translator::Plugins
         @arguments.find_all{ |x|
           x.is_a? ::BEL::Model::Parameter and x.ns != nil
         }.each do |param|
-          concept_uri = param.ns.to_uri + param.value.to_s
+          concept_uri = "#{param.ns.to_uri}/#{param.value}"
           statements << ::RDF::Statement.new(uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(URI.encode(concept_uri)), :graph_name => graph_name)
         end
 

@@ -25,6 +25,7 @@ gem 'addressable',   '~> 2.3'
 gem 'rdf',           '~> 1.1'
 gem 'rdf-turtle',    '~> 1.1'
 gem 'uuid',          '~> 2.3'
+gem 'rdf-mongo',     '1.99.0'
 
 # Platform-specific example.
 # platform(:jruby) {

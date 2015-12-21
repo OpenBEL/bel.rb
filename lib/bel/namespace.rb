@@ -42,11 +42,11 @@ module BEL
       ],
       GOBP: [
         LATEST_PREFIX + 'namespace/go-biological-process.belns',
-        'http://www.openbel.org/bel/namespace/go-biological-processes'
+        'http://www.openbel.org/bel/namespace/go-biological-process'
       ],
       GOBPID: [
         LATEST_PREFIX + 'namespace/go-biological-process-ids.belns',
-        'http://www.openbel.org/bel/namespace/go'
+        'http://www.openbel.org/bel/namespace/go-biological-process'
       ],
       GOCC: [
         LATEST_PREFIX + 'namespace/go-cellular-component.belns',
@@ -67,6 +67,14 @@ module BEL
       MESHCSID: [
         LATEST_PREFIX + 'namespace/mesh-cellular-structures-ids.belns',
         'http://www.openbel.org/bel/namespace/mesh-cellular-structures'
+      ],
+      MECHC: [
+        LATEST_PREFIX + 'namespace/mesh-chemicals.belns',
+        'http://www.openbel.org/bel/namespace/mesh-chemicals'
+      ],
+      MECHCID: [
+        LATEST_PREFIX + 'namespace/mesh-chemicals-ids.belns',
+        'http://www.openbel.org/bel/namespace/mesh-chemicals'
       ],
       MESHD: [
         LATEST_PREFIX + 'namespace/mesh-diseases.belns',
@@ -114,7 +122,7 @@ module BEL
       ],
       SPID: [
         LATEST_PREFIX + 'namespace/swissprot-ids.belns',
-        'http://www.openbel.org/bel/namespace/swissprot-ids'
+        'http://www.openbel.org/bel/namespace/swissprot'
       ]
     }
 
