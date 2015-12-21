@@ -11,6 +11,8 @@ BEL::Language.include_bel_dsl
 include BEL::Model
 include BEL::Namespace
 
+BELV = ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV
+
 describe 'RDF functionality of BEL language objects' do
 
   before(:all) do
@@ -45,19 +47,19 @@ describe 'RDF functionality of BEL language objects' do
       expect(triples.size).to eq(4)
       expect(
         triples.count { |x|
-          x.object.uri? and x.object.value == ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV.AbundanceConcept
+          x.object.uri? and x.object.value == BELV.AbundanceConcept
         }).to eq(1)
       expect(
         triples.count { |x|
-          x.object.uri? and x.object.value == ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV.GeneConcept
+          x.object.uri? and x.object.value == BELV.GeneConcept
         }).to eq(1)
       expect(
         triples.count { |x|
-          x.object.uri? and x.object.value == ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV.RNAConcept
+          x.object.uri? and x.object.value == BELV.RNAConcept
         }).to eq(1)
       expect(
         triples.count { |x|
-          x.object.uri? and x.object.value == ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV.ProteinConcept
+          x.object.uri? and x.object.value == BELV.ProteinConcept
         }).to eq(1)
     end
 
@@ -76,27 +78,27 @@ describe 'RDF functionality of BEL language objects' do
       expect(term_uri).to eq(term.to_uri)
       expect(rdf_statements.size).to eq(4)
       expect(
-        rdf_statements.include? [term.to_uri, ::BEL::Translator::Plugins::Rdf::BEL::RDF::RDF.type, ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV.Term]
+        rdf_statements.include? [term.to_uri, RDF.type, BELV.Term]
       ).to be(true)
       expect(
-        rdf_statements.include? [term.to_uri, ::BEL::Translator::Plugins::Rdf::BEL::RDF::RDF.type, term.rdf_type]
+        rdf_statements.include? [term.to_uri, RDF.type, term.rdf_type]
       ).to be(true)
       expect(
-        rdf_statements.include? [term.to_uri, ::BEL::Translator::Plugins::Rdf::BEL::RDF::RDFS.label, term.to_s]
+        rdf_statements.include? [term.to_uri, RDF::RDFS.label, term.to_s]
       ).to be(true)
       expect(
-        rdf_statements.include? [term.to_uri, ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV.hasConcept, term.arguments[0].to_uri]
+        rdf_statements.include? [term.to_uri, BELV.hasConcept, term.arguments[0].to_uri]
       ).to be(true)
     end
 
     it "forces term labels as UTF-8" do
       (_, rdf_statements) = a(Parameter.new(CHEBI, '5α-androst-16-en-3-one')).to_rdf
       _, _, label_literal = rdf_statements.find { |stmt|
-        stmt[1] == ::BEL::Translator::Plugins::Rdf::BEL::RDF::RDFS.label
+        stmt[1] == RDF::RDFS.label
       }
 
-      expect(label_literal.encoding).to eql(Encoding::UTF_8)
-      expect(label_literal).to          eql(%Q{a(CHEBI:"5α-androst-16-en-3-one")})
+      expect(label_literal.value.encoding).to eql(Encoding::UTF_8)
+      expect(label_literal).to                eql(RDF::Literal.new(%Q{a(CHEBI:"5α-androst-16-en-3-one")}))
     end
   end
 
@@ -115,26 +117,23 @@ describe 'RDF functionality of BEL language objects' do
       (_, rdf_statements) = statement.to_rdf
 
       type_evidence_statements = rdf_statements.find_all { |stmt|
-        stmt[1] == ::BEL::Translator::Plugins::Rdf::BEL::RDF::RDF.type and stmt[2] == ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV.Evidence
+        stmt[1] == RDF.type and stmt[2] == BELV.Evidence
       }
       expect(type_evidence_statements.size).to eq(1)
 
       evidence_resource = type_evidence_statements.first[0]
-      expect(evidence_resource).to be_a(::BEL::Translator::Plugins::Rdf::BEL::RDF::RDF::Node)
-
-      evidence_resource_identifier = evidence_resource.to_s.gsub(/^_:/, '')
-      expect(UUID.validate(evidence_resource_identifier)).to be(true)
+      expect(evidence_resource).to be_a(RDF::URI)
     end
 
     it "forces statement labels as UTF-8" do
       (_, rdf_statements) =
         (a(Parameter.new(CHEBI, '5α-androst-16-en-3-one')).association a(Parameter.new(CHEBI, 'luteolin 7-O-β-D-glucosiduronate'))).to_rdf
       _, _, label_literal = rdf_statements.select { |stmt|
-        stmt[1] == ::BEL::Translator::Plugins::Rdf::BEL::RDF::RDFS.label
+        stmt[1] == RDF::RDFS.label
       }.last
 
-      expect(label_literal.encoding).to eql(Encoding::UTF_8)
-      expect(label_literal).to          eql(%Q{a(CHEBI:"5α-androst-16-en-3-one") association a(CHEBI:"luteolin 7-O-β-D-glucosiduronate")})
+      expect(label_literal.value.encoding).to eql(Encoding::UTF_8)
+      expect(label_literal).to                eql(RDF::Literal.new(%Q{a(CHEBI:"5α-androst-16-en-3-one") association a(CHEBI:"luteolin 7-O-β-D-glucosiduronate")}))
     end
 
     it "forces evidence text as UTF-8" do

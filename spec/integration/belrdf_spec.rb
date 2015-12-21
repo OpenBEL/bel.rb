@@ -13,7 +13,7 @@ describe 'Reading RDF from BEL' do
     BEL.translate(bel_file, :bel, :rdf, writer)
 
     rdf_triples = writer.string
-    expect(rdf_triples.each_line.count).to eql(301)
+    expect(rdf_triples.each_line.count).to eql(372)
   end
 end
 
