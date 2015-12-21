@@ -106,7 +106,7 @@ class Main
     BEL::Script.parse(content) do |obj|
       # redefine namespace based on change log's `redefine` blocik
       # use 'namespaces' block, if available
-      if obj.is_a? NamespaceDefinition
+      if obj.is_a? BEL::Namespace::NamespaceDefinition
         if @change_log.has_key? 'redefine'
           redefine = @change_log['redefine']['namespaces']
           if not redefine
@@ -116,7 +116,7 @@ class Main
             entry = redefine[obj.prefix.to_s]
             new_keyword = entry['new_keyword'].to_sym
             new_url = entry['new_url']
-            obj = NamespaceDefinition.new(new_keyword, new_url)
+            obj = BEL::Namespace::NamespaceDefinition.new(new_keyword, new_url)
           end
         end
 
@@ -128,21 +128,21 @@ class Main
       end
 
       # update annotation definitions
-      if obj.is_a? AnnotationDefinition and obj.type.eql? :url
+      if obj.is_a? BEL::Language::AnnotationDefinition and obj.type.eql? :url
         if @redefine_annotations
           old_url = obj.value
           if @annotation_url_map.has_key? old_url.to_s
             kw = obj.prefix
             new_url = @annotation_url_map[old_url]['new_url']
             prefix = @annotation_url_map[old_url]['prefix']
-            obj = AnnotationDefinition.new(:url, kw, new_url)
+            obj = BEL::Language::AnnotationDefinition.new(:url, kw, new_url)
             @annotation_keyword_map[kw] = prefix # map bel doc annotation kw to set of changelog prefixes
           end
         end
       end
 
       # evidence always needs quoting; backwards-compatibility
-      if obj.is_a? Annotation
+      if obj.is_a? BEL::Language::Annotation
         if obj.name == 'Evidence'
           ev = obj.to_s
           ev.gsub!(EvidenceMatcher, 'SET Evidence = "\1"')
@@ -207,7 +207,7 @@ class Main
           if redefinition
             new_prefix = redefinition['new_keyword']
             new_url = redefinition['new_url']
-            obj.ns = NamespaceDefinition.new(new_prefix, new_url)
+            obj.ns = BEL::Namespace::NamespaceDefinition.new(new_prefix, new_url)
 
             # ...and replace value using new namespace prefix
             replacements = @change_log[new_prefix]
