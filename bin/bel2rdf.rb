@@ -19,11 +19,9 @@ require 'optparse'
 require 'set'
 require 'open-uri'
 
-# Check if RDF format extension is loaded
-unless BEL::Extension::Format.formatters(:rdf)
-  $stderr.puts "An RDF format extension is not loaded."
-  $stderr.puts "Try loading one with:"
-  $stderr.puts "    Try BEL::Extension.load_extension('rdf')"
+# Check for RDF translator.
+unless BEL.translator(:rdf)
+  $stderr.puts(%Q{The format "#{from_format}" is not available.})
   exit 1
 end
 
@@ -99,18 +97,18 @@ class Serializer
   def find_writer(format)
     case format
     when 'nquads'
-      BEL::RDF::RDF::NQuads::Writer
+      RDF::NQuads::Writer
     when 'turtle'
       begin
         require 'rdf/turtle'
-        BEL::RDF::RDF::Turtle::Writer
+        RDF::Turtle::Writer
       rescue LoadError
         $stderr.puts """Turtle format not supported.
 Install the 'rdf-turtle' gem."""
         raise
       end
     when 'ntriples'
-      BEL::RDF::RDF::NTriples::Writer
+      RDF::NTriples::Writer
     end
   end
 end
@@ -120,7 +118,7 @@ rdf_writer = ::Serializer.new(true, options[:format])
 
 # first write schema if desired
 if options[:schema]
-  BEL::RDF::vocabulary_rdf.each do |trpl|
+  BEL::Translator::Plugins::Rdf::BEL::RDF::vocabulary_rdf.each do |trpl|
     rdf_writer << trpl
   end
 end
