@@ -17,8 +17,8 @@ class NonblockingIOWrapper
   # Yields each buffer read from the wrapped IO-like object to the provided
   # block (e.g. +{ |block| ... }+). The read length is set on {#initialize}.
   #
-  # @yield buffer the buffer read from the IO-like object
-  # @yieldreturn [String] the read buffer as uninterpreted bytes
+  # @yield the buffers read from the IO-like object
+  # @yieldparam [String] buffer the read buffer as uninterpreted bytes
   def each
     begin
       while buffer = @read_method.call(@read_length)
