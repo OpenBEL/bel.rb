@@ -28,12 +28,13 @@ module BEL::Translator::Plugins
             when ::BEL::Model::Statement
               yield to_evidence(parsed_obj, @references, @metadata)
             when ::BEL::Language::AnnotationDefinition
-              @references.annotations[parsed_obj.prefix] = {
-                :type   => parsed_obj.type,
-                :domain => parsed_obj.value
-              }
+              @references.add_annotation(
+                parsed_obj.prefix,
+                parsed_obj.type,
+                parsed_obj.value
+              )
             when ::BEL::Namespace::NamespaceDefinition
-              @references.namespaces[parsed_obj.prefix] = parsed_obj.url
+              @references.add_namespace(parsed_obj.prefix, parsed_obj.url)
             end
           }
         else
@@ -72,15 +73,6 @@ module BEL::Translator::Plugins
               :name  => k,
               :value => value
             }
-
-            annotation_def = references.annotations[k]
-            if annotation_def
-              type, domain = annotation_def.values_at(:type, :domain)
-              if type == :url
-                obj[:uri] = "#{domain}/#{value}"
-                obj[:url] = domain
-              end
-            end
 
             obj
           }

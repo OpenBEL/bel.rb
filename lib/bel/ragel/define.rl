@@ -20,8 +20,8 @@
     yield anno
   }
 
-  action define_annotation_url {
-    anno = BEL::Language::AnnotationDefinition.new(:url, @name, @value)
+  action define_annotation_uri {
+    anno = BEL::Language::AnnotationDefinition.new(:uri, @name, @value)
     yield anno
   }
 
@@ -53,7 +53,7 @@
     (
       (LIST_KW SP+ LIST SP* NL @define_annotation_list @return) |
       (PATTERN_KW SP+ STRING SP* NL @define_annotation_pattern @return) |
-      (URL_KW SP+ STRING SP* NL @define_annotation_url @return)
+      (URL_KW SP+ STRING SP* NL @define_annotation_uri @return)
     );
   define_namespace :=
     SP+ IDENT >s $n %name SP+ AS_KW SP+ URL_KW SP+ STRING SP* NL

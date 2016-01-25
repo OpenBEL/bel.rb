@@ -71,7 +71,8 @@ module BEL::Translator::Plugins
           when :uri
             bel << %Q{URL "#{domain}"\n}
           when :pattern
-            bel << %Q{PATTERN "#{domain}"\n}
+            regex = domain.respond_to?(:source) ? domain.source : domain
+            bel << %Q{PATTERN "#{regex}"\n}
           when :list
             bel << %Q|LIST {#{domain.inspect[1...-1]}}\n|
           end

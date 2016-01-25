@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'set'
 
 module BEL
   module Model
@@ -17,7 +18,7 @@ module BEL
       end
 
       def annotations
-        @values[ANNOTATIONS] ||= {}
+        @values[ANNOTATIONS] ||= []
       end
 
       def annotations=(annotations)
@@ -25,11 +26,26 @@ module BEL
       end
 
       def namespaces
-        @values[NAMESPACES] ||= {}
+        @values[NAMESPACES] ||= []
       end
 
       def namespaces=(namespaces)
         @values[NAMESPACES] = namespaces
+      end
+
+      def add_annotation(keyword, type, domain)
+        annotations << {
+          :keyword => keyword,
+          :type    => type,
+          :domain  => domain
+        }
+      end
+
+      def add_namespace(keyword, uri)
+        namespaces << {
+          :keyword => keyword,
+          :uri => uri
+        }
       end
 
       def_delegators :@values, :[],    :"[]=", :delete_if,   :each, :each_pair,
