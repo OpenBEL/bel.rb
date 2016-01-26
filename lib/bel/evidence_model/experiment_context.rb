@@ -18,6 +18,7 @@ module BEL
             :value => value
           }
         }
+        @values.sort_by! { |item| item[:name] }
       end
 
       def_delegators :@values, :<<,    :[],    :"[]=",
