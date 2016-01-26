@@ -459,7 +459,8 @@ module BEL::Translator::Plugins
         end
 
         if stack_top == :citation
-          (@evidence.citation.authors ||= []) << @text
+          @evidence.citation.authors ||= []
+          @evidence.citation.authors  << @text
         end
       end
 
