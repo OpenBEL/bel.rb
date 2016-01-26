@@ -245,26 +245,26 @@ module BEL::Translator::Plugins
 
       def end_version
         if stack_top == :header
-          @evidence.metadata.document_header['version'] = @text
+          @evidence.metadata.document_header[:Version] = @text
         end
       end
 
       def end_copyright
         if stack_top == :header
-          @evidence.metadata.document_header['copyright'] = @text
+          @evidence.metadata.document_header[:Copyright] = @text
         end
       end
 
       def end_contact_info
         if stack_top == :header
-          @evidence.metadata.document_header['contactInfo'] = @text
+          @evidence.metadata.document_header[:ContactInfo] = @text
         end
       end
 
       def end_license
         if stack_top == :header
-          @evidence.metadata.document_header['licenses'] ||= []
-          @evidence.metadata.document_header['licenses'] <<  @text
+          @evidence.metadata.document_header[:Licenses] ||= []
+          @evidence.metadata.document_header[:Licenses]  << @text
         end
       end
 
@@ -309,7 +309,7 @@ module BEL::Translator::Plugins
 
       def end_description
         if stack_top == :header
-          @evidence.metadata.document_header['description'] = @text
+          @evidence.metadata.document_header[:Description] = @text
         end
 
         if stack_top == :internal_annotation_definition
@@ -438,7 +438,7 @@ module BEL::Translator::Plugins
 
       def end_name
         if stack_top == :header
-          @evidence.metadata.document_header['name'] = @text
+          @evidence.metadata.document_header[:Name] = @text
         end
 
         if stack_top == :citation
@@ -454,8 +454,8 @@ module BEL::Translator::Plugins
 
       def end_author
         if stack_top == :header
-          @evidence.metadata.document_header['authors'] ||= []
-          @evidence.metadata.document_header['authors'] <<  @text
+          @evidence.metadata.document_header[:Authors] ||= []
+          @evidence.metadata.document_header[:Authors] <<  @text
         end
 
         if stack_top == :citation

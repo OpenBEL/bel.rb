@@ -20,6 +20,11 @@ module BEL
     DocumentProperty = Struct.new(:name, :value) do
       include BEL::Quoting
 
+      def value
+        return self[:value] unless [:Authors, :Licenses].include?(self.name.to_sym)
+        self[:value].to_s.split('|')
+      end
+
       def to_bel
         %Q{SET DOCUMENT #{self.name} = #{ensure_quotes(self.value)}}
       end

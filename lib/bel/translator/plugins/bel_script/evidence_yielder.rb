@@ -24,7 +24,7 @@ module BEL::Translator::Plugins
           ::BEL::Script.parse(@data).each { |parsed_obj|
             case parsed_obj
             when ::BEL::Language::DocumentProperty
-              @metadata.document_header[parsed_obj.name] = parsed_obj.value
+              @metadata.document_header[parsed_obj.name.to_sym] = parsed_obj.value
             when ::BEL::Model::Statement
               yield to_evidence(parsed_obj, @references, @metadata)
             when ::BEL::Language::AnnotationDefinition
