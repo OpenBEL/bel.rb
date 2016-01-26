@@ -76,7 +76,7 @@ module BEL
             :citation           => citation.to_h,
             :summary_text       => summary_text.value,
             :experiment_context => experiment_context.values,
-            :references         => references.values,
+            :references         => references.to_h,
             :metadata           => metadata.to_a
           }
         )

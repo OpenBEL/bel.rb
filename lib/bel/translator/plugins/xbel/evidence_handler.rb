@@ -196,8 +196,9 @@ module BEL::Translator::Plugins
           ns_id              = attr_value(attributes, NS)
           # XXX Hitting a SystemStackError on line 174 (inside call).
           # Example: large_corpus.xbel
+          ns_sym = ns_id.to_sym
           namespace_reference = @evidence.references.namespaces.find { |ns|
-            ns[:keyword] == ns_id
+            ns[:keyword] == ns_sym
           }
           ns =
             if namespace_reference
