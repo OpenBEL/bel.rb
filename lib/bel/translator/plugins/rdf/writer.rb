@@ -10,8 +10,8 @@ module BEL::Translator::Plugins
       Rdf = ::BEL::Translator::Plugins::Rdf
 
       def initialize(io, format, options = {})
-        rdf_writer       = find_writer(format)
-        @writer          = rdf_writer.new(io, { :stream => true })
+        rdf_writer = find_writer(format)
+        @writer    = rdf_writer.new(io, { :stream => true })
 
         if options[:void_dataset_uri]
           void_dataset_uri = options.delete(:void_dataset_uri)
@@ -60,12 +60,19 @@ module BEL::Translator::Plugins
             require 'rdf/turtle'
             RDF::Turtle::Writer
           rescue LoadError
-            $stderr.puts """Turtle format not supported.
-    Install the 'rdf-turtle' gem."""
+            $stderr.puts 'Turtle format is not supported. Install the "rdf-turtle" gem.'
             raise
           end
         when :ntriples
           RDF::NTriples::Writer
+        when :rdfxml
+          begin
+            require 'rdf/rdfxml'
+            RDF::RDFXML::Writer
+          rescue LoadError
+            $stderr.puts 'RDF/XML format is not supported. Install the "rdf-rdfxml" gem.'
+            raise
+          end
         end
       end
     end

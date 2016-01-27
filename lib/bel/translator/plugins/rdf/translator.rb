@@ -14,13 +14,16 @@ module BEL::Translator::Plugins
 
       include ::BEL::Translator
 
+      def initialize(format)
+        @format = format
+      end
+
       def read(data, options = {})
         Reader::UnbufferedEvidenceYielder.new(data)
       end
 
       def write(objects, writer = StringIO.new, options = {})
-        # format = options[:format] || :ntriples
-        rdf_writer = Writer::RDFYielder.new(writer, :nquads, options)
+        rdf_writer = Writer::RDFYielder.new(writer, @format, options)
 
         objects.each do |evidence|
           rdf_writer << evidence

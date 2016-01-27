@@ -17,7 +17,7 @@ describe 'RDF functionality of BEL language objects' do
 
   before(:all) do
     begin
-      BEL.translator(:rdf)
+      BEL.translator(:ntriples)
     rescue LoadError => e
       raise
     end
