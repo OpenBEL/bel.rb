@@ -1,6 +1,3 @@
-require 'rdf'
-require 'rdf/turtle'
-
 module BEL::Translator::Plugins
 
   module Turtle
@@ -12,7 +9,10 @@ module BEL::Translator::Plugins
     EXTENSIONS  = %i(ttl)
 
     def self.create_translator(options = {})
+      require 'rdf'
+      require 'rdf/turtle'
       require_relative 'rdf/translator'
+
       BEL::Translator::Plugins::Rdf::RdfTranslator.new(ID)
     end
 

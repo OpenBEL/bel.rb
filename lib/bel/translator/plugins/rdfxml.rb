@@ -1,6 +1,3 @@
-require 'rdf'
-require 'rdf/rdfxml'
-
 module BEL::Translator::Plugins
 
   module Rdfxml
@@ -12,7 +9,10 @@ module BEL::Translator::Plugins
     EXTENSIONS  = %i(rdf)
 
     def self.create_translator(options = {})
+      require 'rdf'
+      require 'rdf/rdfxml'
       require_relative 'rdf/translator'
+
       BEL::Translator::Plugins::Rdf::RdfTranslator.new(ID)
     end
 
