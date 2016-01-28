@@ -3,7 +3,8 @@ $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', 'lib')
 require 'bel'
 require 'uuid'
 
-BEL.translator(:rdf)
+# Preload translator to load BELV objects
+BEL.translator(:ntriples)
 
 include BEL::Language
 BEL::Language.include_bel_dsl
