@@ -122,7 +122,7 @@ module BEL::Translator::Plugins
 
       include EvidenceYielder
 
-      def initialize(data, format = :ntriples)
+      def initialize(data, format)
         @data   = data
         @format = format
       end

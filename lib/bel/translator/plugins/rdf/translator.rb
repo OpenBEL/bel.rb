@@ -19,7 +19,7 @@ module BEL::Translator::Plugins
       end
 
       def read(data, options = {})
-        Reader::UnbufferedEvidenceYielder.new(data)
+        Reader::UnbufferedEvidenceYielder.new(data, @format)
       end
 
       def write(objects, writer = StringIO.new, options = {})

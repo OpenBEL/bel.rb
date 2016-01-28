@@ -10,7 +10,7 @@ module BEL::Translator::Plugins
       Rdf = ::BEL::Translator::Plugins::Rdf
 
       def initialize(io, format, options = {})
-        rdf_writer = find_writer(format)
+        rdf_writer = RDF::Writer.for(format)
         @writer    = rdf_writer.new(io, { :stream => true })
 
         if options[:void_dataset_uri]
@@ -23,6 +23,8 @@ module BEL::Translator::Plugins
         else
           @void_dataset_uri = nil
         end
+
+        @writer.write_prologue
         @wrote_dataset    = false
       end
 
@@ -47,33 +49,6 @@ module BEL::Translator::Plugins
 
       def done
         @writer.write_epilogue
-      end
-
-      private
-
-      def find_writer(format)
-        case format.to_s.to_sym
-        when :nquads
-          RDF::NQuads::Writer
-        when :turtle
-          begin
-            require 'rdf/turtle'
-            RDF::Turtle::Writer
-          rescue LoadError
-            $stderr.puts 'Turtle format is not supported. Install the "rdf-turtle" gem.'
-            raise
-          end
-        when :ntriples
-          RDF::NTriples::Writer
-        when :rdfxml
-          begin
-            require 'rdf/rdfxml'
-            RDF::RDFXML::Writer
-          rescue LoadError
-            $stderr.puts 'RDF/XML format is not supported. Install the "rdf-rdfxml" gem.'
-            raise
-          end
-        end
       end
     end
   end
