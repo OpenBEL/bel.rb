@@ -38,13 +38,8 @@ module BEL::Translator::Plugins
       def to_rdf(graph_name = nil)
         uri = to_uri
         encodings = ['A'].concat(@enc.to_s.each_char.to_a).uniq
-        if block_given?
-          encodings.map { |enc| concept_statement(enc, uri, graph_name) }.each do |stmt|
-            yield stmt
-          end
-        else
-          encodings.map { |enc| concept_statement(enc, uri, graph_name)}
-        end
+        encodings.map! { |enc| concept_statement(enc, uri, graph_name)}
+        [uri, encodings]
       end
 
       private
@@ -136,33 +131,34 @@ module BEL::Translator::Plugins
             end
             # link root protein abundance as hasChild
             root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-            (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf
+            (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name)
             statements << ::RDF::Statement.new(uri, BEL::RDF::BELV.hasChild, root_id, :graph_name => graph_name)
-            statements += root_statements
+            statements.concat(root_statements)
             return [uri, statements]
           elsif @arguments.find{|x| x.is_a? ::BEL::Model::Term and BEL::RDF::PROTEIN_VARIANT.include? x.fx}
             # link root protein abundance as hasChild
             root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-            (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf
+            (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name)
             statements << ::RDF::Statement.new(uri, BEL::RDF::BELV.hasChild, root_id, :graph_name => graph_name)
-            statements += root_statements
+            statements.concat(root_statements)
             return [uri, statements]
           end
         end
 
-        # BEL::RDF::BELV.hasConcept]
+        # BEL::RDF::BELV.hasConcept
         @arguments.find_all{ |x|
           x.is_a? ::BEL::Model::Parameter and x.ns != nil
         }.each do |param|
-          concept_uri = "#{param.ns.to_uri}/#{param.value}"
-          statements << ::RDF::Statement.new(uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(URI.encode(concept_uri)), :graph_name => graph_name)
+          param_uri, encoding_statements = param.to_rdf(graph_name)
+          statements.concat(encoding_statements)
+          statements << ::RDF::Statement.new(uri, BEL::RDF::BELV.hasConcept, param_uri, :graph_name => graph_name)
         end
 
         # BEL::RDF::BELV.hasChild]
         @arguments.find_all{|x| x.is_a? ::BEL::Model::Term}.each do |child|
-          (child_id, child_statements) = child.to_rdf
+          (child_id, child_statements) = child.to_rdf(graph_name)
           statements << ::RDF::Statement.new(uri, BEL::RDF::BELV.hasChild, child_id, :graph_name => graph_name)
-          statements += child_statements
+          statements.concat(child_statements)
         end
 
         [uri, statements]
@@ -213,27 +209,27 @@ module BEL::Translator::Plugins
 
         case
         when subject_only?
-          (sub_uri, sub_statements) = @subject.to_rdf
+          (sub_uri, sub_statements) = @subject.to_rdf(graph_name)
           statements << ::RDF::Statement(uri, BEL::RDF::BELV.hasSubject, sub_uri, :graph_name => graph_name)
-          statements += sub_statements
+          statements.concat(sub_statements)
         when simple?
-          (sub_uri, sub_statements) = @subject.to_rdf
-          statements += sub_statements
+          (sub_uri, sub_statements) = @subject.to_rdf(graph_name)
+          statements.concat(sub_statements)
 
-          (obj_uri, obj_statements) = @object.to_rdf
-          statements += obj_statements
+          (obj_uri, obj_statements) = @object.to_rdf(graph_name)
+          statements.concat(obj_statements)
 
           rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
           statements << ::RDF::Statement(uri, BEL::RDF::BELV.hasSubject, sub_uri,  :graph_name => graph_name)
           statements << ::RDF::Statement(uri, BEL::RDF::BELV.hasObject, obj_uri,   :graph_name => graph_name)
           statements << ::RDF::Statement(uri, BEL::RDF::BELV.hasRelationship, rel, :graph_name => graph_name)
         when nested?
-          (sub_uri, sub_statements) = @subject.to_rdf
-          (nsub_uri, nsub_statements) = @object.subject.to_rdf
-          (nobj_uri, nobj_statements) = @object.object.to_rdf
-          statements += sub_statements
-          statements += nsub_statements
-          statements += nobj_statements
+          (sub_uri, sub_statements) = @subject.to_rdf(graph_name)
+          (nsub_uri, nsub_statements) = @object.subject.to_rdf(graph_name)
+          (nobj_uri, nobj_statements) = @object.object.to_rdf(graph_name)
+          statements.concat(sub_statements)
+          statements.concat(nsub_statements)
+          statements.concat(nobj_statements)
           rel = BEL::RDF::RELATIONSHIP_TYPE[@relationship.to_s]
           nrel = BEL::RDF::RELATIONSHIP_TYPE[@object.relationship.to_s]
           nuri = BEL::RDF::BELR["#{strip_prefix(nsub_uri)}_#{nrel}_#{strip_prefix(nobj_uri)}"]
