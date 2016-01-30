@@ -13,17 +13,31 @@
 # Format option
 # usage: bel2rdf --bel [FILE] --format [ntriples | nquads | turtle]
 
+warn <<-DEPRECATION.gsub(/^ {2}/, '')
+  ======================================================================
+  DEPRECATION WARNING
+
+  bel2rdf command is deprecated and will be removed starting from 0.6.0.
+
+  Instead use the bel command with the translate subcommand.
+
+  Translate from BEL Script file to ntriples:
+
+    bel translate --input-file small_corpus.bel bel ntriples
+
+  Translate from XBEL on standard input to RDF/XML:
+
+    cat small_corpus.xbel | bel translate xbel rdfxml
+  ======================================================================
+DEPRECATION
+
 $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib'))
 require 'bel'
 require 'optparse'
 require 'set'
 require 'open-uri'
 
-# Check for RDF translator.
-unless BEL.translator(:rdf)
-  $stderr.puts(%Q{The format "#{from_format}" is not available.})
-  exit 1
-end
+RDF_TRANSLATORS = %w(jsonld ntriples nquads rdfa rdfxml rj trig trix turtle)
 
 # setup and parse options
 options = {
@@ -51,87 +65,39 @@ if options[:bel] and not File.exists? options[:bel]
   $stderr.puts "No file for bel, #{options[:bel]}"
   exit 1
 end
-unless ['ntriples', 'nquads', 'turtle'].include? options[:format]
-  $stderr.puts "Format was not one of: ntriples, nquads, or turtle"
+unless RDF_TRANSLATORS.include? options[:format]
+  $stderr.puts "Format must be one of: #{RDF_TRANSLATORS.join(', ')}"
   exit 1
 end
 
+def validate_translator!(value)
+  translator = BEL.translator(value)
 
-class Main
-  include BEL::Language
-  include BEL::Model
-
-  def initialize(content, writer)
-    BEL::Script.parse(content).find_all { |obj|
-      obj.is_a? Statement
-    }.each do |stmt|
-      triples = stmt.to_rdf[1]
-      triples.each do |triple|
-        writer << triple
-      end
-    end
-  end
-end
-
-class Serializer
-  attr_reader :writer
-
-  def initialize(stream, format)
-    rdf_writer = find_writer(format)
-    @writer = rdf_writer.new($stdout, {
-        :stream => stream
-      }
+  unless translator
+    $stderr.puts(
+      value ?
+        %Q{The translator "#{value}" is not available.} :
+        "The translator was not specified."
     )
-  end
-
-  def <<(trpl)
-    @writer.write_statement(RDF::Statement(*trpl))
-  end
-
-  def done
-    @writer.write_epilogue
-  end
-
-  private
-
-  def find_writer(format)
-    case format
-    when 'nquads'
-      RDF::NQuads::Writer
-    when 'turtle'
-      begin
-        require 'rdf/turtle'
-        RDF::Turtle::Writer
-      rescue LoadError
-        $stderr.puts """Turtle format not supported.
-Install the 'rdf-turtle' gem."""
-        raise
-      end
-    when 'ntriples'
-      RDF::NTriples::Writer
-    end
-  end
-end
-
-# create writer for format
-rdf_writer = ::Serializer.new(true, options[:format])
-
-# first write schema if desired
-if options[:schema]
-  BEL::Translator::Plugins::Rdf::BEL::RDF::vocabulary_rdf.each do |trpl|
-    rdf_writer << trpl
+    $stderr.puts
+    Trollop::educate
   end
 end
 
 # read bel content
-content =
+input_io =
   if options[:bel]
     File.open(options[:bel], :external_encoding => 'UTF-8')
   else
     $stdin
   end
 
-# parse and write rdf
-Main.new(content, rdf_writer)
+validate_translator!(:bel)
+validate_translator!(options[:format])
+begin
+  BEL.translate(input_io, :bel, options[:format], $stdout)
+ensure
+  $stdout.close
+end
 # vim: ts=2 sw=2:
 # encoding: utf-8
