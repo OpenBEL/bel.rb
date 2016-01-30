@@ -49,24 +49,26 @@ class Serializer
   def find_writer(format)
     case format
       when 'nquads'
-        BEL::RDF::RDF::NQuads::Writer
+        RDF::NQuads::Writer
       when 'turtle'
         begin
           require 'rdf/turtle'
-          BEL::RDF::RDF::Turtle::Writer
+          RDF::Turtle::Writer
         rescue LoadError
           $stderr.puts """Turtle format not supported.
 Install the 'rdf-turtle' gem."""
           raise
         end
       when 'ntriples'
-        BEL::RDF::RDF::NTriples::Writer
+        RDF::NTriples::Writer
     end
   end
 end
 
+BEL.translator(:ntriples)
+
 @rdf_writer = ::Serializer.new(true, options[:format])
-BEL::RDF::vocabulary_rdf.each do |trpl|
+BEL::Translator::Plugins::Rdf::BEL::RDF::vocabulary_rdf.each do |trpl|
   @rdf_writer << trpl
 end
 # vim: ts=2 sw=2:
