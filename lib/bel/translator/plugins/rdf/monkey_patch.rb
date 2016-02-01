@@ -308,7 +308,7 @@ module BELRDF
 
       # parse BEL statement if necessary
       unless self.bel_statement.is_a?(::BEL::Model::Statement)
-        self.bel_statement = parse_statement(self)
+        self.bel_statement = self.class.parse_statement(self)
       end
 
       # convert BEL statement to RDF
@@ -411,27 +411,6 @@ module BELRDF
       end
 
       triples
-    end
-
-    private
-
-    def parse_statement(evidence)
-      namespaces = evidence.references.namespaces
-      ::BEL::Script.parse(
-        "#{evidence.bel_statement}\n",
-        Hash[
-          namespaces.map { |ns|
-            keyword, uri = ns.values_at(:keyword, :uri)
-            sym          = keyword.to_sym
-            [
-              sym,
-              ::BEL::Namespace::NamespaceDefinition.new(sym, uri, uri)
-            ]
-          }
-        ]
-      ).select { |obj|
-        obj.is_a? ::BEL::Model::Statement
-      }.first
     end
   end
 end

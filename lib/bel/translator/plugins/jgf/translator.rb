@@ -29,6 +29,10 @@ module BEL::Translator::Plugins
         }
 
         objects.each do |evidence|
+          unless evidence.bel_statement.is_a?(::BEL::Model::Statement)
+            evidence.bel_statement = ::BEL::Model::Evidence.parse_statement(evidence)
+          end
+
           stmt    = evidence.bel_statement
           subject = stmt.subject.to_bel
 
