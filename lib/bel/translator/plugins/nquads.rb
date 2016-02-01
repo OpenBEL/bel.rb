@@ -9,8 +9,13 @@ module BEL::Translator::Plugins
     EXTENSIONS  = %i(nq)
 
     def self.create_translator(options = {})
+      require 'rdf'
+      require 'rdf/nquads'
       require_relative 'rdf/translator'
-      BEL::Translator::Plugins::Rdf::RdfTranslator.new(ID)
+      BEL::Translator::Plugins::Rdf::RdfTranslator.new(
+        ID,
+        options[:write_schema]
+      )
     end
 
     def self.id

@@ -13,8 +13,16 @@ module BEL::Translator::Plugins
 
       include ::BEL::Translator
 
-      def initialize(format)
-        @format = format
+      def initialize(format, write_schema = true)
+        @format     = format
+
+        write_schema = true if write_schema.nil?
+        @rdf_schema =
+          if write_schema
+            BEL::RDF::RDFS_SCHEMA
+          else
+            []
+          end
       end
 
       def read(data, options = {})
@@ -48,6 +56,12 @@ module BEL::Translator::Plugins
         wrote_dataset = false
 
         rdf_statement_enum = Enumerator.new do |yielder|
+          # enumerate BEL schema
+          @rdf_schema.each do |schema_statement|
+            yielder << RDF::Statement.new(*schema_statement)
+          end
+
+          # enumerate BEL evidence
           objects.each do |evidence|
             if void_dataset_uri && !wrote_dataset
               void_dataset_triples = evidence.to_void_dataset(@void_dataset_uri)

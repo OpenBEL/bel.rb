@@ -13,24 +13,6 @@
 # Format option
 # usage: bel2rdf --bel [FILE] --format [ntriples | nquads | turtle]
 
-warn <<-DEPRECATION.gsub(/^ {2}/, '')
-  ======================================================================
-  DEPRECATION WARNING
-
-  bel2rdf command is deprecated and will be removed starting from 0.6.0.
-
-  Instead use the bel command with the translate subcommand.
-
-  Translate from BEL Script file to ntriples:
-
-    bel translate --input-file small_corpus.bel bel ntriples
-
-  Translate from XBEL on standard input to RDF/XML:
-
-    cat small_corpus.xbel | bel translate xbel rdfxml
-  ======================================================================
-DEPRECATION
-
 $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib'))
 require 'bel'
 require 'optparse'
@@ -42,21 +24,29 @@ RDF_TRANSLATORS = %w(jsonld ntriples nquads rdfa rdfxml rj trig trix turtle)
 # setup and parse options
 options = {
   format: 'ntriples',
-  schema: false
+  schema: true
 }
 OptionParser.new do |opts|
-  opts.banner = '''Converts BEL statements to RDF triples.
-Usage: bel2rdf --bel [FILE]'''
+  opts.banner = <<-USAGE
+    Converts BEL evidence to RDF...
 
-  opts.on('-b', '--bel FILE', 'BEL file to convert.  STDIN (standard in) can also be used for BEL content.') do |bel|
+    From a BEL file.
+    Usage: bel2rdf --bel [FILE]
+
+    From BEL data on standard input (i.e. stdin).
+    Usage: cat  | bel2rdf
+
+  USAGE
+
+  opts.on('-b', '--bel FILE', 'BEL file to convert.  Standard input (i.e. stdin) can also be used for BEL input.') do |bel|
     options[:bel] = bel
   end
 
-  opts.on('-f', '--format FORMAT', 'RDF file format.') do |format|
+  opts.on('-f', '--format FORMAT', 'RDF file format. The default output format is N-Triples.') do |format|
     options[:format] = format.downcase
   end
 
-  opts.on('-s', '--[no-]schema', 'Write BEL RDF schema?') do |schema|
+  opts.on('-s', '--[no-]schema', 'Write BEL RDF schema? The default is to include the schema in the output.') do |schema|
     options[:schema] = schema
   end
 end.parse!
@@ -95,7 +85,11 @@ input_io =
 validate_translator!(:bel)
 validate_translator!(options[:format])
 begin
-  BEL.translate(input_io, :bel, options[:format], $stdout)
+  BEL.translate(input_io, :bel, options[:format], $stdout,
+    {
+      :write_schema => options[:schema]
+    }
+  )
 ensure
   $stdout.close
 end

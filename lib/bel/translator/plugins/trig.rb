@@ -12,8 +12,10 @@ module BEL::Translator::Plugins
       require 'rdf'
       require 'rdf/trig'
       require_relative 'rdf/translator'
-
-      BEL::Translator::Plugins::Rdf::RdfTranslator.new(ID)
+      BEL::Translator::Plugins::Rdf::RdfTranslator.new(
+        ID,
+        options[:write_schema]
+      )
     end
 
     def self.id
