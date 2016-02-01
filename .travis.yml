@@ -1,8 +1,7 @@
 language: ruby
 sudo: false
 env:
-  - BR_ISOLATE="yes"
-  - BR_GEM_INSTALL_OPTS="--no-user-install --no-lock"
+  - BR_ISOLATE="yes" BR_GEM_INSTALL_OPTS="--no-user-install --no-lock"
 install: scripts/gem-install-devdeps.sh
 script: scripts/ci.sh
 os:
