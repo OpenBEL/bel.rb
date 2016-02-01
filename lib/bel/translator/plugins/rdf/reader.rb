@@ -1,10 +1,9 @@
-module BEL::Translator::Plugins
-
-  module Rdf::Reader
+module BELRDF
+  module Reader
 
     module EvidenceYielder
 
-      BELV = Rdf::BEL::RDF::BELV
+      BELV = BELRDF::BELV
 
       include ::BEL::Model
       include ::BEL::Quoting

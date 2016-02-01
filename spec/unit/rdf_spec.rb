@@ -12,7 +12,7 @@ BEL::Language.include_bel_dsl
 include BEL::Model
 include BEL::Namespace
 
-BELV = ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV
+BELV = BELRDF::BELV
 
 describe 'RDF functionality of BEL language objects' do
 

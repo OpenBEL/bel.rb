@@ -32,7 +32,34 @@ module BEL
     # The Plugins module provides a namespace for translator plugins.
     # Translator plugins must be defined within {::BEL::Translator::Plugins}
     # in order to be discovered.
-    module Plugins; end
+    module Plugins
+
+      # Retrieves one or more translator plugins that were identified by
+      # +value+.
+      #
+      # @param [#to_s] value an id, media type, or file extension value that
+      #        identifies a translator plugin
+      # @return [#create_translator] if a single a translator plugin was found
+      # @return [Array<#create_translator>] if multiple translator plugins
+      #         were found
+      def self.for(value)
+        return nil unless value
+
+        value_symbol = value.to_sym
+        plugins      = BEL::Translator.plugins
+
+        return plugins[value_symbol] if plugins.include?(value_symbol)
+
+        matches = plugins.values.select { |t|
+          match  = false
+          match |= (value_symbol == t.name.to_sym)
+          match |= (t.media_types.include?(value_symbol))
+          match |= (t.file_extensions.include?(value_symbol))
+          match
+        }
+        matches.size == 1 ? matches.first : matches
+      end
+    end
 
     # Set BEL::Translator as a plugin container. All plugins are loaded from
     # +bel/translator/plugins+ on the +LOAD_PATH+. Each plugin must define a

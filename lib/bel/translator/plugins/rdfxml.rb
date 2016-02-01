@@ -12,7 +12,7 @@ module BEL::Translator::Plugins
       require 'rdf'
       require 'rdf/rdfxml'
       require_relative 'rdf/translator'
-      BEL::Translator::Plugins::Rdf::RdfTranslator.new(
+      BELRDF::Translator.new(
         ID,
         options[:write_schema]
       )

@@ -1,8 +1,7 @@
 require_relative 'uuid'
 
-module BEL::Translator::Plugins
-
-  module Rdf::Writer
+module BELRDF
+  module Writer
 
     class RDFYielder
       attr_reader :writer
