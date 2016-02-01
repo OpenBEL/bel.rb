@@ -18,22 +18,8 @@ module BEL
 
       def initialize(ns, value, enc=nil)
         if !enc && ns.is_a?(BEL::Namespace::NamespaceDefinition)
-          begin
-            lookup = ns[value]
-            enc    = lookup.enc
-          rescue StandardError => err
-            # We cannot retrieve the namespace URL; encoding cannot be found
-            warn <<-MSG.gsub(/^\s{14}/, '')
-              =====================================================================
-              Could not retrieve namespace. The parameter's encoding will be empty.
-              Namespace:
-                  #{ns.url}
-              Error:
-                  #{err}
-              =====================================================================
-            MSG
-            enc = nil
-          end
+          lookup = ns[value]
+          enc    = lookup && lookup.enc
         end
 
         @enc = enc

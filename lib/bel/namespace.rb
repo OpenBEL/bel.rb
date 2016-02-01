@@ -266,7 +266,7 @@ module BEL
         return nil unless value
         reload(@url) if not @values
         sym = value.to_sym
-        encoding = @values[sym] || :""
+        encoding = @values[sym] || :''
         Model::Parameter.new(self, sym, encoding)
       end
 
@@ -303,13 +303,30 @@ module BEL
       private
       # the backdoor
       def reload(url)
-        @values = {}
-        BEL::read_lines(url).
-        drop_while { |i| not i.start_with? "[Values]" }.
-        drop(1).
-        each do |s|
-          val_enc = s.strip!.split_by_last('|').map(&:to_sym)
-          @values[val_enc[0]] = val_enc[1]
+        begin
+          @values = Hash[
+            BEL::read_lines(url).
+            drop_while { |i| not i.start_with? "[Values]" }.
+            drop(1).
+            map { |s|
+              val_enc = s.strip!.split_by_last('|').map(&:to_sym)
+              val_enc[0..1]
+            }
+          ]
+        rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, Errno::EACCES => err
+          # warn: indicate what the URL was that triggered the error
+          warn <<-MSG.gsub(/^\s{12}/, '')
+            =====================================================================
+            Could not retrieve namespace.
+            Namespace:
+                #{url}
+            Error:
+                #{err}
+            =====================================================================
+          MSG
+
+          # re-raise the network error
+          raise err
         end
       end
     end
