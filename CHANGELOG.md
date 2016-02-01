@@ -3,6 +3,15 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.0][0.5.0] - 2015-02-01
+### Added
+- Introduced translators for additional RDF formats; split and removed the RDF translator in favor of one translator per RDF format ([Issue #95][95]).
+- Warn when BEL namespace data could not be retrieved ([Issue #97][97]).
+### Fixed
+- Error translating to JSON Evidence format using Oj adapter ([Issue #93][93]).
+- Consistent representation of Annotation and Namespace references in Evidence model and translators ([Issue #94][94]).
+- RDF conversion of Parameter does not include encoding type statement ([Issue #96][96]).
+
 ## [0.4.2][0.4.2] - 2015-12-21
 ### Fixed
 - [Regression] Failure to run BEL upgrade command; yields name error ([Issue #90][90]).
@@ -81,5 +90,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [86]:       https://github.com/OpenBEL/bel.rb/pull/86
 [90]:       https://github.com/OpenBEL/bel.rb/issues/90
 [91]:       https://github.com/OpenBEL/bel.rb/issues/91
+[93]:       https://github.com/OpenBEL/bel.rb/issues/93
+[94]:       https://github.com/OpenBEL/bel.rb/issues/94
+[95]:       https://github.com/OpenBEL/bel.rb/issues/95
+[96]:       https://github.com/OpenBEL/bel.rb/issues/96
+[97]:       https://github.com/OpenBEL/bel.rb/issues/97
 [20150611]: http://resource.belframework.org/belframework/20150611/
 [RDF.rb]:   https://github.com/ruby-rdf/rdf
