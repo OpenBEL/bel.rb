@@ -2,6 +2,7 @@ language: ruby
 sudo: false
 env:
   - BR_ISOLATE="yes"
+  - BR_GEM_INSTALL_OPTS="--no-user-install --no-lock"
 install: scripts/gem-install-devdeps.sh
 script: scripts/ci.sh
 os:
@@ -11,9 +12,10 @@ rvm:
   - 2.0.0
   - 2.1.0
   - 2.2.0
+  - 2.3.0
   - rbx-2
   - ruby-head
-  - jruby-9.0.0.0
+  - jruby-9.0.4.0
   - jruby-head
 addons:
   artifacts:
@@ -24,3 +26,6 @@ addons:
 matrix:
   allow_failures:
     - os: osx
+    - rvm: ruby-head
+    - rvm: jruby-head
+
