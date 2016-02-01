@@ -19,14 +19,10 @@ if [ $BR_ISOLATE == "yes" ]; then
         exit 0
     fi
 
-    _OPTS=""
-    if [ "x$($BR_GEM_CMD --version)x" == *"x2.4"* ]; then
-        _OPTS+=" --no-lock"
-    fi
-    $BR_GEM_CMD install -g $BR_DEV_DEPS $_OPTS --no-user-install || exit 1
+    $BR_GEM_CMD install -g $BR_DEV_DEPS $BR_GEM_INSTALL_OPTS --no-lock --no-user-install || exit 1
     # Just say no to lock files (cleanup if we're using an old gem version)
     rm -f "$BR_DEV_DEPS".lock
 else
     echo "Installing development dependencies."
-    $BR_GEM_CMD install -g $BR_DEV_DEPS || exit 1
+    $BR_GEM_CMD install -g $BR_DEV_DEPS $BR_GEM_INSTALL_OPTS --no-lock || exit 1
 fi
