@@ -16,12 +16,6 @@ rvm:
   - ruby-head
   - jruby-9.0.4.0
   - jruby-head
-addons:
-  artifacts:
-    debug: true
-    paths:
-      - lib/bel/libbel.so
-      - lib/bel/libbel.bundle
 matrix:
   allow_failures:
     - os: osx
