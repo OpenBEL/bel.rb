@@ -16,7 +16,6 @@ gem 'rdoc',          '~> 4.2'
 gem 'rspec',         '~> 3.2'
 gem 'yard',          '~> 0.8'
 gem 'pry',           '~> 0.10'
-gem 'pry-byebug',    '~> 3.2', :platforms => :ruby
 gem 'rubocop',       '~> 0.34'
 gem 'rantly',        '~> 0.3'
 
