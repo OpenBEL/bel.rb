@@ -15,18 +15,18 @@ module BEL::Translator::Plugins
 
       def write(objects, writer = StringIO.new, options = {})
         if block_given?
-          BelYielder.new(objects).each { |bel_part|
+          BelYielder.new(objects, options).each { |bel_part|
             yield bel_part
           }
         else
           if writer
-            BelYielder.new(objects).each { |bel_part|
+            BelYielder.new(objects, options).each { |bel_part|
               writer << "#{bel_part}"
               writer.flush
             }
             writer
           else
-            BelYielder.new(objects)
+            BelYielder.new(objects, options)
           end
         end
       end
