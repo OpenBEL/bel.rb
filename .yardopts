@@ -7,4 +7,5 @@
 --private
 "examples/**/*.rb"
 "lib/**/*.rb"
+"spec/**/*.rb"
 "test/**/*.rb"
