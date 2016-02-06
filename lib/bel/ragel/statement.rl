@@ -55,10 +55,10 @@
     rel = @relbuffer.pack('C*').force_encoding('utf-8')
     @statement_stack.last.relationship = rel.to_sym
   }
-  action cmts {cmtbuffer = []}
-  action cmtn {cmtbuffer << fc}
+  action cmts {@cmtbuffer = []}
+  action cmtn {@cmtbuffer << fc}
   action cmte {
-    comment = cmtbuffer.pack('C*').force_encoding('utf-8')
+    comment = @cmtbuffer.pack('C*').force_encoding('utf-8')
     @statement_stack.first.comment = comment
   }
 
@@ -133,27 +133,6 @@ module BEL
       end
     end
   end
-end
-
-# intended for direct testing
-if __FILE__ == $0
-  require 'bel'
-
-  if ARGV[0]
-    content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
-  else
-    content = $stdin.read
-  end
-
-  class DefaultObserver
-    def update(obj)
-      puts obj
-    end
-  end
-
-  parser = BEL::Script::Parser.new
-  parser.add_observer(DefaultObserver.new)
-  parser.parse(content) 
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
