@@ -51,7 +51,7 @@ module BEL::Translator::Plugins
           end
 
         self_eigenclass = (class << self; self; end)
-        self_eigenclass.include(serialization_module)
+        self_eigenclass.send(:include, serialization_module)
       end
 
       def each
