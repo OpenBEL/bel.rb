@@ -32,6 +32,17 @@ module BEL
   module Script
 
     class << self
+
+      MAX_LENGTH = 1024 * 128 # 128K
+
+      # Parse BEL Script +content+ into an enumerator of objects.
+      #
+			# @param [String, IO] content the BEL Script data to parse
+			# @param [Hash]       namespaces the
+			#        {BEL::Namespace::NamespaceDefinition} to use when matching
+			#				 prefixes in BEL statements; defaults to empty meaning use the
+			#				 +DEFINE NAMESPACE+ definitions in the content
+			# @return [Enumerator] the parsed objects
       def parse(content, namespaces = {})
         return nil unless content
 
@@ -42,7 +53,7 @@ module BEL
 						end
             Parser.new(content, namespaces)
           elsif content.respond_to? :read
-            IOParser.new(content, namespaces)
+            IOParser.new(content, namespaces, MAX_LENGTH)
           else
             nil
           end
@@ -63,7 +74,47 @@ module BEL
           end
         end
       end
+
+      # Parse BEL Script +content+, in chunks, into an enumerator of objects.
+      # The length of the chunks can be configured with +chunk_length+.
+      #
+			# @param  [IO]         io the BEL Script data to parse; if a {String}
+			#         then {#parse} will be called instead
+			# @param  [Hash]       namespaces the
+			#         {BEL::Namespace::NamespaceDefinition} to use when matching
+			#				  prefixes in BEL statements; defaults to empty meaning use the
+			#				  +DEFINE NAMESPACE+ definitions in the content
+			# @param  [Integer]    chunk_length determines how many bytes are
+			#         buffered at a time when +io+ is an {IO}
+			# @return [Enumerator] the parsed objects
+			def parse_chunked(io, namespaces = {}, chunk_length = MAX_LENGTH)
+				parser =
+					if io.is_a? String
+						parse(io, namespaces)
+					elsif io.respond_to? :read
+						IOParser.new(io, namespaces, chunk_length)
+					else
+						nil
+					end
+
+				unless parser
+					fail ArgumentError, "content: expected string or io-like"
+				end
+
+				if block_given?
+					parser.each do |obj|
+						yield obj
+					end
+				else
+					if parser.respond_to? :lazy
+						parser.lazy
+					else
+						parser
+					end
+				end
+			end
     end
+
 
     private
 
@@ -98,10 +149,8 @@ module BEL
     class IOParser
       include Enumerable
 
-      MAX_LENGTH = 1024 * 128 # 128K
-
-      def initialize(io, namespaces = {})
-        @io         = NonblockingIOWrapper.new(io, MAX_LENGTH)
+      def initialize(io, namespaces = {}, max_chunk_length)
+        @io         = NonblockingIOWrapper.new(io, max_chunk_length)
         @namespaces =
           case namespaces
           when BEL::Namespace::ResourceIndex
@@ -122,42 +171,14 @@ module BEL
 
         %% write init;
 
-        leftover = []
-        my_ts = nil
-        my_te = nil
-        
 				@io.each do |chunk|
-					data = leftover + chunk.unpack('C*')
+					data = chunk.unpack('C*')
 					p = 0
 					pe = data.length
+
 					%% write exec;
-					if my_ts
-						leftover = data[my_ts..-1]
-						my_te = my_te - my_ts if my_te
-						my_ts = 0
-					else
-						leftover = []
-					end
 				end
       end
-    end
-  end
-end
-
-if __FILE__ == $0
-  namespaces = BEL::Namespace::DEFAULT_NAMESPACES.map { |ns|
-    [ns.prefix, ns]
-  }.to_h
-
-  if ARGV[0]
-    File.open(ARGV[0], 'r:UTF-8') do |f|
-      BEL::Script.parse(f, namespaces).each do |obj|
-        puts obj
-      end
-    end
-  else
-    BEL::Script.parse($stdin, namespaces).each do |obj|
-      puts obj
     end
   end
 end

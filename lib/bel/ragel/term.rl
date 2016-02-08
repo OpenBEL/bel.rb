@@ -12,7 +12,7 @@ machine bel;
   action term_fx {
     fx = @name.to_sym
     @term_stack.push(BEL::Model::Term.new(fx, []))
-    pfx = nil
+    @pfx = nil
     @pbuf = []
   }
   action term_arg {
@@ -23,8 +23,8 @@ machine bel;
       end
 
       ns =
-			  if pfx
-				  @namespaces[pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(pfx, nil, nil)
+			  if @pfx
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
 			  else
 				  nil
 			  end
@@ -35,7 +35,7 @@ machine bel;
       yield param
     end
     @pbuf = []
-    pfx = nil
+    @pfx = nil
   }
   action term_pop {
     @term = @term_stack.pop
@@ -45,7 +45,7 @@ machine bel;
   }
   action pbuf  { @pbuf << fc }
   action pns {
-    pfx = @pbuf.map(&:chr).join()
+    @pfx = @pbuf.map(&:chr).join()
     @pbuf = []
   }
 
@@ -119,27 +119,6 @@ module BEL
       end
     end
   end
-end
-
-# intended for direct testing
-if __FILE__ == $0
-  require 'bel'
-
-  if ARGV[0]
-    content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
-  else
-    content = $stdin.read
-  end
-
-  class DefaultObserver
-    def update(obj)
-      puts obj
-    end
-  end
-
-  parser = BEL::Script::Parser.new
-  parser.add_observer(DefaultObserver.new)
-  parser.parse(content) 
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
