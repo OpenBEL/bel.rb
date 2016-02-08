@@ -22,4 +22,5 @@ matrix:
     - os: osx
     - rvm: ruby-head
     - rvm: jruby-head
+    - rvm: rbx-3 # Seems to be trouble installing 3.14 on Travis CI.
 
