@@ -101,7 +101,9 @@ machine bel;
                   'subProcessOf'|'rateLimitingStepOf'|'biomarkerFor'|
                   'prognosticBiomarkerFor'|'orthologous'|'analogous'|
                   'association'|'--'|'hasMembers'|'hasComponents'|
-                  'hasMember'|'hasComponent');
+                  'hasMember'|'hasComponent'|'hasVariant'|'includes'|
+									'reactantIn'|'translocates'|'actsIn'|'hasModification'|
+									'hasProduct');
   SET_KW = /SET/i;
   STATEMENT_GROUP_KW = /STATEMENT_GROUP/i;
   UNSET_KW = /UNSET/i;
