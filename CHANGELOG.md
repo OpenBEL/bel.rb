@@ -3,7 +3,7 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.5.0][0.5.0] - 2015-02-10
+## [0.5.0][0.5.0] - 2016-02-10
 ### Fixed
 - Fix missing RDF prefixes when converting BEL Script to RDF ([Issue #71][71]).
 - Error translating to JSON Evidence format using Oj adapter ([Issue #93][93]).
