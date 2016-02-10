@@ -8,6 +8,7 @@ require_relative 'bel/util'
 require_relative 'bel/evidence_model'
 require_relative 'bel/translator'
 require_relative 'bel/translate'
+require_relative 'bel/gen'
 
 require_relative 'bel/rdf_repository'
 require_relative 'bel/resource'
