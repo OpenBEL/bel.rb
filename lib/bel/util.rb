@@ -19,44 +19,28 @@ module BEL
   # (e.g. lung disease|O) and a database value identifier for a BEL annotation
   # file (e.g. lung|UBERON_0002048).
   def self.read_resource(url)
-    begin
-      resource_lines = BEL::read_lines(url)
+    resource_lines = BEL::read_lines(url)
 
-      # Drop until the delimiter line and extract the delimiter, e.g.
-      # DelimiterString=|
-      delimiter_line = resource_lines.take(100).find { |l| l.start_with?("DelimiterString") }
-      delimiter =
-        if delimiter_line
-          delimiter_line.strip.split('=')[1]
-        else
-          DEFAULT_RESOURCE_VALUE_DELIMITER
-        end
+    # Drop until the delimiter line and extract the delimiter, e.g.
+    # DelimiterString=|
+    delimiter_line = resource_lines.take(100).find { |l| l.start_with?("DelimiterString") }
+    delimiter =
+      if delimiter_line
+        delimiter_line.strip.split('=')[1]
+      else
+        DEFAULT_RESOURCE_VALUE_DELIMITER
+      end
 
-      # Extract namespace values based on the delimiter.
-      Hash[
-        resource_lines.
-        drop_while { |l| !l.start_with?("[Values]") }.
-        drop(1).
-        map { |s|
-          val_enc = s.strip!.split(delimiter).map(&:to_sym)
-          val_enc[0..1]
-        }
-      ]
-    rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, Errno::EACCES => err
-      # warn: indicate what the URL was that triggered the error
-      warn <<-MSG.gsub(/^\s{12}/, '')
-        =====================================================================
-        Could not retrieve namespace.
-        Namespace:
-            #{url}
-        Error:
-            #{err}
-        =====================================================================
-      MSG
-
-      # re-raise the network error
-      raise err
-    end
+    # Extract namespace values based on the delimiter.
+    Hash[
+      resource_lines.
+      drop_while { |l| !l.start_with?("[Values]") }.
+      drop(1).
+      map { |s|
+        val_enc = s.strip!.split(delimiter).map(&:to_sym)
+        val_enc[0..1]
+      }
+    ]
   end
 
   def self.read_all(reference, options = {})

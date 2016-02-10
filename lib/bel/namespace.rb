@@ -298,7 +298,23 @@ module BEL
       private
 
       def reload(url)
-        @values = BEL::read_resource(url)
+        begin
+          @values = BEL::read_resource(url)
+        rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, Errno::EACCES => err
+          # warn: indicate what the URL was that triggered the error
+          warn <<-MSG.gsub(/^\s{12}/, '')
+            =====================================================================
+            Could not retrieve namespace.
+            Namespace:
+                #{url}
+            Error:
+                #{err}
+            =====================================================================
+          MSG
+
+          # re-raise the network error
+          raise err
+        end
       end
     end
 
