@@ -1,8 +1,15 @@
+require_relative '../gen'
+BEL::Gen.soft_require('rantly')
+
 module BEL
   module Gen
+
+    # The {Annotation} module defines methods that generate random annotations
+    # to be used in an evidence's {BEL::Model::ExperimentContext}.
     module Annotation
       include BEL::Quoting
 
+      # Array of the latest OpenBEL {BEL::Annotation::AnnotationDefinition}.
       ANNOTATIONS =
         BEL::Annotation::ANNOTATION_LATEST.map { |keyword, (url, rdf_uri)|
           BEL::Annotation::AnnotationDefinition.new(keyword, url, rdf_uri)
@@ -16,7 +23,11 @@ module BEL
         ]
       end
 
-      def annotation(*annotations)
+      # Returns a random annotation as a hash of +:name+ and +:value+. These
+      # can be added directly to an evidence's {BEL::Model::ExperimentContext}.
+      #
+      # @return [Hash] random annotation; hash of +:name+ and +:value+
+      def annotation
         # pick annotation definition
         anno = Rantly {
           choose(*ANNOTATIONS)
