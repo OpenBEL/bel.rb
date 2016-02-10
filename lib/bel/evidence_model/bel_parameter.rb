@@ -17,9 +17,14 @@ module BEL
       attr_accessor :ns, :value, :enc
 
       def initialize(ns, value, enc=nil)
-        @ns = ns
+        if !enc && ns.is_a?(BEL::Namespace::NamespaceDefinition)
+          lookup = ns[value]
+          enc    = lookup && lookup.enc
+        end
+
+        @enc = enc
+        @ns  = ns
         @value = value
-        @enc = enc || ''
       end
 
       def <=>(other)

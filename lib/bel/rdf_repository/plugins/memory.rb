@@ -1,7 +1,3 @@
-# Load RDF library dependencies
-require 'rdf'
-require 'rdf/mongo'
-
 module BEL::RdfRepository::Plugins
 
   module Memory
@@ -12,6 +8,9 @@ module BEL::RdfRepository::Plugins
     DESCRIPTION = 'An in-memory repository provided by default in RDF.rb.'
 
     def self.create_repository(options = {})
+      require 'rdf'
+      require 'rdf/mongo'
+
       RDF::Repository.new(options)
     end
 

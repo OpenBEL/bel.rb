@@ -1,12 +1,14 @@
 require_relative 'bel/version'
 require_relative 'bel/vendor/little-plugger'
 require_relative 'bel/language'
+require_relative 'bel/annotation'
 require_relative 'bel/namespace'
 require_relative 'bel/util'
 
 require_relative 'bel/evidence_model'
 require_relative 'bel/translator'
 require_relative 'bel/translate'
+require_relative 'bel/gen'
 
 require_relative 'bel/rdf_repository'
 require_relative 'bel/resource'

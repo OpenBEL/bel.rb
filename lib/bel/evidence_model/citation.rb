@@ -13,6 +13,10 @@ module BEL
     # @attr [String] comment an additional comment related to this resource
     class Citation
 
+      # The ordering of citation attributes to allow processing of sequential
+      # input of citation fields.
+      #
+      # The ordered attributes are:
       MEMBER_ORDER = %i(type name id date authors comment)
 
       attr_accessor(*MEMBER_ORDER)
@@ -91,6 +95,19 @@ module BEL
       def valid?
         type != nil && id != nil && name != nil
       end
+
+      def hash
+        [id, type, name, authors, date, comment].hash
+      end
+
+      def ==(other)
+        return false if other == nil
+
+        id == other.id && type == other.type &&
+          name == other.name && authors == other.authors &&
+          date == other.date && comment == other.comment
+      end
+      alias_method :eql?, :'=='
 
       # Returns a +Hash+ of the citation members accoring to #MEMBER_ORDER.
       #

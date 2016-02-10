@@ -110,7 +110,7 @@ the root of the bel.rb tree:
       plugins
 
 
-    bel 0.4.0
+    bel 0.4.3
     Copyright (C) 2015 OpenBEL
     Apache License, Version 2.0, January 2004
     http://www.apache.org/licenses/

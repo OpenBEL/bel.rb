@@ -385,6 +385,59 @@ Subcommands:
         end
       end
     end
+
+    class Generator
+      include BEL::Gen::Evidence
+
+      def initialize(size = -1)
+        @size = size
+      end
+
+      def each
+        if block_given?
+          count = 0
+          while count != @size do
+            yield evidence
+            count += 1
+            $stderr.puts "#{count} evidence generated..." if count % 500 == 0
+          end
+        else
+          to_enum(:each)
+        end
+      end
+    end
+
+    class GenerateCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        options = Trollop::options do
+          synopsis "Generates random BEL Nanopubs and serializes through a bel.rb translator."
+          usage    "[OPTIONS]... generator [OPTIONS]"
+          opt      :limit,         'The number of BEL Nanopubs to generate; default is no limit.',
+                   :long        => :limit,
+                   :short       => :l,
+                   :default     => -1
+
+          opt      :translator,    'ID for bel.rb translator; defaults to "bel"',
+                   :long        => :translator,
+                   :short       => :t,
+                   :default     => 'bel'
+        end
+
+        translator_id = options[:translator] || :bel
+        translator    = BEL.translator(options[:translator] || :bel)
+        unless translator
+          $stderr.puts %Q{Cannot find the "#{translator_id}" plugin.}
+          exit 1
+        end
+
+        translator.write(Generator.new(options[:limit]).each, $stdout)
+      end
+    end
   end
 end
 

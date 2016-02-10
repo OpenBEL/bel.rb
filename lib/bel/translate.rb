@@ -43,10 +43,10 @@ module BEL
       def translate(input, input_format, output_format, writer = StringIO.new, options = {})
         prepared_input = process_input(input)
 
-        in_translator  = self.translator(input_format) or
+        in_translator  = self.translator(input_format, options) or
           raise TranslateError.new(input_format)
 
-        out_translator = self.translator(output_format) or
+        out_translator = self.translator(output_format, options) or
           raise TranslateError.new(output_format)
 
         evidence = in_translator.read(prepared_input)

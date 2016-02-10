@@ -56,8 +56,8 @@ module BEL::Translator::Plugins
               [element, ""]
             }]
             yield element_string(XBELYielder.header(empty_header))
-            yield element_string(XBELYielder.namespace_definitions({}))
-            yield element_string(XBELYielder.annotation_definitions({}))
+            yield element_string(XBELYielder.namespace_definitions([]))
+            yield element_string(XBELYielder.annotation_definitions([]))
             yield element_string(XBELYielder.statement_group)
           end
           yield end_element_string(el_document)
@@ -85,7 +85,8 @@ module BEL::Translator::Plugins
         end
 
         if statement.relationship
-          el_statement.add_attribute 'bel:relationship', statement.relationship
+          normal_form = BEL::Language::RELATIONSHIPS[statement.relationship.to_sym]
+          el_statement.add_attribute 'bel:relationship', normal_form
         end
 
         if statement.subject
@@ -326,14 +327,13 @@ module BEL::Translator::Plugins
         el_header
       end
 
-      def self.namespace_definitions(hash)
+      def self.namespace_definitions(list)
         el_nd = REXML::Element.new('bel:namespaceGroup')
-        hash.each do |k, v|
+        list.each do |namespace|
+          keyword, uri     = namespace.values_at(:keyword, :uri).map(&:to_s)
           el               = REXML::Element.new('bel:namespace')
-          el.add_attribute 'bel:prefix', k.to_s
-
-          resourceLocation = v.respond_to?(:url) ? v.url : v
-          el.add_attribute 'bel:resourceLocation', "#{resourceLocation}"
+          el.add_attribute 'bel:prefix', keyword
+          el.add_attribute 'bel:resourceLocation', uri
 
           el_nd.add_element(el)
         end
@@ -341,21 +341,23 @@ module BEL::Translator::Plugins
         el_nd
       end
 
-      def self.annotation_definitions(hash)
+      def self.annotation_definitions(list)
         el_ad = REXML::Element.new('bel:annotationDefinitionGroup')
         internal = []
         external = []
-        hash.each do |k, v|
-          type, domain = v.values_at(:type, :domain)
+        list.each do |annotation|
+          keyword, type = annotation.values_at(:keyword, :type).map(&:to_s)
+          domain        = annotation[:domain]
+
           case type.to_sym
-          when :url
+          when :url, :uri
             el = REXML::Element.new('bel:externalAnnotationDefinition')
             el.add_attribute 'bel:url', domain.to_s
-            el.add_attribute 'bel:id',  k.to_s
+            el.add_attribute 'bel:id',  keyword
             external << el
           when :pattern
             el = REXML::Element.new('bel:internalAnnotationDefinition')
-            el.add_attribute 'bel:id', k.to_s
+            el.add_attribute 'bel:id', keyword
             el.add_element(REXML::Element.new('bel:description'))
             el.add_element(REXML::Element.new('bel:usage'))
 
@@ -367,7 +369,7 @@ module BEL::Translator::Plugins
             internal << el
           when :list
             el = REXML::Element.new('bel:internalAnnotationDefinition')
-            el.add_attribute 'bel:id', k.to_s
+            el.add_attribute 'bel:id', keyword
             el.add_element(REXML::Element.new('bel:description'))
             el.add_element(REXML::Element.new('bel:usage'))
 
@@ -375,12 +377,12 @@ module BEL::Translator::Plugins
             if domain.respond_to?(:each)
               domain.each do |value|
                 el_list_value      = REXML::Element.new('bel:listValue')
-                el_list_value.text = value.to_s
+                el_list_value.text = value
                 el_list.add_element(el_list_value)
               end
             else
               el_list_value      = REXML::Element.new('bel:listValue')
-              el_list_value.text = domain.to_s
+              el_list_value.text = domain
               el_list.add_element(el_list_value)
             end
 

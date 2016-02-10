@@ -1,7 +1,3 @@
-# Load RDF library dependencies
-require 'rdf'
-require 'rdf/mongo'
-
 module BEL::RdfRepository::Plugins
 
   module Mongo
@@ -12,6 +8,9 @@ module BEL::RdfRepository::Plugins
     DESCRIPTION = 'A repository of RDF data on MongoDB.'
 
     def self.create_repository(options = {})
+      require 'rdf'
+      require 'rdf/mongo'
+
       RDF::Mongo::Repository.new(options)
     end
 

@@ -20,8 +20,19 @@ module BEL
     DocumentProperty = Struct.new(:name, :value) do
       include BEL::Quoting
 
+      def value
+        return self[:value] unless [:Authors, :Licenses].include?(self.name.to_sym)
+        self[:value].to_s.split('|')
+      end
+
       def to_bel
-        %Q{SET DOCUMENT #{self.name} = #{ensure_quotes(self.value)}}
+        property_value =
+          if self.value.respond_to?(:each)
+            self.value.map(&:to_s).join('|')
+          else
+            self.value.to_s
+          end
+        %Q{SET DOCUMENT #{self.name} = #{ensure_quotes(property_value)}}
       end
       alias_method :to_s, :to_bel
     end
@@ -33,7 +44,7 @@ module BEL
           %Q{DEFINE ANNOTATION #{self.prefix} AS LIST {#{self.value.join(',')}}}
         when :pattern
           %Q{DEFINE ANNOTATION #{self.prefix} AS PATTERN "#{self.value}"}
-        when :url
+        when :uri, :url
           %Q{DEFINE ANNOTATION #{self.prefix} AS URL "#{self.value}"}
         end
       end

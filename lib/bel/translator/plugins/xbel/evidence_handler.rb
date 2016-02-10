@@ -109,7 +109,7 @@ module BEL::Translator::Plugins
         if stack_top == :namespace_group
           prefix             = attr_value(attributes, PREFIX)
           resource_location  = attr_value(attributes, RESOURCE_LOCATION)
-          @evidence.references.namespaces[prefix] = resource_location
+          @evidence.references.add_namespace(prefix, resource_location)
         end
         @element_stack << :namespace
       end
@@ -117,20 +117,21 @@ module BEL::Translator::Plugins
       def start_external_annotation_definition(attributes)
         if stack_top == :annotation_definition_group
           id                 = attr_value(attributes, ID)
-          url                = attr_value(attributes, URL)
-          @evidence.references.annotations[id] = {
-            :type   => :url,
-            :domain => url
-          }
+          uri                = attr_value(attributes, URL)
+          @evidence.references.add_annotation(
+            attr_value(attributes, ID),
+            :uri,
+            attr_value(attributes, URL)
+          )
         end
         @element_stack << :external_annotation_definition
       end
 
       def start_internal_annotation_definition(attributes)
         if stack_top == :annotation_definition_group
-          id                 = attr_value(attributes, ID)
-          @current_anno_def  = {}
-          @evidence.references.annotations[id] = @current_anno_def
+          @current_anno_def = {
+            :keyword => attr_value(attributes, ID)
+          }
         end
         @element_stack << :internal_annotation_definition
       end
@@ -195,10 +196,19 @@ module BEL::Translator::Plugins
           ns_id              = attr_value(attributes, NS)
           # XXX Hitting a SystemStackError on line 174 (inside call).
           # Example: large_corpus.xbel
-          ns                 = {
-            :prefix => ns_id,
-            :url    => @evidence.references.namespaces[ns_id]
+          ns_sym = ns_id.to_sym
+          namespace_reference = @evidence.references.namespaces.find { |ns|
+            ns[:keyword] == ns_sym
           }
+          ns =
+            if namespace_reference
+              {
+                :prefix => namespace_reference[:keyword],
+                :url    => namespace_reference[:uri]
+              }
+            else
+              nil
+            end
           @current_parameter = Parameter.new(ns, nil)
         end
         @element_stack << :parameter
@@ -235,26 +245,26 @@ module BEL::Translator::Plugins
 
       def end_version
         if stack_top == :header
-          @evidence.metadata.document_header['version'] = @text
+          @evidence.metadata.document_header[:Version] = @text
         end
       end
 
       def end_copyright
         if stack_top == :header
-          @evidence.metadata.document_header['copyright'] = @text
+          @evidence.metadata.document_header[:Copyright] = @text
         end
       end
 
       def end_contact_info
         if stack_top == :header
-          @evidence.metadata.document_header['contactInfo'] = @text
+          @evidence.metadata.document_header[:ContactInfo] = @text
         end
       end
 
       def end_license
         if stack_top == :header
-          @evidence.metadata.document_header['licenses'] ||= []
-          @evidence.metadata.document_header['licenses'] <<  @text
+          @evidence.metadata.document_header[:Licenses] ||= []
+          @evidence.metadata.document_header[:Licenses]  << @text
         end
       end
 
@@ -276,6 +286,11 @@ module BEL::Translator::Plugins
 
       def end_internal_annotation_definition
         @element_stack.pop
+        @evidence.references.add_annotation(
+          @current_anno_def[:keyword],
+          @current_anno_def[:type],
+          @current_anno_def[:domain],
+        )
       end
 
       def end_list_annotation
@@ -294,7 +309,7 @@ module BEL::Translator::Plugins
 
       def end_description
         if stack_top == :header
-          @evidence.metadata.document_header['description'] = @text
+          @evidence.metadata.document_header[:Description] = @text
         end
 
         if stack_top == :internal_annotation_definition
@@ -423,7 +438,7 @@ module BEL::Translator::Plugins
 
       def end_name
         if stack_top == :header
-          @evidence.metadata.document_header['name'] = @text
+          @evidence.metadata.document_header[:Name] = @text
         end
 
         if stack_top == :citation
@@ -439,12 +454,13 @@ module BEL::Translator::Plugins
 
       def end_author
         if stack_top == :header
-          @evidence.metadata.document_header['authors'] ||= []
-          @evidence.metadata.document_header['authors'] <<  @text
+          @evidence.metadata.document_header[:Authors] ||= []
+          @evidence.metadata.document_header[:Authors] <<  @text
         end
 
         if stack_top == :citation
-          (@evidence.citation.authors ||= []) << @text
+          @evidence.citation.authors ||= []
+          @evidence.citation.authors  << @text
         end
       end
 

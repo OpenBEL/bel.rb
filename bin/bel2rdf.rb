@@ -19,30 +19,34 @@ require 'optparse'
 require 'set'
 require 'open-uri'
 
-# Check for RDF translator.
-unless BEL.translator(:rdf)
-  $stderr.puts(%Q{The format "#{from_format}" is not available.})
-  exit 1
-end
+RDF_TRANSLATORS = %w(jsonld ntriples nquads rdfa rdfxml rj trig trix turtle)
 
 # setup and parse options
 options = {
   format: 'ntriples',
-  schema: false
+  schema: true
 }
 OptionParser.new do |opts|
-  opts.banner = '''Converts BEL statements to RDF triples.
-Usage: bel2rdf --bel [FILE]'''
+  opts.banner = <<-USAGE
+    Converts BEL evidence to RDF...
 
-  opts.on('-b', '--bel FILE', 'BEL file to convert.  STDIN (standard in) can also be used for BEL content.') do |bel|
+    From a BEL file.
+    Usage: bel2rdf --bel [FILE]
+
+    From BEL data on standard input (i.e. stdin).
+    Usage: cat  | bel2rdf
+
+  USAGE
+
+  opts.on('-b', '--bel FILE', 'BEL file to convert.  Standard input (i.e. stdin) can also be used for BEL input.') do |bel|
     options[:bel] = bel
   end
 
-  opts.on('-f', '--format FORMAT', 'RDF file format.') do |format|
+  opts.on('-f', '--format FORMAT', 'RDF file format. The default output format is N-Triples.') do |format|
     options[:format] = format.downcase
   end
 
-  opts.on('-s', '--[no-]schema', 'Write BEL RDF schema?') do |schema|
+  opts.on('-s', '--[no-]schema', 'Write BEL RDF schema? The default is to include the schema in the output.') do |schema|
     options[:schema] = schema
   end
 end.parse!
@@ -51,87 +55,43 @@ if options[:bel] and not File.exists? options[:bel]
   $stderr.puts "No file for bel, #{options[:bel]}"
   exit 1
 end
-unless ['ntriples', 'nquads', 'turtle'].include? options[:format]
-  $stderr.puts "Format was not one of: ntriples, nquads, or turtle"
+unless RDF_TRANSLATORS.include? options[:format]
+  $stderr.puts "Format must be one of: #{RDF_TRANSLATORS.join(', ')}"
   exit 1
 end
 
+def validate_translator!(value)
+  translator = BEL.translator(value)
 
-class Main
-  include BEL::Language
-  include BEL::Model
-
-  def initialize(content, writer)
-    BEL::Script.parse(content).find_all { |obj|
-      obj.is_a? Statement
-    }.each do |stmt|
-      triples = stmt.to_rdf[1]
-      triples.each do |triple|
-        writer << triple
-      end
-    end
-  end
-end
-
-class Serializer
-  attr_reader :writer
-
-  def initialize(stream, format)
-    rdf_writer = find_writer(format)
-    @writer = rdf_writer.new($stdout, {
-        :stream => stream
-      }
+  unless translator
+    $stderr.puts(
+      value ?
+        %Q{The translator "#{value}" is not available.} :
+        "The translator was not specified."
     )
-  end
-
-  def <<(trpl)
-    @writer.write_statement(RDF::Statement(*trpl))
-  end
-
-  def done
-    @writer.write_epilogue
-  end
-
-  private
-
-  def find_writer(format)
-    case format
-    when 'nquads'
-      RDF::NQuads::Writer
-    when 'turtle'
-      begin
-        require 'rdf/turtle'
-        RDF::Turtle::Writer
-      rescue LoadError
-        $stderr.puts """Turtle format not supported.
-Install the 'rdf-turtle' gem."""
-        raise
-      end
-    when 'ntriples'
-      RDF::NTriples::Writer
-    end
-  end
-end
-
-# create writer for format
-rdf_writer = ::Serializer.new(true, options[:format])
-
-# first write schema if desired
-if options[:schema]
-  BEL::Translator::Plugins::Rdf::BEL::RDF::vocabulary_rdf.each do |trpl|
-    rdf_writer << trpl
+    $stderr.puts
+    Trollop::educate
   end
 end
 
 # read bel content
-content =
+input_io =
   if options[:bel]
     File.open(options[:bel], :external_encoding => 'UTF-8')
   else
     $stdin
   end
 
-# parse and write rdf
-Main.new(content, rdf_writer)
+validate_translator!(:bel)
+validate_translator!(options[:format])
+begin
+  BEL.translate(input_io, :bel, options[:format], $stdout,
+    {
+      :write_schema => options[:schema]
+    }
+  )
+ensure
+  $stdout.close
+end
 # vim: ts=2 sw=2:
 # encoding: utf-8

@@ -76,6 +76,11 @@ module BEL
         "#{@fx.short_form}(#{arguments})"
       end
       alias_method :to_s, :to_bel
+
+      def to_bel_long_form
+        arguments = [@arguments].flatten.map(&:to_bel).join(',') 
+        "#{@fx.long_form}(#{arguments})"
+      end
     end
   end
 end

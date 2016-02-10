@@ -1,10 +1,9 @@
-module BEL::Translator::Plugins
-
-  module Rdf::Reader
+module BELRDF
+  module Reader
 
     module EvidenceYielder
 
-      BELV = Rdf::BEL::RDF::BELV
+      BELV = BELRDF::BELV
 
       include ::BEL::Model
       include ::BEL::Quoting
@@ -122,7 +121,7 @@ module BEL::Translator::Plugins
 
       include EvidenceYielder
 
-      def initialize(data, format = :ntriples)
+      def initialize(data, format)
         @data   = data
         @format = format
       end

@@ -30,10 +30,11 @@ Gem::Specification.new do |spec|
                                     Dir.glob('lib/bel/libbel/ext/{java,mingw}/**/*.{so,bundle}'),
                                     __FILE__,
                                     'CHANGELOG.md',
-                                    'LICENSE',
+                                    'CONTRIBUTING.md',
                                     'INSTALL.md',
                                     'INSTALL_RUBY.md',
-                                    'README.md'
+                                    'LICENSE',
+                                    'README.md',
                                   ].flatten!
   spec.executables              = Dir.glob('bin/*').map(&File.method(:basename))
   spec.homepage                 = 'https://github.com/OpenBEL/bel.rb'
@@ -46,10 +47,12 @@ Gem::Specification.new do |spec|
                                     '--exclude', 'lib/2.0/*',
                                     '--exclude', 'lib/2.1/*',
                                     '--exclude', 'lib/2.2/*',
-                                    'README.md',
+                                    'CHANGELOG.md',
+                                    'CONTRIBUTING.md',
                                     'INSTALL.md',
                                     'INSTALL_RUBY.md',
-                                    'LICENSE'
+                                    'LICENSE',
+                                    'README.md',
                                   ]
 
   spec.extensions              << 'ext/mri/extconf.rb'

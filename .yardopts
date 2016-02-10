@@ -2,9 +2,10 @@
 --readme README.md
 --charset UTF-8
 --main README.md
---files "README.md,INSTALL.md,INSTALL_RUBY.md,LICENSE"
+--files "CHANGELOG.md,CONTRIBUTING.md,INSTALL.md,INSTALL_RUBY.md,LICENSE,README.md"
 --exclude 'lib/bel/script.rb'
 --private
 "examples/**/*.rb"
 "lib/**/*.rb"
+"spec/**/*.rb"
 "test/**/*.rb"

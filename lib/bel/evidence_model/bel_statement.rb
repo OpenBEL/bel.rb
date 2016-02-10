@@ -76,6 +76,22 @@ module BEL
         comment ? lbl + ' //' + comment : lbl
       end
       alias_method :to_s, :to_bel
+
+      def to_bel_long_form
+        lbl = case
+        when subject_only?
+          @subject.to_s
+        when simple?
+          rel = BEL::Language::RELATIONSHIPS[@relationship.to_sym]
+          "#{@subject.to_bel_long_form} #{rel} #{@object.to_bel_long_form}"
+        when nested?
+          rel = BEL::Language::RELATIONSHIPS[@relationship.to_sym]
+          "#{@subject.to_bel_long_form} #{rel} (#{@object.to_bel_long_form})"
+        else
+          ''
+        end
+        comment ? lbl + ' //' + comment : lbl
+      end
     end
   end
 end

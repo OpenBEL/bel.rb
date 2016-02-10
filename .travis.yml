@@ -1,7 +1,7 @@
 language: ruby
 sudo: false
 env:
-  - BR_ISOLATE="yes"
+  - BR_ISOLATE="yes" BR_GEM_INSTALL_OPTS="--no-user-install"
 install: scripts/gem-install-devdeps.sh
 script: scripts/ci.sh
 os:
@@ -11,16 +11,16 @@ rvm:
   - 2.0.0
   - 2.1.0
   - 2.2.0
+  - 2.3.0
+  - jruby-9.0.5.0
   - rbx-2
+  - rbx-3
   - ruby-head
-  - jruby-9.0.0.0
   - jruby-head
-addons:
-  artifacts:
-    debug: true
-    paths:
-      - lib/bel/libbel.so
-      - lib/bel/libbel.bundle
 matrix:
   allow_failures:
     - os: osx
+    - rvm: ruby-head
+    - rvm: jruby-head
+    - rvm: rbx-3 # Seems to be trouble installing 3.14 on Travis CI.
+

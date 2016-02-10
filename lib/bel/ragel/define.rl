@@ -20,8 +20,8 @@
     yield anno
   }
 
-  action define_annotation_url {
-    anno = BEL::Language::AnnotationDefinition.new(:url, @name, @value)
+  action define_annotation_uri {
+    anno = BEL::Language::AnnotationDefinition.new(:uri, @name, @value)
     yield anno
   }
 
@@ -53,7 +53,7 @@
     (
       (LIST_KW SP+ LIST SP* NL @define_annotation_list @return) |
       (PATTERN_KW SP+ STRING SP* NL @define_annotation_pattern @return) |
-      (URL_KW SP+ STRING SP* NL @define_annotation_url @return)
+      (URL_KW SP+ STRING SP* NL @define_annotation_uri @return)
     );
   define_namespace :=
     SP+ IDENT >s $n %name SP+ AS_KW SP+ URL_KW SP+ STRING SP* NL
@@ -114,27 +114,6 @@ module BEL
       end
     end
   end
-end
-
-# intended for direct testing
-if __FILE__ == $0
-  require 'bel'
-
-  if ARGV[0]
-    content = (File.exists? ARGV[0]) ? File.open(ARGV[0], 'r:UTF-8').read : ARGV[0]
-  else
-    content = $stdin.read
-  end
-
-  class DefaultObserver
-    def update(obj)
-      puts obj
-    end
-  end
-
-  parser = BEL::Script::Parser.new
-  parser.add_observer(DefaultObserver.new)
-  parser.parse(content) 
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8

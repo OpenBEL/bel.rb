@@ -3,7 +3,8 @@ $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', 'lib')
 require 'bel'
 require 'uuid'
 
-BEL.translator(:rdf)
+# Preload translator to load BELV objects
+BEL.translator(:ntriples)
 
 include BEL::Language
 BEL::Language.include_bel_dsl
@@ -11,13 +12,13 @@ BEL::Language.include_bel_dsl
 include BEL::Model
 include BEL::Namespace
 
-BELV = ::BEL::Translator::Plugins::Rdf::BEL::RDF::BELV
+BELV = BELRDF::BELV
 
 describe 'RDF functionality of BEL language objects' do
 
   before(:all) do
     begin
-      BEL.translator(:rdf)
+      BEL.translator(:ntriples)
     rescue LoadError => e
       raise
     end
@@ -43,7 +44,7 @@ describe 'RDF functionality of BEL language objects' do
     end
 
     it "provides RDF statements for concept types based on encoding" do
-      triples = Parameter.new(HGNC, 'AKT1', 'GRP').to_rdf
+      _, triples = Parameter.new(HGNC, 'AKT1', 'GRP').to_rdf
       expect(triples.size).to eq(4)
       expect(
         triples.count { |x|
@@ -76,7 +77,7 @@ describe 'RDF functionality of BEL language objects' do
 
       (term_uri, rdf_statements) = term.to_rdf
       expect(term_uri).to eq(term.to_uri)
-      expect(rdf_statements.size).to eq(4)
+      expect(rdf_statements.size).to eq(8)
       expect(
         rdf_statements.include? [term.to_uri, RDF.type, BELV.Term]
       ).to be(true)
@@ -109,7 +110,7 @@ describe 'RDF functionality of BEL language objects' do
 
       (uri, rdf_statements) = statement.to_rdf
       expect(uri).to eq(statement.to_uri)
-      expect(rdf_statements.size).to eq(21)
+      expect(rdf_statements.size).to eq(27)
     end
 
     it "reference a single Evidence identified by UUID blank node" do
