@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'bel'
 
 include BEL::Language
@@ -79,3 +78,4 @@ describe Annotation, "#to_s" do
     expect(annotation.to_s).to eql('SET CellLine = SUM1315MO2')
   end
 end
+# vim: ts=2 sw=2:

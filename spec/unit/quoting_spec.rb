@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'bel'
 require 'rantly/rspec_extensions'
 
@@ -63,3 +62,4 @@ describe BEL::Quoting do
     end
   end
 end
+# vim: ts=2 sw=2:

@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'bel/script.rb'
 require 'pathname'
 
@@ -83,3 +82,4 @@ EOF
     expect { BEL::Script.parse(3) }.to raise_error(ArgumentError)
   end
 end
+# vim: ts=2 sw=2:

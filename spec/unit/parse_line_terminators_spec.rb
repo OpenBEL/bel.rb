@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'bel'
 
 describe BEL::Script, "#parse" do
@@ -109,3 +108,4 @@ describe BEL::Script, "#parse" do
     expect(new_lines.length).to eql(9)
   end
 end
+# vim: ts=2 sw=2:

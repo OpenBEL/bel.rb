@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'bel'
 
 describe BEL::Model::Parameter, "#valid?" do
@@ -46,3 +45,4 @@ describe BEL::Model::Parameter, "#valid?" do
   end
 
 end
+# vim: ts=2 sw=2:

@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', 'lib')
 require 'bel'
 require 'uuid'
@@ -155,3 +154,4 @@ describe 'RDF functionality of BEL language objects' do
     end
   end
 end
+# vim: ts=2 sw=2:
