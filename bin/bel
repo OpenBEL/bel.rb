@@ -386,27 +386,6 @@ Subcommands:
       end
     end
 
-    class Generator
-      include BEL::Gen::Evidence
-
-      def initialize(size = -1)
-        @size = size
-      end
-
-      def each
-        if block_given?
-          count = 0
-          while count != @size do
-            yield evidence
-            count += 1
-            $stderr.puts "#{count} evidence generated..." if count % 500 == 0
-          end
-        else
-          to_enum(:each)
-        end
-      end
-    end
-
     class GenerateCommand
 
       def initialize(global_options)
@@ -428,6 +407,22 @@ Subcommands:
                    :default     => 'bel'
         end
 
+        # require BEL generator and include in GenerateCommand
+        require 'bel/gen'
+        self.class.include(BEL::Gen::Evidence)
+
+        # create enumerator of random evidence
+        limit       = options[:limit].to_i
+        random_data = Enumerator.new do |yielder|
+          count = 0
+          while count != limit do
+            yielder << evidence
+            count += 1
+            $stderr.puts "#{count} evidence generated..." if count % 500 == 0
+          end
+        end
+
+        # write random evidence to STDOUT through a translator
         translator_id = options[:translator] || :bel
         translator    = BEL.translator(options[:translator] || :bel)
         unless translator
@@ -435,7 +430,7 @@ Subcommands:
           exit 1
         end
 
-        translator.write(Generator.new(options[:limit]).each, $stdout)
+        translator.write(random_data, $stdout)
       end
     end
   end

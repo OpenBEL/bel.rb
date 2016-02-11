@@ -15,7 +15,7 @@ module BEL
     end
 
     def remove_quotes identifier
-      identifier.gsub!(/\A"|"\Z/, '')
+      identifier.to_s.gsub!(/\A"|"\Z/, '')
       identifier
     end
 
@@ -26,7 +26,7 @@ module BEL
     end
 
     def quotes_required? identifier
-      [NonWordMatcher, KeywordMatcher].any? { |m| m.match identifier }
+      [NonWordMatcher, KeywordMatcher].any? { |m| m.match identifier.to_s }
     end
   end
 end

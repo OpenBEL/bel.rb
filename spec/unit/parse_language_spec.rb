@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 require 'bel/script.rb'
 
 describe BEL::Script::Parser, "#parse" do
@@ -273,3 +272,4 @@ UNSET STATEMENT_GROUP\n}
     end
   end
 end
+# vim: ts=2 sw=2:

@@ -1,19 +1,28 @@
 require 'bel'
-require 'rantly'
 require_relative 'annotation'
 require_relative 'citation'
 require_relative 'bel_expression'
 require_relative 'document_header'
 
+require_relative '../gen'
+BEL::Gen.soft_require('rantly')
+
 module BEL
   module Gen
+
+    # The {Evidence} module defines methods that generate random
+    # {BEL::Model::Evidence evidence}.
     module Evidence
 
+      # Include other generators needed to create {BEL::Model::Evidence}.
       include BEL::Gen::Annotation
       include BEL::Gen::Citation
       include BEL::Gen::DocumentHeader
       include BEL::Gen::Expression
 
+      # Returns a random {BEL::Model::Evidence}.
+      #
+      # @return [BEL::Model::Evidence] a random evidence
       def evidence
         evidence = BEL::Model::Evidence.new
 

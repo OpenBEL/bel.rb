@@ -11,8 +11,8 @@ module BEL::Translator::Plugins
     def self.create_translator(options = {})
       require 'rdf'
       require 'rdf/rdfa'
-      require_relative 'rdf/translator'
-      BELRDF::Translator.new(
+      require_relative 'rdf/graph_translator'
+      BELRDF::GraphTranslator.new(
         ID,
         options[:write_schema]
       )

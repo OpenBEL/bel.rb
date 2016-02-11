@@ -1,4 +1,3 @@
-# vim: ts=2 sw=2:
 $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', 'lib')
 require 'bel'
 
@@ -26,3 +25,4 @@ describe BEL::Model::Term do
     ).to be(false)
   end
 end
+# vim: ts=2 sw=2:

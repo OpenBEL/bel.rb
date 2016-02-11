@@ -6,9 +6,9 @@
 
 [![Issues](https://img.shields.io/github/issues/OpenBEL/bel.rb.svg)](https://github.com/OpenBEL/bel.rb/issues)
 
-[![Dependencies](https://img.shields.io/gemnasium/OpenBEL/bel.rb.svg)]()
+[![Dependency Status](https://gemnasium.com/OpenBEL/bel.rb.svg)](https://gemnasium.com/OpenBEL/bel.rb)
 
-[![Join the chat at https://gitter.im/OpenBEL/bel.rb](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OpenBEL/bel.rb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/OpenBEL/chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OpenBEL/chat?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The bel ruby gem allows the reading, writing, and processing of BEL (Biological Expression Language) with a natural DSL.
 

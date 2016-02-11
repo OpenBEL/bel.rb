@@ -3,14 +3,18 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.5.0][0.5.0] - 2015-02-01
-### Added
-- Introduced translators for additional RDF formats; split and removed the RDF translator in favor of one translator per RDF format ([Issue #95][95]).
-- Warn when BEL namespace data could not be retrieved ([Issue #97][97]).
+## [0.5.0][0.5.0] - 2016-02-10
 ### Fixed
+- Fix missing RDF prefixes when converting BEL Script to RDF ([Issue #71][71]).
 - Error translating to JSON Evidence format using Oj adapter ([Issue #93][93]).
 - Consistent representation of Annotation and Namespace references in Evidence model and translators ([Issue #94][94]).
 - RDF conversion of Parameter does not include encoding type statement ([Issue #96][96]).
+### Added
+- Introduced translators for additional RDF formats; split and removed the RDF translator in favor of one translator per RDF format ([Issue #95][95]).
+- Warn when BEL namespace data could not be retrieved ([Issue #97][97]).
+- Added generator for random BEL Nanopubs using the *bel generate* subcommand ([Issue #102][102]).
+- Access BEL annotation resource values from external *.belanno* files ([Issue #100][100]).
+- Support different types of serialization within the BEL Script translator ([Issue #98][98]).
 
 ## [0.4.2][0.4.2] - 2015-12-21
 ### Fixed
@@ -71,6 +75,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Development gem dependencies (i.e. byebug, pry, pry-byebug) for debugging.
 
+[0.5.0]:    https://github.com/OpenBEL/bel.rb/compare/0.4.2...0.5.0
 [0.4.2]:    https://github.com/OpenBEL/bel.rb/compare/0.4.1...0.4.2
 [0.4.1]:    https://github.com/OpenBEL/bel.rb/compare/0.4.0...0.4.1
 [0.4.0]:    https://github.com/OpenBEL/bel.rb/compare/0.3.3...0.4.0
@@ -86,6 +91,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [64]:       https://github.com/OpenBEL/bel.rb/issues/64
 [66]:       https://github.com/OpenBEL/bel.rb/issues/66
 [68]:       https://github.com/OpenBEL/bel.rb/issues/68
+[71]:       https://github.com/OpenBEL/bel.rb/issues/71
 [82]:       https://github.com/OpenBEL/bel.rb/issues/82
 [86]:       https://github.com/OpenBEL/bel.rb/pull/86
 [90]:       https://github.com/OpenBEL/bel.rb/issues/90
@@ -95,5 +101,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [95]:       https://github.com/OpenBEL/bel.rb/issues/95
 [96]:       https://github.com/OpenBEL/bel.rb/issues/96
 [97]:       https://github.com/OpenBEL/bel.rb/issues/97
+[98]:       https://github.com/OpenBEL/bel.rb/issues/98
+[100]:      https://github.com/OpenBEL/bel.rb/issues/100
+[102]:      https://github.com/OpenBEL/bel.rb/issues/102
 [20150611]: http://resource.belframework.org/belframework/20150611/
 [RDF.rb]:   https://github.com/ruby-rdf/rdf

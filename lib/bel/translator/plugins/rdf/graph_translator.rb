@@ -7,7 +7,7 @@ require_relative 'reader'
 
 module BELRDF
 
-  class Translator
+  class GraphTranslator
 
     include ::BEL::Translator
 
@@ -24,7 +24,7 @@ module BELRDF
     end
 
     def read(data, options = {})
-      Reader::UnbufferedEvidenceYielder.new(data, @format)
+      Reader::BufferedEvidenceYielder.new(data, @format)
     end
 
     def write(objects, io = StringIO.new, options = {})
@@ -88,18 +88,15 @@ module BELRDF
         end
       end
 
-      io.set_encoding(Encoding::UTF_8.to_s) if io.respond_to?(:set_encoding)
-      rdf_writer = RDF::Writer.for(@format.to_s.to_sym).new(
-        io,
-        :stream => true
-      )
-
-      rdf_writer.write_prologue
-      rdf_statement_enum.each do |statement|
-        rdf_writer << statement
+      graph = RDF::Graph.new(void_dataset_uri)
+      rdf_statement_enum.each do |rdf_statement|
+        graph << rdf_statement
       end
-      rdf_writer.write_epilogue
-      rdf_writer.flush
+      io.set_encoding(Encoding::UTF_8.to_s) if io.respond_to?(:set_encoding)
+
+      RDF::Writer.for(@format.to_s.to_sym).new(io) { |writer|
+        writer << graph
+      }
 
       io
     end
