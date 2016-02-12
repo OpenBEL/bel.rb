@@ -23,7 +23,7 @@ describe 'BEL Script serializations produce equivalent evidence' do
   it 'Evidence is equivalent between BEL Script serialization strategies' do
     property_of {
       evidence
-    }.check(100) { |evidence|
+    }.check { |evidence|
       [:discrete, :topdown, :citation].combination(2).each do |(fmt1, fmt2)|
         expect(
           round_trip(evidence, fmt1)

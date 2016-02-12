@@ -405,11 +405,17 @@ Subcommands:
                    :long        => :translator,
                    :short       => :t,
                    :default     => 'bel'
+
+          opt      :sample,        'Sample namespace values and annotations from BEL resources.',
+                   :long        => :sample,
+                   :short       => :s,
+                   :default     => false
         end
 
         # require BEL generator and include in GenerateCommand
         require 'bel/gen'
         self.class.include(BEL::Gen::Evidence)
+        self.class.include(BEL::Gen::SampleResources) if options[:sample]
 
         # create enumerator of random evidence
         limit       = options[:limit].to_i

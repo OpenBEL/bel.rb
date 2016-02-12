@@ -1,8 +1,11 @@
 require 'bel'
+require_relative 'document_header'
 require_relative 'annotation'
 require_relative 'citation'
-require_relative 'bel_expression'
-require_relative 'document_header'
+require_relative 'namespace'
+require_relative 'parameter'
+require_relative 'term'
+require_relative 'statement'
 
 require_relative '../gen'
 BEL::Gen.soft_require('rantly')
@@ -15,10 +18,13 @@ module BEL
     module Evidence
 
       # Include other generators needed to create {BEL::Model::Evidence}.
+      include BEL::Gen::DocumentHeader
       include BEL::Gen::Annotation
       include BEL::Gen::Citation
-      include BEL::Gen::DocumentHeader
-      include BEL::Gen::Expression
+      include BEL::Gen::Namespace
+      include BEL::Gen::Parameter
+      include BEL::Gen::Statement
+      include BEL::Gen::Term
 
       # Returns a random {BEL::Model::Evidence}.
       #
