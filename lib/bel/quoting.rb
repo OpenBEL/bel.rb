@@ -5,12 +5,13 @@ module BEL
     KeywordMatcher = Regexp.compile(/^(SET|DEFINE|a|g|p|r|m)$/)
 
     def ensure_quotes identifier
-      return "" unless identifier
-      identifier.to_s.gsub! '"', '\"'
-      if quotes_required? identifier
-        %Q{"#{identifier}"}
+      identifier_string = identifier.to_s
+
+      if quotes_required? identifier_string
+        identifier_string.gsub!('"', '\"')
+        %Q{"#{identifier_string}"}
       else
-        identifier
+        identifier_string
       end
     end
 
