@@ -32,7 +32,7 @@ module BEL
           else
             self.value.to_s
           end
-        %Q{SET DOCUMENT #{self.name} = #{ensure_quotes(property_value)}}
+        %Q{SET DOCUMENT #{self.name} = #{quote_if_needed(property_value)}}
       end
       alias_method :to_s, :to_bel
     end
@@ -94,10 +94,10 @@ module BEL
 
       def to_bel
         if self.value.respond_to? :each
-          value = self.value.map {|v| always_quote(v)}
+          value = self.value.map {|v| quote(v)}
           value = "{#{value.join(',')}}"
         else
-          value = ensure_quotes(self.value)
+          value = quote_if_needed(self.value)
         end
         "SET #{self.name} = #{value}"
       end
@@ -125,7 +125,7 @@ module BEL
       end
 
       def to_bel
-        %Q{SET STATEMENT_GROUP = #{ensure_quotes(self.name)}}
+        %Q{SET STATEMENT_GROUP = #{quote_if_needed(self.name)}}
       end
 
       alias_method :to_s, :to_bel

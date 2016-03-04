@@ -53,7 +53,7 @@ module BEL::Translator::Plugins
           if fields.respond_to? :each
             evidence.citation = Citation.new(
               fields.map { |field|
-                remove_quotes(field)
+                unquote(field)
               }.to_a
             )
           end

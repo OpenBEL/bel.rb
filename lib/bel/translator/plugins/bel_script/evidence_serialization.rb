@@ -65,10 +65,10 @@ module BEL::Translator::Plugins::BelScript::EvidenceSerialization
         name, value = obj.values_at(:name, :value)
 
         value_s =
-          if value.respond_to? :each
-            "{#{value.map { |v| ensure_quotes(v) }.join(', ')}}"
+          if value.respond_to? :map
+            "{#{value.map { |v| quote(v) }.join(', ')}}"
           else
-            ensure_quotes(value)
+            quote(value)
           end
 
         [name, value_s]

@@ -53,7 +53,7 @@ module BEL
         else
           prefix = ''
         end
-        %Q{#{prefix}#{ensure_quotes(@value)}}
+        %Q{#{prefix}#{quote_if_needed(@value)}}
       end
       alias_method :to_s, :to_bel
     end
