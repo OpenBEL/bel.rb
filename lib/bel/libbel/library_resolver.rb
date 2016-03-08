@@ -40,7 +40,7 @@ module BEL
 
       def compiled_library(lib_name)
         exist = File.method(:exist?)
-        compiled_library_paths(lib_name).select(&exist).first
+        compiled_library_paths(lib_name).detect(&exist)
       end
 
       def compiled_library_paths(lib_name)

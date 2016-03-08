@@ -25,8 +25,10 @@ module BEL::Translator::Plugins
       #         +:citation+ => {BelCitationSerialization}; otherwise the default
       #         of {BelCitationSerialization} is used
       def initialize(data, options = {})
-        @data                   = data
-        @write_header           = options.fetch(:write_header, true)
+        @data                     = data
+        @write_header             = options.fetch(:write_header, true)
+        @annotation_reference_map = options.fetch(:annotation_reference_map, nil)
+        @namespace_reference_map  = options.fetch(:namespace_reference_map, nil)
 
         # augment self with BEL serialization stategy.
         serialization = options[:serialization]
@@ -56,20 +58,29 @@ module BEL::Translator::Plugins
 
       def each
         if block_given?
+          combiner =
+            if @annotation_reference_map && @namespace_reference_map
+              BEL::Model::StreamingEvidenceCombiner.new(
+                @data,
+                BEL::Model::HashMapReferences.new(
+                  @annotation_reference_map,
+                  @namespace_reference_map
+                )
+              )
+            else
+              BEL::Model::BufferingEvidenceCombiner.new(@data)
+            end
+
           header_flag = true
-          @data.each { |evidence|
+          combiner.each { |evidence|
 
             # serialize evidence
             bel = to_bel(evidence)
 
             if @write_header && header_flag
               yield document_header(evidence.metadata.document_header)
-              yield namespaces(
-                evidence.references.namespaces
-              )
-              yield annotations(
-                evidence.references.annotations
-              )
+              yield namespaces(combiner.namespace_references)
+              yield annotations(combiner.annotation_references)
 
               yield <<-COMMENT.gsub(/^\s+/, '')
                 ###############################################
@@ -156,9 +167,7 @@ module BEL::Translator::Plugins
         return bel unless namespaces
 
         namespaces.reduce(bel) { |bel, namespace|
-          keyword = namespace[:keyword]
-          uri     = namespace[:uri]
-          bel << %Q{DEFINE NAMESPACE #{keyword} AS URL "#{uri}"\n}
+          bel << %Q{DEFINE NAMESPACE #{namespace.prefix} AS URL "#{namespace.url}"\n}
           bel
         }
         bel << "\n"
