@@ -10,11 +10,26 @@ module BEL::Translator::Plugins
       FUNCTIONS = ::BEL::Language::FUNCTIONS
 
       def initialize(data, options = {})
-        @data         = data
+        @data                     = data
+        @annotation_reference_map = options.fetch(:annotation_reference_map, nil)
+        @namespace_reference_map  = options.fetch(:namespace_reference_map, nil)
       end
 
       def each
         if block_given?
+          combiner =
+            if @annotation_reference_map && @namespace_reference_map
+              BEL::Model::StreamingEvidenceCombiner.new(
+                @data,
+                BEL::Model::HashMapReferences.new(
+                  @annotation_reference_map,
+                  @namespace_reference_map
+                )
+              )
+            else
+              BEL::Model::BufferingEvidenceCombiner.new(@data)
+            end
+
           header_flag = true
 
           # yield <document>
@@ -23,7 +38,7 @@ module BEL::Translator::Plugins
 
           el_statement_group = nil
           evidence_count = 0
-          @data.each { |evidence|
+          combiner.each { |evidence|
             if header_flag
               # document header
               el_statement_group = XBELYielder.statement_group
@@ -32,10 +47,10 @@ module BEL::Translator::Plugins
                 XBELYielder.header(evidence.metadata.document_header)
               )
               yield element_string(
-                XBELYielder.namespace_definitions(evidence.references.namespaces)
+                XBELYielder.namespace_definitions(combiner.namespace_references)
               )
               yield element_string(
-                XBELYielder.annotation_definitions(evidence.references.annotations)
+                XBELYielder.annotation_definitions(combiner.annotation_references)
               )
 
               yield start_element_string(el_statement_group)
@@ -330,11 +345,11 @@ module BEL::Translator::Plugins
       def self.namespace_definitions(list)
         el_nd = REXML::Element.new('bel:namespaceGroup')
         list.each do |namespace|
-          keyword, uri     = namespace.values_at(:keyword, :uri).map(&:to_s)
-          el               = REXML::Element.new('bel:namespace')
+          keyword, uri = namespace.values_at(:keyword, :uri).map(&:to_s)
+          el           = REXML::Element.new('bel:namespace')
+
           el.add_attribute 'bel:prefix', keyword
           el.add_attribute 'bel:resourceLocation', uri
-
           el_nd.add_element(el)
         end
 
