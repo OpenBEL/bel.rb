@@ -129,18 +129,16 @@ module BEL::Translator::Plugins
         bel
       end
 
-      def annotations(annotations)
+      def annotations(annotation_references)
         bel = <<-COMMENT.gsub(/^\s+/, '')
           ###############################################
           # Annotation Definitions Section
         COMMENT
 
-        return bel unless annotations
+        return bel unless annotation_references
 
-        annotations.reduce(bel) { |bel, annotation|
-          keyword = annotation[:keyword]
-          type    = annotation[:type]
-          domain  = annotation[:domain]
+        annotation_references.reduce(bel) { |bel, ref|
+          keyword, type, domain = ref.values_at(:keyword, :type, :domain)
           bel << "DEFINE ANNOTATION #{keyword} AS "
 
           case type.to_sym
@@ -158,16 +156,17 @@ module BEL::Translator::Plugins
         bel
       end
 
-      def namespaces(namespaces)
+      def namespaces(namespace_references)
         bel = <<-COMMENT.gsub(/^\s+/, '')
           ###############################################
           # Namespace Definitions Section
         COMMENT
 
-        return bel unless namespaces
+        return bel unless namespace_references
 
-        namespaces.reduce(bel) { |bel, namespace|
-          bel << %Q{DEFINE NAMESPACE #{namespace.prefix} AS URL "#{namespace.url}"\n}
+        namespace_references.reduce(bel) { |bel, ref|
+          keyword, url = ref.values_at(:keyword, :uri)
+          bel << %Q{DEFINE NAMESPACE #{keyword} AS URL "#{url}"\n}
           bel
         }
         bel << "\n"

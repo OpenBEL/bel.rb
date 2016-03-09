@@ -2,26 +2,11 @@ module BEL
   module Model
 
     def self.union_namespace_references(destination, source, suffix = 'incr')
-      combined, remap = BEL::Model.union_by_keyword(
+      BEL::Model.union_by_keyword(
         destination,
         source,
         suffix
       )
-
-      [
-        combined,
-        Hash[
-          remap.map { |old_keyword, new_ref|
-            [
-              old_keyword,
-              BEL::Namespace::NamespaceDefinition.new(
-                new_ref[:keyword],
-                new_ref[:uri]
-              )
-            ]
-          }
-        ]
-      ]
     end
 
     def self.union_annotation_references(destination, source, suffix = 'incr')

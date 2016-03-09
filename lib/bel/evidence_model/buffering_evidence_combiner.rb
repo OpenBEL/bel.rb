@@ -145,7 +145,10 @@ module BEL
               reference     = keyword_to_reference[prefix.to_sym]
               new_reference = map_references.map_namespace_reference(reference)
               if new_reference
-                arg.ns = map_references.map_namespace_reference(reference)
+                arg.ns = BEL::Namespace::NamespaceDefinition.new(
+                  new_reference[:keyword],
+                  new_reference[:uri]
+                )
               end
             end
           when ::BEL::Model::Term
