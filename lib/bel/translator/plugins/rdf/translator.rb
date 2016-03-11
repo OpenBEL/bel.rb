@@ -94,6 +94,16 @@ module BELRDF
         :stream => true
       )
 
+      if (@format == :turtle)
+        require 'yaml'
+
+        prefixes = YAML::load_file('config/namespace_prefixes.yml')
+
+        prefixes.each do |prefix, uri|
+          rdf_writer.prefix prefix.to_sym, RDF::URI(uri)
+        end
+      end
+
       rdf_writer.write_prologue
       rdf_statement_enum.each do |statement|
         rdf_writer << statement
