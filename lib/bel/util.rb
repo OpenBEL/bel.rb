@@ -81,6 +81,35 @@ module BEL
     end
   end
 
+  def self.keys_to_symbols(obj)
+    self.object_convert(:key, obj) { |key| key.to_sym }
+  end
+
+  def self.object_convert(type, source, &block)
+    case source
+    when Array
+      source.inject([]) { |new, v|
+        new << object_convert(type, v, &block)
+        new
+      }
+    when Hash
+      source.inject({}) { |new, (k,v)|
+        if type == :key || k.is_a?(type)
+          k = block.call(k)
+        end
+
+        new[k] = object_convert(type, v, &block)
+        new
+      }
+    else
+      if type != :key && source.is_a?(type)
+        block.call(source)
+      else
+        source
+      end
+    end
+  end
+
   # PRIVATE
 
   def self.multi_open(reference, options = {})
@@ -176,23 +205,6 @@ module BEL
     "#{self.to_s}_#{Digest::SHA256.hexdigest identifier}"
   end
   private_class_method :cached_filename_for
-
-  def self.keys_to_symbols(obj)
-    case obj
-      when Array
-        obj.inject([]) {|new_array, v|
-          new_array << self.keys_to_symbols(v)
-          new_array
-        }
-      when Hash
-        obj.inject({}) {|new_hash, (k, v)|
-          new_hash[k.to_sym] = self.keys_to_symbols(v)
-          new_hash
-        }
-      else
-        obj
-    end
-  end
 end
 # vim: ts=2 sw=2
 # encoding: utf-8
