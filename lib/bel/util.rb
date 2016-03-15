@@ -176,6 +176,23 @@ module BEL
     "#{self.to_s}_#{Digest::SHA256.hexdigest identifier}"
   end
   private_class_method :cached_filename_for
+
+  def self.keys_to_symbols(obj)
+    case obj
+      when Array
+        obj.inject([]) {|new_array, v|
+          new_array << self.keys_to_symbols(v)
+          new_array
+        }
+      when Hash
+        obj.inject({}) {|new_hash, (k, v)|
+          new_hash[k.to_sym] = self.keys_to_symbols(v)
+          new_hash
+        }
+      else
+        obj
+    end
+  end
 end
 # vim: ts=2 sw=2
 # encoding: utf-8
