@@ -1,28 +1,35 @@
 module BEL
   module Model
 
-    class StreamingEvidenceCombiner < BufferingEvidenceCombiner
+    class StreamingEvidenceCombiner
 
-      def initialize(evidence_collection, map_references)
+      attr_reader :annotation_references, :namespace_references
+
+      def initialize(evidence_collection)
         @evidence_collection   = evidence_collection
-        @map_references        = map_references
-      end
-
-      def annotation_references
-        @map_references.annotation_references
-      end
-
-      def namespace_references
-        @map_references.namespace_references
       end
 
       def each
         if block_given?
           @evidence_collection.each do |evidence|
-            yield rewrite_evidence!(evidence, @map_references)
+            once {
+              @annotation_references = evidence.references.annotations
+              @namespace_references  = evidence.references.namespaces
+            }
+
+            yield evidence
           end
         else
           to_enum(:each)
+        end
+      end
+
+      private
+
+      def once(*block_args, &block)
+        unless @_once_switch
+          block.call(*block_args)
+          @_once_switch = 1
         end
       end
     end

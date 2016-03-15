@@ -26,6 +26,7 @@ module BEL::Translator::Plugins
       #         of {BelCitationSerialization} is used
       def initialize(data, options = {})
         @data                     = data
+        @streaming                = options.fetch(:streaming, false)
         @write_header             = options.fetch(:write_header, true)
         @annotation_reference_map = options.fetch(:annotation_reference_map, nil)
         @namespace_reference_map  = options.fetch(:namespace_reference_map, nil)
@@ -59,8 +60,10 @@ module BEL::Translator::Plugins
       def each
         if block_given?
           combiner =
-            if @annotation_reference_map && @namespace_reference_map
-              BEL::Model::StreamingEvidenceCombiner.new(
+            if @streaming
+              BEL::Model::StreamingEvidenceCombiner.new(@data)
+            elsif @annotation_reference_map && @namespace_reference_map
+              BEL::Model::MapReferencesCombiner.new(
                 @data,
                 BEL::Model::HashMapReferences.new(
                   @annotation_reference_map,

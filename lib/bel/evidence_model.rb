@@ -10,5 +10,6 @@ require_relative 'evidence_model/experiment_context'
 require_relative 'evidence_model/metadata'
 
 require_relative 'evidence_model/buffering_evidence_combiner'
+require_relative 'evidence_model/map_references_combiner'
 require_relative 'evidence_model/streaming_evidence_combiner'
 require_relative 'evidence_model/util'
