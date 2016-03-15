@@ -19,28 +19,33 @@ module BEL
   # (e.g. lung disease|O) and a database value identifier for a BEL annotation
   # file (e.g. lung|UBERON_0002048).
   def self.read_resource(url)
-    resource_lines = BEL::read_lines(url)
+    @@url_content_cache ||= {}
+    @@url_content_cache.fetch(url) {
+      resource_lines = BEL::read_lines(url)
 
-    # Drop until the delimiter line and extract the delimiter, e.g.
-    # DelimiterString=|
-    delimiter_line = resource_lines.take(100).find { |l| l.start_with?("DelimiterString") }
-    delimiter =
-      if delimiter_line
-        delimiter_line.strip.split('=')[1]
-      else
-        DEFAULT_RESOURCE_VALUE_DELIMITER
-      end
+      # Drop until the delimiter line and extract the delimiter, e.g.
+      # DelimiterString=|
+      delimiter_line = resource_lines.take(100).find { |l| l.start_with?("DelimiterString") }
+      delimiter =
+        if delimiter_line
+          delimiter_line.strip.split('=')[1]
+        else
+          DEFAULT_RESOURCE_VALUE_DELIMITER
+        end
 
-    # Extract namespace values based on the delimiter.
-    Hash[
-      resource_lines.
-      drop_while { |l| !l.start_with?("[Values]") }.
-      drop(1).
-      map { |s|
-        val_enc = s.strip!.split(delimiter).map(&:to_sym)
-        val_enc[0..1]
-      }
-    ]
+      # Extract resource values based on the delimiter.
+      resource_values = Hash[
+        resource_lines.
+        drop_while { |l| !l.start_with?("[Values]") }.
+        drop(1).
+        map { |s|
+          val_enc = s.strip!.split(delimiter).map(&:to_sym)
+          val_enc[0..1]
+        }
+      ]
+      @@url_content_cache[url] = resource_values
+      resource_values
+    }
   end
 
   def self.read_all(reference, options = {})
@@ -171,6 +176,23 @@ module BEL
     "#{self.to_s}_#{Digest::SHA256.hexdigest identifier}"
   end
   private_class_method :cached_filename_for
+
+  def self.keys_to_symbols(obj)
+    case obj
+      when Array
+        obj.inject([]) {|new_array, v|
+          new_array << self.keys_to_symbols(v)
+          new_array
+        }
+      when Hash
+        obj.inject({}) {|new_hash, (k, v)|
+          new_hash[k.to_sym] = self.keys_to_symbols(v)
+          new_hash
+        }
+      else
+        obj
+    end
+  end
 end
 # vim: ts=2 sw=2
 # encoding: utf-8

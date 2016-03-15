@@ -239,9 +239,9 @@ module BEL
     class NamespaceDefinition
       include Enumerable
 
-      attr_reader :prefix
-      attr_reader :url
-      attr_reader :rdf_uri
+      attr_accessor :prefix
+      attr_accessor :url
+      attr_accessor :rdf_uri
 
       def initialize(prefix, url, rdf_uri = DEFAULT_URI)
         @prefix = prefix

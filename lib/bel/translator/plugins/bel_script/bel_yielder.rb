@@ -25,8 +25,11 @@ module BEL::Translator::Plugins
       #         +:citation+ => {BelCitationSerialization}; otherwise the default
       #         of {BelCitationSerialization} is used
       def initialize(data, options = {})
-        @data                   = data
-        @write_header           = options.fetch(:write_header, true)
+        @data                     = data
+        @streaming                = options.fetch(:streaming, false)
+        @write_header             = options.fetch(:write_header, true)
+        @annotation_reference_map = options.fetch(:annotation_reference_map, nil)
+        @namespace_reference_map  = options.fetch(:namespace_reference_map, nil)
 
         # augment self with BEL serialization stategy.
         serialization = options[:serialization]
@@ -56,20 +59,31 @@ module BEL::Translator::Plugins
 
       def each
         if block_given?
+          combiner =
+            if @streaming
+              BEL::Model::StreamingEvidenceCombiner.new(@data)
+            elsif @annotation_reference_map && @namespace_reference_map
+              BEL::Model::MapReferencesCombiner.new(
+                @data,
+                BEL::Model::HashMapReferences.new(
+                  @annotation_reference_map,
+                  @namespace_reference_map
+                )
+              )
+            else
+              BEL::Model::BufferingEvidenceCombiner.new(@data)
+            end
+
           header_flag = true
-          @data.each { |evidence|
+          combiner.each { |evidence|
 
             # serialize evidence
             bel = to_bel(evidence)
 
             if @write_header && header_flag
               yield document_header(evidence.metadata.document_header)
-              yield namespaces(
-                evidence.references.namespaces
-              )
-              yield annotations(
-                evidence.references.annotations
-              )
+              yield namespaces(combiner.namespace_references)
+              yield annotations(combiner.annotation_references)
 
               yield <<-COMMENT.gsub(/^\s+/, '')
                 ###############################################
@@ -118,18 +132,16 @@ module BEL::Translator::Plugins
         bel
       end
 
-      def annotations(annotations)
+      def annotations(annotation_references)
         bel = <<-COMMENT.gsub(/^\s+/, '')
           ###############################################
           # Annotation Definitions Section
         COMMENT
 
-        return bel unless annotations
+        return bel unless annotation_references
 
-        annotations.reduce(bel) { |bel, annotation|
-          keyword = annotation[:keyword]
-          type    = annotation[:type]
-          domain  = annotation[:domain]
+        annotation_references.reduce(bel) { |bel, ref|
+          keyword, type, domain = ref.values_at(:keyword, :type, :domain)
           bel << "DEFINE ANNOTATION #{keyword} AS "
 
           case type.to_sym
@@ -147,18 +159,17 @@ module BEL::Translator::Plugins
         bel
       end
 
-      def namespaces(namespaces)
+      def namespaces(namespace_references)
         bel = <<-COMMENT.gsub(/^\s+/, '')
           ###############################################
           # Namespace Definitions Section
         COMMENT
 
-        return bel unless namespaces
+        return bel unless namespace_references
 
-        namespaces.reduce(bel) { |bel, namespace|
-          keyword = namespace[:keyword]
-          uri     = namespace[:uri]
-          bel << %Q{DEFINE NAMESPACE #{keyword} AS URL "#{uri}"\n}
+        namespace_references.reduce(bel) { |bel, ref|
+          keyword, url = ref.values_at(:keyword, :uri)
+          bel << %Q{DEFINE NAMESPACE #{keyword} AS URL "#{url}"\n}
           bel
         }
         bel << "\n"

@@ -2,6 +2,7 @@
 $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib'))
 require 'erb'
 require 'bel'
+require 'bel/util'
 require 'bel/vendor/trollop'
 
 VERSION_BANNER = <<-VERSION
@@ -232,13 +233,27 @@ Subcommands:
       def run
         parsed_options =
           Trollop::options do
-            synopsis "Translates BEL evidence between file formats."
-            usage    "[OPTIONS]... translate [OPTIONS] FROM_FORMAT TO_FORMAT"
+            synopsis "Translates BEL evidence between formats using translator plugins."
+            usage    "[OPTIONS]... translate [OPTIONS] FROM_TRANSLATOR TO_TRANSLATOR"
 
             opt      :'input-file', 'The file containing evidence data to translate. If not specified the default is to read from STDIN.',
                      :type    => String,
                      :long    => :'input-file',
                      :short   => :i,
+                     :default => nil
+
+            opt      :'from-option', 'A "key=value" option to be sent to the FROM_TRANSLATOR.',
+                     :type    => String,
+                     :multi   => true,
+                     :long    => :'from-option',
+                     :short   => :f,
+                     :default => nil
+
+            opt      :'to-option', 'A "key=value" option to be sent to the TO_TRANSLATOR.',
+                     :type    => String,
+                     :multi   => true,
+                     :long    => :'to-option',
+                     :short   => :t,
                      :default => nil
           end
 
@@ -282,11 +297,47 @@ Subcommands:
           Trollop::educate
         end
 
+        from_options = map_kv_options(parsed_options, :'from-option')
+        to_options   = map_kv_options(parsed_options, :'to-option')
+
         begin
-          BEL.translate(input_io, from_format, to_format, $stdout)
+          BEL.translate(
+            input_io,
+            from_format,
+            to_format,
+            $stdout,
+            from_options.merge(to_options) # XXX Merge conflicts.
+          )
         ensure
           $stdout.close
         end
+      end
+
+      private
+
+      def map_kv_options(parsed_options, opt)
+        BEL.keys_to_symbols(
+          Hash[
+            parsed_options[opt].map { |opt|
+              key, value = opt.split('=')
+              if !key || !value
+                nil
+              else
+                value =
+                  case value
+                  when "true"
+                    true
+                  when "false"
+                    false
+                  else
+                    value
+                  end
+
+                [key, value]
+              end
+            }.compact
+          ]
+        )
       end
     end
 

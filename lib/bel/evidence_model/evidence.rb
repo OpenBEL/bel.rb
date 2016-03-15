@@ -101,6 +101,27 @@ module BEL
         )
         hash
       end
+
+      private
+
+      def parse_statement(bel_statement)
+        namespaces = self.references.namespaces
+        ::BEL::Script.parse(
+          "#{bel_statement}\n",
+          Hash[
+            namespaces.map { |ns|
+              keyword, uri = ns.values_at(:keyword, :uri)
+              sym          = keyword.to_sym
+              [
+                sym,
+                ::BEL::Namespace::NamespaceDefinition.new(sym, uri, uri)
+              ]
+            }
+          ]
+        ).select { |obj|
+          obj.is_a? ::BEL::Model::Statement
+        }.first
+      end
     end
   end
 end
