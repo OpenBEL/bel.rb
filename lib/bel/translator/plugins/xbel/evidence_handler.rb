@@ -193,19 +193,10 @@ module BEL::Translator::Plugins
 
       def start_parameter(attributes)
         if stack_top == :term
-          ns_id              = attr_value(attributes, NS)
-          # XXX Hitting a SystemStackError on line 174 (inside call).
-          # Example: large_corpus.xbel
-          ns_sym = ns_id.to_sym
-          namespace_reference = @evidence.references.namespaces.find { |ns|
-            ns[:keyword] == ns_sym
-          }
           ns =
-            if namespace_reference
-              {
-                :prefix => namespace_reference[:keyword],
-                :url    => namespace_reference[:uri]
-              }
+            if has_attr?(attributes, NS)
+              ns_id = attr_value(attributes, NS)
+              namespace_reference(ns_id, @evidence)
             else
               nil
             end
@@ -478,6 +469,26 @@ module BEL::Translator::Plugins
 
       def attr_value(attributes, attr_name)
         attributes["bel:#{attr_name}"]
+      end
+
+      def has_attr?(attributes, attr_name)
+        attributes.has_key?("bel:#{attr_name}")
+      end
+
+      def namespace_reference(ns_id, evidence)
+        ns_id = ns_id.to_sym
+        namespace_reference = evidence.references.namespaces.find { |ns|
+          ns[:keyword] == ns_id
+        }
+
+        if namespace_reference
+          {
+            :prefix => namespace_reference[:keyword],
+            :url    => namespace_reference[:uri]
+          }
+        else
+          nil
+        end
       end
     end
   end
