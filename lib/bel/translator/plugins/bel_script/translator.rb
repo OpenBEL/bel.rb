@@ -10,7 +10,7 @@ module BEL::Translator::Plugins
       include ::BEL::Translator
 
       def read(data, options = {})
-        EvidenceYielder.new(data)
+        EvidenceYielder.new(data, options)
       end
 
       def write(objects, writer = StringIO.new, options = {})

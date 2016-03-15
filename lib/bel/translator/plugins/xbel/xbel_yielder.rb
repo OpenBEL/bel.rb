@@ -18,8 +18,10 @@ module BEL::Translator::Plugins
       def each
         if block_given?
           combiner =
-            if @annotation_reference_map && @namespace_reference_map
-              BEL::Model::StreamingEvidenceCombiner.new(
+            if @streaming
+              BEL::Model::StreamingEvidenceCombiner.new(@data)
+            elsif @annotation_reference_map && @namespace_reference_map
+              BEL::Model::MapReferencesCombiner.new(
                 @data,
                 BEL::Model::HashMapReferences.new(
                   @annotation_reference_map,

@@ -7,7 +7,7 @@ module BEL::Translator::Plugins
 
     class EvidenceYielder
 
-      def initialize(io)
+      def initialize(io, options = {})
         @io = io
       end
 

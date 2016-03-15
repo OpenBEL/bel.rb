@@ -13,7 +13,7 @@ module BEL::Translator::Plugins
         'Evidence' => true,
       }
 
-      def initialize(data)
+      def initialize(data, options = {})
         @data                   = data
         @references             = References.new
         @metadata               = Metadata.new
