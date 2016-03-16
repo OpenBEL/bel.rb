@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Development
 - Added *doctest* Rake task to run YARD `@example` tests in method level documentation.
+- Added gosh commands for running unit, integration and doctests ([Issue #85][85]).
 
 ## [0.5.0][0.5.0] - 2016-02-10
 ### Fixed
@@ -109,6 +110,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [68]:       https://github.com/OpenBEL/bel.rb/issues/68
 [71]:       https://github.com/OpenBEL/bel.rb/issues/71
 [82]:       https://github.com/OpenBEL/bel.rb/issues/82
+[85]:       https://github.com/OpenBEL/bel.rb/issues/85
 [86]:       https://github.com/OpenBEL/bel.rb/pull/86
 [90]:       https://github.com/OpenBEL/bel.rb/issues/90
 [91]:       https://github.com/OpenBEL/bel.rb/issues/91
