@@ -42,14 +42,20 @@ module BEL::Translator::Plugins::BelScript::BelCitationSerialization
     current_annotations[:Citation] = citation if citation
     current_annotations[:Evidence] = summary_text if summary_text
 
+    if !evidence.citation.id || evidence.citation.id.empty?
+      citation_id = quote('')
+    else
+      citation_id = quote_if_needed(evidence.citation.id)
+    end
+
     # Reset cumulative annotations if new citation.
     if cumulative_citation == nil
-      bel << %Q{SET STATEMENT_GROUP = #{quote_if_needed(evidence.citation.id)}\n}
+      bel << %Q{SET STATEMENT_GROUP = #{citation_id}\n}
       cumulative_annotations.clear
     elsif evidence.citation != cumulative_citation
       bel << %Q{UNSET STATEMENT_GROUP\n}
       bel << "\n\n"
-      bel << %Q{SET STATEMENT_GROUP = #{quote_if_needed(evidence.citation.id)}\n}
+      bel << %Q{SET STATEMENT_GROUP = #{citation_id}\n}
       cumulative_annotations.clear
     end
 
