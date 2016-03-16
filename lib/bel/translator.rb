@@ -39,8 +39,9 @@ module BEL
       #
       # @param [#to_s] value an id, media type, or file extension value that
       #        identifies a translator plugin
-      # @return [#create_translator] if a single a translator plugin was found
-      # @return [Array<#create_translator>] if multiple translator plugins
+      # @return [nil] when no translator plugin was found
+      # @return [#create_translator] when single translator plugin was found
+      # @return [Array<#create_translator>] when multiple translator plugins
       #         were found
       def self.for(value)
         return nil unless value
@@ -57,7 +58,14 @@ module BEL
           match |= (t.file_extensions.include?(value_symbol))
           match
         }
-        matches.size == 1 ? matches.first : matches
+
+        if matches.empty?
+          nil
+        elsif matches.size == 1
+          matches.first
+        else
+          matches
+        end
       end
     end
 

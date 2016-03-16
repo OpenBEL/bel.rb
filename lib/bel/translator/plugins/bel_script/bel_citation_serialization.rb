@@ -44,12 +44,12 @@ module BEL::Translator::Plugins::BelScript::BelCitationSerialization
 
     # Reset cumulative annotations if new citation.
     if cumulative_citation == nil
-      bel << %Q{SET STATEMENT_GROUP = #{ensure_quotes(evidence.citation.id)}\n}
+      bel << %Q{SET STATEMENT_GROUP = #{quote_if_needed(evidence.citation.id)}\n}
       cumulative_annotations.clear
     elsif evidence.citation != cumulative_citation
       bel << %Q{UNSET STATEMENT_GROUP\n}
       bel << "\n\n"
-      bel << %Q{SET STATEMENT_GROUP = #{ensure_quotes(evidence.citation.id)}\n}
+      bel << %Q{SET STATEMENT_GROUP = #{quote_if_needed(evidence.citation.id)}\n}
       cumulative_annotations.clear
     end
 

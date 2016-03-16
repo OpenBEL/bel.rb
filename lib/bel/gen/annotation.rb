@@ -7,7 +7,6 @@ module BEL
     # The {Annotation} module defines methods that generate random annotations
     # to be used in an evidence's {BEL::Model::ExperimentContext}.
     module Annotation
-      include BEL::Quoting
 
       # Array of the latest OpenBEL {BEL::Annotation::AnnotationDefinition}.
       ANNOTATIONS =
@@ -38,7 +37,11 @@ module BEL
 
         {
           :name  => anno.keyword,
-          :value => anno.values.keys.sample
+          :value => Rantly {
+            sized(range(5, 20)) {
+              string(/[[:alnum:]]|[[:blank:]]|[[:punct:]]/)
+            }
+          }
         }
       end
     end

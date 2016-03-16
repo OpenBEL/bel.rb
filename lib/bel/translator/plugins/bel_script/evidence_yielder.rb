@@ -13,7 +13,7 @@ module BEL::Translator::Plugins
         'Evidence' => true,
       }
 
-      def initialize(data)
+      def initialize(data, options = {})
         @data                   = data
         @references             = References.new
         @metadata               = Metadata.new
@@ -53,7 +53,7 @@ module BEL::Translator::Plugins
           if fields.respond_to? :each
             evidence.citation = Citation.new(
               fields.map { |field|
-                remove_quotes(field)
+                unquote(field)
               }.to_a
             )
           end

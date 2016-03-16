@@ -234,13 +234,13 @@ module BEL
           :id     => ns_value,
           :type   => :namespace_value,
           :label  => ns_value,
-          :value  => ensure_quotes(ns_value),
+          :value  => quote_if_needed(ns_value),
           :offset => 0
         }
       end
 
       def map_namespace_value_with_prefix(ns, ns_value)
-        quoted_value = ensure_quotes(ns_value)
+        quoted_value = quote_if_needed(ns_value)
 
         if ns
           ns_prefix    = ns.prefix.to_s.upcase

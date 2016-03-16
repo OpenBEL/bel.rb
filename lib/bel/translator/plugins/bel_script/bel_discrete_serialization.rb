@@ -1,4 +1,4 @@
-require_relative 'evidence_serialization.rb'
+require_relative 'evidence_serialization'
 
 # BEL Script evidence serialization that writes each evidence with their full
 # set of annotations (i.e. includes all `SET` and necessary `UNSET` records).

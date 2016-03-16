@@ -72,7 +72,7 @@ module BEL::Translator::Plugins
           EVIDENCE_ROOT => {
             :bel_statement      => hash[:bel_statement].to_s,
             :citation           => hash[:citation],
-            :summary_text       => hash[:summary_text],
+            :summary_text       => escape_newlines(hash[:summary_text]),
             :experiment_context => hash[:experiment_context],
             :references         => hash[:references],
             :metadata           => hash[:metadata].to_a
@@ -100,6 +100,10 @@ module BEL::Translator::Plugins
         ).select { |obj|
           obj.is_a? ::BEL::Model::Statement
         }.first
+      end
+
+      def escape_newlines(value)
+        value.gsub(/\n/, "\\n").gsub(/\r/, "\\r")
       end
     end
   end

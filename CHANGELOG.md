@@ -3,6 +3,21 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.0][0.6.0] - 2016-03-15
+### Fixed
+- Serialization of BEL Script / XBEL can produce incorrect annotation and namespaces references ([Issue #111][111]).
+
+### Changed
+- Separate random sampling from random data in BEL generator ([Issue #105][105]).
+- Improved BEL quoting API. **Deprecated previous API methods.** ([Issue #104][104]).
+- BEL and XBEL translators will now buffer on write to account for all annotation/namespace references. Pass the `-t streaming=true` option to `bel translate` to stream data when the references are consistent.
+
+### Added
+- Added translator read/write option passing from the `bel translate` subcommand.
+
+### Development
+- Added *doctest* Rake task to run YARD `@example` tests in method level documentation.
+
 ## [0.5.0][0.5.0] - 2016-02-10
 ### Fixed
 - Fix missing RDF prefixes when converting BEL Script to RDF ([Issue #71][71]).
@@ -75,6 +90,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Development gem dependencies (i.e. byebug, pry, pry-byebug) for debugging.
 
+[0.6.0]:    https://github.com/OpenBEL/bel.rb/compare/0.5.0...0.6.0
 [0.5.0]:    https://github.com/OpenBEL/bel.rb/compare/0.4.2...0.5.0
 [0.4.2]:    https://github.com/OpenBEL/bel.rb/compare/0.4.1...0.4.2
 [0.4.1]:    https://github.com/OpenBEL/bel.rb/compare/0.4.0...0.4.1
@@ -104,5 +120,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [98]:       https://github.com/OpenBEL/bel.rb/issues/98
 [100]:      https://github.com/OpenBEL/bel.rb/issues/100
 [102]:      https://github.com/OpenBEL/bel.rb/issues/102
+[104]:      https://github.com/OpenBEL/bel.rb/issues/104
+[105]:      https://github.com/OpenBEL/bel.rb/issues/105
+[111]:      https://github.com/OpenBEL/bel.rb/issues/111
 [20150611]: http://resource.belframework.org/belframework/20150611/
 [RDF.rb]:   https://github.com/ruby-rdf/rdf

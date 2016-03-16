@@ -34,6 +34,10 @@ module BELRDF
     end
 
     def to_rdf(graph_name = nil)
+      # resolve encoding to make rdf:type assertions
+      if !@enc && @ns.is_a?(BEL::Namespace::NamespaceDefinition)
+        @enc = @ns[@value].enc
+      end
       uri = to_uri
       encodings = ['A'].concat(@enc.to_s.each_char.to_a).uniq
       encodings.map! { |enc| concept_statement(enc, uri, graph_name)}

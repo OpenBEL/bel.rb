@@ -19,28 +19,33 @@ module BEL
   # (e.g. lung disease|O) and a database value identifier for a BEL annotation
   # file (e.g. lung|UBERON_0002048).
   def self.read_resource(url)
-    resource_lines = BEL::read_lines(url)
+    @@url_content_cache ||= {}
+    @@url_content_cache.fetch(url) {
+      resource_lines = BEL::read_lines(url)
 
-    # Drop until the delimiter line and extract the delimiter, e.g.
-    # DelimiterString=|
-    delimiter_line = resource_lines.take(100).find { |l| l.start_with?("DelimiterString") }
-    delimiter =
-      if delimiter_line
-        delimiter_line.strip.split('=')[1]
-      else
-        DEFAULT_RESOURCE_VALUE_DELIMITER
-      end
+      # Drop until the delimiter line and extract the delimiter, e.g.
+      # DelimiterString=|
+      delimiter_line = resource_lines.take(100).find { |l| l.start_with?("DelimiterString") }
+      delimiter =
+        if delimiter_line
+          delimiter_line.strip.split('=')[1]
+        else
+          DEFAULT_RESOURCE_VALUE_DELIMITER
+        end
 
-    # Extract namespace values based on the delimiter.
-    Hash[
-      resource_lines.
-      drop_while { |l| !l.start_with?("[Values]") }.
-      drop(1).
-      map { |s|
-        val_enc = s.strip!.split(delimiter).map(&:to_sym)
-        val_enc[0..1]
-      }
-    ]
+      # Extract resource values based on the delimiter.
+      resource_values = Hash[
+        resource_lines.
+        drop_while { |l| !l.start_with?("[Values]") }.
+        drop(1).
+        map { |s|
+          val_enc = s.strip!.split(delimiter).map(&:to_sym)
+          val_enc[0..1]
+        }
+      ]
+      @@url_content_cache[url] = resource_values
+      resource_values
+    }
   end
 
   def self.read_all(reference, options = {})
@@ -73,6 +78,35 @@ module BEL
       write_cached reference, content
       f.rewind
       return f.readlines
+    end
+  end
+
+  def self.keys_to_symbols(obj)
+    self.object_convert(:key, obj) { |key| key.to_sym }
+  end
+
+  def self.object_convert(type, source, &block)
+    case source
+    when Array
+      source.inject([]) { |new, v|
+        new << object_convert(type, v, &block)
+        new
+      }
+    when Hash
+      source.inject({}) { |new, (k,v)|
+        if type == :key || k.is_a?(type)
+          k = block.call(k)
+        end
+
+        new[k] = object_convert(type, v, &block)
+        new
+      }
+    else
+      if type != :key && source.is_a?(type)
+        block.call(source)
+      else
+        source
+      end
     end
   end
 

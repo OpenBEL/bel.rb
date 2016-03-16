@@ -17,11 +17,6 @@ module BEL
       attr_accessor :ns, :value, :enc
 
       def initialize(ns, value, enc=nil)
-        if !enc && ns.is_a?(BEL::Namespace::NamespaceDefinition)
-          lookup = ns[value]
-          enc    = lookup && lookup.enc
-        end
-
         @enc = enc
         @ns  = ns
         @value = value
@@ -53,7 +48,7 @@ module BEL
         else
           prefix = ''
         end
-        %Q{#{prefix}#{ensure_quotes(@value)}}
+        %Q{#{prefix}#{quote_if_needed(@value)}}
       end
       alias_method :to_s, :to_bel
     end

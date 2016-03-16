@@ -60,19 +60,20 @@ module BEL::Translator::Plugins::BelScript::EvidenceSerialization
 
     Hash[
       experiment_context.
-        sort_by { |obj| obj[:name] }.
+        sort_by { |obj| obj[:name].to_sym }.
         map { |obj|
-        name, value = obj.values_at(:name, :value)
+          name  = obj[:name].to_sym
+          value = obj[:value]
 
-        value_s =
-          if value.respond_to? :each
-            "{#{value.map { |v| ensure_quotes(v) }.join(', ')}}"
-          else
-            ensure_quotes(value)
-          end
+          value_s =
+            if value.respond_to? :map
+              "{#{value.map { |v| quote(v) }.join(', ')}}"
+            else
+              quote(value)
+            end
 
-        [name, value_s]
-      }
+          [name, value_s]
+        }
     ]
   end
 end

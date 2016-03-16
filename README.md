@@ -418,6 +418,6 @@ the root of the bel.rb tree:
     end
 ```
 
-Built with collaboration and a lot of :heart: by the OpenBEL community.
+Built with collaboration and a lot of :heart: from the OpenBEL community.
 
 [CHANGELOG]: https://github.com/OpenBEL/bel.rb/blob/master/CHANGELOG.md

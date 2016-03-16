@@ -10,23 +10,23 @@ module BEL::Translator::Plugins
       include ::BEL::Translator
 
       def read(data, options = {})
-        EvidenceYielder.new(data)
+        EvidenceYielder.new(data, options)
       end
 
       def write(objects, writer = StringIO.new, options = {})
         if block_given?
-          XBELYielder.new(objects).each { |xml_data|
+          XBELYielder.new(objects, options).each { |xml_data|
             yield xml_data
           }
         else
           if writer
-            XBELYielder.new(objects).each { |xml_data|
+            XBELYielder.new(objects, options).each { |xml_data|
               writer << xml_data
               writer.flush
             }
             writer
           else
-            XBELYielder.new(objects)
+            XBELYielder.new(objects, options)
           end
         end
       end
