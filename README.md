@@ -75,7 +75,7 @@ the root of the bel.rb tree:
 ## branches
 
 - master branch
-  - Contains stable code. Releases are created from this branch using a tag (e.g. 0.4.0).
+  - Contains stable code. Releases are created from this branch using a tag (e.g. `MAJOR.MINOR.PATCH`).
   - [![Travis CI Build](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=master)](https://travis-ci.org/OpenBEL/bel.rb)
 
 - next branch
@@ -110,7 +110,7 @@ the root of the bel.rb tree:
       plugins
 
 
-    bel 0.4.3
+    bel
     Copyright (C) 2015 OpenBEL
     Apache License, Version 2.0, January 2004
     http://www.apache.org/licenses/
