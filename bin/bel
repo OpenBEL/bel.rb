@@ -255,6 +255,12 @@ Subcommands:
                      :long    => :'to-option',
                      :short   => :t,
                      :default => nil
+
+            opt      :'prefixes-file', 'YAML file with prefixes for URI replacement in RDF output. The default is to use standard prefixes hardcoded in a project.',
+                     :type    => String,
+                     :long    => :'prefixes-file',
+                     :short   => :p,
+                     :default => nil
           end
 
         input_io = which_io(parsed_options[:'input-file'])
@@ -306,7 +312,9 @@ Subcommands:
             from_format,
             to_format,
             $stdout,
-            from_options.merge(to_options) # XXX Merge conflicts.
+            {:prefixes_file => parsed_options[:'prefixes-file']}.
+              merge(from_options).
+              merge(to_options) # XXX Merge conflicts.
           )
         ensure
           $stdout.close
