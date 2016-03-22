@@ -1,4 +1,6 @@
 require 'rdf'
+require 'pathname'
+require 'yaml'
 
 require_relative 'uuid'
 require_relative 'bel_schema'
@@ -94,14 +96,12 @@ module BELRDF
         :stream => true
       )
 
-      if (@format == :turtle)
-        require 'yaml'
+      prefixes_file = options[:prefixes_file] ? options[:prefixes_file] : Pathname.new('config/namespace_prefixes.yml')
 
-        prefixes = YAML::load_file('config/namespace_prefixes.yml')
+      prefixes = YAML::load_file(prefixes_file)
 
-        prefixes.each do |prefix, uri|
-          rdf_writer.prefix prefix.to_sym, RDF::URI(uri)
-        end
+      prefixes.each do |prefix, uri|
+        rdf_writer.prefix prefix.to_sym, RDF::URI(uri)
       end
 
       rdf_writer.write_prologue

@@ -236,10 +236,16 @@ Subcommands:
             usage    "[OPTIONS]... translate [OPTIONS] FROM_FORMAT TO_FORMAT"
 
             opt      :'input-file', 'The file containing evidence data to translate. If not specified the default is to read from STDIN.',
-                     :type    => String,
-                     :long    => :'input-file',
-                     :short   => :i,
-                     :default => nil
+                     type:    String,
+                     long:    :'input-file',
+                     short:   :i,
+                     default: nil
+
+            opt      :'prefixes-file', 'YML file with prefixes for uri replacement in RDF output. The default is to use standard prefixes hardcoded in a project.',
+                     type:    String,
+                     long:    :'prefixes-file',
+                     short:   :p,
+                     default: nil
           end
 
         input_io = which_io(parsed_options[:'input-file'])
@@ -283,7 +289,9 @@ Subcommands:
         end
 
         begin
-          BEL.translate(input_io, from_format, to_format, $stdout)
+          BEL.translate(input_io, from_format, to_format, $stdout, {
+              prefixes_file: parsed_options[:'prefixes-file']
+          })
         ensure
           $stdout.close
         end
