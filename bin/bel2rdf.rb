@@ -46,6 +46,10 @@ OptionParser.new do |opts|
     options[:format] = format.downcase
   end
 
+  opts.on('-p', '--prefixes FILE', 'YML file with prefixes for uri replacement in RDF output. The default is to use standard prefixes hardcoded in a project.') do |prefixes_file|
+    options[:prefixes_file] = prefixes_file
+  end
+
   opts.on('-s', '--[no-]schema', 'Write BEL RDF schema? The default is to include the schema in the output.') do |schema|
     options[:schema] = schema
   end
@@ -55,6 +59,12 @@ if options[:bel] and not File.exists? options[:bel]
   $stderr.puts "No file for bel, #{options[:bel]}"
   exit 1
 end
+
+if options[:prefixes_file] and not File.exists? options[:prefixes_file]
+  $stderr.puts "No prefixes file, #{options[:prefixes_file]}"
+  exit 1
+end
+
 unless RDF_TRANSLATORS.include? options[:format]
   $stderr.puts "Format must be one of: #{RDF_TRANSLATORS.join(', ')}"
   exit 1
@@ -77,7 +87,7 @@ end
 # read bel content
 input_io =
   if options[:bel]
-    File.open(options[:bel], :external_encoding => 'UTF-8')
+    File.open(options[:bel], external_encoding: 'UTF-8')
   else
     $stdin
   end
@@ -87,7 +97,8 @@ validate_translator!(options[:format])
 begin
   BEL.translate(input_io, :bel, options[:format], $stdout,
     {
-      :write_schema => options[:schema]
+      write_schema: options[:schema],
+      prefixes_file: options[:prefixes_file]
     }
   )
 ensure

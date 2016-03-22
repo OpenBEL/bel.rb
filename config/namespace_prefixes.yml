@@ -1,0 +1,6 @@
+belr: 'http://www.openbel.org/bel/'
+belv: 'http://www.openbel.org/vocabulary/'
+bele: 'http://www.openbel.org/evidence/'
+pubmed: 'http://bio2rdf.org/pubmed'
+rdfs: 'http://www.w3.org/2000/01/rdf-schema#'
+rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
