@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
                                   ]
   spec.files                    = [
                                     Dir.glob('lib/**/*.rb'),
+                                    Dir.glob('lib/**/*.yml'),
                                     Dir.glob('ext/**/*.{c,h,def}'),
                                     Dir.glob('lib/bel/libbel/ext/{java,mingw}/**/*.{so,bundle}'),
                                     __FILE__,

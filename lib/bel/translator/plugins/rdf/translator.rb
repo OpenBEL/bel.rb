@@ -96,10 +96,8 @@ module BELRDF
         :stream => true
       )
 
-      prefixes_file = options[:prefixes_file] ? options[:prefixes_file] : Pathname.new('config/namespace_prefixes.yml')
-
-      prefixes = YAML::load_file(prefixes_file)
-
+      # load RDF prefixes
+      prefixes = load_prefixes(options)
       prefixes.each do |prefix, uri|
         rdf_writer.prefix prefix.to_sym, RDF::URI(uri)
       end
@@ -112,6 +110,19 @@ module BELRDF
       rdf_writer.flush
 
       io
+    end
+
+    def load_prefixes(options)
+      prefix_file = options[:prefixes_file] || default_prefix_file
+      YAML::load_file(prefix_file)
+    end
+
+    def default_prefix_file
+      File.join(
+        File.expand_path(File.dirname(__FILE__)),
+        'config',
+        'namespace_prefixes.yml'
+      )
     end
   end
 end
