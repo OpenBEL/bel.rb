@@ -234,7 +234,29 @@ Subcommands:
         parsed_options =
           Trollop::options do
             synopsis "Translates BEL evidence between formats using translator plugins."
-            usage    "[OPTIONS]... translate [OPTIONS] FROM_TRANSLATOR TO_TRANSLATOR"
+            usage    <<-DOC.gsub(/^ {14}/, '')
+              [OPTIONS]... translate [OPTIONS] FROM_TRANSLATOR TO_TRANSLATOR
+
+              From options:
+                None
+              To options:
+                streaming=true|false
+                  Set to "true" to enable streaming writes for translators that support it.
+                  Set to "false" to disable streaming.
+                serialization=discrete|topdown|citation [BEL Script translator]
+                  Set to "discrete" to render each statement with its annotations.
+                  Set to "topdown" to set/unset annotations as needed.
+                  Set to "citation" to use statement groups for each citation.
+                write_schema=true|false
+                  Set to "true" to write RDFS schema for RDF-based translators.
+                  Set to "false" to omit RDFS schema for RDF-based translators.
+                void_dataset_uri=URI
+                  The VoID dataset URI to use for the dataset of an RDF-based translation.
+                rdf_prefix_file=FILE
+                  A YAML file mapping prefix containing key/value pairs. The key is an
+                  RDF prefix to use in the RDF output; the value is the RDF URI for that
+                  prefix. For example, belv: 'http://www.openbel.org/vocabulary/'.
+            DOC
 
             opt      :'input-file', 'The file containing evidence data to translate. If not specified the default is to read from STDIN.',
                      :type    => String,
@@ -254,12 +276,6 @@ Subcommands:
                      :multi   => true,
                      :long    => :'to-option',
                      :short   => :t,
-                     :default => nil
-
-            opt      :'prefixes-file', 'YAML file with prefixes for URI replacement in RDF output. The default is to use standard prefixes hardcoded in a project.',
-                     :type    => String,
-                     :long    => :'prefixes-file',
-                     :short   => :p,
                      :default => nil
           end
 
@@ -303,8 +319,10 @@ Subcommands:
           Trollop::educate
         end
 
-        from_options = map_kv_options(parsed_options, :'from-option')
-        to_options   = map_kv_options(parsed_options, :'to-option')
+        # XXX Merge conflicts.
+        options = {}.
+          merge(map_kv_options(parsed_options, :'from-option')).
+          merge(map_kv_options(parsed_options, :'to-option'))
 
         begin
           BEL.translate(
@@ -312,9 +330,7 @@ Subcommands:
             from_format,
             to_format,
             $stdout,
-            {:prefixes_file => parsed_options[:'prefixes-file']}.
-              merge(from_options).
-              merge(to_options) # XXX Merge conflicts.
+            options
           )
         ensure
           $stdout.close

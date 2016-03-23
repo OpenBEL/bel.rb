@@ -46,8 +46,9 @@ OptionParser.new do |opts|
     options[:format] = format.downcase
   end
 
-  opts.on('-p', '--prefixes FILE', 'YML file with prefixes for uri replacement in RDF output. The default is to use standard prefixes hardcoded in a project.') do |prefixes_file|
-    options[:prefixes_file] = prefixes_file
+
+  opts.on('-p', '--rdf-prefix-file FILE', "A YAML file mapping prefix containing key/value pairs. The key is an RDF prefix to use in the RDF output; the value is the RDF URI for that prefix. For example, belv: 'http://www.openbel.org/vocabulary/'.") do |prefix_file|
+    options[:rdf_prefix_file] = prefix_file
   end
 
   opts.on('-s', '--[no-]schema', 'Write BEL RDF schema? The default is to include the schema in the output.') do |schema|
@@ -60,8 +61,8 @@ if options[:bel] and not File.exists? options[:bel]
   exit 1
 end
 
-if options[:prefixes_file] and not File.exists? options[:prefixes_file]
-  $stderr.puts "No prefixes file, #{options[:prefixes_file]}"
+if options[:rdf_prefix_file] and not File.exists? options[:rdf_prefix_file]
+  $stderr.puts "No RDF prefix file, #{options[:rdf_prefix_file]}"
   exit 1
 end
 
@@ -97,8 +98,8 @@ validate_translator!(options[:format])
 begin
   BEL.translate(input_io, :bel, options[:format], $stdout,
     {
-      write_schema: options[:schema],
-      prefixes_file: options[:prefixes_file]
+      write_schema:    options[:schema],
+      rdf_prefix_file: options[:rdf_prefix_file]
     }
   )
 ensure
