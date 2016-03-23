@@ -11,6 +11,7 @@ module BEL::Translator::Plugins
 
       def initialize(data, options = {})
         @data                     = data
+        @streaming                = options.fetch(:streaming, false)
         @annotation_reference_map = options.fetch(:annotation_reference_map, nil)
         @namespace_reference_map  = options.fetch(:namespace_reference_map, nil)
       end
