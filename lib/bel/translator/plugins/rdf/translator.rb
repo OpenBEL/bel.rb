@@ -121,7 +121,7 @@ module BELRDF
       File.join(
         File.expand_path(File.dirname(__FILE__)),
         'config',
-        'namespace_prefixes.yml'
+        'default_prefixes.yml'
       )
     end
   end
