@@ -113,7 +113,7 @@ module BELRDF
     end
 
     def load_prefixes(options)
-      prefix_file = options[:prefixes_file] || default_prefix_file
+      prefix_file = options[:rdf_prefix_file] || default_prefix_file
       YAML::load_file(prefix_file)
     end
 
