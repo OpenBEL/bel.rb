@@ -42,9 +42,12 @@ module BELRDF
       end
 
       # update namespace resource
-      if resource_override
+      if resource_override && resource_override['namespaces']
         ro_ind = resource_override['namespaces'].index { |mapping|
-          mapping['remap']['from']['prefix'] == @ns.prefix.to_s and mapping['remap']['from']['url'] == @ns.url
+          mapping['remap'] && mapping['remap'].is_a?(Hash) &&
+          mapping['remap']['from'] && mapping['remap']['from'].is_a?(Hash) &&
+          mapping['remap']['from']['prefix'] == @ns.prefix.to_s &&
+          mapping['remap']['from']['url'] == @ns.url
         }
         if ro_ind
           @ns.prefix = resource_override['namespaces'][ro_ind]['remap']['to']['prefix']
@@ -295,9 +298,12 @@ module BELRDF
 
         # update annotations resource
         anno_rdf_uri = nil
-        if resource_override
+        if resource_override && resource_override['annotations']
           ro_ind = resource_override['annotations'].index { |mapping|
+            mapping['remap'] && mapping['remap'].is_a?(Hash) &&
+            mapping['remap']['from'] && mapping['remap']['from'].is_a?(Hash) &&
             mapping['remap']['from']['keyword'] == name
+
           }
           if ro_ind
             anno_rdf_uri = resource_override['annotations'][ro_ind]['remap']['to']['rdf_uri']
