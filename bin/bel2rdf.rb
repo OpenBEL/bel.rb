@@ -54,6 +54,10 @@ OptionParser.new do |opts|
   opts.on('-s', '--[no-]schema', 'Write BEL RDF schema? The default is to include the schema in the output.') do |schema|
     options[:schema] = schema
   end
+
+  opts.on('-r', '--resource-override FILE', 'A YAML file with resource override.') do |resource_override|
+    options[:resource_override] = resource_override
+  end
 end.parse!
 
 if options[:bel] and not File.exists? options[:bel]
@@ -63,6 +67,11 @@ end
 
 if options[:rdf_prefix_file] and not File.exists? options[:rdf_prefix_file]
   $stderr.puts "No RDF prefix file, #{options[:rdf_prefix_file]}"
+  exit 1
+end
+
+if options[:resource_override] and not File.exist? options[:resource_override]
+  $stderr.puts "No file for resource_override, #{options[:resource_override]}"
   exit 1
 end
 
@@ -99,7 +108,8 @@ begin
   BEL.translate(input_io, :bel, options[:format], $stdout,
     {
       write_schema:    options[:schema],
-      rdf_prefix_file: options[:rdf_prefix_file]
+      rdf_prefix_file: options[:rdf_prefix_file],
+      resource_override: options[:resource_override]
     }
   )
 ensure

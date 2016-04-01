@@ -1,0 +1,89 @@
+##################################################################################
+# Document Properties Section
+
+SET DOCUMENT Name = "BEL Framework Small Corpus Document"
+SET DOCUMENT Description = "Approximately 2000 hand curated statements drawn from 57 PubMeds."
+SET DOCUMENT Version = 20150611
+SET DOCUMENT Copyright = "Copyright (c) 2011-2015, Selventa. All Rights Reserved."
+SET DOCUMENT Authors = Selventa
+SET DOCUMENT Licenses = "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License"
+SET DOCUMENT ContactInfo = "support@belframework.org"
+
+##################################################################################
+# Definitions Section
+
+DEFINE NAMESPACE CHEBI AS URL "http://resource.belframework.org/belframework/20150611/namespace/chebi.belns"
+DEFINE NAMESPACE CHEBIID AS URL "http://resource.belframework.org/belframework/20150611/namespace/chebi-ids.belns"
+DEFINE NAMESPACE EGID AS URL "http://resource.belframework.org/belframework/20150611/namespace/entrez-gene-ids.belns"
+DEFINE NAMESPACE GOBP AS URL "http://resource.belframework.org/belframework/20150611/namespace/go-biological-process.belns"
+DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"
+DEFINE NAMESPACE MESHCS AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-cellular-structures.belns"
+DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-diseases.belns"
+DEFINE NAMESPACE MESHPP AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-processes.belns"
+DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/20150611/namespace/mgi-mouse-genes.belns"
+DEFINE NAMESPACE RGD AS URL "http://resource.belframework.org/belframework/20150611/namespace/rgd-rat-genes.belns"
+DEFINE NAMESPACE SCHEM AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-legacy-chemicals.belns"
+DEFINE NAMESPACE SCOMP AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns"
+DEFINE NAMESPACE SDIS AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-legacy-diseases.belns"
+DEFINE NAMESPACE SFAM AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-protein-families.belns"
+DEFINE NAMESPACE SPID AS URL "http://resource.belframework.org/belframework/20150611/namespace/swissprot-ids.belns"
+
+DEFINE ANNOTATION Anatomy AS URL "http://resource.belframework.org/belframework/20150611/annotation/anatomy.belanno"
+DEFINE ANNOTATION Cell AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell.belanno"
+DEFINE ANNOTATION CellLine AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"
+DEFINE ANNOTATION CellStructure AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell-structure.belanno"
+DEFINE ANNOTATION Disease AS URL "http://resource.belframework.org/belframework/20150611/annotation/disease.belanno"
+DEFINE ANNOTATION MeSHAnatomy AS URL "http://resource.belframework.org/belframework/20150611/annotation/mesh-anatomy.belanno"
+DEFINE ANNOTATION Species AS URL "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"
+DEFINE ANNOTATION TextLocation AS LIST {"Abstract", "Results", "Legend", "Review"}
+
+##################################################################################
+# Statements Section
+
+SET STATEMENT_GROUP = "Group 1"
+
+SET Disease = atherosclerosis
+SET Anatomy = artery
+SET TextLocation = Review
+SET Evidence = "Oxidation and nitration of macromolecules, such as proteins, DNA and lipids, are prominent
+in atherosclerotic arteries."
+SET Citation = {"PubMed","Trends in molecular medicine","12928037","","de Nigris F|Lerman A|Ignarro LJ|Williams-Ignarro S|Sica V|Baker AH|Lerman LO|Geng YJ|Napoli C",""}
+
+path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"lipid oxidation")
+path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"protein oxidation")
+
+SET Evidence = "Arterial cells are highly susceptible to oxidative stress, which can induce both necrosis
+and apoptosis (programmed cell death) [1,2]"
+
+bp(GOBP:"response to oxidative stress") increases bp(GOBP:"apoptotic process")
+bp(GOBP:"response to oxidative stress") increases bp(GOBP:necrosis)
+
+SET Cell = "endothelial cell"
+SET Evidence = "One such risk factor is oxLDL, which exert pro-apoptotic effects on a variety of cell
+lineages, including endothelial cells and VSMCs, both in cultured cells and
+in arteries [19–26]. Increased formation of oxygen radicals (and other radical
+species) facilitates LDL oxidation and influences oxidation-sensitive mechanisms
+[15]."
+
+a(SCHEM:"Oxidized Low Density Lipoprotein") increases bp(GOBP:"apoptotic process")
+
+SET MeSHAnatomy = "Muscle, Smooth, Vascular"
+
+a(SCHEM:"Oxidized Low Density Lipoprotein") increases bp(GOBP:"apoptotic process")
+a(CHEBI:"oxygen radical") increases a(SCHEM:"Oxidized Low Density Lipoprotein")
+
+UNSET STATEMENT_GROUP
+
+SET STATEMENT_GROUP = "Group 2"
+
+SET Cell = fibroblast
+SET TextLocation = Results
+SET Evidence = "We next examined the Akt T-loop Thr308 phosphorylation in wild-type and SIN1−/− cells.
+We found that although Ser473 phosphorylation was completely abolished in
+the SIN1−/− cells, Thr308 phosphorylation of Akt was not blocked (Figure 3A)."
+SET Species = 10090
+
+p(MGI:Mapkap1) increases p(MGI:Akt1,pmod(P,S,473))
+p(MGI:Mapkap1) causesNoChange p(MGI:Akt1,pmod(P,S,308))
+
+UNSET STATEMENT_GROUP

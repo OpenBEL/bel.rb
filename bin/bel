@@ -64,27 +64,41 @@ Subcommands:
             synopsis "Converts BEL to RDF."
             usage    "[OPTIONS]... bel2rdf [OPTIONS]"
 
-            opt      :bel,       'The BEL script to parse and output (Defaults to STDIN).',
-                     :type    => String,
-                     :long    => :bel,
-                     :short   => :b,
-                     :default => nil
+            opt      :bel,                 'The BEL script to parse and output (Defaults to STDIN).',
+                     :type              => String,
+                     :long              => :bel,
+                     :short             => :b,
+                     :default           => nil
 
-            opt      :format,    'The RDF format to output.',
-                     :type    => String,
-                     :long    => :format,
-                     :short   => :f,
-                     :default => 'ntriples'
+            opt      :format,              'The RDF format to output.',
+                     :type              => String,
+                     :long              => :format,
+                     :short             => :f,
+                     :default           => 'ntriples'
 
-            opt      :schema,    'Includes the BEL RDFS schema in RDF output.',
-                     :long    => :schema,
-                     :short   => :s,
-                     :default => false
+            opt      :schema,              'Includes the BEL RDFS schema in RDF output.',
+                     :long              => :schema,
+                     :short             => :s,
+                     :default           => false
+
+            opt      :'rdf-prefix-file',   'A YAML file mapping prefix containing key/value pairs. The key is an RDF prefix to use in the RDF output; the value is the RDF URI for that prefix.',
+                     :type              => String,
+                     :long              => :'rdf-prefix-file',
+                     :short             => :p,
+                     :default           => nil
+
+            opt      :'resource-override', 'A YAML file with resource override.',
+                     :type              => String,
+                     :long              => :'resource-override',
+                     :short             => :r,
+                     :default           => nil
           end
 
-        ARGV.concat(['--bel',    parsed_options[:bel]])    if parsed_options[:bel]
-        ARGV.concat(['--format', parsed_options[:format]]) if parsed_options[:format]
-        ARGV.concat(['--schema', parsed_options[:schema]]) if parsed_options[:schema]
+        ARGV.concat(['--bel',               parsed_options[:bel]])                 if parsed_options[:bel]
+        ARGV.concat(['--format',            parsed_options[:format]])              if parsed_options[:format]
+        ARGV.concat(['--schema',            parsed_options[:schema]])              if parsed_options[:schema]
+        ARGV.concat(['--rdf-prefix-file',   parsed_options[:'rdf-prefix-file']])   if parsed_options[:'rdf-prefix-file']
+        ARGV.concat(['--resource-override', parsed_options[:'resource-override']]) if parsed_options[:'resource-override']
 
         require_relative 'bel2rdf'
       end

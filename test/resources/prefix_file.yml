@@ -1,0 +1,6 @@
+testb:        'http://www.openbel.org/bel/'
+testv:        'http://www.openbel.org/vocabulary/'
+teste:        'http://www.openbel.org/evidence/'
+pp:           'http://bio2rdf.org/pubmed'
+test_rdfs:    'http://www.w3.org/2000/01/rdf-schema#'
+test_rdfs_ns: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'

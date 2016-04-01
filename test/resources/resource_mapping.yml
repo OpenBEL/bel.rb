@@ -1,0 +1,49 @@
+namespaces:
+  - remap:
+      from:
+        prefix:  "CHEBI"
+        url:     "http://resource.belframework.org/belframework/20131211/namespace/chebi.belns"
+      to:
+        prefix:  "HGNC"
+        url:     "http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"
+        rdf_uri: "http://identifiers.org/hgnc/"
+  - remap:
+      from:
+        prefix:  "GOBP"
+        url:     "http://resource.belframework.org/belframework/20150611/namespace/go-biological-process.belns"
+      to:
+        prefix:  "GOBP"
+        url:     "http://resource.belframework.org/belframework/20150611/namespace/go-biological-process.belns"
+        rdf_uri: "http://identifiers.org/ncbigene/"
+  - remap:
+      from:
+        prefix:  "MESHD"
+        url:     "http://resource.belframework.org/belframework/20150611/namespace/mesh-diseases.belns"
+      to:
+        prefix:  "MESHD"
+        url:     "http://resource.belframework.org/belframework/20150611/namespace/mesh-diseases.belns"
+        rdf_uri: "http://identifiers.org/meshd/"
+annotations:
+  - remap:
+      from:
+        keyword:  "Anatomy"
+        type:     "url"
+        domain:   "http://resource.belframework.org/belframework/20131211/annotation/anatomy.belanno"
+      to:
+        keyword:  "Anatomy"
+        type:     "url"
+        domain:   "http://resource.belframework.org/belframework/20131211/annotation/anatomy.belanno"
+        rdf_uri:  "http://identifiers.org/anatomy/"
+  - remap:
+      from:
+        keyword:  "TextLocation"
+        type:     "list"
+        domain:
+          - Abstract
+          - Legend
+          - Review
+      to:
+        keyword: "TextLocation"
+        type:    "pattern"
+        domain:  "Value[0-9]+"
+        rdf_uri:  "http://identifiers.org/text-location/"
