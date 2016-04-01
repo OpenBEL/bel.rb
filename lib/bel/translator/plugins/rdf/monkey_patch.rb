@@ -302,8 +302,10 @@ module BELRDF
           ro_ind = resource_override['annotations'].index { |mapping|
             mapping['remap'] && mapping['remap'].is_a?(Hash) &&
             mapping['remap']['from'] && mapping['remap']['from'].is_a?(Hash) &&
-            mapping['remap']['from']['keyword'] == name
-
+            mapping['remap']['from']['keyword'] == name && (mapping['remap']['from']['type'] == 'url' ||
+            mapping['remap']['from']['type'] == 'list' &&
+            mapping['remap']['from']['domain'] && mapping['remap']['from']['domain'].is_a?(Array) &&
+            mapping['remap']['from']['domain'].include?(anno.value))
           }
           if ro_ind
             anno_rdf_uri = resource_override['annotations'][ro_ind]['remap']['to']['rdf_uri']
