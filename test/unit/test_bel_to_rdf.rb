@@ -5,7 +5,7 @@ require 'rdf/nquads'
 
 class BelToRDFTest < Minitest::Test
   def setup
-    @input_io = File.open('../resources/small_corpus.bel', external_encoding: 'UTF-8')
+    @input_io = File.open('../resources/small_corpus.bel', :external_encoding => 'UTF-8')
     @output_io = File.open("#{Dir.tmpdir}/bel_to_rdf_test.rdf", 'w+')
   end
 
@@ -16,30 +16,30 @@ class BelToRDFTest < Minitest::Test
   end
 
   def test_bel_to_rdf_with_prefix_file
-    rdf_prefix_file = File.open('../resources/prefix_file.yml', external_encoding: 'UTF-8')
+    rdf_prefix_file = File.open('../resources/prefix_file.yml', :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
-        rdf_prefix_file: rdf_prefix_file
+        :rdf_prefix_file => rdf_prefix_file
     })
 
-    checkRDFOutputFileWithPrefixes "#{Dir.tmpdir}/bel_to_rdf_test.rdf", rdfs_prfx: "test_rdfs:", vocab_prfx: "testv:"
+    checkRDFOutputFileWithPrefixes "#{Dir.tmpdir}/bel_to_rdf_test.rdf", :rdfs_prfx => 'test_rdfs:', :vocab_prfx => 'testv:'
   end
 
   def test_bel_to_rdf_with_annotations_override_file
-    resource_mapping_file = File.open('../resources/resource_mapping.yml', external_encoding: 'UTF-8')
+    resource_mapping_file = File.open('../resources/resource_mapping.yml', :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
-        resource_override: resource_mapping_file
+        :resource_override => resource_mapping_file
     })
 
     checkAnnotations "#{Dir.tmpdir}/bel_to_rdf_test.rdf"
   end
 
   def test_bel_to_rdf_with_ns_override_file
-    resource_mapping_file = File.open('../resources/resource_mapping.yml', external_encoding: 'UTF-8')
+    resource_mapping_file = File.open('../resources/resource_mapping.yml', :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
-        resource_override: resource_mapping_file
+        :resource_override => resource_mapping_file
     })
 
     checkNamespaces "#{Dir.tmpdir}/bel_to_rdf_test.rdf"
@@ -56,44 +56,44 @@ class BelToRDFTest < Minitest::Test
     rdfs_prfx = prefixes && prefixes.key?(:rdfs_prfx) ? prefixes[:rdfs_prfx] : 'http://www.w3.org/2000/01/rdf-schema#'
     vocab_prfx = prefixes && prefixes.key?(:vocab_prfx) ? prefixes[:vocab_prfx] : 'http://www.openbel.org/vocabulary/'
     
-    statements = [{"#{rdfs_prfx}label":           'path(MESHD:Atherosclerosis)'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"lipid oxidation")'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}PositiveCorrelation"},
-                  {"#{rdfs_prfx}label":           'path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"lipid oxidation")'},
-                  {"#{rdfs_prfx}label":           'path(MESHD:Atherosclerosis)'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"protein oxidation")'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}PositiveCorrelation"},
-                  {"#{rdfs_prfx}label":           'path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"protein oxidation")'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"response to oxidative stress")'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"apoptotic process")'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}Increases"},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"response to oxidative stress") increases bp(GOBP:"apoptotic process")'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"response to oxidative stress")'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:necrosis)'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}Increases"},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"response to oxidative stress") increases bp(GOBP:necrosis)'},
-                  {"#{rdfs_prfx}label":           'a(SCHEM:"Oxidized Low Density Lipoprotein")'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"apoptotic process")'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}Increases"},
-                  {"#{rdfs_prfx}label":           'a(SCHEM:"Oxidized Low Density Lipoprotein") increases bp(GOBP:"apoptotic process")'},
-                  {"#{rdfs_prfx}label":           'a(SCHEM:"Oxidized Low Density Lipoprotein")'},
-                  {"#{rdfs_prfx}label":           'bp(GOBP:"apoptotic process")'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}Increases"},
-                  {"#{rdfs_prfx}label":           'a(SCHEM:"Oxidized Low Density Lipoprotein") increases bp(GOBP:"apoptotic process")'},
-                  {"#{rdfs_prfx}label":           'a(CHEBI:"oxygen radical")'},
-                  {"#{rdfs_prfx}label":           'a(SCHEM:"Oxidized Low Density Lipoprotein")'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}Increases"},
-                  {"#{rdfs_prfx}label":           'a(CHEBI:"oxygen radical") increases a(SCHEM:"Oxidized Low Density Lipoprotein")'},
-                  {"#{rdfs_prfx}label":           'p(MGI:Mapkap1)'},
-                  {"#{rdfs_prfx}label":           'p(MGI:Akt1,pmod(P,S,473))'},
-                  {"#{rdfs_prfx}label":           'p(MGI:Akt1)'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}Increases"},
-                  {"#{rdfs_prfx}label":           'p(MGI:Mapkap1) increases p(MGI:Akt1,pmod(P,S,473))'},
-                  {"#{rdfs_prfx}label":           'p(MGI:Mapkap1)'},
-                  {"#{rdfs_prfx}label":           'p(MGI:Akt1,pmod(P,S,308))'},
-                  {"#{rdfs_prfx}label":           'p(MGI:Akt1)'},
-                  {"#{vocab_prfx}hasRelationship": "#{vocab_prfx}CausesNoChange"},
-                  {"#{rdfs_prfx}label":           'p(MGI:Mapkap1) causesNoChange p(MGI:Akt1,pmod(P,S,308))'}]
+    statements = [{"#{rdfs_prfx}label" =>           'path(MESHD:Atherosclerosis)'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"lipid oxidation")'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}PositiveCorrelation"},
+                  {"#{rdfs_prfx}label" =>           'path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"lipid oxidation")'},
+                  {"#{rdfs_prfx}label" =>           'path(MESHD:Atherosclerosis)'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"protein oxidation")'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}PositiveCorrelation"},
+                  {"#{rdfs_prfx}label" =>           'path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"protein oxidation")'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"response to oxidative stress")'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"apoptotic process")'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}Increases"},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"response to oxidative stress") increases bp(GOBP:"apoptotic process")'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"response to oxidative stress")'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:necrosis)'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}Increases"},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"response to oxidative stress") increases bp(GOBP:necrosis)'},
+                  {"#{rdfs_prfx}label" =>           'a(SCHEM:"Oxidized Low Density Lipoprotein")'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"apoptotic process")'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}Increases"},
+                  {"#{rdfs_prfx}label" =>           'a(SCHEM:"Oxidized Low Density Lipoprotein") increases bp(GOBP:"apoptotic process")'},
+                  {"#{rdfs_prfx}label" =>           'a(SCHEM:"Oxidized Low Density Lipoprotein")'},
+                  {"#{rdfs_prfx}label" =>           'bp(GOBP:"apoptotic process")'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}Increases"},
+                  {"#{rdfs_prfx}label" =>           'a(SCHEM:"Oxidized Low Density Lipoprotein") increases bp(GOBP:"apoptotic process")'},
+                  {"#{rdfs_prfx}label" =>           'a(CHEBI:"oxygen radical")'},
+                  {"#{rdfs_prfx}label" =>           'a(SCHEM:"Oxidized Low Density Lipoprotein")'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}Increases"},
+                  {"#{rdfs_prfx}label" =>           'a(CHEBI:"oxygen radical") increases a(SCHEM:"Oxidized Low Density Lipoprotein")'},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Mapkap1)'},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Akt1,pmod(P,S,473))'},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Akt1)'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}Increases"},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Mapkap1) increases p(MGI:Akt1,pmod(P,S,473))'},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Mapkap1)'},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Akt1,pmod(P,S,308))'},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Akt1)'},
+                  {"#{vocab_prfx}hasRelationship" => "#{vocab_prfx}CausesNoChange"},
+                  {"#{rdfs_prfx}label" =>           'p(MGI:Mapkap1) causesNoChange p(MGI:Akt1,pmod(P,S,308))'}]
 
     statements
   end
@@ -135,14 +135,14 @@ class BelToRDFTest < Minitest::Test
 
   def checkAnnotations(rdf_file_name)
     first_annotations_pre = [
-        {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/disease/atherosclerosis'},
-        {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://identifiers.org/anatomy/artery'},
-        {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://identifiers.org/text-location/Review'}
+        {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/disease/atherosclerosis'},
+        {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://identifiers.org/anatomy/artery'},
+        {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://identifiers.org/text-location/Review'}
     ]
 
     first_annotations_suf = [
-        {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/disease/atherosclerosis'},
-        {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/anatomy/artery'}
+        {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/disease/atherosclerosis'},
+        {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/anatomy/artery'}
     ]
 
     annotations = first_annotations_pre + first_annotations_suf +
@@ -150,32 +150,32 @@ class BelToRDFTest < Minitest::Test
                   first_annotations_pre + first_annotations_suf +
                   first_annotations_pre + first_annotations_suf +
                   first_annotations_pre +
-                  [{'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'}] +
+                  [{'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'}] +
                   first_annotations_suf +
-                  [{'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'}] +
+                  [{'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'}] +
                   first_annotations_pre +
-                  [{'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
+                  [{'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
                   first_annotations_suf +
-                  [{'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
+                  [{'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
                   first_annotations_pre +
-                  [{'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
+                  [{'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
                   first_annotations_suf +
-                  [{'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
-                  [{'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
+                  [{'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/endothelial%20cell'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/mesh-anatomy/Muscle,%20Smooth,%20Vascular'}] +
+                  [{'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
                    # "Results" annotation is skipped as resource_mapping.yml does not contain "Results" in list of keyword "TextLocation"
-                   # {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://identifiers.org/text-location/Results'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
-                   # {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://identifiers.org/text-location/Results'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
-                   {'http://www.openbel.org/vocabulary/hasAnnotation': 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'}
+                   # {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://identifiers.org/text-location/Results'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
+                   # {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://identifiers.org/text-location/Results'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/cell/fibroblast'},
+                   {'http://www.openbel.org/vocabulary/hasAnnotation' => 'http://www.openbel.org/bel/annotation/species-taxonomy-id/10090'}
                   ]
 
     anno = annotations.shift
