@@ -5,7 +5,9 @@ require 'rdf/nquads'
 
 class BelToRDFTest < Minitest::Test
   def setup
-    @input_io = File.open('../resources/small_corpus.bel', :external_encoding => 'UTF-8')
+    @resources_dir = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'resources')
+    @input_io = File.open("#{@resources_dir}/small_corpus.bel", :external_encoding => 'UTF-8')
+
     @output_io = File.open("#{Dir.tmpdir}/bel_to_rdf_test.rdf", 'w+')
   end
 
@@ -16,7 +18,7 @@ class BelToRDFTest < Minitest::Test
   end
 
   def test_bel_to_rdf_with_prefix_file
-    rdf_prefix_file = File.open('../resources/prefix_file.yml', :external_encoding => 'UTF-8')
+    rdf_prefix_file = File.open("#{@resources_dir}/prefix_file.yml", :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
         :rdf_prefix_file => rdf_prefix_file
@@ -26,7 +28,7 @@ class BelToRDFTest < Minitest::Test
   end
 
   def test_bel_to_rdf_with_annotations_override_file
-    resource_mapping_file = File.open('../resources/resource_mapping.yml', :external_encoding => 'UTF-8')
+    resource_mapping_file = File.open("#{@resources_dir}/resource_mapping.yml", :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
         :resource_override => resource_mapping_file
@@ -36,7 +38,7 @@ class BelToRDFTest < Minitest::Test
   end
 
   def test_bel_to_rdf_with_ns_override_file
-    resource_mapping_file = File.open('../resources/resource_mapping.yml', :external_encoding => 'UTF-8')
+    resource_mapping_file = File.open("#{@resources_dir}/resource_mapping.yml", :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
         :resource_override => resource_mapping_file
