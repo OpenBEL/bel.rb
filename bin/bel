@@ -531,6 +531,32 @@ Subcommands:
         translator.write(random_data, $stdout)
       end
     end
+
+    class RemapfileCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        options = Trollop::options do
+          synopsis "Writes an example resource remap YAML file."
+          usage    "[OPTIONS]... remapfile [OPTIONS]"
+        end
+
+        example_file_path =
+          File.join(
+            File.expand_path(File.dirname(__FILE__)),
+            '..',
+            'lib',
+            'bel',
+            'examples',
+            'remap-file-example.yml')
+        File.open(example_file_path) do |f|
+          $stdout.write(f.read)
+        end
+      end
+    end
   end
 end
 
