@@ -107,6 +107,8 @@ the root of the bel.rb tree:
       translate
       upgrade
       plugins
+      generate
+      remapfile
 
 
     bel
