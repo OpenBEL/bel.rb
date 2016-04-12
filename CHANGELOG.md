@@ -3,6 +3,14 @@ All notable changes to bel.rb will be documented in this file. The curated log b
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.7.0][0.7.0] - 2016-04-12
+### Fixed
+- RDF translation allows for RDF prefixes to be used. Default RDF prefixes are provided ([Issue #69][69]).
+
+### Added
+- Annotation and Namespace definitions can now be remapped using a YAML file ([Issue #92][92]).
+- An example remap file can be obtained from the command `bel remapfile` ([Issue #92][92]).
+
 ## [0.6.0][0.6.0] - 2016-03-15
 ### Fixed
 - Serialization of BEL Script / XBEL can produce incorrect annotation and namespaces references ([Issue #111][111]).
@@ -91,6 +99,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Development gem dependencies (i.e. byebug, pry, pry-byebug) for debugging.
 
+[0.7.0]:    https://github.com/OpenBEL/bel.rb/compare/0.6.0...0.7.0
 [0.6.0]:    https://github.com/OpenBEL/bel.rb/compare/0.5.0...0.6.0
 [0.5.0]:    https://github.com/OpenBEL/bel.rb/compare/0.4.2...0.5.0
 [0.4.2]:    https://github.com/OpenBEL/bel.rb/compare/0.4.1...0.4.2
@@ -108,12 +117,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [64]:       https://github.com/OpenBEL/bel.rb/issues/64
 [66]:       https://github.com/OpenBEL/bel.rb/issues/66
 [68]:       https://github.com/OpenBEL/bel.rb/issues/68
+[69]:       https://github.com/OpenBEL/bel.rb/issues/69
 [71]:       https://github.com/OpenBEL/bel.rb/issues/71
 [82]:       https://github.com/OpenBEL/bel.rb/issues/82
 [85]:       https://github.com/OpenBEL/bel.rb/issues/85
 [86]:       https://github.com/OpenBEL/bel.rb/pull/86
 [90]:       https://github.com/OpenBEL/bel.rb/issues/90
 [91]:       https://github.com/OpenBEL/bel.rb/issues/91
+[92]:       https://github.com/OpenBEL/bel.rb/issues/92
 [93]:       https://github.com/OpenBEL/bel.rb/issues/93
 [94]:       https://github.com/OpenBEL/bel.rb/issues/94
 [95]:       https://github.com/OpenBEL/bel.rb/issues/95
