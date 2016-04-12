@@ -55,8 +55,8 @@ OptionParser.new do |opts|
     options[:schema] = schema
   end
 
-  opts.on('-r', '--resource-override FILE', 'A YAML file with resource override.') do |resource_override|
-    options[:resource_override] = resource_override
+  opts.on('-r', '--remap-file FILE', 'A YAML file that remaps annotation and namespace definitions. Run "bel remapfile" to get an example of the YAML format.') do |remap_file|
+    options[:remap_file] = remap_file
   end
 end.parse!
 
@@ -66,12 +66,12 @@ if options[:bel] and not File.exists? options[:bel]
 end
 
 if options[:rdf_prefix_file] and not File.exists? options[:rdf_prefix_file]
-  $stderr.puts "No RDF prefix file, #{options[:rdf_prefix_file]}"
+  $stderr.puts "No file for rdf_prefix_file, #{options[:rdf_prefix_file]}"
   exit 1
 end
 
-if options[:resource_override] and not File.exist? options[:resource_override]
-  $stderr.puts "No file for resource_override, #{options[:resource_override]}"
+if options[:remap_file] and not File.exist? options[:remap_file]
+  $stderr.puts "No file for remap_file, #{options[:remap_file]}"
   exit 1
 end
 
@@ -109,7 +109,7 @@ begin
     {
       write_schema:    options[:schema],
       rdf_prefix_file: options[:rdf_prefix_file],
-      resource_override: options[:resource_override]
+      remap_file:      options[:remap_file]
     }
   )
 ensure

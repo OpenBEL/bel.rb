@@ -57,9 +57,9 @@ module BELRDF
 
       wrote_dataset = false
 
-      # read resource override file
-      if options[:resource_override]
-        resource_override = YAML::load_file(options[:resource_override])
+      # read remap file
+      if options[:remap_file]
+        remap = YAML::load_file(options[:remap_file])
       end
 
       rdf_statement_enum = Enumerator.new do |yielder|
@@ -80,7 +80,7 @@ module BELRDF
             wrote_dataset = true
           end
 
-          evidence_uri, statements = evidence.to_rdf(resource_override)
+          evidence_uri, statements = evidence.to_rdf(remap)
           statements.each do |statement|
             yielder << statement
           end

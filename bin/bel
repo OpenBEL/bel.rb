@@ -81,24 +81,24 @@ Subcommands:
                      :short             => :s,
                      :default           => false
 
-            opt      :'rdf-prefix-file',   'A YAML file mapping prefix containing key/value pairs. The key is an RDF prefix to use in the RDF output; the value is the RDF URI for that prefix.',
+            opt      :'rdf-prefix-file',   "A YAML file mapping prefix containing key/value pairs. The key is an RDF prefix to use in the RDF output; the value is the RDF URI for that prefix. For example, belv: 'http://www.openbel.org/vocabulary/'",
                      :type              => String,
                      :long              => :'rdf-prefix-file',
                      :short             => :p,
                      :default           => nil
 
-            opt      :'resource-override', 'A YAML file with resource override.',
+            opt      :'remap-file',        'A YAML file that remaps annotation and namespace definitions. Run "bel remapfile" to get an example of the YAML format.',
                      :type              => String,
-                     :long              => :'resource-override',
+                     :long              => :'remap-file',
                      :short             => :r,
                      :default           => nil
           end
 
-        ARGV.concat(['--bel',               parsed_options[:bel]])                 if parsed_options[:bel]
-        ARGV.concat(['--format',            parsed_options[:format]])              if parsed_options[:format]
-        ARGV.concat(['--schema',            parsed_options[:schema]])              if parsed_options[:schema]
-        ARGV.concat(['--rdf-prefix-file',   parsed_options[:'rdf-prefix-file']])   if parsed_options[:'rdf-prefix-file']
-        ARGV.concat(['--resource-override', parsed_options[:'resource-override']]) if parsed_options[:'resource-override']
+        ARGV.concat(['--bel',             parsed_options[:bel]])               if parsed_options[:bel]
+        ARGV.concat(['--format',          parsed_options[:format]])            if parsed_options[:format]
+        ARGV.concat(['--schema',          parsed_options[:schema]])            if parsed_options[:schema]
+        ARGV.concat(['--rdf-prefix-file', parsed_options[:'rdf-prefix-file']]) if parsed_options[:'rdf-prefix-file']
+        ARGV.concat(['--remap-file',      parsed_options[:'remap-file']])      if parsed_options[:'remap-file']
 
         require_relative 'bel2rdf'
       end
@@ -270,6 +270,9 @@ Subcommands:
                   A YAML file mapping prefix containing key/value pairs. The key is an
                   RDF prefix to use in the RDF output; the value is the RDF URI for that
                   prefix. For example, belv: 'http://www.openbel.org/vocabulary/'.
+                remap_file=FILE
+                  A YAML file that remaps annotation and namespace definitions.
+                  Run "bel remapfile" to get an example of the YAML format.
             DOC
 
             opt      :'input-file', 'The file containing evidence data to translate. If not specified the default is to read from STDIN.',

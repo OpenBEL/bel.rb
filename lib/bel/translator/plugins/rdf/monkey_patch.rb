@@ -35,24 +35,24 @@ module BELRDF
       @ns.to_rdf_vocabulary[URI::encode(@value)]
     end
 
-    def to_rdf(graph_name = nil, resource_override = nil)
+    def to_rdf(graph_name = nil, remap = nil)
       # resolve encoding to make rdf:type assertions
       if !@enc && @ns.is_a?(BEL::Namespace::NamespaceDefinition)
         @enc = @ns[@value].enc
       end
 
       # update namespace resource
-      if resource_override && resource_override['namespaces']
-        ro_ind = resource_override['namespaces'].index { |mapping|
+      if remap && remap['namespaces']
+        ro_ind = remap['namespaces'].index { |mapping|
           mapping['remap'] && mapping['remap'].is_a?(Hash) &&
           mapping['remap']['from'] && mapping['remap']['from'].is_a?(Hash) &&
           mapping['remap']['from']['prefix'] == @ns.prefix.to_s &&
           mapping['remap']['from']['url'] == @ns.url
         }
         if ro_ind
-          @ns.prefix = resource_override['namespaces'][ro_ind]['remap']['to']['prefix']
-          @ns.url = resource_override['namespaces'][ro_ind]['remap']['to']['url']
-          @ns.rdf_uri = resource_override['namespaces'][ro_ind]['remap']['to']['rdf_uri']
+          @ns.prefix = remap['namespaces'][ro_ind]['remap']['to']['prefix']
+          @ns.url = remap['namespaces'][ro_ind]['remap']['to']['url']
+          @ns.rdf_uri = remap['namespaces'][ro_ind]['remap']['to']['rdf_uri']
         end
       end
 
@@ -112,7 +112,7 @@ module BELRDF
       end
     end
 
-    def to_rdf(graph_name = nil, resource_override = nil)
+    def to_rdf(graph_name = nil, remap = nil)
       uri = to_uri
       statements = []
 
@@ -151,14 +151,14 @@ module BELRDF
           end
           # link root protein abundance as hasChild
           root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, resource_override)
+          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
           statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, root_id, :graph_name => graph_name)
           statements.concat(root_statements)
           return [uri, statements]
         elsif @arguments.find{|x| x.is_a? ::BEL::Model::Term and BELRDF::PROTEIN_VARIANT.include? x.fx}
           # link root protein abundance as hasChild
           root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, resource_override)
+          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
           statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, root_id, :graph_name => graph_name)
           statements.concat(root_statements)
           return [uri, statements]
@@ -169,14 +169,14 @@ module BELRDF
       @arguments.find_all{ |x|
         x.is_a? ::BEL::Model::Parameter and x.ns != nil
       }.each do |param|
-        param_uri, encoding_statements = param.to_rdf(graph_name, resource_override)
+        param_uri, encoding_statements = param.to_rdf(graph_name, remap)
         statements.concat(encoding_statements)
         statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasConcept, param_uri, :graph_name => graph_name)
       end
 
       # BELRDF::BELV.hasChild]
       @arguments.find_all{|x| x.is_a? ::BEL::Model::Term}.each do |child|
-        (child_id, child_statements) = child.to_rdf(graph_name, resource_override)
+        (child_id, child_statements) = child.to_rdf(graph_name, remap)
         statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, child_id, :graph_name => graph_name)
         statements.concat(child_statements)
       end
@@ -223,20 +223,20 @@ module BELRDF
       end
     end
 
-    def to_rdf(graph_name = nil, resource_override = nil)
+    def to_rdf(graph_name = nil, remap = nil)
       uri        = to_uri
       statements = []
 
       case
       when subject_only?
-        (sub_uri, sub_statements) = @subject.to_rdf(graph_name, resource_override)
+        (sub_uri, sub_statements) = @subject.to_rdf(graph_name, remap)
         statements << ::RDF::Statement(uri, BELRDF::BELV.hasSubject, sub_uri, :graph_name => graph_name)
         statements.concat(sub_statements)
       when simple?
-        (sub_uri, sub_statements) = @subject.to_rdf(graph_name, resource_override)
+        (sub_uri, sub_statements) = @subject.to_rdf(graph_name, remap)
         statements.concat(sub_statements)
 
-        (obj_uri, obj_statements) = @object.to_rdf(graph_name, resource_override)
+        (obj_uri, obj_statements) = @object.to_rdf(graph_name, remap)
         statements.concat(obj_statements)
 
         rel = BELRDF::RELATIONSHIP_TYPE[@relationship.to_s]
@@ -244,9 +244,9 @@ module BELRDF
         statements << ::RDF::Statement(uri, BELRDF::BELV.hasObject, obj_uri,   :graph_name => graph_name)
         statements << ::RDF::Statement(uri, BELRDF::BELV.hasRelationship, rel, :graph_name => graph_name)
       when nested?
-        (sub_uri, sub_statements) = @subject.to_rdf(graph_name, resource_override)
-        (nsub_uri, nsub_statements) = @object.subject.to_rdf(graph_name, resource_override)
-        (nobj_uri, nobj_statements) = @object.object.to_rdf(graph_name, resource_override)
+        (sub_uri, sub_statements) = @subject.to_rdf(graph_name, remap)
+        (nsub_uri, nsub_statements) = @object.subject.to_rdf(graph_name, remap)
+        (nobj_uri, nobj_statements) = @object.object.to_rdf(graph_name, remap)
         statements.concat(sub_statements)
         statements.concat(nsub_statements)
         statements.concat(nobj_statements)
@@ -298,8 +298,8 @@ module BELRDF
 
         # update annotations resource
         anno_rdf_uri = nil
-        if resource_override && resource_override['annotations']
-          ro_ind = resource_override['annotations'].index { |mapping|
+        if remap && remap['annotations']
+          ro_ind = remap['annotations'].index { |mapping|
             mapping['remap'] && mapping['remap'].is_a?(Hash) &&
             mapping['remap']['from'] && mapping['remap']['from'].is_a?(Hash) &&
             mapping['remap']['from']['keyword'] == name && (mapping['remap']['from']['type'] == 'url' ||
@@ -308,7 +308,7 @@ module BELRDF
             mapping['remap']['from']['domain'].include?(anno.value))
           }
           if ro_ind
-            anno_rdf_uri = resource_override['annotations'][ro_ind]['remap']['to']['rdf_uri']
+            anno_rdf_uri = remap['annotations'][ro_ind]['remap']['to']['rdf_uri']
             anno_rdf_uri << '/' unless anno_rdf_uri.end_with?('/')
           end
         end
@@ -342,7 +342,7 @@ module BELRDF
       BELRDF::BELE[BELRDF.generate_uuid]
     end
 
-    def to_rdf(resource_override = nil)
+    def to_rdf(remap = nil)
       uri                       = to_uri
 
       # parse BEL statement if necessary
@@ -351,7 +351,7 @@ module BELRDF
       end
 
       # convert BEL statement to RDF
-      statement_uri, statements = bel_statement.to_rdf(uri, resource_override)
+      statement_uri, statements = bel_statement.to_rdf(uri, remap)
 
       statements << ::RDF::Statement.new(uri,           BELRDF::RDF.type,          BELRDF::BELV.Evidence, :graph_name => uri)
       statements << ::RDF::Statement.new(statement_uri, BELRDF::BELV.hasEvidence,  uri,                     :graph_name => uri)

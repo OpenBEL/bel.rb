@@ -31,7 +31,7 @@ class BelToRDFTest < Minitest::Test
     resource_mapping_file = File.open("#{@resources_dir}/resource_mapping.yml", :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
-        :resource_override => resource_mapping_file
+        :remap_file => resource_mapping_file
     })
 
     checkAnnotations "#{Dir.tmpdir}/bel_to_rdf_test.rdf"
@@ -41,7 +41,7 @@ class BelToRDFTest < Minitest::Test
     resource_mapping_file = File.open("#{@resources_dir}/resource_mapping.yml", :external_encoding => 'UTF-8')
 
     BEL.translate(@input_io, :bel, :turtle, @output_io, {
-        :resource_override => resource_mapping_file
+        :remap_file => resource_mapping_file
     })
 
     checkNamespaces "#{Dir.tmpdir}/bel_to_rdf_test.rdf"
