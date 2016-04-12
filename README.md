@@ -71,7 +71,6 @@ the root of the bel.rb tree:
     export BR_ISOLATE="yes"
 ```
 
-
 ## branches
 
 - master branch
@@ -111,7 +110,7 @@ the root of the bel.rb tree:
 
 
     bel
-    Copyright (C) 2015 OpenBEL
+    Copyright (C) 2016 OpenBEL
     Apache License, Version 2.0, January 2004
     http://www.apache.org/licenses/
 
@@ -120,7 +119,6 @@ the root of the bel.rb tree:
       -e, --version    Print version and exit
       -h, --help       Show this message
 ```
-
 
 **bel2rdf.rb**: Converts BEL to RDF.
 
