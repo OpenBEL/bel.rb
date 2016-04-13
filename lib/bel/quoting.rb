@@ -176,8 +176,6 @@ module BEL
       }
     end
 
-    ## Deprecated, remove in [0.6.0].
-
     # @deprecated Use {#quote_if_needed} instead. Will be removed in a
     #             future release.
     def ensure_quotes identifier

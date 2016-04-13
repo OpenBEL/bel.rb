@@ -7,7 +7,7 @@ require 'bel/vendor/trollop'
 
 VERSION_BANNER = <<-VERSION
 bel #{BEL::VERSION}
-Copyright (C) 2015 OpenBEL
+Copyright (C) #{Time.now.year} OpenBEL
 Apache License, Version 2.0, January 2004
 http://www.apache.org/licenses/
 VERSION
@@ -64,27 +64,41 @@ Subcommands:
             synopsis "Converts BEL to RDF."
             usage    "[OPTIONS]... bel2rdf [OPTIONS]"
 
-            opt      :bel,       'The BEL script to parse and output (Defaults to STDIN).',
-                     :type    => String,
-                     :long    => :bel,
-                     :short   => :b,
-                     :default => nil
+            opt      :bel,                 'The BEL script to parse and output (Defaults to STDIN).',
+                     :type              => String,
+                     :long              => :bel,
+                     :short             => :b,
+                     :default           => nil
 
-            opt      :format,    'The RDF format to output.',
-                     :type    => String,
-                     :long    => :format,
-                     :short   => :f,
-                     :default => 'ntriples'
+            opt      :format,              'The RDF format to output.',
+                     :type              => String,
+                     :long              => :format,
+                     :short             => :f,
+                     :default           => 'ntriples'
 
-            opt      :schema,    'Includes the BEL RDFS schema in RDF output.',
-                     :long    => :schema,
-                     :short   => :s,
-                     :default => false
+            opt      :schema,              'Includes the BEL RDFS schema in RDF output.',
+                     :long              => :schema,
+                     :short             => :s,
+                     :default           => false
+
+            opt      :'rdf-prefix-file',   "A YAML file mapping prefix containing key/value pairs. The key is an RDF prefix to use in the RDF output; the value is the RDF URI for that prefix. For example, belv: 'http://www.openbel.org/vocabulary/'",
+                     :type              => String,
+                     :long              => :'rdf-prefix-file',
+                     :short             => :p,
+                     :default           => nil
+
+            opt      :'remap-file',        'A YAML file that remaps annotation and namespace definitions. Run "bel remapfile" to get an example of the YAML format.',
+                     :type              => String,
+                     :long              => :'remap-file',
+                     :short             => :r,
+                     :default           => nil
           end
 
-        ARGV.concat(['--bel',    parsed_options[:bel]])    if parsed_options[:bel]
-        ARGV.concat(['--format', parsed_options[:format]]) if parsed_options[:format]
-        ARGV.concat(['--schema', parsed_options[:schema]]) if parsed_options[:schema]
+        ARGV.concat(['--bel',             parsed_options[:bel]])               if parsed_options[:bel]
+        ARGV.concat(['--format',          parsed_options[:format]])            if parsed_options[:format]
+        ARGV.concat(['--schema',          parsed_options[:schema]])            if parsed_options[:schema]
+        ARGV.concat(['--rdf-prefix-file', parsed_options[:'rdf-prefix-file']]) if parsed_options[:'rdf-prefix-file']
+        ARGV.concat(['--remap-file',      parsed_options[:'remap-file']])      if parsed_options[:'remap-file']
 
         require_relative 'bel2rdf'
       end
@@ -256,6 +270,9 @@ Subcommands:
                   A YAML file mapping prefix containing key/value pairs. The key is an
                   RDF prefix to use in the RDF output; the value is the RDF URI for that
                   prefix. For example, belv: 'http://www.openbel.org/vocabulary/'.
+                remap_file=FILE
+                  A YAML file that remaps annotation and namespace definitions.
+                  Run "bel remapfile" to get an example of the YAML format.
             DOC
 
             opt      :'input-file', 'The file containing evidence data to translate. If not specified the default is to read from STDIN.',
@@ -512,6 +529,32 @@ Subcommands:
         end
 
         translator.write(random_data, $stdout)
+      end
+    end
+
+    class RemapfileCommand
+
+      def initialize(global_options)
+        @global_options = global_options
+      end
+
+      def run
+        options = Trollop::options do
+          synopsis "Writes an example resource remap YAML file."
+          usage    "[OPTIONS]... remapfile [OPTIONS]"
+        end
+
+        example_file_path =
+          File.join(
+            File.expand_path(File.dirname(__FILE__)),
+            '..',
+            'lib',
+            'bel',
+            'examples',
+            'remap-file-example.yml')
+        File.open(example_file_path) do |f|
+          $stdout.write(f.read)
+        end
       end
     end
   end

@@ -54,6 +54,10 @@ OptionParser.new do |opts|
   opts.on('-s', '--[no-]schema', 'Write BEL RDF schema? The default is to include the schema in the output.') do |schema|
     options[:schema] = schema
   end
+
+  opts.on('-r', '--remap-file FILE', 'A YAML file that remaps annotation and namespace definitions. Run "bel remapfile" to get an example of the YAML format.') do |remap_file|
+    options[:remap_file] = remap_file
+  end
 end.parse!
 
 if options[:bel] and not File.exists? options[:bel]
@@ -62,7 +66,12 @@ if options[:bel] and not File.exists? options[:bel]
 end
 
 if options[:rdf_prefix_file] and not File.exists? options[:rdf_prefix_file]
-  $stderr.puts "No RDF prefix file, #{options[:rdf_prefix_file]}"
+  $stderr.puts "No file for rdf_prefix_file, #{options[:rdf_prefix_file]}"
+  exit 1
+end
+
+if options[:remap_file] and not File.exist? options[:remap_file]
+  $stderr.puts "No file for remap_file, #{options[:remap_file]}"
   exit 1
 end
 
@@ -99,7 +108,8 @@ begin
   BEL.translate(input_io, :bel, options[:format], $stdout,
     {
       write_schema:    options[:schema],
-      rdf_prefix_file: options[:rdf_prefix_file]
+      rdf_prefix_file: options[:rdf_prefix_file],
+      remap_file:      options[:remap_file]
     }
   )
 ensure

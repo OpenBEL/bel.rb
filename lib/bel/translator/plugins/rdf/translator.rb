@@ -57,6 +57,11 @@ module BELRDF
 
       wrote_dataset = false
 
+      # read remap file
+      if options[:remap_file]
+        remap = YAML::load_file(options[:remap_file])
+      end
+
       rdf_statement_enum = Enumerator.new do |yielder|
         # enumerate BEL schema
         @rdf_schema.each do |schema_statement|
@@ -75,7 +80,7 @@ module BELRDF
             wrote_dataset = true
           end
 
-          evidence_uri, statements = evidence.to_rdf
+          evidence_uri, statements = evidence.to_rdf(remap)
           statements.each do |statement|
             yielder << statement
           end
