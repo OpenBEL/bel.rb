@@ -8,10 +8,13 @@ module BELRDF
   BELR   = ::RDF::Vocabulary.new('http://www.openbel.org/bel/')
   BELV   = ::RDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
   BELE   = ::RDF::Vocabulary.new('http://www.openbel.org/evidence/')
+  DC     = ::RDF::Vocab::DC
+  FOAF   = ::RDF::Vocab::FOAF
   PUBMED = ::RDF::Vocabulary.new('http://bio2rdf.org/pubmed:')
   RDF    = ::RDF
   RDFS   = ::RDF::Vocab::RDFS
   SKOS   = ::RDF::Vocab::SKOS
+  VOID   = ::RDF::Vocab::VOID
   XSD    = ::RDF::Vocab::XSD
 
   # annotations

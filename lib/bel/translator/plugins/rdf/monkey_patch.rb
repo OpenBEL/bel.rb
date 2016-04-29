@@ -1,4 +1,5 @@
 require          'bel/evidence_model'
+require_relative 'bel_schema'
 require_relative 'uuid'
 
 module BELRDF
@@ -267,7 +268,7 @@ module BELRDF
 
       # common statement triples
       statements << ::RDF::Statement.new(uri, BELRDF::RDF.type, BELRDF::BELV.Statement,     :graph_name => graph_name)
-      statements << ::RDF::Statement.new(uri, ::RDF::RDFS.label, to_s.force_encoding('UTF-8'),  :graph_name => graph_name)
+      statements << ::RDF::Statement.new(uri, BELRDF::RDFS.label, to_s.force_encoding('UTF-8'),  :graph_name => graph_name)
 
       # evidence
       evidence    = BELRDF::BELE[BELRDF.generate_uuid]
@@ -397,16 +398,16 @@ module BELRDF
       return nil if !document_header || !document_header.is_a?(Hash)
 
       triples = ::RDF::Repository.new
-      triples << ::RDF::Statement.new(void_dataset_uri, ::RDF.type, ::RDF::VOID.Dataset)
+      triples << ::RDF::Statement.new(void_dataset_uri, ::RDF.type, BELRDF::VOID.Dataset)
 
       name = version = nil
       document_header.each do |property, value|
         case property
           when /name/i
             name     = value.to_s
-            triples << ::RDF::Statement.new(void_dataset_uri, ::RDF::DC.title, name)
+            triples << ::RDF::Statement.new(void_dataset_uri, BELRDF::DC.title, name)
           when /description/i
-            triples << ::RDF::Statement.new(void_dataset_uri, ::RDF::DC.description, value.to_s)
+            triples << ::RDF::Statement.new(void_dataset_uri, BELRDF::DC.description, value.to_s)
           when /version/i
             version  = value.to_s
           when /copyright/i
@@ -423,10 +424,10 @@ module BELRDF
           when /authors/i
             if value.respond_to?(:each)
               value.each do |v|
-                triples << ::RDF::Statement.new(void_dataset_uri, ::RDF::DC.creator, v.to_s)
+                triples << ::RDF::Statement.new(void_dataset_uri, BELRDF::DC.creator, v.to_s)
               end
             else
-              triples << ::RDF::Statement.new(void_dataset_uri, ::RDF::DC.creator, value.to_s)
+              triples << ::RDF::Statement.new(void_dataset_uri, BELRDF::DC.creator, value.to_s)
             end
           when /licenses/i
             value = value.to_s
@@ -436,17 +437,17 @@ module BELRDF
                     else
                       value
                     end
-            triples << ::RDF::Statement.new(void_dataset_uri, ::RDF::DC.license, value)
+            triples << ::RDF::Statement.new(void_dataset_uri, BELRDF::DC.license, value)
           when /contactinfo/i
-            triples << ::RDF::Statement.new(void_dataset_uri, ::RDF::DC.publisher, :publisher)
-            triples << ::RDF::Statement.new(:publisher, ::RDF.type,          ::RDF::FOAF.Person)
-            triples << ::RDF::Statement.new(:publisher, ::RDF::FOAF.mbox,     value.to_s)
+            triples << ::RDF::Statement.new(void_dataset_uri, BELRDF::DC.publisher, :publisher)
+            triples << ::RDF::Statement.new(:publisher,       ::RDF.type,           BELRDF::FOAF.Person)
+            triples << ::RDF::Statement.new(:publisher,       BELRDF::FOAF.mbox,    value.to_s)
         end
       end
 
       if name && version
         identifier = "#{name}/#{version}"
-        triples << ::RDF::Statement.new(void_dataset_uri, ::RDF::DC.identifier, identifier)
+        triples << ::RDF::Statement.new(void_dataset_uri, BELRDF::DC.identifier, identifier)
       end
 
       triples
