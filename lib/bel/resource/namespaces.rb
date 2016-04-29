@@ -1,28 +1,28 @@
 require          'rdf'
+require          'rdf/vocab'
 require_relative 'namespace'
 
 module BEL
   module Resource
-
-    # TODO Document
+    # Namespaces allows access to all NamespaceConceptScheme RDF Resources
+    # available in the resources dataset.
     class Namespaces
 
-      # TODO Document
-      QUERY_NAMESPACES = RDF::Query.new do
-        pattern [:uri, RDF.type, BELV.NamespaceConceptScheme]
-      end
+      BELV = RDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
+      SKOS = RDF::Vocab::SKOS
 
-      # TODO Document
       def initialize(rdf_repository)
         @rdf_repository = rdf_repository
       end
 
-      # TODO Document
       def each
         return to_enum(:each) unless block_given?
 				@rdf_repository.
-					query(QUERY_NAMESPACES) { |solution|
-						yield Namespace.new(@rdf_repository, solution.uri)
+					query(
+            :predicate => RDF.type,
+            :object => BELV.NamespaceConceptScheme) { |solution|
+
+						yield Namespace.new(@rdf_repository, solution.subject)
 					}
       end
 
@@ -58,7 +58,7 @@ module BEL
 
         # match input as namespace prefLabel
 				label  = namespace_query(
-					:predicate => RDF::SKOS.prefLabel,
+					:predicate => SKOS.prefLabel,
 					:object    => nlit
 				)
 				return Namespace.new(@rdf_repository, label.subject) if label

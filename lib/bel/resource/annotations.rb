@@ -1,27 +1,28 @@
+require          'rdf'
+require          'rdf/vocab'
 require_relative 'annotation'
 
 module BEL
   module Resource
-
-    # TODO Document
+    # Annotations allows access to all AnnotationConceptScheme RDF Resources
+    # available in the resources dataset.
     class Annotations
 
-      # TODO Document
-      QUERY_ANNOTATIONS = RDF::Query.new do
-        pattern [:uri, RDF.type, BELV.AnnotationConceptScheme]
-      end
+      BELV = RDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
+      SKOS = RDF::Vocab::SKOS
 
-      # TODO Document
       def initialize(rdf_repository)
         @rdf_repository = rdf_repository
       end
 
-      # TODO Document
       def each
         return to_enum(:each) unless block_given?
 				@rdf_repository.
-					query(QUERY_ANNOTATIONS) { |solution|
-						yield Annotation.new(@rdf_repository, solution.uri)
+					query(
+            :predicate => RDF.type,
+            :object => BELV.AnnotationConceptScheme) { |solution|
+
+						yield Annotation.new(@rdf_repository, solution.subject)
 					}
       end
 
@@ -57,7 +58,7 @@ module BEL
 
         # match input as annotation prefLabel
 				label  = annotation_query(
-					:predicate => RDF::SKOS.prefLabel,
+					:predicate => SKOS.prefLabel,
 					:object    => nlit
 				)
 				return Annotation.new(@rdf_repository, label.subject) if label

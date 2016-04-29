@@ -1,30 +1,80 @@
 require          'rdf'
+require          'rdf/vocab'
+require_relative 'concept'
 require_relative 'namespace'
 require_relative 'namespaces'
 
 module BEL
   module Resource
-
-    # TODO Document
+    # NamespaceValue represents a NamespaceConcept RDF Resource and
+    # associated properties.
     class NamespaceValue
+      include Concept
 
       attr_reader :uri
 
-      # TODO Document
+      DC   = RDF::Vocab::DC
+      SKOS = RDF::Vocab::SKOS
+      BELV = RDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
+
       def initialize(rdf_repository, uri)
         @rdf_repository = rdf_repository
         @uri            = RDF::URI(uri.to_s)
         @uri_hash       = @uri.hash
-        @eq_query       = [
-          :subject   => @uri,
-          :predicate => RDF::SKOS.exactMatch
-        ]
-        @ortho_query    = [
-          :subject   => @uri,
-          :predicate => BELV.orthologousMatch
-        ]
-        @predicates     = @rdf_repository.query(:subject => @uri).
-                            each.map(&:predicate).uniq
+      end
+
+      def type
+        solution =
+          @rdf_repository
+          .query([:subject => @uri, :predicate => RDF.type])
+          .map do |solution|
+            solution.object.to_s
+          end
+      end
+
+      def pref_label
+        solution =
+          @rdf_repository
+          .query([:subject => @uri, :predicate => SKOS.prefLabel])
+          .map do |solution|
+            solution.object.to_s
+          end
+      end
+
+      def identifier
+        solution =
+          @rdf_repository
+          .query([:subject => @uri, :predicate => DC.identifier])
+          .map do |solution|
+            solution.object.to_s
+          end
+      end
+
+      def title
+        solution =
+          @rdf_repository
+          .query([:subject => @uri, :predicate => DC.title])
+          .map do |solution|
+            solution.object.to_s
+          end
+      end
+
+      def alt_label
+        solution =
+          @rdf_repository
+          .query([:subject => @uri, :predicate => SKOS.altLabel])
+          .map do |solution|
+            solution.object.to_s
+          end
+      end
+
+      def from_species
+        solution =
+          @rdf_repository
+          .query([:subject => @uri, :predicate => BELV.fromSpecies])
+          .map do |solution|
+            solution.object.to_s
+          end
       end
 
       def namespace
@@ -90,20 +140,6 @@ module BEL
         @uri == other.uri
       end
       alias_method :eql?, :'=='
-
-      protected
-
-      def method_missing(method)
-        method_predicate = @predicates.find { |p|
-          p.qname[1].to_sym == method.to_sym
-        }
-        return nil unless method_predicate
-        objects = @rdf_repository.query(
-          :subject   => @uri,
-          :predicate => method_predicate
-        ).each.map(&:object)
-        objects.size == 1 ? objects.first : objects.to_a
-      end
     end
   end
 end

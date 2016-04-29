@@ -1,28 +1,31 @@
 require          'rdf'
+require          'rdf/vocab'
+require_relative 'concept_scheme'
 require_relative 'namespace_value'
 
 module BEL
   module Resource
-
-    # TODO Document
+    # Namespace represents a NamespaceConceptScheme RDF Resource and
+    # associated properties.
     class Namespace
+      include ConceptScheme
 
       attr_reader :uri
 
-      # TODO Document
+      DC   = RDF::Vocab::DC
+      SKOS = RDF::Vocab::SKOS
+      BELV = RDF::Vocabulary.new('http://www.openbel.org/vocabulary/')
+
       def initialize(rdf_repository, uri)
         @rdf_repository = rdf_repository
         @uri            = RDF::URI(uri.to_s)
         @uri_hash       = @uri.hash
         @concept_query  = [
-          :predicate => RDF::SKOS.inScheme,
+          :predicate => SKOS.inScheme,
           :object    => @uri
         ]
-        @predicates     = @rdf_repository.query(:subject => @uri).
-                            each.map(&:predicate)
       end
 
-      # TODO Document
       def each
         return to_enum(:each) unless block_given?
 				@rdf_repository.
@@ -66,21 +69,21 @@ module BEL
         # match input as namespace value prefLabel
 				vlit  = RDF::Literal(vstr)
 				label = value_query(
-					:predicate => RDF::SKOS.prefLabel,
+					:predicate => SKOS.prefLabel,
 					:object    => vlit
 				)
 			  return NamespaceValue.new(@rdf_repository, label.subject) if label
 
         # match input as namespace value identifier
 				ident = value_query(
-					:predicate => RDF::DC.identifier,
+					:predicate => DC.identifier,
 					:object    => vlit
 				)
 				return NamespaceValue.new(@rdf_repository, ident.subject) if ident
 
         # match input as namespace value title
 				title = value_query(
-					:predicate => RDF::DC.title,
+					:predicate => DC.title,
 					:object    => vlit
 				)
 				return NamespaceValue.new(@rdf_repository, title.subject) if title
@@ -89,7 +92,7 @@ module BEL
       def find_namespace_value_uri(uri_s)
         subject            = RDF::URI(uri_s)
         in_namespace_check = @rdf_repository.has_statement?(
-          RDF::Statement(subject, RDF::SKOS.inScheme, @uri)
+          RDF::Statement(subject, SKOS.inScheme, @uri)
         )
         return nil if !in_namespace_check
 
@@ -102,21 +105,9 @@ module BEL
       def value_query(pattern)
 				@rdf_repository.query(pattern).find { |solution|
 				  @rdf_repository.has_statement?(
-						RDF::Statement(solution.subject, RDF::SKOS.inScheme, @uri)
+						RDF::Statement(solution.subject, SKOS.inScheme, @uri)
 					)
 				}
-      end
-
-      def method_missing(method)
-        method_predicate = @predicates.find { |p|
-          p.qname[1].to_sym == method.to_sym
-        }
-        return nil unless method_predicate
-        objects = @rdf_repository.query(
-          :subject   => @uri,
-          :predicate => method_predicate
-        ).each.map(&:object)
-        objects.size == 1 ? objects.first : objects.to_a
       end
     end
   end
