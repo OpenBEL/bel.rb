@@ -6,7 +6,7 @@ require 'bel/util'
 require 'bel/vendor/trollop'
 
 VERSION_BANNER = <<-VERSION
-bel #{BEL::VERSION}
+bel #{BEL::Version}
 Copyright (C) #{Time.now.year} OpenBEL
 Apache License, Version 2.0, January 2004
 http://www.apache.org/licenses/
