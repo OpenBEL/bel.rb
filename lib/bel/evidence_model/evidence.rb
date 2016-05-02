@@ -14,7 +14,7 @@ module BEL
         ev = Evidence.new
         ev.bel_statement      = hash[:bel_statement] || nil
         ev.citation           = Citation.new(hash[:citation] || {})
-        ev.summary_text.value = hash[:summary_text] || nil
+        ev.summary_text.value = hash[:support] || hash[:summary_text] || nil
         ev.experiment_context = ExperimentContext.new(hash[:experiment_context] || [])
         ev.references         = References.new(hash[:references] || {})
         ev.metadata           = Metadata.new(hash[:metadata] || {})
