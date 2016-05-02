@@ -21,6 +21,14 @@ module BEL
         @rdf_repository = rdf_repository
         @uri            = RDF::URI(uri.to_s)
         @uri_hash       = @uri.hash
+        @eq_query       = [
+          :subject   => @uri,
+          :predicate => SKOS.exactMatch
+        ]
+        @ortho_query    = [
+          :subject   => @uri,
+          :predicate => BELV.orthologousMatch
+        ]
       end
 
       def type
@@ -78,7 +86,7 @@ module BEL
       end
 
       def namespace
-        Namespace.new(@rdf_repository, self.inScheme)
+        Namespace.new(@rdf_repository, self.in_scheme)
       end
 
       def equivalents(target_namespaces = :all)
@@ -98,7 +106,7 @@ module BEL
             query(@eq_query).map { |solution|
               NamespaceValue.new(@rdf_repository, solution.object)
             }.select { |value|
-              scheme_uri = value.inScheme
+              scheme_uri = value.in_scheme
               target_namespaces.include?(scheme_uri)
             }.each { |value|
               yield value
@@ -123,7 +131,7 @@ module BEL
             query(@ortho_query).map { |solution|
               NamespaceValue.new(@rdf_repository, solution.object)
             }.select { |value|
-              scheme_uri = value.inScheme
+              scheme_uri = value.in_scheme
               target_namespaces.include?(scheme_uri)
             }.each { |value|
               yield value
