@@ -86,7 +86,7 @@ module BEL
       end
 
       def namespace
-        Namespace.new(@rdf_repository, self.in_scheme)
+        Namespace.new(@rdf_repository, self.in_scheme.first)
       end
 
       def equivalents(target_namespaces = :all)
