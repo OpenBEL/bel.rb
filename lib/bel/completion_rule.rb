@@ -1,4 +1,3 @@
-require_relative 'language'
 require_relative 'namespace'
 require_relative 'quoting'
 
