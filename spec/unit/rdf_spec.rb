@@ -6,7 +6,9 @@ require 'uuid'
 BEL.translator(:ntriples)
 
 include BEL::Language
-BEL::Language.include_bel_dsl
+BEL::DSL.include_in(
+  self,
+  BELParser::Language.specification('1.0'))
 
 include BEL::Nanopub
 include BEL::Namespace
@@ -133,7 +135,7 @@ describe 'RDF functionality of BEL language objects' do
       }.last
 
       expect(label_literal.value.encoding).to eql(Encoding::UTF_8)
-      expect(label_literal).to                eql(RDF::Literal.new(%Q{a(CHEBI:"5α-androst-16-en-3-one") association a(CHEBI:"luteolin 7-O-β-D-glucosiduronate")}))
+      expect(label_literal).to                eql(RDF::Literal.new(%Q{a(CHEBI:"5α-androst-16-en-3-one") -- a(CHEBI:"luteolin 7-O-β-D-glucosiduronate")}))
     end
 
     it "forces nanopub text as UTF-8" do

@@ -16,12 +16,10 @@ module BEL
 
       # Creates a {Statement} with +subject+, +relationship+, and +object+.
       #
-      # @param [Term] subject the subject term that is perturbed within an
-      #        experiment
-      # @param [#to_s] relationship the observed relationship between the
-      #        {Term subject} and object (either {Term} or {Statement}).
-      # @param [Term|Statement] object the object term that is measured for
-      #        change within an experiment
+      # @param [Term] subject the subject term
+      # @param [#to_s] relationship the relationship between subject and object
+      # @param [Term, Statement] object the object term or statement
+      # @param [String] comment some comments for this statement
       def initialize(subject = nil, relationship = nil, object = nil, comment = nil)
         @subject      = subject
         @relationship = relationship
@@ -65,11 +63,11 @@ module BEL
       def to_bel
         lbl = case
         when subject_only?
-          @subject.to_s
+          @subject.to_bel
         when simple?
-          "#{@subject.to_s} #{@relationship} #{@object.to_s}"
+          "#{@subject.to_bel} #{@relationship} #{@object.to_bel}"
         when nested?
-          "#{@subject.to_s} #{@relationship} (#{@object.to_s})"
+          "#{@subject.to_bel} #{@relationship} (#{@object.to_bel})"
         else
           ''
         end
@@ -80,7 +78,7 @@ module BEL
       def to_bel_long_form
         lbl = case
         when subject_only?
-          @subject.to_s
+          @subject.to_bel_long_form
         when simple?
           rel = BEL::Language::RELATIONSHIPS[@relationship.to_sym]
           "#{@subject.to_bel_long_form} #{rel} #{@object.to_bel_long_form}"
@@ -90,6 +88,32 @@ module BEL
         else
           ''
         end
+        comment ? lbl + ' //' + comment : lbl
+      end
+
+      def to_s(form = :short)
+        rel =
+          case form
+          when :short
+            @relationship.short
+          when :long
+            @relationship.long
+          else
+            nil
+          end
+
+        lbl =
+          case
+          when subject_only?
+            @subject.to_s(form)
+          when simple?
+            "#{@subject.to_s(form)} #{rel} #{@object.to_s(form)}"
+          when nested?
+            "#{@subject.to_s(form)} #{rel} (#{@object.to_s(form)})"
+          else
+            ''
+          end
+
         comment ? lbl + ' //' + comment : lbl
       end
     end

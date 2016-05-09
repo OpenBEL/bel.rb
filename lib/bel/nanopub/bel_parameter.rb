@@ -1,25 +1,21 @@
 module BEL
   module Nanopub
 
-    module ParameterValidation
-
-      def valid?
-        return false unless value
-        return true unless @ns
-        @ns.respond_to?(:values) && ns.values.include?(value.to_sym)
-      end
-    end
-
     class Parameter
       include BEL::Quoting
       include Comparable
-      include ParameterValidation
       attr_accessor :ns, :value, :enc
 
       def initialize(ns, value, enc=nil)
         @enc = enc
         @ns  = ns
         @value = value
+      end
+
+      def valid?
+        return false unless value
+        return true unless @ns
+        @ns.respond_to?(:values) && ns.values.include?(value.to_sym)
       end
 
       def <=>(other)
@@ -41,7 +37,7 @@ module BEL
       end
       alias_method :eql?, :'=='
 
-      def to_bel
+      def to_s(_)
         if @ns
           prefix = @ns.respond_to?(:prefix) ? @ns.prefix : @ns[:prefix]
           prefix = prefix ? (prefix.to_s + ':') : ''
@@ -50,7 +46,6 @@ module BEL
         end
         %Q{#{prefix}#{quote_if_needed(@value)}}
       end
-      alias_method :to_s, :to_bel
     end
   end
 end

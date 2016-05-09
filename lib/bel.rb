@@ -18,6 +18,8 @@ require_relative 'bel/libbel.rb'
 require_relative 'bel/parser'
 require_relative 'bel/completion'
 
+require_relative 'bel/dsl'
+
 module BEL
   extend  BEL::Translate::ClassMethods
 end
