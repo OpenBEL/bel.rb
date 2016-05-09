@@ -618,8 +618,8 @@ module BEL
 
     def self.include_bel_dsl
       RELATIONSHIPS.each do |rel, long_form|
-        BEL::Model::Term.send(:define_method, rel) do |another|
-          s = BEL::Model::Statement.new self
+        BEL::Nanopub::Term.send(:define_method, rel) do |another|
+          s = BEL::Nanopub::Statement.new self
           s.relationship = long_form
           s.object = another
           s
@@ -628,10 +628,10 @@ module BEL
       FUNCTIONS.each do |fx, metadata|
         func = Function.new(metadata)
         Language.send(:define_method, fx) do |*args|
-          BEL::Model::Term.new(func, *args)
+          BEL::Nanopub::Term.new(func, *args)
         end
         Language.send(:define_method, metadata[:long_form]) do |*args|
-          BEL::Model::Term.new(func, *args)
+          BEL::Nanopub::Term.new(func, *args)
         end
       end
     end

@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :rj
     NAME        = 'RDF/JSON RDF Translator'
-    DESCRIPTION = 'A translator that can read and write RDF/JSON (https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-json/index.html) for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to RDF/JSON (https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-json/index.html).'
     MEDIA_TYPES = %i(application/rdf+json)
     EXTENSIONS  = %i(rj)
 

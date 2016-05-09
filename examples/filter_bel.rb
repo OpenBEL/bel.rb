@@ -52,7 +52,6 @@ end
 
 class Main
 
-  EvidenceMatcher = Regexp.compile(/([0-9a-zA-Z]+)/)
   attr_reader :ttl
 
   def initialize(content, options = {})
@@ -87,10 +86,10 @@ class Main
 
             annotations = @active_group.annotations.merge(statement.annotations)
             annotations.each do |k, v|
-              if v.name == 'Evidence'
-                # always quote Evidence; openbel-framework parse issue
+              if v.name == 'Support'
+                # always quote Support; openbel-framework parse issue
                 cleaned = v.value.gsub(/"/, '\\"')
-                f.puts %Q{SET Evidence = "#{cleaned}"}
+                f.puts %Q{SET Support = "#{cleaned}"}
               else
                 f.puts v
               end

@@ -8,7 +8,7 @@ BEL.translator(:ntriples)
 include BEL::Language
 BEL::Language.include_bel_dsl
 
-include BEL::Model
+include BEL::Nanopub
 include BEL::Namespace
 
 BELV = BELRDF::BELV
@@ -112,17 +112,17 @@ describe 'RDF functionality of BEL language objects' do
       expect(rdf_statements.size).to eq(27)
     end
 
-    it "reference a single Evidence identified by UUID blank node" do
+    it "reference a single Nanopub identified by UUID blank node" do
       statement = kin(p(Parameter.new(SFAM, 'PRKC Family'))).increases cat(p(Parameter.new(SFAM, 'PLD Family')))
       (_, rdf_statements) = statement.to_rdf
 
-      type_evidence_statements = rdf_statements.find_all { |stmt|
-        stmt[1] == RDF.type and stmt[2] == BELV.Evidence
+      type_nanopub_statements = rdf_statements.find_all { |stmt|
+        stmt[1] == RDF.type and stmt[2] == BELV.Nanopub
       }
-      expect(type_evidence_statements.size).to eq(1)
+      expect(type_nanopub_statements.size).to eq(1)
 
-      evidence_resource = type_evidence_statements.first[0]
-      expect(evidence_resource).to be_a(RDF::URI)
+      nanopub_resource = type_nanopub_statements.first[0]
+      expect(nanopub_resource).to be_a(RDF::URI)
     end
 
     it "forces statement labels as UTF-8" do
@@ -136,20 +136,20 @@ describe 'RDF functionality of BEL language objects' do
       expect(label_literal).to                eql(RDF::Literal.new(%Q{a(CHEBI:"5α-androst-16-en-3-one") association a(CHEBI:"luteolin 7-O-β-D-glucosiduronate")}))
     end
 
-    it "forces evidence text as UTF-8" do
-      EVIDENCE_TEST = '''
-        SET Evidence = "Contains UTF-8 ... 84±3 55±7% α O-β-D γ κ"
+    it "forces nanopub text as UTF-8" do
+      SUPPORT_TEST = '''
+        SET Support = "Contains UTF-8 ... 84±3 55±7% α O-β-D γ κ"
         a(SCHEM:Sorbitol) -> kin(p(RGD:Mapk8))
-        SET Evidence = "Plain text ASCII."
+        SET Support = "Plain text ASCII."
         a(SCHEM:"Prostaglandin F1") -| bp(MESHPP:Apoptosis)
       '''.gsub(%r{^\s*}, '')
 
-      BEL::Script.parse(EVIDENCE_TEST).select { |obj|
+      BEL::Script.parse(SUPPORT_TEST).select { |obj|
         obj.is_a? Statement
       }.each do |stmt|
-        expect(stmt.annotations).to include('Evidence')
-        evidence = stmt.annotations['Evidence']
-        expect(evidence.value.encoding).to eql(Encoding::UTF_8)
+        expect(stmt.annotations).to include('Support')
+        nanopub = stmt.annotations['Support']
+        expect(nanopub.value.encoding).to eql(Encoding::UTF_8)
       end
     end
   end

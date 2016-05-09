@@ -5,7 +5,7 @@ module BEL
   module Gen
 
     # The {Citation} module defines methods that generate random citation
-    # fields. See {Citation#citation} to generate a {BEL::Model::Citation}.
+    # fields. See {Citation#citation} to generate a {BEL::Nanopub::Citation}.
     module Citation
 
       # Returns a random citation type.
@@ -63,13 +63,13 @@ module BEL
         }
       end
 
-      # Returns a random {BEL::Model::Citation}.
+      # Returns a random {BEL::Nanopub::Citation}.
       #
       # Note: This method has a good chance to return the last generated
-      # {BEL::Model::Citation}. This behavior better models curated BEL
-      # Evidence where many BEL statements have the same citation.
+      # {BEL::Nanopub::Citation}. This behavior better models curated BEL
+      # nanopubs where many BEL statements have the same citation.
       #
-      # @return [BEL::Model::Citation] a random citation
+      # @return [BEL::Nanopub::Citation] a random citation
       def citation
         choice = 
           @citation_hash == nil ?
@@ -92,7 +92,7 @@ module BEL
           }
         end
 
-        ::BEL::Model::Citation.new(@citation_hash)
+        ::BEL::Nanopub::Citation.new(@citation_hash)
       end
     end
   end

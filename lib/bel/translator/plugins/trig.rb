@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :trig
     NAME        = 'TriG RDF Translator'
-    DESCRIPTION = 'A translator that can read and write TriG (https://www.w3.org/TR/trig/) for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to TriG.'
     MEDIA_TYPES = %i(application/trig)
     EXTENSIONS  = %i(trig)
 

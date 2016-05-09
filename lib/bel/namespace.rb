@@ -250,6 +250,10 @@ module BEL
         @values = nil
       end
 
+      def rdf_uri
+        @rdf_uri ||= DEFAULT_URI
+      end
+
       def values
         unless @values
           reload(@url)
@@ -262,16 +266,16 @@ module BEL
         reload(@url) if not @values
         sym = value.to_sym
         encoding = @values[sym] || :''
-        Model::Parameter.new(self, sym, encoding)
+        Nanopub::Parameter.new(self, sym, encoding)
       end
 
       def each &block
         reload(@url) if not @values
         @values.each do |val, enc|
           if block_given?
-            block.call(Model::Parameter.new(self, val, enc))
+            block.call(Nanopub::Parameter.new(self, val, enc))
           else
-            yield Model::Parameter.new(self, val, enc)
+            yield Nanopub::Parameter.new(self, val, enc)
           end
         end
       end

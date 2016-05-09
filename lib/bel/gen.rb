@@ -3,7 +3,7 @@ require          'bel'
 module BEL
 
   # The {Gen} module defines submodules that generate random data that
-  # represent parts of the {::BEL::Model evidence model}.
+  # represent parts of a {::BEL::Nanopub nanopub}.
   module Gen
 
     # Requires +paths+ treated as a soft dependency to bel.rb.
@@ -45,7 +45,7 @@ require_relative 'gen/namespace'
 require_relative 'gen/parameter'
 require_relative 'gen/term'
 require_relative 'gen/statement'
-require_relative 'gen/evidence'
+require_relative 'gen/nanopub'
 require_relative 'gen/sample_resources'
 
 # vim: ts=2 sw=2:

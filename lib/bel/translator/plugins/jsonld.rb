@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :jsonld
     NAME        = 'JSON-LD RDF Translator'
-    DESCRIPTION = 'A translator that can read and write JSON-LD (http://json-ld.org/) for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to JSON-LD.'
     MEDIA_TYPES = %i(application/ld+json)
     EXTENSIONS  = %i(jsonld)
 

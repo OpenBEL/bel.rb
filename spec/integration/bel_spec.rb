@@ -1,7 +1,7 @@
 require 'bel'
 
 include BEL::Language
-include BEL::Model
+include BEL::Nanopub
 
 describe 'Reading BEL' do
 

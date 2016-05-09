@@ -211,7 +211,7 @@ the root of the bel.rb tree:
   
     # reference namespace value using standard prefixes (HGNC, MGI, RGD, etc.)
     HGNC['AKT1']
-    => #<BEL::Model::Parameter:0x00000004df5bc0
+    => #<BEL::Nanopub::Parameter:0x00000004df5bc0
       @enc=:GRP,
       @ns_def="BEL::Namespace::HGNC",
       @value=:AKT1>
@@ -405,14 +405,14 @@ the root of the bel.rb tree:
 
     # parse term
     parser.parse('p(HGNC:AKT1)') do |obj|
-      if obj.is_a? BEL::Model::Term  
+      if obj.is_a? BEL::Nanopub::Term  
         rdf_statements += obj.to_rdf
       end  
     end
 
     # parse statement
     parser.parse("p(HGNC:AKT1) => tscript(g(HGNC:TNF))\n") do |obj|
-      if obj.is_a? BEL::Model::Statement
+      if obj.is_a? BEL::Nanopub::Statement
         rdf_statements += obj.to_rdf
       end  
     end

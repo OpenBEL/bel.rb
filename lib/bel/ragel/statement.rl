@@ -13,7 +13,7 @@
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21,7 +21,7 @@
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32,7 +32,7 @@
     end
   }
   action statement_init {
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   }
   action statement_subject {
@@ -42,7 +42,7 @@
     @statement_stack.last.object = @term
   }
   action statement_ostmt {
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   }
@@ -86,7 +86,7 @@
 
 require 'observer'
 require_relative 'language'
-require_relative 'evidence_model'
+require_relative 'nanopub'
 
 module BEL
   module Script

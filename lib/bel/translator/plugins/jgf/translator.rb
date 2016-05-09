@@ -28,12 +28,12 @@ module BEL::Translator::Plugins
           :edges => []
         }
 
-        objects.each do |evidence|
-          unless evidence.bel_statement.is_a?(::BEL::Model::Statement)
-            evidence.bel_statement = ::BEL::Model::Evidence.parse_statement(evidence)
+        objects.each do |nanopub|
+          unless nanopub.bel_statement.is_a?(::BEL::Nanopub::Statement)
+            nanopub.bel_statement = ::BEL::Nanopub::Nanopub.parse_statement(nanopub)
           end
 
-          stmt    = evidence.bel_statement
+          stmt    = nanopub.bel_statement
           subject = stmt.subject.to_bel
 
           graph[:nodes] << {
@@ -87,7 +87,7 @@ module BEL::Translator::Plugins
             rel  = 'association' unless rel
 
             bel_statement = ::BEL::Script.parse(
-              "#{source_node} #{rel} #{target_node}\n").select { |obj| obj.is_a? ::BEL::Model::Statement }.first
+              "#{source_node} #{rel} #{target_node}\n").select { |obj| obj.is_a? ::BEL::Nanopub::Statement }.first
           end
         }.compact
 
@@ -98,17 +98,17 @@ module BEL::Translator::Plugins
               ::BEL::Script.parse(
                 "#{id_nodes[id]}\n"
               ).select { |obj|
-                obj.is_a? ::BEL::Model::Statement
+                obj.is_a? ::BEL::Nanopub::Statement
               }.first
             }
           )
         end
 
-        # map statements to evidence objects
+        # map statements to nanopub objects
         bel_statements.map { |bel_statement|
           graph_name = graph[:label] || graph[:id] || 'BEL Graph'
-          metadata   = ::BEL::Model::Metadata.new
-          references = ::BEL::Model::References.new
+          metadata   = ::BEL::Nanopub::Metadata.new
+          references = ::BEL::Nanopub::References.new
 
           # establish document header
           metadata.document_header[:Name]        = graph_name
@@ -152,7 +152,7 @@ module BEL::Translator::Plugins
           end
           references.namespaces = namespaces if namespaces
 
-          ::BEL::Model::Evidence.create(
+          ::BEL::Nanopub::Nanopub.create(
             :bel_statement => bel_statement,
             :metadata      => metadata,
             :references    => references

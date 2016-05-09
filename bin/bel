@@ -247,7 +247,7 @@ Subcommands:
       def run
         parsed_options =
           Trollop::options do
-            synopsis "Translates BEL evidence between formats using translator plugins."
+            synopsis "Translates BEL nanopubs between formats using translator plugins."
             usage    <<-DOC.gsub(/^ {14}/, '')
               [OPTIONS]... translate [OPTIONS] FROM_TRANSLATOR TO_TRANSLATOR
 
@@ -275,7 +275,7 @@ Subcommands:
                   Run "bel remapfile" to get an example of the YAML format.
             DOC
 
-            opt      :'input-file', 'The file containing evidence data to translate. If not specified the default is to read from STDIN.',
+            opt      :'input-file', 'The file containing nanopubs to translate. If not specified the default is to read from STDIN.',
                      :type    => String,
                      :long    => :'input-file',
                      :short   => :i,
@@ -506,21 +506,21 @@ Subcommands:
 
         # require BEL generator and include in GenerateCommand
         require 'bel/gen'
-        self.class.include(BEL::Gen::Evidence)
+        self.class.include(BEL::Gen::Nanopub)
         self.class.include(BEL::Gen::SampleResources) if options[:sample]
 
-        # create enumerator of random evidence
+        # create enumerator of random nanopubs
         limit       = options[:limit].to_i
         random_data = Enumerator.new do |yielder|
           count = 0
           while count != limit do
-            yielder << evidence
+            yielder << nanopub
             count += 1
-            $stderr.puts "#{count} evidence generated..." if count % 500 == 0
+            $stderr.puts "#{count} nanopubs generated..." if count % 500 == 0
           end
         end
 
-        # write random evidence to STDOUT through a translator
+        # write random nanopubs to STDOUT through a translator
         translator_id = options[:translator] || :bel
         translator    = BEL.translator(options[:translator] || :bel)
         unless translator

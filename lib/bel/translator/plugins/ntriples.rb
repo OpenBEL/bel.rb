@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :ntriples
     NAME        = 'N-triples RDF Translator'
-    DESCRIPTION = 'A translator that can read and write N-triples for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to N-triples.'
     MEDIA_TYPES = %i(application/n-triples)
     EXTENSIONS  = %i(nt)
 

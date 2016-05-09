@@ -6,7 +6,7 @@ module BEL
   module Gen
 
     # The {Statement} module defines methods that generate random BEL
-    # {BEL::Model::Statement statements}.
+    # {BEL::Nanopub::Statement statements}.
     module Statement
       include BEL::Gen::Term
 

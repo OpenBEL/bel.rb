@@ -24,7 +24,7 @@ module BELRDF
     end
 
     def read(data, options = {})
-      Reader::BufferedEvidenceYielder.new(data, @format)
+      Reader::BufferedNanopubYielder.new(data, @format)
     end
 
     def write(objects, io = StringIO.new, options = {})
@@ -61,10 +61,10 @@ module BELRDF
           yielder << RDF::Statement.new(*schema_statement)
         end
 
-        # enumerate BEL evidence
-        objects.each do |evidence|
+        # enumerate BEL nanopubs
+        objects.each do |nanopub|
           if void_dataset_uri && !wrote_dataset
-            void_dataset_triples = evidence.to_void_dataset(void_dataset_uri)
+            void_dataset_triples = nanopub.to_void_dataset(void_dataset_uri)
             if void_dataset_triples && void_dataset_triples.respond_to?(:each)
               void_dataset_triples.each do |void_triple|
                 yielder << void_triple
@@ -73,7 +73,7 @@ module BELRDF
             wrote_dataset = true
           end
 
-          evidence_uri, statements = evidence.to_rdf
+          nanopub_uri, statements = nanopub.to_rdf
           statements.each do |statement|
             yielder << statement
           end
@@ -82,7 +82,7 @@ module BELRDF
             yielder << RDF::Statement.new(
               void_dataset_uri,
               RDF::DC.hasPart,
-              evidence_uri
+              nanopub_uri
             )
           end
         end

@@ -7,7 +7,7 @@ module BEL
     # The {SampleResources} module defines methods that sample data from actual
     # resources.
     #
-    # {BEL::Model::Parameter BEL parameters} are sampled from a
+    # {BEL::Nanopub::Parameter BEL parameters} are sampled from a
     # {BEL::Namespace::NamespaceDefinition}.
     #
     # Annotations are sampled from a {BEL::Annotation::AnnotationDefinition}.
@@ -15,7 +15,7 @@ module BEL
       include BEL::Gen::Annotation
 
       # Returns a sampled annotation as a hash of +:name+ and +:value+. These
-      # can be added directly to an evidence's {BEL::Model::ExperimentContext}.
+      # can be added directly to a nanopubs's {BEL::Nanopub::ExperimentContext}.
       #
       # @return [Hash] sampled annotation; hash of +:name+ and +:value+
       def annotation
@@ -35,13 +35,13 @@ module BEL
 
       # Returns a BEL parameter with a value sampled from a random namespace.
       #
-      # @return [BEL::Model::Parameter] a parameter with value sampled from a
+      # @return [BEL::Nanopub::Parameter] a parameter with value sampled from a
       #         random namespace
       def bel_parameter_with_namespace
         ns    = namespace
         value = ns.values.keys.sample
         enc   = ns.values[value]
-        BEL::Model::Parameter.new(
+        BEL::Nanopub::Parameter.new(
           ns,
           value,
           enc

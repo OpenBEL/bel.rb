@@ -1,9 +1,9 @@
 require 'bel'
 
-describe BEL::Model::Parameter, "#valid?" do
+describe BEL::Nanopub::Parameter, "#valid?" do
   include BEL::Language
   include BEL::Namespace
-  include BEL::Model
+  include BEL::Nanopub
 
   it """false when parameter value is nil""" do
     expect(

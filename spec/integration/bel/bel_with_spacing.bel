@@ -45,13 +45,13 @@
 	    SET Disease = atherosclerosis  
 	    SET Anatomy = artery  
 	    SET TextLocation = Review  
-	    SET Evidence = "Oxidation and nitration of macromolecules, such as proteins..."  
+	    SET Support = "Oxidation and nitration of macromolecules, such as proteins..."  
 	    SET Citation = {"PubMed","Trends in molecular medicine","12928037","","",""}  
   
 	    path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"lipid oxidation")  
 	    path(MESHD:Atherosclerosis) positiveCorrelation bp(GOBP:"protein oxidation")  
   
-	    SET Evidence = "Arterial cells are highly susceptible to oxidative stress..."  
+	    SET Support = "Arterial cells are highly susceptible to oxidative stress..."  
   
 	    bp(GOBP:"response to oxidative stress") increases bp(GOBP:"apoptotic process")  
 	    bp(GOBP:"response to oxidative stress") increases bp(GOBP:necrosis)  
@@ -61,14 +61,14 @@
 	SET STATEMENT_GROUP = "Group 2"  
   
 	    SET TextLocation = Abstract  
-	    SET Evidence = "Phosphorylation at Ser473, along with Thr308 of its activation..."  
+	    SET Support = "Phosphorylation at Ser473, along with Thr308 of its activation..."  
 	    SET Citation = {"PubMed","Cell","16962653","2006-10-07","",""}  
 	    SET Species = 9606  
   
 	    p(HGNC:AKT1,pmod(P,T,308)) directlyIncreases kin(p(HGNC:AKT1))  
 	    p(HGNC:AKT1,pmod(P,S,473)) directlyIncreases kin(p(HGNC:AKT1))  
   
-	    SET Evidence = "Genetic ablation of sin1 abolished Akt-Ser473 phosphorylation..."  
+	    SET Support = "Genetic ablation of sin1 abolished Akt-Ser473 phosphorylation..."  
   
 	    p(HGNC:MAPKAP1) increases p(HGNC:AKT1,pmod(P,S,473)) //sin1 = MAPKAP1  
   

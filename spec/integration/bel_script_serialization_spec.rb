@@ -2,17 +2,17 @@ require 'bel'
 require 'bel/gen'
 require 'rantly/rspec_extensions'
 
-describe 'BEL Script serializations produce equivalent evidence' do
+describe 'BEL Script serializations produce equivalent nanopubs' do
 
   class Rantly
-    include BEL::Gen::Evidence
+    include BEL::Gen::Nanopub
   end
 
-  def round_trip(evidence, serialization)
+  def round_trip(nanopub, serialization)
     bel_script     = BEL.translator(:bel)
     bel_script_io  = StringIO.new
     bel_script.write(
-      [evidence],
+      [nanopub],
       bel_script_io,
       :write_header => true,
       :serialization => serialization
@@ -20,15 +20,15 @@ describe 'BEL Script serializations produce equivalent evidence' do
     bel_script.read(bel_script_io).each.to_a
   end
 
-  it 'Evidence is equivalent between BEL Script serialization strategies' do
+  it 'Nanopub is equivalent between BEL Script serialization strategies' do
     property_of {
-      evidence
-    }.check { |evidence|
+      nanopub
+    }.check { |nanopub|
       [:discrete, :topdown, :citation].combination(2).each do |(fmt1, fmt2)|
         expect(
-          round_trip(evidence, fmt1)
+          round_trip(nanopub, fmt1)
         ).to eql(
-          round_trip(evidence, fmt2)
+          round_trip(nanopub, fmt2)
         )
       end
     }
@@ -45,54 +45,54 @@ describe 'BEL Script serializations produce equivalent evidence' do
     end
 
     def read_bel_script
-      BEL.evidence(bel_script_file, :bel).each.to_a
+      BEL.nanopub(bel_script_file, :bel).each.to_a
     end
 
     it 'BEL Script fragment parses correctly' do
-      evidence_from_bel = read_bel_script
-      expect(evidence_from_bel.size).to eql(1)
+      nanopub_from_bel = read_bel_script
+      expect(nanopub_from_bel.size).to eql(1)
     end
 
-    it 'equal to Evidence translated to JSON Evidence' do
+    it 'equal to Nanopub translated to BNJ' do
       json_file = Tempfile.open('json_conversion')
       BEL.translate(bel_script_file, :bel, :json, json_file)
       json_file.rewind
 
-      bel_evidence               = read_bel_script.first
-      bel_evidence.bel_statement = bel_evidence.bel_statement.to_s
+      bel_nanopub               = read_bel_script.first
+      bel_nanopub.bel_statement = bel_nanopub.bel_statement.to_s
 
-      json_evidence               = BEL.evidence(json_file, :json).each.to_a.first
-      json_evidence.bel_statement = json_evidence.bel_statement.to_s
+      json_nanopub               = BEL.nanopub(json_file, :json).each.to_a.first
+      json_nanopub.bel_statement = json_nanopub.bel_statement.to_s
 
       expect(
-        json_evidence.to_h
+        json_nanopub.to_h
       ).to eql(
-        bel_evidence.to_h
+        bel_nanopub.to_h
       )
     end
 
-    it 'equal to Evidence translated to XBEL' do
+    it 'equal to Nanopub translated to XBEL' do
       xbel_file = Tempfile.open('xbel_conversion')
       BEL.translate(bel_script_file, :bel, :xbel, xbel_file)
       xbel_file.rewind
 
-      bel_evidence               = read_bel_script.first
-      bel_evidence.bel_statement = bel_evidence.bel_statement.to_bel_long_form
+      bel_nanopub               = read_bel_script.first
+      bel_nanopub.bel_statement = bel_nanopub.bel_statement.to_bel_long_form
 
-      xbel_evidence               = BEL.evidence(xbel_file, :xbel).each.to_a.first
-      xbel_evidence.bel_statement = xbel_evidence.bel_statement.to_bel_long_form
+      xbel_nanopub               = BEL.nanopub(xbel_file, :xbel).each.to_a.first
+      xbel_nanopub.bel_statement = xbel_nanopub.bel_statement.to_bel_long_form
 
       expect(
-        xbel_evidence.to_h
+        xbel_nanopub.to_h
       ).to eql(
-        bel_evidence.to_h
+        bel_nanopub.to_h
       )
     end
   end
 
-  context 'Starting with a JSON Evidence fragment' do
+  context 'Starting with a BNJ fragment' do
 
-    def json_evidence_file
+    def json_nanopub_file
       File.open(
         File.join(
           File.expand_path('..', __FILE__), 'bel', 'fragment.json'
@@ -100,48 +100,48 @@ describe 'BEL Script serializations produce equivalent evidence' do
       )
     end
 
-    def read_json_evidence
-      BEL.evidence(json_evidence_file, :json).each.to_a
+    def read_json_nanopub
+      BEL.nanopub(json_nanopub_file, :json).each.to_a
     end
 
-    it 'JSON Evidence fragment parses correctly' do
-      evidence_from_json = read_json_evidence
-      expect(evidence_from_json.size).to eql(1)
+    it 'BNJ fragment parses correctly' do
+      nanopub_from_json = read_json_nanopub
+      expect(nanopub_from_json.size).to eql(1)
     end
 
-    it 'equal to Evidence translated to BEL Script' do
+    it 'equal to Nanopub translated to BEL Script' do
       bel_script_file = Tempfile.open('bel_conversion')
-      BEL.translate(json_evidence_file, :json, :bel, bel_script_file)
+      BEL.translate(json_nanopub_file, :json, :bel, bel_script_file)
       bel_script_file.rewind
 
-      json_evidence               = read_json_evidence.first
-      json_evidence.bel_statement = json_evidence.bel_statement.to_s
+      json_nanopub               = read_json_nanopub.first
+      json_nanopub.bel_statement = json_nanopub.bel_statement.to_s
 
-      bel_script_evidence               = BEL.evidence(bel_script_file, :bel).each.to_a.first
-      bel_script_evidence.bel_statement = bel_script_evidence.bel_statement.to_s
+      bel_script_nanopub               = BEL.nanopub(bel_script_file, :bel).each.to_a.first
+      bel_script_nanopub.bel_statement = bel_script_nanopub.bel_statement.to_s
 
       expect(
-        bel_script_evidence.to_h
+        bel_script_nanopub.to_h
       ).to eql(
-        json_evidence.to_h
+        json_nanopub.to_h
       )
     end
 
-    it 'equal to Evidence translated to XBEL' do
+    it 'equal to Nanopub translated to XBEL' do
       xbel_file = Tempfile.open('xbel_conversion')
-      BEL.translate(json_evidence_file, :json, :xbel, xbel_file)
+      BEL.translate(json_nanopub_file, :json, :xbel, xbel_file)
       xbel_file.rewind
 
-      json_evidence                = read_json_evidence.first
-      json_evidence.bel_statement = json_evidence.bel_statement.to_bel_long_form
+      json_nanopub                = read_json_nanopub.first
+      json_nanopub.bel_statement = json_nanopub.bel_statement.to_bel_long_form
 
-      xbel_evidence               = BEL.evidence(xbel_file, :xbel).each.to_a.first
-      xbel_evidence.bel_statement = xbel_evidence.bel_statement.to_bel_long_form
+      xbel_nanopub               = BEL.nanopub(xbel_file, :xbel).each.to_a.first
+      xbel_nanopub.bel_statement = xbel_nanopub.bel_statement.to_bel_long_form
 
       expect(
-        xbel_evidence.to_h
+        xbel_nanopub.to_h
       ).to eql(
-        json_evidence.to_h
+        json_nanopub.to_h
       )
     end
   end
@@ -157,47 +157,47 @@ describe 'BEL Script serializations produce equivalent evidence' do
     end
 
     def read_xbel
-      BEL.evidence(xbel_file, :xbel).each.to_a
+      BEL.nanopub(xbel_file, :xbel).each.to_a
     end
 
     it 'XBEL fragment parses correctly' do
-      evidence_from_xbel = read_xbel
-      expect(evidence_from_xbel.size).to eql(1)
+      nanopub_from_xbel = read_xbel
+      expect(nanopub_from_xbel.size).to eql(1)
     end
 
-    it 'equal to Evidence translated to BEL Script' do
+    it 'equal to Nanopub translated to BEL Script' do
       bel_script_file = Tempfile.open('bel_conversion')
       BEL.translate(xbel_file, :xbel, :bel, bel_script_file)
       bel_script_file.rewind
 
-      xbel_evidence               = read_xbel.first
-      xbel_evidence.bel_statement = xbel_evidence.bel_statement.to_s
+      xbel_nanopub               = read_xbel.first
+      xbel_nanopub.bel_statement = xbel_nanopub.bel_statement.to_s
 
-      bel_script_evidence               = BEL.evidence(bel_script_file, :bel).each.to_a.first
-      bel_script_evidence.bel_statement = bel_script_evidence.bel_statement.to_s
+      bel_script_nanopub               = BEL.nanopub(bel_script_file, :bel).each.to_a.first
+      bel_script_nanopub.bel_statement = bel_script_nanopub.bel_statement.to_s
 
       expect(
-        bel_script_evidence.to_h
+        bel_script_nanopub.to_h
       ).to eql(
-        xbel_evidence.to_h
+        xbel_nanopub.to_h
       )
     end
 
-    it 'equal to Evidence translated to JSON Evidence' do
+    it 'equal to Nanopub translated to BNJ' do
       json_file = Tempfile.open('json_conversion')
       BEL.translate(xbel_file, :xbel, :json, json_file)
       json_file.rewind
 
-      xbel_evidence               = read_xbel.first
-      xbel_evidence.bel_statement = xbel_evidence.bel_statement.to_bel_long_form
+      xbel_nanopub               = read_xbel.first
+      xbel_nanopub.bel_statement = xbel_nanopub.bel_statement.to_bel_long_form
 
-      json_evidence               = BEL.evidence(json_file, :json).each.to_a.first
-      json_evidence.bel_statement = json_evidence.bel_statement.to_bel_long_form
+      json_nanopub               = BEL.nanopub(json_file, :json).each.to_a.first
+      json_nanopub.bel_statement = json_nanopub.bel_statement.to_bel_long_form
 
       expect(
-        json_evidence.to_h
+        json_nanopub.to_h
       ).to eql(
-        xbel_evidence.to_h
+        xbel_nanopub.to_h
       )
     end
   end

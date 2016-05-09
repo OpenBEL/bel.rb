@@ -8805,7 +8805,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -8813,7 +8813,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -8871,7 +8871,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -9005,7 +9005,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -9191,7 +9191,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9199,7 +9199,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9220,7 +9220,7 @@ begin
 	when 110 then
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -9261,7 +9261,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9269,7 +9269,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9282,7 +9282,7 @@ p -= 1; 	begin
 	when 63 then
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -9311,7 +9311,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9319,7 +9319,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9408,7 +9408,7 @@ p -= 1; 	begin
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -9437,7 +9437,7 @@ p -= 1; 	begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -9543,7 +9543,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -9733,7 +9733,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9741,7 +9741,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9777,7 +9777,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9785,7 +9785,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9834,7 +9834,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -9878,7 +9878,7 @@ n = 0		end
 @cmtbuffer << data[p].ord		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -9919,7 +9919,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9927,7 +9927,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9964,7 +9964,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9972,7 +9972,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -9998,7 +9998,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -10027,7 +10027,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -10051,7 +10051,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -10109,7 +10109,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -10137,7 +10137,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -10165,7 +10165,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -10193,7 +10193,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -10221,7 +10221,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10229,7 +10229,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10265,7 +10265,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10273,7 +10273,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10335,7 +10335,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -10371,7 +10371,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10379,7 +10379,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10412,7 +10412,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10420,7 +10420,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10463,7 +10463,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10471,7 +10471,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10491,7 +10491,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -10521,7 +10521,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10529,7 +10529,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10566,7 +10566,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10574,7 +10574,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10643,7 +10643,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -10669,7 +10669,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -10729,7 +10729,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10737,7 +10737,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10778,7 +10778,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10786,7 +10786,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -10826,7 +10826,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -10881,7 +10881,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -19802,7 +19802,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -19810,7 +19810,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -19868,7 +19868,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -20002,7 +20002,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -20188,7 +20188,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20196,7 +20196,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20217,7 +20217,7 @@ begin
 	when 110 then
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -20258,7 +20258,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20266,7 +20266,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20279,7 +20279,7 @@ p -= 1; 	begin
 	when 63 then
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -20308,7 +20308,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20316,7 +20316,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20405,7 +20405,7 @@ p -= 1; 	begin
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -20434,7 +20434,7 @@ p -= 1; 	begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -20540,7 +20540,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -20730,7 +20730,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20738,7 +20738,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20774,7 +20774,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20782,7 +20782,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20831,7 +20831,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -20875,7 +20875,7 @@ n = 0		end
 @cmtbuffer << data[p].ord		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -20916,7 +20916,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20924,7 +20924,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20961,7 +20961,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20969,7 +20969,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -20995,7 +20995,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -21024,7 +21024,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -21048,7 +21048,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -21106,7 +21106,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -21134,7 +21134,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -21162,7 +21162,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -21190,7 +21190,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -21218,7 +21218,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21226,7 +21226,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21262,7 +21262,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21270,7 +21270,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21332,7 +21332,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -21368,7 +21368,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21376,7 +21376,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21409,7 +21409,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21417,7 +21417,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21460,7 +21460,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21468,7 +21468,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21488,7 +21488,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -21518,7 +21518,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21526,7 +21526,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21563,7 +21563,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21571,7 +21571,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21640,7 +21640,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -21666,7 +21666,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -21726,7 +21726,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21734,7 +21734,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21775,7 +21775,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21783,7 +21783,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21823,7 +21823,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -21878,7 +21878,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -30799,7 +30799,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -30807,7 +30807,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -30865,7 +30865,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -30999,7 +30999,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -31185,7 +31185,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31193,7 +31193,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31214,7 +31214,7 @@ begin
 	when 110 then
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -31255,7 +31255,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31263,7 +31263,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31276,7 +31276,7 @@ p -= 1; 	begin
 	when 63 then
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -31305,7 +31305,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31313,7 +31313,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31402,7 +31402,7 @@ p -= 1; 	begin
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -31431,7 +31431,7 @@ p -= 1; 	begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -31537,7 +31537,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -31727,7 +31727,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31735,7 +31735,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31771,7 +31771,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31779,7 +31779,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31828,7 +31828,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -31872,7 +31872,7 @@ n = 0		end
 @cmtbuffer << data[p].ord		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -31913,7 +31913,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31921,7 +31921,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31958,7 +31958,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31966,7 +31966,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -31992,7 +31992,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -32021,7 +32021,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -32045,7 +32045,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -32103,7 +32103,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -32131,7 +32131,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -32159,7 +32159,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -32187,7 +32187,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -32215,7 +32215,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32223,7 +32223,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32259,7 +32259,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32267,7 +32267,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32329,7 +32329,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -32365,7 +32365,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32373,7 +32373,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32406,7 +32406,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32414,7 +32414,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32457,7 +32457,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32465,7 +32465,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32485,7 +32485,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -32515,7 +32515,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32523,7 +32523,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32560,7 +32560,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32568,7 +32568,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32637,7 +32637,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -32663,7 +32663,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -32723,7 +32723,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32731,7 +32731,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32772,7 +32772,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32780,7 +32780,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -32820,7 +32820,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -32875,7 +32875,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -41796,7 +41796,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -41804,7 +41804,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -41862,7 +41862,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -41996,7 +41996,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -42182,7 +42182,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42190,7 +42190,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42211,7 +42211,7 @@ begin
 	when 110 then
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -42252,7 +42252,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42260,7 +42260,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42273,7 +42273,7 @@ p -= 1; 	begin
 	when 63 then
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -42302,7 +42302,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42310,7 +42310,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42399,7 +42399,7 @@ p -= 1; 	begin
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -42428,7 +42428,7 @@ p -= 1; 	begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -42534,7 +42534,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -42724,7 +42724,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42732,7 +42732,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42768,7 +42768,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42776,7 +42776,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42825,7 +42825,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -42869,7 +42869,7 @@ n = 0		end
 @cmtbuffer << data[p].ord		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -42910,7 +42910,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42918,7 +42918,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42955,7 +42955,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42963,7 +42963,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -42989,7 +42989,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -43018,7 +43018,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -43042,7 +43042,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -43100,7 +43100,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -43128,7 +43128,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -43156,7 +43156,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -43184,7 +43184,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -43212,7 +43212,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43220,7 +43220,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43256,7 +43256,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43264,7 +43264,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43326,7 +43326,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -43362,7 +43362,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43370,7 +43370,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43403,7 +43403,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43411,7 +43411,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43454,7 +43454,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43462,7 +43462,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43482,7 +43482,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -43512,7 +43512,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43520,7 +43520,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43557,7 +43557,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43565,7 +43565,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43634,7 +43634,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -43660,7 +43660,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -43720,7 +43720,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43728,7 +43728,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43769,7 +43769,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43777,7 +43777,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -43817,7 +43817,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -43872,7 +43872,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -43994,7 +43994,7 @@ end
 
 require_relative 'language'
 require_relative 'namespace'
-require_relative 'evidence_model'
+require_relative 'nanopub'
 require_relative 'nonblocking_io_wrapper'
 
 module BEL
@@ -52916,7 +52916,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -52924,7 +52924,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -52982,7 +52982,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -53116,7 +53116,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -53302,7 +53302,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53310,7 +53310,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53331,7 +53331,7 @@ begin
 	when 110 then
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -53372,7 +53372,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53380,7 +53380,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53393,7 +53393,7 @@ p -= 1; 	begin
 	when 63 then
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -53422,7 +53422,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53430,7 +53430,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53519,7 +53519,7 @@ p -= 1; 	begin
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -53548,7 +53548,7 @@ p -= 1; 	begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -53654,7 +53654,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -53844,7 +53844,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53852,7 +53852,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53888,7 +53888,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53896,7 +53896,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -53945,7 +53945,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -53989,7 +53989,7 @@ n = 0		end
 @cmtbuffer << data[p].ord		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -54030,7 +54030,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54038,7 +54038,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54075,7 +54075,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54083,7 +54083,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54109,7 +54109,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -54138,7 +54138,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -54162,7 +54162,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -54220,7 +54220,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -54248,7 +54248,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -54276,7 +54276,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -54304,7 +54304,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -54332,7 +54332,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54340,7 +54340,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54376,7 +54376,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54384,7 +54384,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54446,7 +54446,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -54482,7 +54482,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54490,7 +54490,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54523,7 +54523,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54531,7 +54531,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54574,7 +54574,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54582,7 +54582,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54602,7 +54602,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -54632,7 +54632,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54640,7 +54640,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54677,7 +54677,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54685,7 +54685,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54754,7 +54754,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -54780,7 +54780,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -54840,7 +54840,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54848,7 +54848,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54889,7 +54889,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54897,7 +54897,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -54937,7 +54937,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -54992,7 +54992,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -63947,7 +63947,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -63955,7 +63955,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64013,7 +64013,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -64147,7 +64147,7 @@ begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -64333,7 +64333,7 @@ begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64341,7 +64341,7 @@ begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64362,7 +64362,7 @@ begin
 	when 110 then
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -64403,7 +64403,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64411,7 +64411,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64424,7 +64424,7 @@ p -= 1; 	begin
 	when 63 then
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -64453,7 +64453,7 @@ p -= 1; 	begin
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64461,7 +64461,7 @@ p -= 1; 	begin
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64550,7 +64550,7 @@ p -= 1; 	begin
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -64579,7 +64579,7 @@ p -= 1; 	begin
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -64685,7 +64685,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -64875,7 +64875,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64883,7 +64883,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64919,7 +64919,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64927,7 +64927,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -64976,7 +64976,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -65020,7 +65020,7 @@ n = 0		end
 @cmtbuffer << data[p].ord		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -65061,7 +65061,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65069,7 +65069,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65106,7 +65106,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65114,7 +65114,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65140,7 +65140,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -65169,7 +65169,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -65193,7 +65193,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -65251,7 +65251,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -65279,7 +65279,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -65307,7 +65307,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -65335,7 +65335,7 @@ p -= 1;		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -65363,7 +65363,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65371,7 +65371,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65407,7 +65407,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65415,7 +65415,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65477,7 +65477,7 @@ n = 0		end
   		end
 		begin
 
-    nested = BEL::Model::Statement.new()
+    nested = BEL::Nanopub::Statement.new()
     @statement_stack.last.object = nested
     @statement_stack.push nested
   		end
@@ -65513,7 +65513,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65521,7 +65521,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65554,7 +65554,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65562,7 +65562,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65605,7 +65605,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65613,7 +65613,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65633,7 +65633,7 @@ n = 0		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -65663,7 +65663,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65671,7 +65671,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65708,7 +65708,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65716,7 +65716,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65785,7 +65785,7 @@ n = 0		end
 p -= 1;		end
 		begin
 
-    @statement = BEL::Model::Statement.new()
+    @statement = BEL::Nanopub::Statement.new()
     @statement_stack = [@statement]
   		end
 		begin
@@ -65811,7 +65811,7 @@ p -= 1;		end
 		begin
 
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   		end
@@ -65871,7 +65871,7 @@ p -= 1;		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65879,7 +65879,7 @@ p -= 1;		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65920,7 +65920,7 @@ n = 0		end
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65928,7 +65928,7 @@ n = 0		end
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Model::Statement.new(
+        statement = BEL::Nanopub::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -65968,7 +65968,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param
@@ -66023,7 +66023,7 @@ n = 0		end
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param

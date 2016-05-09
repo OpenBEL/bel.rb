@@ -1,11 +1,11 @@
 module BELRDF
   module Reader
 
-    module EvidenceYielder
+    module NanopubYielder
 
       BELV = BELRDF::BELV
 
-      include ::BEL::Model
+      include ::BEL::Nanopub
       include ::BEL::Quoting
 
       # Find described resources by +type+ in +graph+.
@@ -36,44 +36,44 @@ module BELRDF
         }
       end
 
-      # Iterate the {BELV.Evidence} predicated statements, from the
-      # {::RDF::Graph graph}, and yield those correspdonding {Evidence}
+      # Iterate the {BELV.Nanopub} predicated statements, from the
+      # {::RDF::Graph graph}, and yield those correspdonding {Nanopub}
       # objects.
       #
       # @param  [::RDF::Graph]     graph the RDF graph to query
-      # @yield  [evidence_model] yields an {Evidence} object
-      def evidence_yielder(graph)
-        resources_of_type(BELV.Evidence, graph).each do |evidence|
+      # @yield  [::BEL::Nanopub::Nanopub] yields a nanopub object
+      def nanopub_yielder(graph)
+        resources_of_type(BELV.Nanopub, graph).each do |nanopub|
 
-          yield make_evidence(evidence, graph)
+          yield make_nanopub(nanopub, graph)
         end
       end
 
-      # Create an {Evidence} object from RDF statements found in
+      # Create an {Nanopub} object from RDF statements found in
       # the {::RDF::Graph graph}.
       #
-      # @param  [Hash]       evidence a hash of predicate to object
-      #         representing the described evidence
+      # @param  [Hash]       nanopub a hash of predicate to object
+      #         representing the described nanopub
       # @param  [::RDF::Graph] graph the RDF graph to query
-      # @return [Evidence]   the evidence model    
-      def make_evidence(evidence, graph)
-        statement     = describe(evidence[BELV.hasStatement], graph)
+      # @return [Nanopub]   the nanopub
+      def make_nanopub(nanopub_hash, graph)
+        statement     = describe(nanopub_hash[BELV.hasStatement], graph)
 
         # values
         bel_statement = statement[::RDF::RDFS.label].value
-        ev_text       = evidence[BELV.hasEvidenceText]
-        citation      = evidence[BELV.hasCitation]
+        support_text  = nanopub_hash[BELV.hasSupport]
+        citation      = nanopub_hash[BELV.hasCitation]
 
         # model
-        ev_model               = Evidence.new
-        ev_model.bel_statement = ::BEL::Script.parse(bel_statement)
+        nanopub               = Nanopub.new
+        nanopub.bel_statement = ::BEL::Script.parse(bel_statement)
                                    .find { |obj|
                                      obj.is_a? Statement
                                    }
-        ev_model.summary_text  = SummaryText.new(ev_text.value) if ev_text
+        nanopub.support       = Support.new(support_text.value) if support_text
 
         if citation.respond_to?(:value)
-          ev_model.citation =
+          nanopub.citation =
             case citation.value
             when /pubmed:(\d+)$/
               pubmed_id = $1.to_i
@@ -87,13 +87,13 @@ module BELRDF
             end
         end
 
-        ev_model
+        nanopub
       end
     end
 
-    class BufferedEvidenceYielder
+    class BufferedNanopubYielder
 
-      include EvidenceYielder
+      include NanopubYielder
 
       def initialize(data, format = :ntriples)
         @data   = data
@@ -108,8 +108,8 @@ module BELRDF
               graph << statement
             end
           end
-          evidence_yielder(graph) do |evidence_model|
-            yield evidence_model
+          nanopub_yielder(graph) do |nanopub|
+            yield nanopub
           end
         else
           to_enum(:each)
@@ -117,9 +117,9 @@ module BELRDF
       end
     end
 
-    class UnbufferedEvidenceYielder
+    class UnbufferedNanopubYielder
 
-      include EvidenceYielder
+      include NanopubYielder
 
       def initialize(data, format)
         @data   = data
@@ -128,27 +128,27 @@ module BELRDF
 
       def each
         if block_given?
-          graph             = RDF::Graph.new
-          evidence_resource = nil
+          graph   = RDF::Graph.new
+          nanopub = nil
           RDF::Reader.for(@format).new(@data) do |reader|
             reader.each_statement do |statement|
               case
-              when statement.object == BELV.Evidence &&
+              when statement.object == BELV.Nanopub &&
                    statement.predicate == RDF.type
-                evidence_resource = statement.subject
-              when evidence_resource &&
-                   statement.predicate != BELV.hasEvidence &&
-                   statement.subject != evidence_resource
+                nanopub = statement.subject
+              when nanopub &&
+                   statement.predicate != BELV.hasNanopub &&
+                   statement.subject != nanopub
 
-                # yield current graph as evidence model
-                yield make_evidence(
-                  describe(evidence_resource, graph),
+                # yield current graph as nanopub
+                yield make_nanopub(
+                  describe(nanopub, graph),
                   graph
                 )
 
                 # reset parse state
                 graph.clear
-                evidence_resource = nil
+                nanopub = nil
 
                 # insert this RDF statement
                 graph << statement
@@ -158,9 +158,9 @@ module BELRDF
             end
           end
 
-          # yield last graph as evidence model
-          yield make_evidence(
-            describe(evidence_resource, graph),
+          # yield last graph as nanopub
+          yield make_nanopub(
+            describe(nanopub, graph),
             graph
           )
         else

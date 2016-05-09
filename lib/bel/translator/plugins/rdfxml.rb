@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :rdfxml
     NAME        = 'RDF/XML RDF Translator'
-    DESCRIPTION = 'A translator that can read and write RDF/XML for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to RDF/XML.'
     MEDIA_TYPES = %i(application/rdf+xml)
     EXTENSIONS  = %i(rdf)
 

@@ -5,7 +5,7 @@ module BEL
   module Gen
 
     # The {Annotation} module defines methods that generate random annotations
-    # to be used in an evidence's {BEL::Model::ExperimentContext}.
+    # to be used in a nanopub's {BEL::Nanopub::ExperimentContext}.
     module Annotation
 
       # Array of the latest OpenBEL {BEL::Annotation::AnnotationDefinition}.
@@ -23,7 +23,7 @@ module BEL
       end
 
       # Returns a random annotation as a hash of +:name+ and +:value+. These
-      # can be added directly to an evidence's {BEL::Model::ExperimentContext}.
+      # can be added directly to a nanopub's {BEL::Nanopub::ExperimentContext}.
       #
       # @return [Hash] random annotation; hash of +:name+ and +:value+
       def annotation

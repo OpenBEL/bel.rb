@@ -56,7 +56,7 @@ EOF
 
   it "is enumerable" do
     statements = BEL::Script.parse(BEL_SCRIPT).find_all { |x|
-      x.is_a? BEL::Model::Statement
+      x.is_a? BEL::Nanopub::Statement
     }.to_a
     expect(statements.length).to be 6
     expect(statements.count{|x| x.subject_only?}).to be 3

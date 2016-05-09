@@ -141,18 +141,23 @@ describe BEL::Resource do
         end
 
         it 'returns identifier value (i.e. through dc:identifier predicate)' do
-          expect(akt1).not_to        respond_to(:identifier)
-          expect(akt1.identifier).to eq(RDF::Literal('391'))
+          expect(akt1).to            respond_to(:identifier)
+          expect(akt1.identifier).to eq(['391'])
         end
 
         it 'returns prefLabel value (i.e. through skos:prefLabel predicate)' do
-          expect(akt1).not_to        respond_to(:prefLabel)
-          expect(akt1.prefLabel).to  eq(RDF::Literal('AKT1'))
+          expect(akt1).to            respond_to(:pref_label)
+          expect(akt1.pref_label).to  eq(['AKT1'])
         end
 
         it 'returns title value (i.e. through dc:title predicate)' do
-          expect(akt1).not_to        respond_to(:title)
-          expect(akt1.title).to      eq(RDF::Literal('v-akt murine thymoma viral oncogene homolog 1'))
+          expect(akt1).to            respond_to(:title)
+          expect(akt1.title).to      eq(['v-akt murine thymoma viral oncogene homolog 1'])
+        end
+
+        it 'returns inScheme value (i.e. through skos:inScheme predicate)' do
+          expect(akt1).to            respond_to(:in_scheme)
+          expect(akt1.in_scheme).to  eq(['http://www.openbel.org/bel/namespace/hgnc-human-genes'])
         end
 
         it 'returns equivalent namespace values' do
@@ -162,10 +167,18 @@ describe BEL::Resource do
 
         it 'returns orthologous namespace values' do
           expect(akt1.orthologs.count).to eq(2)
-          expect(akt1.orthologs.to_a).to eq([
-            BEL::Resource::NamespaceValue.new(rdf_repository, RDF::URI('http://www.openbel.org/bel/namespace/mgi-mouse-genes/87986')),
-            BEL::Resource::NamespaceValue.new(rdf_repository, RDF::URI('http://www.openbel.org/bel/namespace/rgd-rat-genes/2081'))
-          ])
+          expect(akt1.orthologs.to_a).to(
+            include(
+              BEL::Resource::NamespaceValue.new(
+                rdf_repository,
+                RDF::URI('http://www.openbel.org/bel/namespace/mgi-mouse-genes/87986'))
+            ))
+          expect(akt1.orthologs.to_a).to(
+            include(
+            BEL::Resource::NamespaceValue.new(
+              rdf_repository,
+              RDF::URI('http://www.openbel.org/bel/namespace/rgd-rat-genes/2081'))
+            ))
         end
       end
     end

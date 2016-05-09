@@ -11,7 +11,7 @@ machine bel;
   }
   action term_fx {
     fx = @name.to_sym
-    @term_stack.push(BEL::Model::Term.new(fx, []))
+    @term_stack.push(BEL::Nanopub::Term.new(fx, []))
     @pfx = nil
     @pbuf = []
   }
@@ -29,7 +29,7 @@ machine bel;
 				  nil
 			  end
 
-      param = BEL::Model::Parameter.new(ns, val)
+      param = BEL::Nanopub::Parameter.new(ns, val)
       @term_stack.last << param
 
       yield param

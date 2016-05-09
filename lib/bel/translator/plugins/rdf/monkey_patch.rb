@@ -1,25 +1,24 @@
-require          'bel/evidence_model'
+require          'bel/nanopub'
 require_relative 'bel_schema'
 require_relative 'uuid'
 
 module BELRDF
 
-  # OpenClass to contribute RDF functionality to BEL Model.
+  # OpenClass to contribute RDF functionality to BEL Nanopub objects.
 
   class ::BEL::Namespace::NamespaceDefinition
 
     def to_uri
-      @rdf_uri
+      rdf_uri
     end
 
     def to_rdf_vocabulary
-      uri = @rdf_uri
-      uri << '/' unless uri.end_with?('/')
+      uri = rdf_uri
       ::RDF::Vocabulary.new(uri)
     end
   end
 
-  class ::BEL::Model::Parameter
+  class ::BEL::Nanopub::Parameter
 
     CONCEPT_ENCODING = {
       :G => BELRDF::BELV.GeneConcept,
@@ -71,7 +70,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Model::Term
+  class ::BEL::Nanopub::Term
 
     def to_uri
       tid = to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
@@ -83,7 +82,7 @@ module BELRDF
         fx = @fx.respond_to?(:short_form) ? @fx.short_form : @fx.to_s.to_sym
         if [:p, :proteinAbundance].include?(fx) &&
            @arguments.find{ |x|
-             if x.is_a? ::BEL::Model::Term
+             if x.is_a? ::BEL::Nanopub::Term
                arg_fx = x.fx
                arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
                [:pmod, :proteinModification].include?(arg_fx)
@@ -97,7 +96,7 @@ module BELRDF
 
         if [:p, :proteinAbundance].include?(fx) &&
            @arguments.find{ |x|
-             if x.is_a? ::BEL::Model::Term
+             if x.is_a? ::BEL::Nanopub::Term
                arg_fx = x.fx
                arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
                BELRDF::PROTEIN_VARIANT.include?(arg_fx)
@@ -133,7 +132,7 @@ module BELRDF
       if [:p, :proteinAbundance].include?(fx)
         pmod =
           @arguments.find{ |x|
-            if x.is_a? ::BEL::Model::Term
+            if x.is_a? ::BEL::Nanopub::Term
               arg_fx = x.fx
               arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
               [:pmod, :proteinModification].include?(arg_fx)
@@ -151,15 +150,15 @@ module BELRDF
             statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasModificationPosition, last.to_i, :graph_name => graph_name)
           end
           # link root protein abundance as hasChild
-          root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
+          root_param = @arguments.find{|x| x.is_a? ::BEL::Nanopub::Parameter}
+          (root_id, root_statements) = ::BEL::Nanopub::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
           statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, root_id, :graph_name => graph_name)
           statements.concat(root_statements)
           return [uri, statements]
-        elsif @arguments.find{|x| x.is_a? ::BEL::Model::Term and BELRDF::PROTEIN_VARIANT.include? x.fx}
+        elsif @arguments.find{|x| x.is_a? ::BEL::Nanopub::Term and BELRDF::PROTEIN_VARIANT.include? x.fx}
           # link root protein abundance as hasChild
-          root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
+          root_param = @arguments.find{|x| x.is_a? ::BEL::Nanopub::Parameter}
+          (root_id, root_statements) = ::BEL::Nanopub::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
           statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, root_id, :graph_name => graph_name)
           statements.concat(root_statements)
           return [uri, statements]
@@ -168,7 +167,7 @@ module BELRDF
 
       # BELRDF::BELV.hasConcept
       @arguments.find_all{ |x|
-        x.is_a? ::BEL::Model::Parameter and x.ns != nil
+        x.is_a? ::BEL::Nanopub::Parameter and x.ns != nil
       }.each do |param|
         param_uri, encoding_statements = param.to_rdf(graph_name, remap)
         statements.concat(encoding_statements)
@@ -176,7 +175,7 @@ module BELRDF
       end
 
       # BELRDF::BELV.hasChild]
-      @arguments.find_all{|x| x.is_a? ::BEL::Model::Term}.each do |child|
+      @arguments.find_all{|x| x.is_a? ::BEL::Nanopub::Term}.each do |child|
         (child_id, child_statements) = child.to_rdf(graph_name, remap)
         statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, child_id, :graph_name => graph_name)
         statements.concat(child_statements)
@@ -186,7 +185,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Model::Statement
+  class ::BEL::Nanopub::Statement
 
     def to_uri
       case
@@ -270,11 +269,11 @@ module BELRDF
       statements << ::RDF::Statement.new(uri, BELRDF::RDF.type, BELRDF::BELV.Statement,     :graph_name => graph_name)
       statements << ::RDF::Statement.new(uri, BELRDF::RDFS.label, to_s.force_encoding('UTF-8'),  :graph_name => graph_name)
 
-      # evidence
-      evidence    = BELRDF::BELE[BELRDF.generate_uuid]
-      statements << ::RDF::Statement.new(evidence, BELRDF::RDF.type, BELRDF::BELV.Evidence, :graph_name => graph_name)
-      statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasEvidence, evidence,             :graph_name => graph_name)
-      statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasStatement, uri,            :graph_name => graph_name)
+      # nanopub
+      nanopub    = BELRDF::BELE[BELRDF.generate_uuid]
+      statements << ::RDF::Statement.new(nanopub, BELRDF::RDF.type, BELRDF::BELV.Nanopub, :graph_name => graph_name)
+      statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasNanopub, nanopub,             :graph_name => graph_name)
+      statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasStatement, uri,            :graph_name => graph_name)
 
       # citation
       citation = @annotations.delete('Citation')
@@ -282,15 +281,15 @@ module BELRDF
         value = citation.value.map{|x| x.gsub('"', '')}
         if citation and value[0] == 'PubMed'
           pid = value[2]
-          statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasCitation, BELRDF::PUBMED[pid], :graph_name => graph_name)
+          statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasCitation, BELRDF::PUBMED[pid], :graph_name => graph_name)
         end
       end
 
-      # evidence
-      evidence_text = @annotations.delete('Evidence')
-      if evidence_text
-        value = evidence_text.value.gsub('"', '').force_encoding('UTF-8')
-        statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasEvidenceText, value, :graph_name => graph_name)
+      # nanopub
+      support = @annotations.delete('Support')
+      if support
+        value = support.value.gsub('"', '').force_encoding('UTF-8')
+        statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasSupport, value, :graph_name => graph_name)
       end
 
       # annotations
@@ -318,7 +317,7 @@ module BELRDF
           annotation_scheme = anno_rdf_uri ? anno_rdf_uri : BELRDF::const_get(name)
           [anno.value].flatten.map{|x| x.gsub('"', '')}.each do |val|
             value_uri = BELRDF::RDF::URI(URI.encode(annotation_scheme + val.to_s))
-            statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasAnnotation, value_uri, :graph_name => graph_name)
+            statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasAnnotation, value_uri, :graph_name => graph_name)
           end
         end
       end
@@ -337,7 +336,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Model::Evidence
+  class ::BEL::Nanopub::Nanopub
 
     def to_uri
       BELRDF::BELE[BELRDF.generate_uuid]
@@ -347,15 +346,15 @@ module BELRDF
       uri                       = to_uri
 
       # parse BEL statement if necessary
-      unless self.bel_statement.is_a?(::BEL::Model::Statement)
+      unless self.bel_statement.is_a?(::BEL::Nanopub::Statement)
         self.bel_statement = self.class.parse_statement(self)
       end
 
       # convert BEL statement to RDF
       statement_uri, statements = bel_statement.to_rdf(uri, remap)
 
-      statements << ::RDF::Statement.new(uri,           BELRDF::RDF.type,          BELRDF::BELV.Evidence, :graph_name => uri)
-      statements << ::RDF::Statement.new(statement_uri, BELRDF::BELV.hasEvidence,  uri,                     :graph_name => uri)
+      statements << ::RDF::Statement.new(uri,           BELRDF::RDF.type,          BELRDF::BELV.Nanopub, :graph_name => uri)
+      statements << ::RDF::Statement.new(statement_uri, BELRDF::BELV.hasNanopub,  uri,                     :graph_name => uri)
       statements << ::RDF::Statement.new(uri,           BELRDF::BELV.hasStatement, statement_uri,           :graph_name => uri)
 
       annotations = bel_statement.annotations
@@ -370,11 +369,11 @@ module BELRDF
         end
       end
 
-      # evidence
-      evidence_text = annotations.delete('Evidence')
-      if evidence_text
-        value = evidence_text.value.gsub('"', '').force_encoding('UTF-8')
-        statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasEvidenceText, value, :graph_name => uri)
+      # support
+      support = annotations.delete('Support')
+      if support
+        value = support.value.gsub('"', '').force_encoding('UTF-8')
+        statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasSupport, value, :graph_name => uri)
       end
 
       # annotations

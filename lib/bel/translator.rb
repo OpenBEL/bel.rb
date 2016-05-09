@@ -1,29 +1,29 @@
 module BEL
 
   # The Translator module defines a plugin that reads a specific document
-  # format into BEL evidence and writes BEL evidence back to this document
+  # format into BEL nanopubs and writes BEL nanopubs back to this document
   # format.
   #
   # - Read
   #   - {#read}:            read the input format and parse to
-  #     {::BEL::Model::Evidence} objects
+  #     {::BEL::Nanopub::Nanopub} objects
   # - Write
-  #   - {#write}:           write {::BEL::Model::Evidence} objects to the
+  #   - {#write}:           write {::BEL::Nanopub::Nanopub} objects to the
   #     output format
   #
-  # @example Create a translator for conversion of YAML <-> BEL Evidence.
+  # @example Create a translator for conversion of YAML <-> BEL nanopub.
   #   module Translator
   #
   #     include ::BEL::Translator
   #
   #     def read(data, options = {})
   #       objects = YAML.load(data)
-  #       # map objects to BEL evidence
+  #       # map objects to BEL nanopub
   #       # return enumerator
   #     end
   #
   #     def write(data, writer = nil, options = {})
-  #       # map BEL evidence to YAML objects
+  #       # map BEL nanopub to YAML objects
   #       YAML.dump(data)
   #     end
   #   end
@@ -80,20 +80,20 @@ module BEL
       :module => BEL::Translator::Plugins
     )
 
-    # Read BEL evidence from this translator's supported file format.
+    # Read BEL nanopubs from this translator's supported file format.
     #
     # @param  [IO, String]             data the data to read
     # @param  [Hash{Symbol => Object}] options
     # @return [#each]                  an object that responds to +each+ and
-    #         provides {::BEL::Model::Evidence} objects
+    #         provides {::BEL::Nanopub::Nanopub} objects
     def read(data, options = {})
       raise NotImplementedError.new("#{__method__} is not implemented.")
     end
 
-    # Writes BEL evidence +data+ to the provided IO +writer+.
+    # Writes BEL nanopubs to the provided IO +writer+.
     #
     # @param  [#each]                  data an object that responds to +each+ and
-    #         provides {::BEL::Model::Evidence} objects
+    #         provides {::BEL::Nanopub::Nanopub} objects
     # @param  [IO]                     writer an IO to write to
     # @param  [Hash{Symbol => Object}] options
     # @return [IO]                     the IO that was written to

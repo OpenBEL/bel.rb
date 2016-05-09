@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :turtle
     NAME        = 'Turtle RDF Translator'
-    DESCRIPTION = 'A translator that can read and write turtle for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to RDF Turtle.'
     MEDIA_TYPES = %i(application/turtle application/x-turtle)
     EXTENSIONS  = %i(ttl)
 

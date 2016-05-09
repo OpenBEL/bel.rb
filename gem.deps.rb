@@ -6,7 +6,12 @@
 source 'https://rubygems.org'
 
 # Gems used at runtime.
+gem 'bel_parser',    '~> 1.0.0.alpha'
+gem 'rdf',           '2.0.1'
+gem 'rdf-vocab',     '2.0.1'
 gem 'ffi',           '1.9.8'
+gem 'addressable',   '~> 2.3'
+gem 'uuid',          '~> 2.3'
 
 # Gems used in development.
 gem 'minitest',      '~> 5.7'
@@ -21,11 +26,8 @@ gem 'rubocop',       '~> 0.34'
 gem 'rantly',        '~> 0.3'
 
 # For testing RDF functionality.
-gem 'addressable',   '~> 2.3'
-gem 'rdf',           '~> 1.1'
-gem 'rdf-turtle',    '~> 1.1'
-gem 'uuid',          '~> 2.3'
-gem 'rdf-mongo',     '1.99.0'
+gem 'rdf-mongo',     '2.0.0'
+gem 'rdf-turtle',    '2.0.0'
 
 # Platform-specific example.
 # platform(:jruby) {

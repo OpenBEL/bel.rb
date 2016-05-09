@@ -220,7 +220,7 @@ module BELRDF
     # Classes - Language Concepts
     [BELV.Abundance, RDF.type, RDFS.Class],
     [BELV.Activity, RDF.type, RDFS.Class],
-    [BELV.Evidence, RDF.type, RDFS.Class],
+    [BELV.Nanopub, RDF.type, RDFS.Class],
     [BELV.Modification, RDF.type, RDFS.Class],
     [BELV.Relationship, RDF.type, RDFS.Class],
     [BELV.Statement, RDF.type, RDFS.Class],
@@ -324,9 +324,9 @@ module BELRDF
     [BELV.hasModificationType, RDFS.domain, BELV.Term],
 
     # Properties - BEL Statement
-    [BELV.hasEvidence, RDF.type, RDF.Property],
-    [BELV.hasEvidence, RDFS.range, BELV.Evidence],
-    [BELV.hasEvidence, RDFS.domain, BELV.Statement],
+    [BELV.hasNanopub, RDF.type, RDF.Property],
+    [BELV.hasNanopub, RDFS.range, BELV.Nanopub],
+    [BELV.hasNanopub, RDFS.domain, BELV.Statement],
     [BELV.hasObject, RDFS.subPropertyOf, BELV.hasChild],
     [BELV.hasObject, RDFS.range, BELV.Term],
     [BELV.hasObject, RDFS.domain, BELV.Statement],
@@ -337,17 +337,17 @@ module BELRDF
     [BELV.hasSubject, RDFS.range, BELV.Term],
     [BELV.hasSubject, RDFS.domain, BELV.Statement],
 
-    # Properties - Evidence
+    # Properties - Nanopub
     [BELV.hasAnnotation, RDF.type, RDF.Property],
     [BELV.hasAnnotation, RDFS.range, BELV.AnnotationConcept],
-    [BELV.hasAnnotation, RDFS.domain, BELV.Evidence],
+    [BELV.hasAnnotation, RDFS.domain, BELV.Nanopub],
     [BELV.hasCitation, RDF.type, RDF.Property],
-    [BELV.hasCitation, RDFS.domain, BELV.Evidence],
-    [BELV.hasEvidenceText, RDFS.range, XSD.string],
-    [BELV.hasEvidenceText, RDFS.domain, BELV.Evidence],
+    [BELV.hasCitation, RDFS.domain, BELV.Nanopub],
+    [BELV.hasNanopubText, RDFS.range, XSD.string],
+    [BELV.hasNanopubText, RDFS.domain, BELV.Nanopub],
     [BELV.hasStatement, RDF.type, RDF.Property],
     [BELV.hasStatement, RDFS.range, BELV.Statement],
-    [BELV.hasStatement, RDFS.domain, BELV.Evidence]
+    [BELV.hasStatement, RDFS.domain, BELV.Nanopub]
   ])
 
   def self.vocabulary_rdf

@@ -1,7 +1,7 @@
 $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', 'lib')
 require 'bel'
 
-describe BEL::Model::Term do
+describe BEL::Nanopub::Term do
 
   it "determines if it is valid" do
     expect(

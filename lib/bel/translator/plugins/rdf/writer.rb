@@ -27,22 +27,22 @@ module BELRDF
         @wrote_dataset    = false
       end
 
-      def <<(evidence)
+      def <<(nanopub)
         if !@wrote_dataset && @void_dataset_uri
-          void_dataset_triples = evidence.to_void_dataset(@void_dataset_uri)
+          void_dataset_triples = nanopub.to_void_dataset(@void_dataset_uri)
           if void_dataset_triples && void_dataset_triples.respond_to?(:each)
             void_dataset_triples.each do |void_triple|
               @writer.write_statement(void_triple)
             end
           end
         end
-        evidence_uri, statements = evidence.to_rdf
+        nanopub_uri, statements = nanopub.to_rdf
         statements.each do |statement|
           @writer.write_statement(statement)
         end
 
         if @void_dataset_uri
-          @writer.write_statement(RDF::Statement.new(@void_dataset_uri, RDF::DC.hasPart, evidence_uri))
+          @writer.write_statement(RDF::Statement.new(@void_dataset_uri, RDF::DC.hasPart, nanopub_uri))
         end
       end
 

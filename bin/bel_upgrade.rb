@@ -75,7 +75,7 @@ end
 
 class Main
 
-  EvidenceMatcher = Regexp.compile(/SET Evidence = ([0-9a-zA-Z]+)/)
+  SupportMatcher = Regexp.compile(/SET Support = ([0-9a-zA-Z]+)/)
   LostReplaceValues = ['unresolved', 'withdrawn']
   attr_reader :ttl
 
@@ -141,11 +141,11 @@ class Main
         end
       end
 
-      # evidence always needs quoting; backwards-compatibility
+      # support always needs quoting; backwards-compatibility
       if obj.is_a? BEL::Language::Annotation
-        if obj.name == 'Evidence'
+        if obj.name == 'Support'
           ev = obj.to_s
-          ev.gsub!(EvidenceMatcher, 'SET Evidence = "\1"')
+          ev.gsub!(SupportMatcher, 'SET Support = "\1"')
           puts ev.to_s
           next
         # look for replacement values for annotations  
@@ -185,7 +185,7 @@ class Main
         end
       end
 
-      if obj.is_a? BEL::Model::Parameter and obj.ns
+      if obj.is_a? BEL::Nanopub::Parameter and obj.ns
         # first try replacing by existing namespace prefix...
         prefix = obj.ns.prefix.to_s
         replacements = @change_log[prefix]
@@ -225,7 +225,7 @@ class Main
         end
       end
       # do not print Parameter and Term; they are included in Statement
-      if not obj.is_a? BEL::Model::Parameter and not obj.is_a? BEL::Model::Term
+      if not obj.is_a? BEL::Nanopub::Parameter and not obj.is_a? BEL::Nanopub::Term
         puts obj.to_bel
       end
     end
