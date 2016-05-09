@@ -179,9 +179,9 @@ module BEL::Translator::Plugins
 
         # XBEL nanopub (::BEL::Nanopub::Support)
         if nanopub.support && nanopub.support.value
-          xbel_nanopub      = REXML::Element.new('bel:nanopub')
-          xbel_nanopub.text = nanopub.support.value
-          el_ag.add_element(xbel_nanopub)
+          xbel_support      = REXML::Element.new('bel:support')
+          xbel_support.text = nanopub.support.value
+          el_ag.add_element(xbel_support)
         end
 
         nanopub.experiment_context.each do |annotation|
