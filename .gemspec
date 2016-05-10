@@ -61,8 +61,8 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version    = '>= 2.0.0'
 
   spec.add_runtime_dependency 'bel_parser', '~> 1.0.0.alpha'
-  spec.add_runtime_dependency 'rdf',        '2.0.1'
-  spec.add_runtime_dependency 'rdf-vocab',  '2.0.1'
+  spec.add_runtime_dependency 'rdf',        '~> 2.0.0'
+  spec.add_runtime_dependency 'rdf-vocab',  '~> 2.0.0'
   spec.add_runtime_dependency 'ffi',        '1.9.8'
 
   # Example post-install message.
