@@ -15,7 +15,6 @@ require_relative 'bel/resource'
 require_relative 'bel/script'
 
 require_relative 'bel/libbel.rb'
-require_relative 'bel/parser'
 require_relative 'bel/completion'
 
 require_relative 'bel/dsl'
