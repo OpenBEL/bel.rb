@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel_parser/expression'
 
 require_relative 'citation'
 require_relative 'support'
@@ -8,44 +9,43 @@ require_relative 'metadata'
 
 module BEL
   module Nanopub
-
+    # Nanopub represents an asserted biological interaction with associated
+    # constituents:
+    #
+    # - BEL Statement
+    # - Citation
+    # - Support
+    # - Experiment Context
+    # - References
+    # - Metadata
     class Nanopub
       def self.create(hash)
         nanopub = Nanopub.new
+        # Order-dependent; metadata/references must be set first in order for
+        # _parse_statement to reference specification and namespaces.
+        nanopub.metadata           = Metadata.new(hash[:metadata] || {})
+        nanopub.references         = References.new(hash[:references] || {})
         nanopub.bel_statement      = hash[:bel_statement] || nil
         nanopub.citation           = Citation.new(hash[:citation] || {})
         nanopub.support.value      = hash[:support] || nil
         nanopub.experiment_context = ExperimentContext.new(hash[:experiment_context] || [])
-        nanopub.references         = References.new(hash[:references] || {})
-        nanopub.metadata           = Metadata.new(hash[:metadata] || {})
         nanopub
       end
 
-      def self.parse_statement(nanopub)
-        namespaces = nanopub.references.namespaces
-        ::BEL::Script.parse(
-          "#{nanopub.bel_statement}\n",
-          Hash[
-            namespaces.map { |ns|
-              keyword, uri = ns.values_at(:keyword, :uri)
-              sym          = keyword.to_sym
-              [
-                sym,
-                ::BEL::Namespace::NamespaceDefinition.new(sym, uri, nil)
-              ]
-            }
-          ]
-        ).select { |obj|
-          obj.is_a? ::BEL::Nanopub::Statement
-        }.first
-      end
-
       def bel_statement
-        (@bel_statement ||= Statement.new)
+        @bel_statement
       end
 
       def bel_statement=(bel_statement)
-        @bel_statement = bel_statement
+        @bel_statement =
+          case bel_statement
+          when String
+            _parse_statement(bel_statement)
+          when BELParser::Expression::Model::Statement
+            bel_statement
+          else
+            raise ArgumentError, %(expected String, Statement, actual: #{bel_statement.class})
+          end
       end
 
       def citation
@@ -104,23 +104,15 @@ module BEL
 
       private
 
-      def parse_statement(bel_statement)
-        namespaces = self.references.namespaces
-        ::BEL::Script.parse(
-          "#{bel_statement}\n",
-          Hash[
-            namespaces.map { |ns|
-              keyword, uri = ns.values_at(:keyword, :uri)
-              sym          = keyword.to_sym
-              [
-                sym,
-                ::BEL::Namespace::NamespaceDefinition.new(sym, uri, uri)
-              ]
-            }
-          ]
-        ).select { |obj|
-          obj.is_a? ::BEL::Nanopub::Statement
-        }.first
+      def _parse_statement(bel_statement)
+        bel_version =
+          metadata[:bel_version] || BELParser::Language.latest_supported_version
+        spec = BELParser::Language.specification(bel_version)
+        BELParser::Expression.parse_statements(
+          bel_statement,
+          spec,
+          references.namespaces_hash
+        )
       end
     end
   end

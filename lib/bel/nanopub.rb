@@ -2,7 +2,6 @@ require_relative 'nanopub/nanopub'
 
 require_relative 'nanopub/bel_parameter'
 require_relative 'nanopub/bel_term'
-require_relative 'nanopub/bel_statement'
 
 require_relative 'nanopub/citation'
 require_relative 'nanopub/support'

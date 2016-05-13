@@ -38,12 +38,20 @@ module BEL
         @values[ANNOTATIONS] ||= []
       end
 
+      def annotations_hash
+        Hash[annotations.map { |ns| ns.values_at(:keyword, :domain) }]
+      end
+
       def annotations=(annotations)
         @values[ANNOTATIONS] = annotations
       end
 
       def namespaces
         @values[NAMESPACES] ||= []
+      end
+
+      def namespaces_hash
+        Hash[namespaces.map { |ns| ns.values_at(:keyword, :uri) }]
       end
 
       def namespaces=(namespaces)

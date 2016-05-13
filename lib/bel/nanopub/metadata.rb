@@ -9,6 +9,7 @@ module BEL
       extend Forwardable
       include Enumerable
 
+      BEL_VERSION     = :bel_version
       DOCUMENT_HEADER = :document_header
 
       def initialize(values = {})
@@ -23,6 +24,24 @@ module BEL
         else
           @values = values
         end
+      end
+
+      def bel_version
+        @values[BEL_VERSION] ||= {}
+      end
+
+      def bel_version=(bel_version)
+        @values[BEL_VERSION] =
+          case bel_version
+          when BELParser::Language::Specification
+            bel_version.version.to_s
+          when String
+            bel_version
+          else
+            raise(
+              ArgumentError,
+              %(expected String, Specification; actual #{bel_version.class}))
+          end
       end
 
       def document_header
