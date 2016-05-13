@@ -69,8 +69,8 @@ module BEL
         end
 
         annotations << {
-          :keyword => keyword.to_sym,
-          :type    => type.to_sym,
+          :keyword => keyword,
+          :type    => type,
           :domain  => domain
         }
         annotations.sort_by! { |anno| anno[:keyword] }
@@ -78,7 +78,7 @@ module BEL
 
       def add_namespace(keyword, uri)
         namespaces << {
-          :keyword => keyword.to_sym,
+          :keyword => keyword,
           :uri => uri
         }
         namespaces.sort_by! { |ns| ns[:keyword] }

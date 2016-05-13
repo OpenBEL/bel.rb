@@ -81,25 +81,7 @@ module BEL::Translator::Plugins
       end
 
       def unwrap(hash)
-        nanopub_hash          = hash[NANOPUB_ROOT]
-        nanopub               = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
-
-        nanopub.bel_statement = parse_statement(nanopub)
-        nanopub
-      end
-
-      def parse_statement(nanopub)
-        namespaces = nanopub.references.namespaces
-        ::BEL::Script.parse(
-          "#{nanopub.bel_statement}\n",
-          Hash[
-            namespaces.map { |k, v|
-              [k, ::BEL::Namespace::NamespaceDefinition.new(k, v)]
-            }
-          ]
-        ).select { |obj|
-          obj.is_a? ::BEL::Nanopub::Statement
-        }.first
+        ::BEL::Nanopub::Nanopub.create(hash[NANOPUB_ROOT])
       end
 
       def escape_newlines(value)

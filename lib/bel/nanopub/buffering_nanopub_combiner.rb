@@ -44,9 +44,6 @@ module BEL
           @namespace_references  = map_references.namespace_references
 
           nanopub_array.each do |nanopub|
-            if nanopub.bel_statement.is_a?(String)
-              nanopub.bel_statement = BEL::Nanopub::Nanopub.parse_statement(nanopub)
-            end
             yield rewrite_nanopub!(nanopub, map_references)
           end
         else
@@ -107,6 +104,8 @@ module BEL
       end
 
       def rewrite_statement!(statement, namespace_references, map_references)
+        return if statement.nil?
+
         keyword_to_reference = Hash[
           namespace_references.map { |reference|
             [reference[:keyword], reference]
@@ -121,9 +120,9 @@ module BEL
         obj = statement.object
         if obj
           case obj
-          when ::BEL::Nanopub::Statement
+          when ::BELParser::Expression::Model::Statement
             rewrite_statement!(obj, namespace_references, map_references)
-          when ::BEL::Nanopub::Term
+          when ::BELParser::Expression::Model::Term
             rewrite_term!(obj, keyword_to_reference, map_references)
           end
         end
@@ -134,24 +133,19 @@ module BEL
 
         term.arguments.each do |arg|
           case arg
-          when ::BEL::Nanopub::Parameter
-            if arg.ns
-              prefix =
-                if arg.ns.respond_to?(:prefix)
-                  arg.ns.prefix
-                else
-                  arg.ns[:prefix]
-                end
+          when ::BELParser::Expression::Model::Parameter
+            if arg.namespace
+              prefix        = arg.namespace.keyword
               reference     = keyword_to_reference[prefix.to_sym]
               new_reference = map_references.map_namespace_reference(reference)
               if new_reference
-                arg.ns = BEL::Namespace::NamespaceDefinition.new(
-                  new_reference[:keyword],
-                  new_reference[:uri]
-                )
+                arg.namespace =
+                  BELParser::Expression::Model::Namespace.new(
+                    new_reference[:keyword],
+                    new_reference[:uri])
               end
             end
-          when ::BEL::Nanopub::Term
+          when ::BELParser::Expression::Model::Term
             rewrite_term!(arg, keyword_to_reference, map_references)
           end
         end
