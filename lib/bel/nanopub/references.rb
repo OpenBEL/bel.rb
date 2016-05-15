@@ -1,5 +1,6 @@
 require 'forwardable'
 require 'set'
+require 'bel_parser/expression/model/namespace'
 
 module BEL
   module Nanopub
@@ -51,7 +52,7 @@ module BEL
       end
 
       def namespaces_hash
-        Hash[namespaces.map { |ns| ns.values_at(:keyword, :uri) }]
+        Hash[ namespaces.map { |n| [n.keyword, n] } ]
       end
 
       def namespaces=(namespaces)
@@ -77,11 +78,13 @@ module BEL
       end
 
       def add_namespace(keyword, uri)
-        namespaces << {
-          :keyword => keyword,
-          :uri => uri
-        }
-        namespaces.sort_by! { |ns| ns[:keyword] }
+        namespace =
+          BELParser::Expression::Model::Namespace.new(
+            keyword.to_s,
+            uri,
+            nil)
+        namespaces << namespace
+        namespaces.sort_by! { |n| n.keyword }
       end
 
       def to_h(hash = {})
