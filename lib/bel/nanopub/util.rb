@@ -36,21 +36,20 @@ module BEL
       remap_result   = {}
 
       combined = destination + new.map { |new_obj|
-        new_key = new_obj[:keyword].to_s
+        new_key = new_obj.keyword
 
         # find a match where the keyword differs
-        new_value      = new_obj.reject { |key, value| key == :keyword }
         match_by_value = destination.find { |dest|
-          new_value == dest.reject { |key, value| key == :keyword }
+          new_obj.domain_equal?(dest)
         }
 
         rewrite_key =
           if match_by_value
-            match_by_value[:keyword]
+            match_by_value.keyword
           else
             # find max suffix match
             max_suffix = destination.map { |dest|
-              key, suffix_number = dest[:keyword].to_s.split(suffix_pattern)
+              key, suffix_number = dest.keyword.to_s.split(suffix_pattern)
               if new_key == key
                 suffix_number
               else
@@ -63,7 +62,7 @@ module BEL
             if max_suffix
               new_key + suffix + max_suffix.next
             else
-              if destination.any? { |dest| dest[:keyword] == new_key }
+              if destination.any? { |dest| dest.keyword == new_key }
                 "#{new_key}#{suffix}1"
               else
                 new_key
@@ -71,7 +70,8 @@ module BEL
             end
           end
 
-        rewrite_obj           = new_obj.merge({:keyword => rewrite_key})
+        rewrite_obj           = new_obj.dup
+        rewrite_obj.keyword   = rewrite_key
         remap_result[new_obj] = rewrite_obj
         rewrite_obj
       }

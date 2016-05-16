@@ -158,7 +158,7 @@ module BEL
       )
         references = Hash[
           annotation_references.map { |reference|
-            [reference[:keyword], reference]
+            [reference.keyword, reference]
           }
         ]
         experiment_context.values.each do |annotation|
