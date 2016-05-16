@@ -43,6 +43,8 @@ module BEL
             _parse_statement(bel_statement)
           when BELParser::Expression::Model::Statement
             bel_statement
+          when nil
+            nil
           else
             raise ArgumentError, %(expected String, Statement, actual: #{bel_statement.class})
           end
