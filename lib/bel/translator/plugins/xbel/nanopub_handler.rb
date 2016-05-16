@@ -45,6 +45,7 @@ module BEL::Translator::Plugins
       STATEMENT                      = 'statement'
       STATEMENT_GROUP                = 'statementGroup'
       SUBJECT                        = 'subject'
+      SUPPORT                        = 'support'
       TERM                           = 'term'
       TYPE                           = 'type'
       URL                            = 'url'
@@ -52,10 +53,15 @@ module BEL::Translator::Plugins
       VERSION                        = 'version'
 
       def initialize(callable)
-        @callable          = callable
-        @element_stack     = []
-        @text              = nil
-        @nanopub          = Nanopub.new
+        @callable      = callable
+        @element_stack = []
+        @text          = nil
+        @nanopub       = Nanopub.new
+        @annotations   = {}
+        @namespaces    = {}
+        # TODO Set to latest_supported_specification once we can read the belversion document property.
+        # @spec          = BELParser::Language.latest_supported_specification
+        @spec          = BELParser::Language.specification('1.0')
       end
 
       # Called on element start by REXML.
@@ -107,22 +113,19 @@ module BEL::Translator::Plugins
 
       def start_namespace(attributes)
         if stack_top == :namespace_group
-          prefix             = attr_value(attributes, PREFIX)
-          resource_location  = attr_value(attributes, RESOURCE_LOCATION)
-          @nanopub.references.add_namespace(prefix, resource_location)
+          prefix              = attr_value(attributes, PREFIX)
+          resource_location   = attr_value(attributes, RESOURCE_LOCATION)
+          @namespaces[prefix] = {keyword: prefix, uri: resource_location}
         end
         @element_stack << :namespace
       end
 
       def start_external_annotation_definition(attributes)
         if stack_top == :annotation_definition_group
-          id                 = attr_value(attributes, ID)
-          uri                = attr_value(attributes, URL)
-          @nanopub.references.add_annotation(
-            attr_value(attributes, ID),
-            :uri,
-            attr_value(attributes, URL)
-          )
+          keyword               = attr_value(attributes, ID)
+          uri                   = attr_value(attributes, URL)
+          @annotations[keyword] =
+            {keyword: keyword, type: :uri, domain: uri}
         end
         @element_stack << :external_annotation_definition
       end
@@ -156,13 +159,15 @@ module BEL::Translator::Plugins
       end
 
       def start_statement(attributes)
-        stmt = Statement.new
-        stmt.relationship = attr_value(attributes, RELATIONSHIP)
+        relationship = attr_value(attributes, RELATIONSHIP)
+        stmt = {
+          relationship: convert_relationship(relationship)
+        }
         if stack_top == :statement_group
           @statement_stack = []
           @statement_stack << stmt
         elsif stack_top == :object
-          @statement_stack.last.object = stmt
+          #@statement_stack.last[:object] = stmt
           @statement_stack << stmt
         end
 
@@ -178,7 +183,8 @@ module BEL::Translator::Plugins
       end
 
       def start_term(attributes)
-        term = Term.new(attr_value(attributes, FUNCTION), [])
+        function = @spec.function(attr_value(attributes, FUNCTION).to_sym)
+        term = BELParser::Expression::Model::Term.new(function, [])
         if stack_top == :subject || stack_top == :object
           # outer term
           @term_stack = []
@@ -216,6 +222,10 @@ module BEL::Translator::Plugins
           @annotation_id = ref_id
           @element_stack << :annotation
         end
+      end
+
+      def start_support(attributes)
+        @element_stack << :support
       end
 
       def start_citation(attributes)
@@ -277,11 +287,10 @@ module BEL::Translator::Plugins
 
       def end_internal_annotation_definition
         @element_stack.pop
-        @nanopub.references.add_annotation(
-          @current_anno_def[:keyword],
-          @current_anno_def[:type],
-          @current_anno_def[:domain],
-        )
+        keyword, type, domain =
+          @current_anno_def.values_at(:keyword, :type, :domain)
+        @annotations[keyword] =
+          {keyword: keyword, type: type, domain: domain}
       end
 
       def end_list_annotation
@@ -326,16 +335,33 @@ module BEL::Translator::Plugins
 
       def end_statement
         @element_stack.pop
-
         stmt = @statement_stack.pop
-        if @statement_stack.empty?
+
+        if stack_top == :object
+          @statement_stack.last[:object] =
+            BELParser::Expression::Model::Statement.new(
+              stmt[:subject],
+              stmt[:relationship],
+              stmt[:object],
+              stmt[:comment]
+            )
+        elsif @statement_stack.empty?
           # create new nanopub from parsed data
           nanopub_copy = Nanopub.create({
-            :bel_statement      => stmt,
+            :bel_statement      =>
+              BELParser::Expression::Model::Statement.new(
+                stmt[:subject],
+                stmt[:relationship],
+                stmt[:object],
+                stmt[:comment]
+              ),
             :citation           => @nanopub.citation.to_h,
             :support            => @nanopub.support.value,
             :experiment_context => @nanopub.experiment_context.values.dup,
-            :references         => @nanopub.references.values.dup,
+            :references         => {
+              :annotations => @annotations.values,
+              :namespaces => @namespaces.values
+            },
             :metadata           => @nanopub.metadata.values.dup
           })
 
@@ -357,14 +383,14 @@ module BEL::Translator::Plugins
       end
 
       def end_subject
-        @statement_stack.last.subject = @term_stack.last
+        @statement_stack.last[:subject] = @term_stack.last
         @element_stack.pop
       end
 
       def end_object
-        if @statement_stack.last.object == nil
+        if @statement_stack.last[:object] == nil
           # sets object if it wasn't already set by OBJECT STATEMENT
-          @statement_stack.last.object  = @term_stack.last
+          @statement_stack.last[:object] = @term_stack.last
         end
         @element_stack.pop
       end
@@ -385,6 +411,11 @@ module BEL::Translator::Plugins
       end
 
       def end_annotation_group
+        @element_stack.pop
+      end
+
+      def end_support
+        @nanopub.support.value = @text
         @element_stack.pop
       end
 
@@ -458,6 +489,8 @@ module BEL::Translator::Plugins
       def end_comment
         if stack_top == :citation
           @nanopub.citation.comment = @text
+        elsif stack_top == :statement
+          @statement_stack.last[:comment] = @text
         end
       end
 
@@ -476,16 +509,18 @@ module BEL::Translator::Plugins
       end
 
       def namespace_reference(ns_id, nanopub)
-        ns_id = ns_id.to_sym
-        namespace_reference = nanopub.references.namespaces.find { |ns|
-          ns[:keyword] == ns_id
-        }
-
+        namespace_reference = @namespaces[ns_id]
         if namespace_reference
-          {
-            :prefix => namespace_reference[:keyword],
-            :url    => namespace_reference[:uri]
-          }
+          keyword, uri = namespace_reference.values_at(:keyword, :uri)
+          BELParser::Expression::Model::Namespace.new(keyword, uri)
+        else
+          nil
+        end
+      end
+
+      def convert_relationship(relationship)
+        if relationship
+          @spec.relationship(relationship.to_sym)
         else
           nil
         end
