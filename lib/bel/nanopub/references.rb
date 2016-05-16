@@ -60,21 +60,13 @@ module BEL
       end
 
       def add_annotation(keyword, type, domain)
-        if type == :pattern
-          domain = case domain
-                   when Regexp
-                     domain
-                   else
-                     Regexp.new(domain.to_s)
-                   end
-        end
-
-        annotations << {
-          :keyword => keyword,
-          :type    => type,
-          :domain  => domain
-        }
-        annotations.sort_by! { |anno| anno[:keyword] }
+        annotation =
+          BELParser::Expression::Model::Annotation.new(
+            keyword,
+            type.to_sym,
+            domain)
+        annotations << annotation
+        annotations.sort_by! { |a| a.keyword }
       end
 
       def add_namespace(keyword, uri)
@@ -89,24 +81,24 @@ module BEL
 
       def to_h(hash = {})
         hash[ANNOTATIONS] = annotations.map { |anno|
-          keyword, type, domain = anno.values_at(:keyword, :type, :domain)
-
-          domain = case domain
-                   when Regexp
-                     domain.source
-                   else
-                     domain
-                   end
-
           {
-            :keyword => keyword,
-            :type    => type,
-            :domain  => domain
+            :keyword => anno.keyword,
+            :type    => anno.type,
+            :domain  =>
+              case anno.domain
+              when Regexp
+                anno.domain.source
+              else
+                anno.domain
+              end
           }
         }
 
         hash[NAMESPACES] = namespaces.map { |ns|
-          ns.dup
+          {
+            :keyword => ns.keyword,
+            :uri     => ns.uri
+          }
         }
 
         hash
