@@ -95,16 +95,8 @@ module BEL::Translator::Plugins
       end
 
       def self.statement(statement, el_statement)
-        if statement.is_a?(String)
-          statement = BEL::Script.parse(statement.to_s).find { |x|
-            x.is_a? BEL::Nanopub::Statement
-          }
-          return el_statement if statement == nil
-        end
-
         if statement.relationship
-          normal_form = BEL::Language::RELATIONSHIPS[statement.relationship.to_sym]
-          el_statement.add_attribute 'bel:relationship', normal_form
+          el_statement.add_attribute 'bel:relationship', statement.relationship.to_s(:long)
         end
 
         if statement.subject
@@ -131,9 +123,9 @@ module BEL::Translator::Plugins
         el_object = REXML::Element.new('bel:object')
 
         case object
-        when ::BEL::Nanopub::Term
+        when ::BELParser::Expression::Model::Term
           el_object.add_element(self.term(object))
-        when ::BEL::Nanopub::Statement
+        when ::BELParser::Expression::Model::Statement
           el_statement = REXML::Element.new('bel:statement')
           el_object.add_element(el_statement)
           self.statement(object, el_statement)
@@ -142,20 +134,14 @@ module BEL::Translator::Plugins
       end
 
       def self.term(term)
-        el_term    = REXML::Element.new('bel:term')
-        term_fx    = term.fx.to_s
-        term_fx    = (
-                       FUNCTIONS.fetch(term_fx.to_sym, {}).
-                                 fetch(:long_form, nil) || term_fx
-                     ).to_s
-
-        el_term.add_attribute 'bel:function', term_fx
+        el_term   = REXML::Element.new('bel:term')
+        el_term.add_attribute 'bel:function', term.function.to_s(:long)
 
         term.arguments.each do |arg|
           case arg
-          when ::BEL::Nanopub::Term
+          when ::BELParser::Expression::Model::Term
             el_term.add_element(self.term(arg))
-          when ::BEL::Nanopub::Parameter
+          when ::BELParser::Expression::Model::Parameter
             el_term.add_element(self.parameter(arg))
           end
         end
@@ -165,7 +151,8 @@ module BEL::Translator::Plugins
       def self.parameter(parameter)
         el_parameter      = REXML::Element.new('bel:parameter')
         el_parameter.text = parameter.value
-        el_parameter.add_attribute 'bel:ns', parameter.ns
+        keyword           = parameter.namespace && parameter.namespace.keyword
+        el_parameter.add_attribute 'bel:ns', keyword
         el_parameter
       end
 
@@ -348,11 +335,9 @@ module BEL::Translator::Plugins
       def self.namespace_definitions(list)
         el_nd = REXML::Element.new('bel:namespaceGroup')
         list.each do |namespace|
-          keyword, uri = namespace.values_at(:keyword, :uri).map(&:to_s)
-          el           = REXML::Element.new('bel:namespace')
-
-          el.add_attribute 'bel:prefix', keyword
-          el.add_attribute 'bel:resourceLocation', uri
+          el = REXML::Element.new('bel:namespace')
+          el.add_attribute 'bel:prefix', namespace.keyword
+          el.add_attribute 'bel:resourceLocation', namespace.uri
           el_nd.add_element(el)
         end
 
@@ -364,43 +349,41 @@ module BEL::Translator::Plugins
         internal = []
         external = []
         list.each do |annotation|
-          keyword, type = annotation.values_at(:keyword, :type).map(&:to_s)
-          domain        = annotation[:domain]
-
-          case type.to_sym
+          case annotation.type.to_sym
           when :url, :uri
             el = REXML::Element.new('bel:externalAnnotationDefinition')
-            el.add_attribute 'bel:url', domain.to_s
-            el.add_attribute 'bel:id',  keyword
+            el.add_attribute 'bel:url', annotation.domain
+            el.add_attribute 'bel:id',  annotation.keyword
             external << el
           when :pattern
             el = REXML::Element.new('bel:internalAnnotationDefinition')
-            el.add_attribute 'bel:id', keyword
+            el.add_attribute 'bel:id', annotation.keyword
             el.add_element(REXML::Element.new('bel:description'))
             el.add_element(REXML::Element.new('bel:usage'))
 
             el_pattern      = REXML::Element.new('bel:patternAnnotation')
             el_pattern.text =
-              domain.respond_to?(:source) ? domain.source : domain.to_s
+              annotation.domain.respond_to?(:source) ?
+                annotation.domain.source : annotation.domain
 
             el.add_element(el_pattern)
             internal << el
           when :list
             el = REXML::Element.new('bel:internalAnnotationDefinition')
-            el.add_attribute 'bel:id', keyword
+            el.add_attribute 'bel:id', annotation.keyword
             el.add_element(REXML::Element.new('bel:description'))
             el.add_element(REXML::Element.new('bel:usage'))
 
             el_list = REXML::Element.new('bel:listAnnotation')
-            if domain.respond_to?(:each)
-              domain.each do |value|
+            if annotation.domain.respond_to?(:each)
+              annotation.domain.each do |value|
                 el_list_value      = REXML::Element.new('bel:listValue')
                 el_list_value.text = value
                 el_list.add_element(el_list_value)
               end
             else
               el_list_value      = REXML::Element.new('bel:listValue')
-              el_list_value.text = domain
+              el_list_value.text = annotation.domain
               el_list.add_element(el_list_value)
             end
 
