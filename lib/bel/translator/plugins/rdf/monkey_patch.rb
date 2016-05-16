@@ -13,7 +13,7 @@ module BELRDF
 
     def to_rdf_vocabulary
       uri = @rdf_uri
-      uri << '/' unless uri.end_with?('/')
+      uri << '/' if uri && !uri.end_with?('/')
       ::RDF::Vocabulary.new(uri)
     end
   end

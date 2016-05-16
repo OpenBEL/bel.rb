@@ -8866,7 +8866,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -9000,7 +9000,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -9432,7 +9432,7 @@ p -= 1; 	begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -10821,7 +10821,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -10876,7 +10876,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -19863,7 +19863,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -19997,7 +19997,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -20429,7 +20429,7 @@ p -= 1; 	begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -21818,7 +21818,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -21873,7 +21873,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -30860,7 +30860,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -30994,7 +30994,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -31426,7 +31426,7 @@ p -= 1; 	begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -32815,7 +32815,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -32870,7 +32870,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -41857,7 +41857,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -41991,7 +41991,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -42423,7 +42423,7 @@ p -= 1; 	begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -43812,7 +43812,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -43867,7 +43867,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -52977,7 +52977,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -53111,7 +53111,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -53543,7 +53543,7 @@ p -= 1; 	begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -54932,7 +54932,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -54987,7 +54987,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -64008,7 +64008,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -64142,7 +64142,7 @@ begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -64574,7 +64574,7 @@ p -= 1; 	begin
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -65963,7 +65963,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
@@ -66018,7 +66018,7 @@ n = 0		end
 
       ns =
 			  if @pfx
-				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil, nil)
+				  @namespaces[@pfx.to_sym] ||= BEL::Namespace::NamespaceDefinition.new(@pfx, nil)
 			  else
 				  nil
 			  end
