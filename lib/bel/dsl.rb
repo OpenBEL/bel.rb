@@ -1,5 +1,5 @@
-require          'bel_parser/expression/model'
-require_relative 'resources'
+require 'bel_parser/expression/model'
+require 'bel_parser/resources'
 
 module BEL
   # DSL adds BEL functions and relationships as Ruby methods that allows
@@ -46,7 +46,7 @@ module BEL
         raise(ArgumentError, "object: expected Class or Module, actual #{object}")
       end
 
-      BEL::Resources.included(object)
+      BELParser::Resources.included(object)
       spec.functions.each do |function|
         self.send(:_define_term_method, object, function.short, function, spec)
         self.send(:_define_term_method, object, function.long,  function, spec)
