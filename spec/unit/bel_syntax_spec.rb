@@ -1,5 +1,7 @@
+require 'bel_parser'
 require 'bel'
 
+include BELParser::Expression::Model
 include BEL::Language
 include BEL::Namespace
 include BEL::Nanopub
