@@ -11,11 +11,8 @@ module BEL::Translator::Plugins
     def self.create_translator(options = {})
       require 'rdf'
       require 'rdf/turtle'
-      require_relative 'rdf/translator'
-      BELRDF::Translator.new(
-        ID,
-        options[:write_schema]
-      )
+      require_relative 'rdf2/translator'
+      BEL::BELRDF::Translator.new(ID, options[:write_schema])
     end
 
     def self.id

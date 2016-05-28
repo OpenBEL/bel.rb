@@ -18,7 +18,6 @@ module BEL
         @values = {}
 
         values.fetch(ANNOTATIONS, []).each do |annotation|
-
           add_annotation(
             annotation[:keyword],
             annotation[:type],
@@ -27,10 +26,10 @@ module BEL
         end
 
         values.fetch(NAMESPACES, []).each do |namespace|
-
           add_namespace(
             namespace[:keyword],
-            namespace[:uri]
+            namespace[:type],
+            namespace[:domain]
           )
         end
       end
@@ -69,12 +68,21 @@ module BEL
         annotations.sort_by! { |a| a.keyword }
       end
 
-      def add_namespace(keyword, uri)
+      def add_namespace(keyword, type, domain)
+        case type
+        when :uri
+          uri = domain
+          url = nil
+        when :url
+          url = domain
+          uri = nil
+        end
+
         namespace =
           BELParser::Expression::Model::Namespace.new(
             keyword.to_s,
             uri,
-            nil)
+            url)
         namespaces << namespace
         namespaces.sort_by! { |n| n.keyword }
       end
@@ -97,7 +105,8 @@ module BEL
         hash[NAMESPACES] = namespaces.map { |ns|
           {
             :keyword => ns.keyword,
-            :uri     => ns.uri
+            :type    => ns.type,
+            :domain  => ns.domain
           }
         }
 

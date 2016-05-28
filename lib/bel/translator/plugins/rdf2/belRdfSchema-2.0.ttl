@@ -1,0 +1,214 @@
+@prefix belv: <http://www.openbel.org/vocabulary/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Concepts - used for referencing Namespaces
+belv:AnnotationConcept rdfs:subClassOf skos:Concept .
+belv:NamespaceConcept rdfs:subClassOf skos:Concept .
+belv:AnnotationConceptScheme rdfs:subClassOf skos:ConceptScheme .
+belv:NamespaceConceptScheme rdfs:subClassOf skos:ConceptScheme .
+
+belv:AbundanceConcept rdfs:subClassOf belv:NamespaceConcept .
+belv:BiologicalProcessConcept rdfs:subClassOf belv:NamespaceConcept .
+belv:PathologyConcept rdfs:subClassOf belv:BiologicalProcessConcept .
+belv:LocationConcept rdfs:subClassOf belv:NamespaceConcept . # Added
+
+belv:ComplexConcept rdfs:subClassOf belv:AbundanceConcept .
+belv:CompositeConcept rdfs:subClassOf belv:AbundanceConcept .  # Added
+belv:GeneConcept rdfs:subClassOf belv:AbundanceConcept .
+belv:RNAConcept rdfs:subClassOf belv:AbundanceConcept .
+belv:MicroRNAConcept rdfs:subClassOf belv:RNAConcept .
+belv:ProteinConcept rdfs:subClassOf belv:AbundanceConcept .
+
+# Base Classes
+belv:Abundance rdf:type rdfs:Class .
+belv:Nanopub rdf:type rdfs:Class .
+belv:Relationship rdf:type rdfs:Class .
+belv:Statement rdf:type rdfs:Class .
+belv:Term rdf:type rdfs:Class .
+belv:Process rdf:type rdfs:Class .
+
+# Relationship classes
+belv:Association rdfs:subClassOf belv:CorrelativeRelationship .
+belv:CausesNoChange rdfs:subClassOf belv:CausalRelationship .
+belv:Regulates rdfs:subClassOf belv:CausalRelationship .  # Added
+belv:CausalRelationship rdfs:subClassOf belv:Relationship .
+belv:CorrelativeRelationship rdfs:subClassOf belv:Relationship .
+belv:Decreases rdfs:subClassOf belv:CausalRelationship,
+  belv:NegativeRelationship .
+belv:DirectlyDecreases rdfs:subClassOf belv:CausalRelationship,
+  belv:NegativeRelationship,
+  belv:DirectRelationship,
+  belv:Decreases .
+belv:DirectlyIncreases rdfs:subClassOf belv:CausalRelationship,
+  belv:PositiveRelationship,
+  belv:DirectRelationship,
+  belv:Increases .
+belv:DirectRelationship rdfs:subClassOf belv:Relationship .
+belv:HasComponent rdfs:subClassOf belv:MembershipRelationship .
+belv:HasMember rdfs:subClassOf belv:MembershipRelationship .
+belv:Increases rdfs:subClassOf belv:CausalRelationship,
+  belv:PositiveRelationship .
+belv:IsA rdfs:subClassOf belv:MembershipRelationship .
+belv:MembershipRelationship rdfs:subClassOf belv:Relationship .
+belv:NegativeCorrelation rdfs:subClassOf belv:CorrelativeRelationship,
+  belv:NegativeRelationship .
+belv:NegativeRelationship rdfs:subClassOf belv:Relationship .
+belv:PositiveCorrelation rdfs:subClassOf belv:CorrelativeRelationship,
+  belv:PositiveRelationship .
+belv:PositiveRelationship rdfs:subClassOf belv:Relationship .
+belv:PrognosticBiomarkerFor rdfs:subClassOf belv:BiomarkerFor .
+belv:RateLimitingStepOf rdfs:subClassOf belv:Increases,
+  belv:CausalRelationship,
+  belv:SubProcessOf .
+belv:SubProcessOf rdfs:subClassOf belv:MembershipRelationship .
+belv:GenomicRelationship rdfs:subClassOf belv:Relationship .  # Added
+belv:Orthologous rdfs:subClassOf belv:GenomicRelationship .  # Added
+belv:TranscribedTo rdfs:subClassOf belv:GenomicRelationship .  # Added
+belv:TranslatedTo rdfs:subClassOf belv:GenomicRelationship .  # Added
+belv:Analogous rdfs:subClassOf belv:GenomicRelationship .  # deprecated in BEL 2.0
+belv:BiomarkerFor rdfs:subClassOf belv:Relationship . # deprecated in BEL 2.0
+belv:PrognosticBiomarkerFor rdfs:subClassOf belv:BiomarkerFor . # deprecated in BEL 2.0
+
+# Process classes
+belv:BiologicalProcess rdfs:subClassOf belv:Process .
+belv:Pathology rdfs:subClassOf belv:BiologicalProcess .
+belv:Transformation rdfs:subClassOf belv:Process .
+belv:Degradation rdfs:subClassOf belv:Transformation .
+belv:Reaction rdfs:subClassOf belv:Transformation .
+belv:Translocation rdfs:subClassOf belv:Transformation .
+belv:CellSecretion rdfs:subClassOf belv:Translocation .
+belv:CellSurfaceExpression rdfs:subClassOf belv:Translocation . # Added
+
+# Abundance classes
+belv:ComplexAbundance rdfs:subClassOf belv:Abundance .
+belv:CompositeAbundance rdfs:subClassOf belv:Abundance .
+belv:GeneAbundance rdfs:subClassOf belv:Abundance .
+belv:RNAAbundance rdfs:subClassOf belv:Abundance .
+belv:MicroRNAAbundance rdfs:subClassOf belv:Abundance .
+belv:ProteinAbundance rdfs:subClassOf belv:Abundance .
+
+
+# Molecular Activities  e.g. act(p(HGNC:FOXO1), ma(tscript))
+belv:Activity rdfs:subClassOf belv:Process .
+belv:MolecularActivityConcept rdfs:subClassOf belv:NamespaceConcept . # Added
+
+belv:hasActivityAbundance rdf:type rdf:Property ;
+  rdfs:domain belv:Activity ;
+  rdfs:range belv:Abundance .
+belv:hasActivityType rdf:type rdf:Property ;
+  rdfs:domain belv:Activity ;
+  rdfs:range belv:MolecularActivityConcept .
+
+
+# FusionAbundance
+belv:FusionAbundance rdfs:subClassOf belv:Abundance .
+belv:hasBeginAbundance rdf:type rdf:Property ;
+  rdf:domain belv:FusionAbundance ;
+  rdf:range belv:Abundance.
+belv:hasBeginRange rdf:type rdf:Property ;
+  rdf:domain belv:FusionAbundance ;
+  rdf:range xsd:string .
+belv:hasEndAbundance rdf:type rdf:Property ;
+  rdf:domain belv:FusionAbundance ;
+  rdf:range belv:Abundance.
+belv:hasEndRange rdf:type rdf:Property ;
+  rdf:domain belv:FusionAbundance ;
+  rdf:range xsd:string .
+
+
+# Protein modification
+belv:ProteinModificationConcept rdfs:subClassOf belv:NamespaceConcept .  # Added
+belv:ModifiedProteinAbundance rdfs:subClassOf belv:ProteinAbundance .
+belv:ProteinModification rdf:type rdfs:Class .
+belv:hasModifiedProteinAbundance rdf:type rdf:Property ;
+  rdfs:domain belv:ProteinAbundance ;
+  rdfs:range  belv:ModifiedProteinAbundance .
+
+belv:hasProteinModification rdf:type rdf:Property ;
+  rdfs:domain belv:ModifiedProteinAbundance ;
+  rdfs:range  belv:ProteinModification .
+
+belv:hasProteinModificationType rdf:type rdf:Property ;
+ rdfs:domain belv:ProteinModification ;
+ rdfs:range  belv:ProteinModificationConcept .
+belv:hasAminoAcid rdf:type rdf:Property ;
+ rdfs:domain belv:ProteinModification ;
+ rdfs:range  xsd:string .
+belv:hasProteinResidue rdf:type rdf:Property ;
+  rdfs:domain belv:ProteinModification ;
+  rdfs:range  xsd:integer .
+
+
+# Abundance Variants
+# This may mean that a hasVariant has to have a domain that is all of the listed abundances
+belv:hasVariant rdf:type rdf:Property ;  # Added
+ rdfs:domain belv:GeneAbundance ;  # Added
+ rdfs:domain belv:RNAAbundance ;  # Added
+ rdfs:domain belv:MicroRNAAbundance ;  # Added
+ rdfs:domain belv:ProteinAbundance ;  # Added
+ rdfs:range  xsd:string .  # Added
+belv:hasLocation rdf:type rdf:Property ;  # Added
+ rdfs:domain belv:GeneAbundance ;  # Added
+ rdfs:domain belv:RNAAbundance ;  # Added
+ rdfs:domain belv:ProteinAbundance ;  # Added
+ rdfs:domain belv:ComplexAbundance ;  # Added
+ rdfs:domain belv:MicroRNAAbundance ;  # Added
+ rdfs:range  belv:LocationConcept .  # Added
+belv:hasFromLocation rdf:type rdf:Property;  # Added
+  rdfs:subPropertyOf belv:hasLocation;  # Added
+  rdfs:domain belv:Translocation ;  # Added
+  rdfs:range  belv:LocationConcept .  # Added
+belv:hasToLocation rdf:type rdf:Property;  # Added
+  rdfs:subPropertyOf belv:hasLocation;  # Added
+  rdfs:domain belv:Translocation ;  # Added
+  rdfs:range  belv:LocationConcept .  # Added
+
+
+# Properties
+belv:hasChild rdf:type rdf:Property ;
+ rdfs:range belv:Term ;
+ rdfs:domain belv:Term .
+belv:hasConcept rdf:type rdf:Property ;
+ rdfs:range belv:NamespaceConcept ;
+ rdfs:domain belv:Term .
+belv:hasFragmentRange rdf:type rdf:Property ;  # Added
+ rdfs:domain belv:ProteinAbundance ;  # Added
+ rdfs:range  xsd:string .  # Added
+belv:hasFragmentDescriptor rdf:type rdf:Property ;  # Added
+ rdfs:domain belv:ProteinAbundance ;  # Added
+ rdfs:range  xsd:string .  # Added
+
+belv:hasNanopub rdf:type rdf:Property ;
+ rdfs:range belv:Nanopub ;
+ rdfs:domain belv:Statement .
+belv:hasObject rdfs:subPropertyOf belv:hasChild ;
+ rdfs:range belv:Term ;
+ rdfs:domain belv:Statement .
+belv:hasRelationship rdf:type rdf:Property ;
+ rdfs:range belv:Relationship ;
+ rdfs:domain belv:Statement .
+belv:hasSubject rdfs:subPropertyOf belv:hasChild ;
+ rdfs:range belv:Term ;
+ rdfs:domain belv:Statement .
+belv:hasAnnotation rdf:type rdf:Property ;
+ rdfs:range belv:AnnotationConcept ;
+ rdfs:domain belv:Nanopub .
+belv:hasCitation rdf:type rdf:Property ;
+ rdfs:domain belv:Nanopub ;
+ rdfs:range  rdfs:Resource .
+belv:hasSupport rdf:type rdf:Property ;
+ rdfs:domain belv:Nanopub ;
+ rdfs:range  xsd:string .
+belv:hasStatement rdf:type rdf:Property ;
+ rdfs:range belv:Statement ;
+ rdfs:domain belv:Nanopub .
+belv:hasProduct rdf:type rdf:Property ;
+ rdfs:range belv:Abundance ;
+ rdfs:domain belv:Reaction .
+belv:hasReactant rdf:type rdf:Property ;
+ rdfs:range belv:Abundance ;
+ rdfs:domain belv:Reaction .

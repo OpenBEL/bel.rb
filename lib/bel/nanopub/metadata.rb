@@ -27,7 +27,7 @@ module BEL
       end
 
       def bel_version
-        @values[BEL_VERSION] ||= {}
+        @values[BEL_VERSION]
       end
 
       def bel_version=(bel_version)
