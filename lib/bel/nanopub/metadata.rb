@@ -24,6 +24,34 @@ module BEL
         else
           @values = values
         end
+
+        doc_hdr = @values[:document_header]
+        unless doc_hdr.nil?
+          @values[:document_header] = Hash[
+            doc_hdr.map { |item|
+              [item[0].to_sym, item[1]]
+            }
+          ]
+        end
+
+        unless @values.key?(:bel_version)
+          @values[:bel_version] = BELParser::Language.latest_supported_version
+        end
+
+        header = values[:document_header]
+        unless header.nil?
+          authors = header[:Authors]
+          unless authors.is_a? Array
+            authors = [authors]
+            header[:Authors] = authors
+          end
+
+          licenses = header[:Licenses]
+          unless licenses.is_a? Array
+            licenses = [licenses]
+            header[:Licenses] = licenses
+          end
+        end
       end
 
       def bel_version
@@ -51,6 +79,12 @@ module BEL
       def document_header=(document_header)
         @values[DOCUMENT_HEADER] = document_header
       end
+
+      def ==(other)
+        return false if other.nil?
+        @values == other.values
+      end
+      alias eql? ==
 
       def to_a
         @values.each_pair.map { |key, value|
