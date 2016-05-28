@@ -12,6 +12,7 @@ module BEL
         completion_results.concat(
           rule.apply(tokens, active_token, active_index, options)
         )
+        completion_results
       }
     end
 
@@ -107,9 +108,7 @@ module BEL
 
       def _apply(token_list, active_token, active_token_index, options = {})
         if token_list.empty? or active_token.type == :O_PAREN
-          return
-            spec_functions(options[:specification])
-            .map(&method(:map_function))
+          return spec_functions(options[:specification]).map(&method(:map_function))
         end
 
         if active_token.type == :IDENT
