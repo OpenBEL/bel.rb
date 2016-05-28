@@ -59,9 +59,7 @@ module BEL::Translator::Plugins
         @nanopub       = Nanopub.new
         @annotations   = {}
         @namespaces    = {}
-        # TODO Set to latest_supported_specification once we can read the belversion document property.
-        # @spec          = BELParser::Language.latest_supported_specification
-        @spec          = BELParser::Language.specification('1.0')
+        @spec          = BELParser::Language.latest_supported_specification
       end
 
       # Called on element start by REXML.

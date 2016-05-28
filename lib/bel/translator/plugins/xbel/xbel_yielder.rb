@@ -2,11 +2,8 @@ require 'bel'
 require 'rexml/document'
 
 module BEL::Translator::Plugins
-
   module Xbel
-
     class XBELYielder
-
       FUNCTIONS = ::BEL::Language::FUNCTIONS
 
       def initialize(data, options = {})
@@ -302,6 +299,13 @@ module BEL::Translator::Plugins
         if hash.has_key?('contactinfo')
           el      = REXML::Element.new('bel:contactInfo')
           el.text = hash['contactinfo']
+          el_header.add_element(el)
+        end
+
+        # add bel_version with different element name (belVersion)
+        if hash.has_key?('belversion')
+          el      = REXML::Element.new('bel:belVersion')
+          el.text = hash['belversion']
           el_header.add_element(el)
         end
 

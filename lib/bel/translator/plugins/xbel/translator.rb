@@ -2,11 +2,8 @@ require_relative 'nanopub_yielder'
 require_relative 'xbel_yielder'
 
 module BEL::Translator::Plugins
-
   module Xbel
-
     class XbelTranslator
-
       include ::BEL::Translator
 
       def read(data, options = {})
