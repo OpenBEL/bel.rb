@@ -21,6 +21,12 @@ module BEL
         @values.sort_by! { |item| item[:name] }
       end
 
+      def ==(other)
+        return false if other.nil?
+        @values == other.values
+      end
+      alias eql? ==
+
       def_delegators :@values, :<<,    :[],    :"[]=",
                                :each,  :size,  :sort
     end

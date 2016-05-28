@@ -191,7 +191,7 @@ module BEL::Translator::Plugins
           end
         end
 
-        metadata_keys = nanopub.metadata.keys - [:document_header]
+        metadata_keys = nanopub.metadata.keys - [:document_header, :bel_version]
         metadata_keys.each do |k|
           v = nanopub.metadata[k]
           if v.respond_to?(:each)

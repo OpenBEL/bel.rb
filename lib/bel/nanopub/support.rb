@@ -11,6 +11,12 @@ module BEL
         @value = value
       end
 
+      def ==(other)
+        return false if other.nil?
+        @value == other.value
+      end
+      alias eql? ==
+
       def_delegators :@value, :to_s
     end
   end

@@ -1,56 +1,56 @@
 require 'rexml/streamlistener'
 
 module BEL::Translator::Plugins
-
   module Xbel
-
     class NanopubHandler
       include REXML::StreamListener
       include ::BEL::Nanopub
 
-      ANNOTATION                     = 'annotation'
-      ANNOTATION_DEFINITION_GROUP    = 'annotationDefinitionGroup'
-      ANNOTATION_GROUP               = 'annotationGroup'
-      AUTHOR                         = 'author'
-      AUTHOR_GROUP                   = 'authorGroup'
-      CITATION                       = 'citation'
-      COMMENT                        = 'comment'
-      CONTACT_INFO                   = 'contactInfo'
-      COPYRIGHT                      = 'copyright'
-      DATE                           = 'date'
-      DESCRIPTION                    = 'description'
-      DOCUMENT                       = 'document'
-      EXTERNAL_ANNOTATION_DEFINITION = 'externalAnnotationDefinition'
-      FUNCTION                       = 'function'
-      HEADER                         = 'header'
-      ID                             = 'id'
-      INTERNAL_ANNOTATION_DEFINITION = 'internalAnnotationDefinition'
-      LICENSE                        = 'license'
-      LICENSE_GROUP                  = 'licenseGroup'
-      LIST_ANNOTATION                = 'listAnnotation'
-      LIST_VALUE                     = 'listValue'
-      NAME                           = 'name'
-      NAMESPACE                      = 'namespace'
-      NAMESPACE_GROUP                = 'namespaceGroup'
-      NANOPUB                        = 'nanopub'
-      NS                             = 'ns'
-      OBJECT                         = 'object'
-      PARAMETER                      = 'parameter'
-      PATTERN_ANNOTATION             = 'patternAnnotation'
-      PREFIX                         = 'prefix'
-      REFERENCE                      = 'reference'
-      REF_ID                         = 'refID'
-      RELATIONSHIP                   = 'relationship'
-      RESOURCE_LOCATION              = 'resourceLocation'
-      STATEMENT                      = 'statement'
-      STATEMENT_GROUP                = 'statementGroup'
-      SUBJECT                        = 'subject'
-      SUPPORT                        = 'support'
-      TERM                           = 'term'
-      TYPE                           = 'type'
-      URL                            = 'url'
-      USAGE                          = 'usage'
-      VERSION                        = 'version'
+      ANNOTATION                     = 'annotation'.freeze
+      ANNOTATION_DEFINITION_GROUP    = 'annotationDefinitionGroup'.freeze
+      ANNOTATION_GROUP               = 'annotationGroup'.freeze
+      AUTHOR                         = 'author'.freeze
+      AUTHOR_GROUP                   = 'authorGroup'.freeze
+      BEL_VERSION                    = 'belVersion'.freeze
+      CITATION                       = 'citation'.freeze
+      COMMENT                        = 'comment'.freeze
+      CONTACT_INFO                   = 'contactInfo'.freeze
+      COPYRIGHT                      = 'copyright'.freeze
+      DATE                           = 'date'.freeze
+      DESCRIPTION                    = 'description'.freeze
+      DOCUMENT                       = 'document'.freeze
+      EXTERNAL_ANNOTATION_DEFINITION = 'externalAnnotationDefinition'.freeze
+      FUNCTION                       = 'function'.freeze
+      HEADER                         = 'header'.freeze
+      ID                             = 'id'.freeze
+      INTERNAL_ANNOTATION_DEFINITION = 'internalAnnotationDefinition'.freeze
+      LICENSE                        = 'license'.freeze
+      LICENSE_GROUP                  = 'licenseGroup'.freeze
+      LIST_ANNOTATION                = 'listAnnotation'.freeze
+      LIST_VALUE                     = 'listValue'.freeze
+      NAME                           = 'name'.freeze
+      NAMESPACE                      = 'namespace'.freeze
+      NAMESPACE_GROUP                = 'namespaceGroup'.freeze
+      NANOPUB                        = 'nanopub'.freeze
+      NS                             = 'ns'.freeze
+      OBJECT                         = 'object'.freeze
+      PARAMETER                      = 'parameter'.freeze
+      PATTERN_ANNOTATION             = 'patternAnnotation'.freeze
+      PREFIX                         = 'prefix'.freeze
+      REFERENCE                      = 'reference'.freeze
+      REF_ID                         = 'refID'.freeze
+      RELATIONSHIP                   = 'relationship'.freeze
+      RESOURCE_LOCATION              = 'resourceLocation'.freeze
+      STATEMENT                      = 'statement'.freeze
+      STATEMENT_GROUP                = 'statementGroup'.freeze
+      SUBJECT                        = 'subject'.freeze
+      SUPPORT                        = 'support'.freeze
+      TERM                           = 'term'.freeze
+      TYPE                           = 'type'.freeze
+      URL                            = 'url'.freeze
+      USAGE                          = 'usage'.freeze
+      VERSION                        = 'version'.freeze
+      Model                          = BELParser::Expression::Model
 
       def initialize(callable)
         @callable      = callable
@@ -206,7 +206,7 @@ module BEL::Translator::Plugins
             else
               nil
             end
-          @current_parameter = Parameter.new(ns, nil)
+          @current_parameter = Model::Parameter.new(ns, ns_id)
         end
         @element_stack << :parameter
       end
