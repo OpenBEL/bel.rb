@@ -108,7 +108,7 @@ module BEL
 
         keyword_to_reference = Hash[
           namespace_references.map { |reference|
-            [reference[:keyword], reference]
+            [reference.keyword, reference]
           }
         ]
 

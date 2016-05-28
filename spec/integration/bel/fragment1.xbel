@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<bel:document xmlns:bel="http://belframework.org/schema/1.0/xbel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd">
+  <bel:header>
+    <bel:name>Example</bel:name>
+    <bel:description>My example.</bel:description>
+    <bel:version>20150611</bel:version>
+    <bel:copyright>Copyright (c) 2011-2016, Selventa. All Rights Reserved.</bel:copyright>
+    <bel:contactInfo>abargnesi@selventa.com</bel:contactInfo>
+    <bel:authorGroup>
+      <bel:author>Selventa</bel:author>
+    </bel:authorGroup>
+    <bel:licenseGroup>
+      <bel:license>Creative Commons</bel:license>
+    </bel:licenseGroup>
+  </bel:header>
+  <bel:namespaceGroup>
+    <bel:namespace bel:prefix="HGNC" bel:resourceLocation="http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"/>
+  </bel:namespaceGroup>
+  <bel:annotationDefinitionGroup>
+    <bel:internalAnnotationDefinition bel:id="Dosage">
+      <bel:description/>
+      <bel:usage/>
+      <bel:patternAnnotation>[0-9]+\.[0-9]+ [a-z]+/[a-z]+</bel:patternAnnotation>
+    </bel:internalAnnotationDefinition>
+    <bel:internalAnnotationDefinition bel:id="TextLocation">
+      <bel:description/>
+      <bel:usage/>
+      <bel:listAnnotation>
+        <bel:listValue>Abstract</bel:listValue>
+        <bel:listValue>Results</bel:listValue>
+        <bel:listValue>Legend</bel:listValue>
+        <bel:listValue>Review</bel:listValue>
+      </bel:listAnnotation>
+    </bel:internalAnnotationDefinition>
+    <bel:externalAnnotationDefinition bel:id="Species" bel:url="http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"/>
+  </bel:annotationDefinitionGroup>
+  <bel:statementGroup>
+    <bel:statement bel:relationship="directlyIncreases">
+      <bel:annotationGroup>
+        <bel:citation bel:type="PubMed">
+          <bel:reference>9202001</bel:reference>
+          <bel:name>J Biol Chem. 1997 Jul 4;272(27):16917-23.</bel:name>
+          <bel:date>1997-07-04</bel:date>
+          <bel:comment>Full text available online for free.</bel:comment>
+          <bel:authorGroup>
+            <bel:author>Franklin CC</bel:author>
+            <bel:author>Kraft AS</bel:author>
+          </bel:authorGroup>
+        </bel:citation>
+        <bel:evidence>Phorbol ester tumor promoters, such as phorbol 12-myristate 13-acetate (PMA), are potent activators of extracellular signal-regulated kinase 2 (ERK2), stress-activated protein kinase (SAPK), and p38 mitogen-activated protein kinase (MAPK) in U937 human leukemic cells.</bel:evidence>
+        <bel:annotation bel:refID="Species">9606</bel:annotation>
+        <bel:annotation bel:refID="TextLocation">Abstract</bel:annotation>
+        <bel:annotation bel:refID="Dosage">40.0 mg/hr</bel:annotation>
+      </bel:annotationGroup>
+      <bel:subject>
+        <bel:term bel:function="proteinAbundance">
+          <bel:parameter bel:ns="HGNC">AKT1</bel:parameter>
+        </bel:term>
+      </bel:subject>
+      <bel:object>
+        <bel:term bel:function="proteinAbundance">
+          <bel:parameter bel:ns="HGNC">AKT2</bel:parameter>
+        </bel:term>
+      </bel:object>
+    </bel:statement>
+  </bel:statementGroup>
+</bel:document>
