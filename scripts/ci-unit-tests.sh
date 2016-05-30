@@ -16,11 +16,8 @@ source "$BR_SCRIPTS"/isolate.sh || exit 1
 "$BR_SCRIPTS"/gem-install-devdeps.sh || exit 1
 
 rake compile || exit 1
-rspec spec/unit --format RspecJunitFormatter --out test-output.xml $@
-RSPEC_RC=$?
-if [ $RSPEC_RC -eq 0 ]; then
-    echo "You totes win. Epic."
-else
-    echo "FAIL"
-fi
+find spec/unit -name "*.rb" | while read unittest; do
+    report="test/reports/$(basename $unittest)-junit.xml"
+    rspec --format RspecJunitFormatter --out "$report" "$unittest" $@
+done
 exit 0
