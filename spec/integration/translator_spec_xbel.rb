@@ -39,7 +39,7 @@ describe 'XBEL support' do
       expect(ref_namespaces.size).to be(1)
 
       expect(nanopub.bel_statement).to_not be_nil
-      $stderr.puts nanopub.to_yaml
+      # $stderr.puts nanopub.to_yaml
     end
 
   end
