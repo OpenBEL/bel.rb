@@ -12,9 +12,16 @@
     <bel:licenseGroup>
       <bel:license>Creative Commons</bel:license>
     </bel:licenseGroup>
+    <bel:belVersion>2.0</bel:belVersion>
   </bel:header>
   <bel:namespaceGroup>
-    <bel:namespace bel:prefix="HGNC" bel:resourceLocation="http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"/>
+    <bel:namespace bel:prefix="HGNC">
+      <bel:resource>
+        <bel:url>
+          http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns
+        </bel:url>
+      </bel:resource>
+    </bel:namespace>
   </bel:namespaceGroup>
   <bel:annotationDefinitionGroup>
     <bel:internalAnnotationDefinition bel:id="Dosage">
