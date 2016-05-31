@@ -33,7 +33,18 @@ module BEL
       end
 
       def annotation
-        Annotation.new(@rdf_repository, self.in_scheme)
+        Annotation.new(@rdf_repository, in_scheme)
+      end
+
+      def in_scheme
+        @rdf_repository
+        .query([:subject => @uri, :predicate => SKOS.inScheme])
+        .select { |solution|
+          scheme_uri = solution.object
+          @rdf_repository.has_statement?(
+            RDF::Statement(scheme_uri, RDF.type, BELV.AnnotationConceptScheme)
+          )
+        }.map { |solution| solution.object.to_s }
       end
 
       def equivalents(target_annotations = :all)
