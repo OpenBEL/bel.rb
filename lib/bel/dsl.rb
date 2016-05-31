@@ -42,12 +42,14 @@ module BEL
     # @param [Object] object the object to include the DSL methods in
     # @param [BELParser::Language::Specification] spec the BEL specification
     def self.include_in(object, spec)
-      if [Class, Module].any? { |type| object.is_a?(type) }
-        BELParser::Resources.included(object)
-        spec.functions.each do |function|
-          self.send(:_define_term_method, object, function.short, function, spec)
-          self.send(:_define_term_method, object, function.long,  function, spec)
-        end
+      if [Class, Module].none? { |type| object.is_a?(type) }
+        raise(ArgumentError, "object: expected Class or Module, actual #{object}")
+      end
+
+      BELParser::Resources.included(object)
+      spec.functions.each do |function|
+        self.send(:_define_term_method, object, function.short, function, spec)
+        self.send(:_define_term_method, object, function.long,  function, spec)
       end
       nil
     end
