@@ -6,12 +6,9 @@ require 'uuid'
 BEL.translator(:ntriples)
 
 include BEL::Language
-BEL::DSL.include_in(
-  self,
-  BELParser::Language.specification('1.0'))
-
 include BEL::Nanopub
 include BEL::Namespace
+include BEL::DSL
 
 BELV = BELRDF::BELV
 
