@@ -31,6 +31,12 @@ module BEL
         ]
       end
 
+      def namespace
+        schemes = in_scheme
+        return nil if schemes.empty?
+        Namespace.new(@rdf_repository, schemes.first)
+      end
+
       def in_scheme
         @rdf_repository
         .query([:subject => @uri, :predicate => SKOS.inScheme])
@@ -40,10 +46,6 @@ module BEL
             RDF::Statement(scheme_uri, RDF.type, BELV.NamespaceConceptScheme)
           )
         }.map { |solution| solution.object.to_s }
-      end
-
-      def namespace
-        Namespace.new(@rdf_repository, self.in_scheme.first)
       end
 
       def equivalents(target_namespaces = :all)

@@ -33,7 +33,9 @@ module BEL
       end
 
       def annotation
-        Annotation.new(@rdf_repository, in_scheme)
+        schemes = in_scheme
+        return nil if schemes.empty?
+        Annotation.new(@rdf_repository, schemes.first)
       end
 
       def in_scheme
