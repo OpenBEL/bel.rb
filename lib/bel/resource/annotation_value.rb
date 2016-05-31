@@ -33,7 +33,7 @@ module BEL
       end
 
       def annotation
-        Annotation.new(@rdf_repository, self.inScheme)
+        Annotation.new(@rdf_repository, self.in_scheme)
       end
 
       def equivalents(target_annotations = :all)
