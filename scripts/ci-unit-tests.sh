@@ -16,8 +16,7 @@ source "$BR_SCRIPTS"/isolate.sh || exit 1
 "$BR_SCRIPTS"/gem-install-devdeps.sh || exit 1
 
 rake compile || exit 1
-find spec/unit -name "*.rb" | while read unittest; do
-    report="test/reports/$(basename $unittest)-junit.xml"
-    rspec --format RspecJunitFormatter --out "$report" "$unittest" $@
-done
+report="test/reports/unit-tests-junit.xml"
+spec_path="spec/unit"
+rspec --format RspecJunitFormatter --out "$report" "$spec_path" $@
 exit 0
