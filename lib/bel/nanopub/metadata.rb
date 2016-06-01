@@ -38,7 +38,7 @@ module BEL
           @values[:bel_version] = BELParser::Language.latest_supported_version
         end
 
-        header = values[:document_header]
+        header = @values[:document_header]
         unless header.nil?
           authors = header[:Authors]
           unless authors.is_a? Array
