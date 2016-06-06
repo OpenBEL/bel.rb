@@ -85,6 +85,7 @@ module BEL::Translator::Plugins
       end
 
       def escape_newlines(value)
+        return nil if value.nil?
         value.gsub(/\n/, "\\n").gsub(/\r/, "\\r")
       end
     end
