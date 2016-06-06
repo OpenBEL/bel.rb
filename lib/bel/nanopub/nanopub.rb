@@ -19,6 +19,7 @@ module BEL
     # - References
     # - Metadata
     class Nanopub
+
       def self.create(hash)
         nanopub = Nanopub.new
         # Order-dependent; metadata/references must be set first in order for
@@ -108,7 +109,7 @@ module BEL
 
       def _parse_statement(bel_statement)
         bel_version =
-          metadata[:bel_version] || BELParser::Language.latest_supported_version
+          metadata[:bel_version] || BELParser::Language.default_version
         spec = BELParser::Language.specification(bel_version)
         BELParser::Expression.parse_statements(
           bel_statement,

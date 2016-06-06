@@ -12,7 +12,7 @@ module BEL
   module DSL
     # Defines ruby methods for BEL functions and relationships on
     # +another_module+. The functions and relationships from the
-    # {BELParser::Language.latest_supported_specification latest specification}
+    # {BELParser::Language.default_specification default specification}
     # are included.
     #
     # This method is called when {BEL::DSL} is included, as in:
@@ -33,7 +33,7 @@ module BEL
     def self.included(another_module)
       self.include_in(
         another_module,
-        BELParser::Language.latest_supported_specification)
+        BELParser::Language.default_specification)
     end
 
     # Defines ruby methods for BEL functions and relationships on _object_. The

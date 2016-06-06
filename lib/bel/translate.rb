@@ -49,7 +49,7 @@ module BEL
         out_translator = self.translator(output_format, options) or
           raise TranslateError.new(output_format)
 
-        nanopub = in_translator.read(prepared_input)
+        nanopub = in_translator.read(prepared_input, options)
         out_translator.write(nanopub, writer, options)
         writer
       end

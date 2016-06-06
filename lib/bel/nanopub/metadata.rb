@@ -35,7 +35,7 @@ module BEL
         end
 
         unless @values.key?(:bel_version)
-          @values[:bel_version] = BELParser::Language.latest_supported_version
+          @values[:bel_version] = BELParser::Language.default_version
         end
 
         header = @values[:document_header]
