@@ -25,7 +25,7 @@ module BEL
         in_translator  = self.translator(input_format) or
           raise TranslateError.new(input_format)
 
-        in_translator.read(prepared_input)
+        in_translator.read(prepared_input, options)
       end
 
       # Translate from one file format to another using
