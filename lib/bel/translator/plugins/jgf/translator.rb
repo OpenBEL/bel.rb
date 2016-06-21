@@ -8,6 +8,7 @@ module BEL::Translator::Plugins
     class JgfTranslator
 
       include ::BEL::Translator
+      include ::BEL::Namespace
 
       def read(data, options = {})
         default_resource_index = options.fetch(:default_resource_index) {
