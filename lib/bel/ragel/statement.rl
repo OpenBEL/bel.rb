@@ -13,7 +13,7 @@
 
     if @statement.relationship == :hasComponents
       @statement.object.arguments.each do |arg|
-        statement = BEL::Nanopub::Statement.new(
+        statement = BELParser::Expression::Model::Statement.new(
           @statement.subject, :hasComponent, arg, @statement.comment
         )
         statement.annotations = @statement.annotations
@@ -21,7 +21,7 @@
       end
     elsif @statement.relationship == :hasMembers
       @statement.object.arguments.each do |arg|
-        statement = BEL::Nanopub::Statement.new(
+        statement = BELParser::Expression::Model::Statement.new(
           @statement.subject, :hasMember, arg, @statement.comment
         )
         statement.annotations = @statement.annotations

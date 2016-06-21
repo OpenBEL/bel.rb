@@ -30,7 +30,7 @@ module BEL::Translator::Plugins
         }
 
         objects.each do |nanopub|
-          unless nanopub.bel_statement.is_a?(::BEL::Nanopub::Statement)
+          unless nanopub.bel_statement.is_a?(BELParser::Expression::Model::Statement)
             nanopub.bel_statement = ::BEL::Nanopub::Nanopub.parse_statement(nanopub)
           end
 
@@ -88,7 +88,7 @@ module BEL::Translator::Plugins
             rel  = 'association' unless rel
 
             bel_statement = ::BEL::Script.parse(
-              "#{source_node} #{rel} #{target_node}\n").select { |obj| obj.is_a? ::BEL::Nanopub::Statement }.first
+              "#{source_node} #{rel} #{target_node}\n").select { |obj| obj.is_a? BELParser::Expression::Model::Statement }.first
           end
         }.compact
 
@@ -99,7 +99,7 @@ module BEL::Translator::Plugins
               ::BEL::Script.parse(
                 "#{id_nodes[id]}\n"
               ).select { |obj|
-                obj.is_a? ::BEL::Nanopub::Statement
+                obj.is_a? BELParser::Expression::Model::Statement
               }.first
             }
           )
