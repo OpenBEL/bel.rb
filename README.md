@@ -81,6 +81,30 @@ the root of the bel.rb tree:
   - Contains unstable code. Commits should be merged into master after it stabilizes.
   - [![Build Status for next branch](https://travis-ci.org/OpenBEL/bel.rb.svg?branch=next)](https://travis-ci.org/OpenBEL/bel.rb)
 
+## releases
+
+Releases of *bel.rb* should follow these steps:
+
+1. Update the version in the `VERSION` file.
+
+2. Add changes for this version to the `CHANGELOG` file. This file is modelled after http://keepachangelog.com/.
+
+3. Push the changes for `VERSION` and `CHANGELOG` on the master branch.
+
+4. Ensure the *master* branch has all of the required changes.
+
+5. Create a git tag, named after the version, on the *master* branch. Push this tag to GitHub.
+
+6. Create the RubyGem for bel.rb.
+
+  `gem build .gemspec`
+
+7. Create a release on GitHub for this version and attach the gem file.
+
+8. Push the gem to RubyGems.
+
+  `gem push bel-VERSION.gem`
+
 ## contributors
 
 - [@abargnesi](https://github.com/abargnesi) (Maintainer)
@@ -211,7 +235,7 @@ the root of the bel.rb tree:
   
     # reference namespace value using standard prefixes (HGNC, MGI, RGD, etc.)
     HGNC['AKT1']
-    => #<BEL::Model::Parameter:0x00000004df5bc0
+    => #<BEL::Nanopub::Parameter:0x00000004df5bc0
       @enc=:GRP,
       @ns_def="BEL::Namespace::HGNC",
       @value=:AKT1>
@@ -405,14 +429,14 @@ the root of the bel.rb tree:
 
     # parse term
     parser.parse('p(HGNC:AKT1)') do |obj|
-      if obj.is_a? BEL::Model::Term  
+      if obj.is_a? BEL::Nanopub::Term  
         rdf_statements += obj.to_rdf
       end  
     end
 
     # parse statement
     parser.parse("p(HGNC:AKT1) => tscript(g(HGNC:TNF))\n") do |obj|
-      if obj.is_a? BEL::Model::Statement
+      if obj.is_a? BEL::Nanopub::Statement
         rdf_statements += obj.to_rdf
       end  
     end
