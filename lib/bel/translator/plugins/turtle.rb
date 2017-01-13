@@ -4,18 +4,15 @@ module BEL::Translator::Plugins
 
     ID          = :turtle
     NAME        = 'Turtle RDF Translator'
-    DESCRIPTION = 'A translator that can read and write turtle for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to RDF Turtle.'
     MEDIA_TYPES = %i(application/turtle application/x-turtle)
     EXTENSIONS  = %i(ttl)
 
     def self.create_translator(options = {})
       require 'rdf'
       require 'rdf/turtle'
-      require_relative 'rdf/translator'
-      BELRDF::Translator.new(
-        ID,
-        options[:write_schema]
-      )
+      require_relative 'rdf2/translator'
+      BEL::BELRDF::Translator.new(ID, options[:write_schema])
     end
 
     def self.id

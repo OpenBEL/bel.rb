@@ -8,8 +8,8 @@ require 'bel'
 # Helpers
 # -------
 
-# Returns all {BEL::Model::Parameter} arguments referenced within the
-# {BEL::Model::Term term}.
+# Returns all {BEL::Nanopub::Parameter} arguments referenced within the
+# {BEL::Nanopub::Term term}.
 def parameters(term, parameters = [])
   term.arguments.reduce(parameters) { |res, arg|
     if arg.respond_to? :arguments
@@ -21,14 +21,14 @@ def parameters(term, parameters = [])
   }
 end
 
-# Returns +true+ if the {BEL::Model::Parameter parameter} has an invalid
+# Returns +true+ if the {BEL::Nanopub::Parameter parameter} has an invalid
 # namespace, +false+ if it is valid.
 def invalid_namespace(parameter)
   return false unless parameter.ns
   ! NAMESPACE_LATEST.include? parameter.ns.prefix.to_sym
 end
 
-# Update the namespace of {BEL::Model::Parameter parameter} if one can be
+# Update the namespace of {BEL::Nanopub::Parameter parameter} if one can be
 # determined by prefix and inclusion of parameter value.
 def fix_namespace(parameter)
   return parameter unless parameter.ns and invalid_namespace(parameter)

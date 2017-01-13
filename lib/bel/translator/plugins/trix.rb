@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :trix
     NAME        = 'TriX RDF Translator'
-    DESCRIPTION = 'A translator that can read and write TriX (https://en.wikipedia.org/wiki/TriX_(syntax)) for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to TriX.'
     MEDIA_TYPES = %i(application/trix)
     EXTENSIONS  = %i(trix)
 

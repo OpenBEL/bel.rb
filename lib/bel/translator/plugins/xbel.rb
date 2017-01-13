@@ -1,12 +1,11 @@
 module BEL::Translator::Plugins
-
   module Xbel
-
     ID          = :xbel
-    NAME        = 'XBEL Translator'
-    DESCRIPTION = 'A translator that can read and write evidence to XBEL (version 1.0). XBEL is an XML dialect. XML Schema for version 1.0 is published here (http://resource.belframework.org/belframework/1.0/schema/xbel.xsd).'
-    MEDIA_TYPES = %i(application/xml)
-    EXTENSIONS  = %i(xml xbel)
+    NAME        = 'XBEL Translator'.freeze
+    DESCRIPTION =
+      'A translator that can read/write BEL nanopubs to XBEL.'.freeze
+    MEDIA_TYPES = %i(application/xml).freeze
+    EXTENSIONS  = %i(xml xbel).freeze
 
     def self.create_translator(options = {})
       require_relative 'xbel/translator'

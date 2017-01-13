@@ -6,7 +6,7 @@ module BEL
   module Gen
 
     # The {Term} module defines methods that generate random BEL
-    # {BEL::Model::Term terms}.
+    # {BEL::Nanopub::Term terms}.
     module Term
       include BEL::Gen::Parameter
 

@@ -43,27 +43,27 @@ SET STATEMENT_GROUP = "Group 1"
 
 SET Cell = "muscle cell"
 SET Anatomy = heart
-SET Evidence = "By 15min, IL-1b (10 ng/ml) stimulated the appearance of a second band of reduced mobility [Fig. 4(a), upper panel] consistent with the appearance of a more highly phosphorylated form (Clerk & Sugden, 1997)."
+SET Support = "By 15min, IL-1b (10 ng/ml) stimulated the appearance of a second band of reduced mobility [Fig. 4(a), upper panel] consistent with the appearance of a more highly phosphorylated form (Clerk & Sugden, 1997)."
 SET Species = 10116
 SET Citation = {"PubMed","J Mol Cell Cardiol 1999 Dec 31(12) 2087-99","10640438","","",""}
 
 p(RGD:Il1b) increases tscript(p(RGD:Jun))
 
-SET Evidence = "Figure 3 Activation of ERKs by IL-1b and TNFa in ventricular myocytes. "
+SET Support = "Figure 3 Activation of ERKs by IL-1b and TNFa in ventricular myocytes. "
 
 p(RGD:Il1b) increases kin(p(RGD:Mapk3))
 p(RGD:Tnf) increases kin(p(RGD:Mapk1))
 
-SET Evidence = "IL-1b (100 ng/ml) stimulated a rapid increase in the activities of the 46 kDa (p46) and 54 kDa (p54) JNKs [Fig. 1(a)]....TNFa (10 ng/ml) also stimulated JNK activities [Fig. 1(b)]."
+SET Support = "IL-1b (100 ng/ml) stimulated a rapid increase in the activities of the 46 kDa (p46) and 54 kDa (p54) JNKs [Fig. 1(a)]....TNFa (10 ng/ml) also stimulated JNK activities [Fig. 1(b)]."
 
 p(RGD:Il1b) increases kin(p(RGD:Mapk8))
 p(RGD:Tnf) increases kin(p(RGD:Mapk9))
 
-SET Evidence = "Stimulation of p46 and p54 JNKs by IL-1b (100 ng/ml, 10 min) were 84±3% and 55±7% of the response to sorbitol, respectively (means±S.E.M. for three independent observations)."
+SET Support = "Stimulation of p46 and p54 JNKs by IL-1b (100 ng/ml, 10 min) were 84±3% and 55±7% of the response to sorbitol, respectively (means±S.E.M. for three independent observations)."
 
 a(SCHEM:Sorbitol) increases kin(p(RGD:Mapk8))
 
-SET Evidence = "TNFa (10 ng/ml) also increased ATF2 phosphorylation, with maximal stimulation within 5–15 min [Fig. 6(b)]."
+SET Support = "TNFa (10 ng/ml) also increased ATF2 phosphorylation, with maximal stimulation within 5–15 min [Fig. 6(b)]."
 
 p(RGD:Tnf) increases tscript(p(RGD:Atf2))
 
@@ -71,7 +71,7 @@ UNSET STATEMENT_GROUP
 
 SET STATEMENT_GROUP = "Group 11676"
 
-SET Evidence = "Previously, we observed that alloxan-induced in vitro cytotoxicity and apoptosis in an insulin secreting rat insulinoma, RIN, cells was prevented by prior exposure to prostaglandin (PG) E(1), PGE(2), PGI(2), PGF(1)(alpha), and PGF(3)(alpha) (P<0.05 compared to alloxan)"
+SET Support = "Previously, we observed that alloxan-induced in vitro cytotoxicity and apoptosis in an insulin secreting rat insulinoma, RIN, cells was prevented by prior exposure to prostaglandin (PG) E(1), PGE(2), PGI(2), PGF(1)(alpha), and PGF(3)(alpha) (P<0.05 compared to alloxan)"
 SET Species = 10116
 SET Citation = {"PubMed","Prostaglandins Leukot Essent Fatty Acids 2006 Jan 74(1) 39-60","16297610","","",""}
 

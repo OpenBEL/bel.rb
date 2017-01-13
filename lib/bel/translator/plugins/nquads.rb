@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :nquads
     NAME        = 'N-quads RDF Translator'
-    DESCRIPTION = 'A translator that can read and write N-quads for BEL evidence.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to N-quads.'
     MEDIA_TYPES = %i(application/n-quads)
     EXTENSIONS  = %i(nq)
 

@@ -2,11 +2,8 @@ require 'bel'
 require 'rexml/document'
 
 module BEL::Translator::Plugins
-
   module Xbel
-
     class XBELYielder
-
       FUNCTIONS = ::BEL::Language::FUNCTIONS
 
       def initialize(data, options = {})
@@ -14,23 +11,25 @@ module BEL::Translator::Plugins
         @streaming                = options.fetch(:streaming, false)
         @annotation_reference_map = options.fetch(:annotation_reference_map, nil)
         @namespace_reference_map  = options.fetch(:namespace_reference_map, nil)
+        # default BEL version to 2 for default behavior
+        @bel_version = 2
       end
 
       def each
         if block_given?
           combiner =
             if @streaming
-              BEL::Model::StreamingEvidenceCombiner.new(@data)
+              BEL::Nanopub::StreamingNanopubCombiner.new(@data)
             elsif @annotation_reference_map && @namespace_reference_map
-              BEL::Model::MapReferencesCombiner.new(
+              BEL::Nanopub::MapReferencesCombiner.new(
                 @data,
-                BEL::Model::HashMapReferences.new(
+                BEL::Nanopub::HashMapReferences.new(
                   @annotation_reference_map,
                   @namespace_reference_map
                 )
               )
             else
-              BEL::Model::BufferingEvidenceCombiner.new(@data)
+              BEL::Nanopub::BufferingNanopubCombiner.new(@data)
             end
 
           header_flag = true
@@ -40,14 +39,18 @@ module BEL::Translator::Plugins
           yield start_element_string(el_document)
 
           el_statement_group = nil
-          evidence_count = 0
-          combiner.each { |evidence|
+          nanopub_count = 0
+          combiner.each { |nanopub|
+            # is BEL version 1.0?
+            if nanopub.metadata.bel_version == '1.0'
+              @bel_version = 1
+            end
             if header_flag
               # document header
               el_statement_group = XBELYielder.statement_group
 
               yield element_string(
-                XBELYielder.header(evidence.metadata.document_header)
+                XBELYielder.header(nanopub.metadata.document_header)
               )
               yield element_string(
                 XBELYielder.namespace_definitions(combiner.namespace_references)
@@ -61,11 +64,11 @@ module BEL::Translator::Plugins
               header_flag = false
             end
 
-            yield element_string(XBELYielder.evidence(evidence))
-            evidence_count += 1
+            yield element_string(XBELYielder.nanopub(nanopub))
+            nanopub_count += 1
           }
 
-          if evidence_count > 0
+          if nanopub_count > 0
             yield end_element_string(el_statement_group)
           else
             # empty head sections; required for XBEL schema
@@ -84,27 +87,19 @@ module BEL::Translator::Plugins
         end
       end
 
-      def self.evidence(evidence)
-        statement    = evidence.bel_statement
+      def self.nanopub(nanopub)
+        statement    = nanopub.bel_statement
         el_statement = REXML::Element.new('bel:statement')
 
-        el_statement.add_element(self.annotation_group(evidence))
+        el_statement.add_element(self.annotation_group(nanopub))
         self.statement(statement, el_statement)
 
         el_statement
       end
 
       def self.statement(statement, el_statement)
-        if statement.is_a?(String)
-          statement = BEL::Script.parse(statement.to_s).find { |x|
-            x.is_a? BEL::Model::Statement
-          }
-          return el_statement if statement == nil
-        end
-
         if statement.relationship
-          normal_form = BEL::Language::RELATIONSHIPS[statement.relationship.to_sym]
-          el_statement.add_attribute 'bel:relationship', normal_form
+          el_statement.add_attribute 'bel:relationship', statement.relationship.to_s(:long)
         end
 
         if statement.subject
@@ -131,9 +126,9 @@ module BEL::Translator::Plugins
         el_object = REXML::Element.new('bel:object')
 
         case object
-        when ::BEL::Model::Term
+        when ::BELParser::Expression::Model::Term
           el_object.add_element(self.term(object))
-        when ::BEL::Model::Statement
+        when ::BELParser::Expression::Model::Statement
           el_statement = REXML::Element.new('bel:statement')
           el_object.add_element(el_statement)
           self.statement(object, el_statement)
@@ -142,20 +137,14 @@ module BEL::Translator::Plugins
       end
 
       def self.term(term)
-        el_term    = REXML::Element.new('bel:term')
-        term_fx    = term.fx.to_s
-        term_fx    = (
-                       FUNCTIONS.fetch(term_fx.to_sym, {}).
-                                 fetch(:long_form, nil) || term_fx
-                     ).to_s
-
-        el_term.add_attribute 'bel:function', term_fx
+        el_term   = REXML::Element.new('bel:term')
+        el_term.add_attribute 'bel:function', term.function.to_s(:long)
 
         term.arguments.each do |arg|
           case arg
-          when ::BEL::Model::Term
+          when ::BELParser::Expression::Model::Term
             el_term.add_element(self.term(arg))
-          when ::BEL::Model::Parameter
+          when ::BELParser::Expression::Model::Parameter
             el_term.add_element(self.parameter(arg))
           end
         end
@@ -165,26 +154,33 @@ module BEL::Translator::Plugins
       def self.parameter(parameter)
         el_parameter      = REXML::Element.new('bel:parameter')
         el_parameter.text = parameter.value
-        el_parameter.add_attribute 'bel:ns', parameter.ns
+        keyword           = parameter.namespace && parameter.namespace.keyword
+        el_parameter.add_attribute 'bel:ns', keyword
         el_parameter
       end
 
-      def self.annotation_group(evidence)
+      def self.annotation_group(nanopub)
         el_ag = REXML::Element.new('bel:annotationGroup')
 
         # XBEL citation
-        if evidence.citation && evidence.citation.valid?
-          el_ag.add_element(self.citation(evidence.citation))
+        if nanopub.citation && nanopub.citation.valid?
+          el_ag.add_element(self.citation(nanopub.citation))
         end
 
-        # XBEL evidence (::BEL::Model::SummaryText)
-        if evidence.summary_text && evidence.summary_text.value
-          xbel_evidence      = REXML::Element.new('bel:evidence')
-          xbel_evidence.text = evidence.summary_text.value
-          el_ag.add_element(xbel_evidence)
+        # XBEL nanopub (::BEL::Nanopub::Support)
+        if nanopub.support && nanopub.support.value
+          if @bel_version == 1
+            xbel_evidence = REXML::Element.new('bel:evidence')
+            xbel_evidence.text = nanopub.support.value
+            el_ag.add_element(xbel_evidence)
+          else
+            xbel_support = REXML::Element.new('bel:support')
+            xbel_support.text = nanopub.support.value
+            el_ag.add_element(xbel_support)
+          end
         end
 
-        evidence.experiment_context.each do |annotation|
+        nanopub.experiment_context.each do |annotation|
           name, value = annotation.values_at(:name, :value)
 
           if value.respond_to?(:each)
@@ -204,9 +200,9 @@ module BEL::Translator::Plugins
           end
         end
 
-        metadata_keys = evidence.metadata.keys - [:document_header]
+        metadata_keys = nanopub.metadata.keys - [:document_header, :bel_version]
         metadata_keys.each do |k|
-          v = evidence.metadata[k]
+          v = nanopub.metadata[k]
           if v.respond_to?(:each)
             v.each do |value|
               el_anno      = REXML::Element.new('bel:annotation')
@@ -273,9 +269,16 @@ module BEL::Translator::Plugins
 
       def self.document
         el = REXML::Element.new('bel:document')
-        el.add_namespace('bel', 'http://belframework.org/schema/1.0/xbel')
-        el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-        el.add_attribute('xsi:schemaLocation', 'http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd')
+
+        if @bel_version == 1
+          el.add_namespace('bel', 'http://belframework.org/schema/1.0/xbel')
+          el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+          el.add_attribute('xsi:schemaLocation', 'http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd')
+        else
+          el.add_namespace('bel', 'http://resources.openbel.org/v2.0/lang/xml-schema/version_2.0/xbel')
+          el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+          el.add_attribute('xsi:schemaLocation', 'http://resources.openbel.org/v2.0/lang/xml-schema/version_2.0/xbel')
+        end
 
         el
       end
@@ -284,9 +287,15 @@ module BEL::Translator::Plugins
         el = REXML::Element.new('bel:statementGroup')
 
         if declare_namespaces
-          el.add_namespace('bel', 'http://belframework.org/schema/1.0/xbel')
-          el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-          el.add_attribute('xsi:schemaLocation', 'http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd')
+          if @bel_version == 1
+            el.add_namespace('bel', 'http://belframework.org/schema/1.0/xbel')
+            el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+            el.add_attribute('xsi:schemaLocation', 'http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd')
+          else
+            el.add_namespace('bel', 'http://resources.openbel.org/v2.0/lang/xml-schema/version_2.0/xbel')
+            el.add_namespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+            el.add_attribute('xsi:schemaLocation', 'http://resources.openbel.org/v2.0/lang/xml-schema/version_2.0/xbel')
+          end
         end
 
         el
@@ -315,6 +324,18 @@ module BEL::Translator::Plugins
         if hash.has_key?('contactinfo')
           el      = REXML::Element.new('bel:contactInfo')
           el.text = hash['contactinfo']
+          el_header.add_element(el)
+        end
+
+        # add bel_version with different element name (belVersion)
+        if hash.has_key?('belversion')
+          el = REXML::Element.new('bel:belVersion')
+          el.text = hash['belversion']
+          el_header.add_element(el)
+        else
+          # apply defaults
+          el = REXML::Element.new('bel:belVersion')
+          el.text = '2.0'
           el_header.add_element(el)
         end
 
@@ -348,12 +369,33 @@ module BEL::Translator::Plugins
       def self.namespace_definitions(list)
         el_nd = REXML::Element.new('bel:namespaceGroup')
         list.each do |namespace|
-          keyword, uri = namespace.values_at(:keyword, :uri).map(&:to_s)
-          el           = REXML::Element.new('bel:namespace')
-
-          el.add_attribute 'bel:prefix', keyword
-          el.add_attribute 'bel:resourceLocation', uri
-          el_nd.add_element(el)
+          if namespace.url?
+            el = REXML::Element.new('bel:namespace')
+            el.add_attribute 'bel:prefix', namespace.keyword
+            if @bel_version == 1
+              el.add_attribute 'bel:resourceLocation', namespace.uri
+            else
+              url_el = REXML::Element.new('bel:url')
+              url_el.text = namespace.uri
+              rsrc_el = REXML::Element.new('bel:resource')
+              rsrc_el << url_el
+              el << rsrc_el
+            end
+            el_nd.add_element(el)
+          elsif namespace.uri?
+            el = REXML::Element.new('bel:namespace')
+            el.add_attribute 'bel:prefix', namespace.keyword
+            if @bel_version == 1
+              el.add_attribute 'bel:resourceLocation', namespace.uri
+            else
+              uri_el = REXML::Element.new('bel:uri')
+              uri_el.text = namespace.uri
+              rsrc_el = REXML::Element.new('bel:resource')
+              rsrc_el << uri_el
+              el << rsrc_el
+            end
+            el_nd.add_element(el)
+          end
         end
 
         el_nd
@@ -364,43 +406,62 @@ module BEL::Translator::Plugins
         internal = []
         external = []
         list.each do |annotation|
-          keyword, type = annotation.values_at(:keyword, :type).map(&:to_s)
-          domain        = annotation[:domain]
-
-          case type.to_sym
-          when :url, :uri
+          case annotation.type.to_sym
+          when :url
             el = REXML::Element.new('bel:externalAnnotationDefinition')
-            el.add_attribute 'bel:url', domain.to_s
-            el.add_attribute 'bel:id',  keyword
+            el.add_attribute 'bel:id',  annotation.keyword
             external << el
+            if @bel_version == 1
+              el.add_attribute 'bel:url', annotation.domain
+            else
+              url_el = REXML::Element.new('bel:url')
+              url_el.text = annotation.domain
+              rsrc_el = REXML::Element.new('bel:resource')
+              rsrc_el << url_el
+              el << rsrc_el
+            end
+          when :uri
+            el = REXML::Element.new('bel:externalAnnotationDefinition')
+            el.add_attribute 'bel:id',  annotation.keyword
+            external << el
+            if @bel_version == 1
+              el.add_attribute 'bel:url', annotation.domain
+            else
+              uri_el = REXML::Element.new('bel:uri')
+              uri_el.text = annotation.domain
+              rsrc_el = REXML::Element.new('bel:resource')
+              rsrc_el << uri_el
+              el << rsrc_el
+            end
           when :pattern
             el = REXML::Element.new('bel:internalAnnotationDefinition')
-            el.add_attribute 'bel:id', keyword
+            el.add_attribute 'bel:id', annotation.keyword
             el.add_element(REXML::Element.new('bel:description'))
             el.add_element(REXML::Element.new('bel:usage'))
 
             el_pattern      = REXML::Element.new('bel:patternAnnotation')
             el_pattern.text =
-              domain.respond_to?(:source) ? domain.source : domain.to_s
+              annotation.domain.respond_to?(:source) ?
+                annotation.domain.source : annotation.domain
 
             el.add_element(el_pattern)
             internal << el
           when :list
             el = REXML::Element.new('bel:internalAnnotationDefinition')
-            el.add_attribute 'bel:id', keyword
+            el.add_attribute 'bel:id', annotation.keyword
             el.add_element(REXML::Element.new('bel:description'))
             el.add_element(REXML::Element.new('bel:usage'))
 
             el_list = REXML::Element.new('bel:listAnnotation')
-            if domain.respond_to?(:each)
-              domain.each do |value|
+            if annotation.domain.respond_to?(:each)
+              annotation.domain.each do |value|
                 el_list_value      = REXML::Element.new('bel:listValue')
                 el_list_value.text = value
                 el_list.add_element(el_list_value)
               end
             else
               el_list_value      = REXML::Element.new('bel:listValue')
-              el_list_value.text = domain
+              el_list_value.text = annotation.domain
               el_list.add_element(el_list_value)
             end
 

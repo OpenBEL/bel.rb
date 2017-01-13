@@ -63,8 +63,8 @@ tfids = tfids.read.split("\n")
 f.puts('#'*30)
 f.puts("# Statements Section")
 tfids.each do |tfid|
-  evidence_text = Annotation.new("Evidence", "Targets from Transcription Factor Encyclopedia article for tfid##{tfid}")
-  group = StatementGroup.new("tfid#{tfid}",[],[evidence_text])
+  support = Annotation.new('Support', "Targets from Transcription Factor Encyclopedia article for tfid##{tfid}.")
+  group = StatementGroup.new("tfid#{tfid}",[],[support])
   source_term = tscript(p(EGID[get_egid(tfid)]))
   targets = get_targets(tfid)
   if targets.length >0

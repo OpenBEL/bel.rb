@@ -5,7 +5,7 @@ module BEL
   module Gen
 
     # The {DocumentHeader} module defines methods that generate a random
-    # document header for the {BEL::Model::Evidence} metadata.
+    # document header for the {BEL::Nanopub::Nanopub} metadata.
     module DocumentHeader
 
       # Returns a randomly chosen document name.

@@ -25,7 +25,7 @@ machine bel;
 
 require_relative 'language'
 require_relative 'namespace'
-require_relative 'evidence_model'
+require_relative 'nanopub'
 require_relative 'nonblocking_io_wrapper'
 
 module BEL

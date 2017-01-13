@@ -1,16 +1,13 @@
-require_relative 'evidence_yielder'
+require_relative 'nanopub_yielder'
 require_relative 'xbel_yielder'
 
 module BEL::Translator::Plugins
-
   module Xbel
-
     class XbelTranslator
-
       include ::BEL::Translator
 
       def read(data, options = {})
-        EvidenceYielder.new(data, options)
+        NanopubYielder.new(data, options)
       end
 
       def write(objects, writer = StringIO.new, options = {})

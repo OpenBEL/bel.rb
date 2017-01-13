@@ -1,6 +1,7 @@
+require 'bel_parser'
 require 'bel'
 
-describe BEL::Parser do
+describe BELParser do
 
   describe "#parse" do
 

@@ -10,7 +10,7 @@ module BEL
     # mixin.
     module ClassMethods
 
-      # Return a stream of {::BEL::Model::Evidence} objects for the input.
+      # Return a stream of {::BEL::Nanopub::Nanopub} objects for the input.
       #
       # @param  [IO]                     input        the IO to read from
       # @param  [Symbol]                 input_format the symbol that can be
@@ -18,18 +18,18 @@ module BEL
       #         +input+
       # @param  [Hash{Symbol => Object}] options
       # @return [#each]                  an object that responds to +each+ and
-      #         provides {::BEL::Model::Evidence} objects
-      def evidence(input, input_format, options = {})
+      #         provides {::BEL::Nanopub::Nanopub} objects
+      def nanopub(input, input_format, options = {})
         prepared_input = process_input(input)
 
         in_translator  = self.translator(input_format) or
           raise TranslateError.new(input_format)
 
-        in_translator.read(prepared_input)
+        in_translator.read(prepared_input, options)
       end
 
       # Translate from one file format to another using
-      # {::BEL::Model::Evidence} as a shared model. The translation is written
+      # {::BEL::Nanopub::Nanopub} as a shared model. The translation is written
       # to the IO +writer+ directly.
       #
       # @param  [IO]                     input         the IO to read from
@@ -49,8 +49,8 @@ module BEL
         out_translator = self.translator(output_format, options) or
           raise TranslateError.new(output_format)
 
-        evidence = in_translator.read(prepared_input)
-        out_translator.write(evidence, writer, options)
+        nanopub = in_translator.read(prepared_input, options)
+        out_translator.write(nanopub, writer, options)
         writer
       end
 

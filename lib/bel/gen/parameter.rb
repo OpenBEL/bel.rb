@@ -6,14 +6,14 @@ module BEL
   module Gen
 
     # The {Parameter} module defines methods that generate random BEL
-    # {BEL::Model::Parameter parameters}.
+    # {BEL::Nanopub::Parameter parameters}.
     module Parameter
       include BEL::Gen::Namespace
 
       # Returns a BEL parameter from a random namespace. The value will be
       # a random string and not necessarily part of the namespace.
       #
-      # @return [BEL::Model::Parameter] a randomly generated parameter with
+      # @return [BEL::Nanopub::Parameter] a randomly generated parameter with
       #         a namespace
       def bel_parameter_with_namespace
         ns    = namespace
@@ -22,7 +22,7 @@ module BEL
             string(/[[:alnum:]]|[[:blank:]]|[[:punct:]]/)
           }
         }
-        BEL::Model::Parameter.new(
+        BEL::Nanopub::Parameter.new(
           ns,
           value,
           :A
@@ -32,7 +32,7 @@ module BEL
       # Returns a BEL parameter without a namespace. The value will be
       # a random string.
       #
-      # @return [BEL::Model::Parameter] a randomly generated parameter
+      # @return [BEL::Nanopub::Parameter] a randomly generated parameter
       #         without a namespace
       def bel_parameter_without_namespace
         value = Rantly.value {
@@ -40,7 +40,7 @@ module BEL
             string(/[[:alnum:]]|[[:blank:]]|[[:punct:]]/)
           }
         }
-        BEL::Model::Parameter.new(
+        BEL::Nanopub::Parameter.new(
           nil,
           value,
           :A
@@ -54,7 +54,7 @@ module BEL
       #
       # @see #bel_parameter_with_namespace
       # @see #bel_parameter_without_namespace
-      # @return [BEL::Model::Parameter] a parameter that may or may not have
+      # @return [BEL::Nanopub::Parameter] a parameter that may or may not have
       #         a namespace
       def bel_parameter
         with_namespace    = bel_parameter_with_namespace

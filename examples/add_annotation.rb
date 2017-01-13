@@ -1,7 +1,7 @@
 # Example:
-#   Illustrates how to add an Annotation definition and values to evidence
-#   objects. Evidence is read from BEL script (e.g. bel formatter) and written
-#   as JSON evidence (e.g. json formatter).
+#   Illustrates how to add an Annotation definition and values to nanopub
+#   objects. Nanopubs are read from BEL script (e.g. bel formatter) and written
+#   as BNJ (i.e. BEL Nanopub JSON).
 # Usage:
 #   ruby examples/add_annotation.rb large_corpus.bel
 
@@ -21,16 +21,16 @@ new_annotation = {
 }
 
 # read BEL script from file
-new_evidence = bel_formatter.deserialize(bel_file).each.lazy.map { |evidence|
-  # for each piece of evidence
+new_nanopub = bel_formatter.deserialize(bel_file).each.lazy.map { |nanopub|
+  # for each nanopub
 
   # ...add definition and value
-  evidence.references.annotations[:Status] = new_annotation
-  evidence.metadata[:Status] = 'Approved'
+  nanopub.references.annotations[:Status] = new_annotation
+  nanopub.metadata[:Status] = 'Approved'
 
-  # ...return new evidence
-  evidence
+  # ...return new nanopub
+  nanopub
 }
 
-# serialize new evidence to BEL script and write out
-json_formatter.serialize(new_evidence, $stdout)
+# serialize new nanopub to BEL script and write out
+json_formatter.serialize(new_nanopub, $stdout)

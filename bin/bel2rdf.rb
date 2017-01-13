@@ -28,7 +28,7 @@ options = {
 }
 OptionParser.new do |opts|
   opts.banner = <<-USAGE
-    Converts BEL evidence to RDF...
+    Converts BEL nanopubs to RDF...
 
     From a BEL file.
     Usage: bel2rdf --bel [FILE]

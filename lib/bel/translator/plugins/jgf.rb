@@ -4,7 +4,7 @@ module BEL::Translator::Plugins
 
     ID          = :jgf
     NAME        = 'JSON Graph Format Translator'
-    DESCRIPTION = 'A translator that can read and write evidence statements in a JSON Graph Format.'
+    DESCRIPTION = 'A translator that can read/write BEL nanopubs to JGF.'
     MEDIA_TYPES   = %i(application/vnd.jgf+json)
     EXTENSIONS    = %i(jgf.json)
 

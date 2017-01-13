@@ -16,7 +16,7 @@ describe BEL::Namespace do
       expect(scomp.values.size).to be > 0
     end
 
-    it 'resolves value to BEL::Model::Parameter' do
+    it 'resolves value to BEL::Nanopub::Parameter' do
       scomp = NamespaceDefinition.new(
         :SCOMP,
         'http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns',
@@ -24,7 +24,7 @@ describe BEL::Namespace do
       )
       
       expect(scomp['9-1-1 Complex']).not_to be_nil
-      expect(scomp['9-1-1 Complex']).to     be_a(BEL::Model::Parameter)
+      expect(scomp['9-1-1 Complex']).to     be_a(BEL::Nanopub::Parameter)
     end
   end
 

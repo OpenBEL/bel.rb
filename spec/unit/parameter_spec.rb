@@ -1,9 +1,12 @@
+require 'bel_parser'
 require 'bel'
 
-describe BEL::Model::Parameter, "#valid?" do
-  include BEL::Language
-  include BEL::Namespace
-  include BEL::Model
+include BELParser::Expression::Model
+include BEL::Language
+include BEL::Namespace
+include BEL::Nanopub
+
+describe Parameter, "#valid?" do
 
   it """false when parameter value is nil""" do
     expect(

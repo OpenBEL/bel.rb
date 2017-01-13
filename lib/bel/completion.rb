@@ -1,11 +1,12 @@
+require          'bel_parser/language'
 require_relative 'libbel'
 require_relative 'completion_rule'
 require_relative 'language'
 require_relative 'namespace'
 
 module BEL
+  # Completion defines an API for completing BEL Expressions.
   module Completion
-
     # Provides completions on BEL expressions.
     #
     # If +bel_expression+ is +nil+ then its assumed to be the empty string
@@ -26,17 +27,18 @@ module BEL
     #
     # @param bel_expression   [responds to #to_s] the bel expression to
     # complete on
+    # @param specification    [BELParser::Language::Specification] language specification
     # @param search           [#search_namespace, #search] the search object used to
     # provide namespace value completions
     # @param position         [responds to #to_i] the position to complete from
     # @return [Array<Completion>]
-    def self.complete(bel_expression, search, namespaces, position = nil)
-      raise ArgumentError.new(
-        "search should be a BEL::Resource::Search plugin implementation"
-      ) unless search
-      raise ArgumentError.new(
-        "namespaces should be a BEL::Resource::Namespaces object"
-      ) unless namespaces
+    def self.complete(bel_expression, specification, search, namespaces, position = nil)
+      #raise ArgumentError.new(
+      #  "search should be a BEL::Resource::Search plugin implementation"
+      #) unless search
+      #raise ArgumentError.new(
+      #  "namespaces should be a BEL::Resource::Namespaces object"
+      #) unless namespaces
 
       bel_expression = (bel_expression || '').to_s
       position = (position || bel_expression.length).to_i
@@ -58,8 +60,9 @@ module BEL
       }
       BEL::Completion::run_rules(
         tokens, active_index, active_token,
-        :search     => search,
-        :namespaces => namespaces
+        :specification => specification,
+        :search        => search,
+        :namespaces    => namespaces
       )
     end
   end

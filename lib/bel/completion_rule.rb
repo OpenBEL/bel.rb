@@ -1,30 +1,31 @@
-require_relative 'language'
 require_relative 'namespace'
 require_relative 'quoting'
 
 module BEL
   module Completion
-
-    SORTED_FUNCTIONS  = BEL::Language::FUNCTIONS.keys.sort.map(&:to_s)
     SORTED_NAMESPACES = BEL::Namespace::NAMESPACE_LATEST.keys.sort.map(&:to_s)
     EMPTY_MATCH       = []
 
+    # Run all defined {Rule rules}.
     def self.run_rules(tokens, active_index, active_token, options = {})
       self.rules.reduce([]) { |completion_results, rule|
         completion_results.concat(
           rule.apply(tokens, active_token, active_index, options)
         )
+        completion_results
       }
     end
 
+    # Retrieve all completion {Rule rules}.
     def self.rules
-      [
-        MatchFunctionRule.new,
-        MatchNamespacePrefixRule.new,
-        MatchNamespaceValueRule.new
-      ]
+      constants.map do |const|
+        obj = const_get(const)
+        obj.new if obj.include?(Rule)
+      end.compact
     end
 
+    # Rule defines the {#apply} API contract and additional helpers to convey
+    # completion actions.
     module Rule
 
       def apply(token_list, active_token, active_token_index, options = {})
@@ -100,21 +101,22 @@ module BEL
       end
     end
 
+    # MatchFunctionRule defines a function completion rule. This rule relies on
+    # a {BELParser::Language::Specification} for the available functions.
     class MatchFunctionRule
       include Rule
 
       def _apply(token_list, active_token, active_token_index, options = {})
         if token_list.empty? or active_token.type == :O_PAREN
-          return SORTED_FUNCTIONS.map { |fx| map_function(fx) }.uniq.sort_by { |fx|
-            fx[:label]
-          }
+          return spec_functions(options[:specification]).map(&method(:map_function))
         end
 
         if active_token.type == :IDENT
-          value = active_token.value.downcase
-          return SORTED_FUNCTIONS.find_all { |x|
-            x.downcase.include? value
-          }.map { |fx| map_function(fx) }.uniq.sort_by { |fx| fx[:label] }
+          value   = active_token.value.downcase
+          matches = spec_functions(options[:specification]).select do |func|
+            func.short.to_s.include?(value) || func.long.to_s.include?(value)
+          end
+          return matches.map(&method(:map_function))
         end
 
         return EMPTY_MATCH
@@ -122,14 +124,17 @@ module BEL
 
       protected
 
-      def map_function(fx_name)
-        fx = BEL::Language::Function.new(BEL::Language::FUNCTIONS[fx_name.to_sym])
-        if fx
+      def spec_functions(spec)
+        spec.functions.sort_by(&:long)
+      end
+
+      def map_function(function)
+        if function
           {
-            :id     => fx.short_form,
+            :id     => function.short,
             :type   => :function,
-            :label  => fx.long_form,
-            :value  => "#{fx.short_form}()",
+            :label  => function.long,
+            :value  => "#{function.short}()",
             :offset => -1
           }
         else
@@ -138,6 +143,8 @@ module BEL
       end
     end
 
+    # MatchNamespacePrefixRule defines a namespace completion rule.
+    # TODO Namespces should be passed as state, not hardcoded.
     class MatchNamespacePrefixRule
       include Rule
 
@@ -176,6 +183,7 @@ module BEL
       end
     end
 
+    # MatchNamespaceValueRule defines a namespace value completion rule.
     class MatchNamespaceValueRule
       include Rule
       include BEL::Quoting
