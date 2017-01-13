@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
                                     'Nick Bargnesi',
                                     'William Hayes'
                                   ]
+  spec.date                     = %q{2017-01-13}
   spec.email                    = [
                                     'abargnesi@selventa.com',
                                     'ncatlett@selventa.com',
