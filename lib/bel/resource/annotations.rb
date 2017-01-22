@@ -49,7 +49,7 @@ module BEL
         return nil if nstr.empty?
 
         # match input as annotation prefix
-				nlit   = RDF::Literal(nstr)
+        nlit   = RDF::Literal(nstr.upcase)
 				prefix = annotation_query(
 					:predicate => BELV.prefix,
 					:object    => nlit
