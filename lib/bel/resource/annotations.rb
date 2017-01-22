@@ -57,6 +57,7 @@ module BEL
 			  return Annotation.new(@rdf_repository, prefix.subject) if prefix
 
         # match input as annotation prefLabel
+        nlit   = RDF::Literal(nstr)
 				label  = annotation_query(
 					:predicate => SKOS.prefLabel,
 					:object    => nlit
