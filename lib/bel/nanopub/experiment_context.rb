@@ -4,7 +4,7 @@ module BEL
   module Nanopub
     class ExperimentContext
 
-      attr_reader :values
+      attr_accessor :values
 
       extend Forwardable
       include Enumerable
