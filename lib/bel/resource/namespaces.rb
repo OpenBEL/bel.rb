@@ -49,7 +49,7 @@ module BEL
         return find_namespace_uri(nstr) if nstr =~ FULL_URI_REGEX
 
         # match input as namespace prefix
-				nlit   = RDF::Literal(nstr)
+        nlit   = RDF::Literal(nstr.upcase)
 				prefix = namespace_query(
 					:predicate => BELV.prefix,
 					:object    => nlit
